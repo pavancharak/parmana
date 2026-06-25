@@ -1,0 +1,1 @@
+{"version":3,"file":"Identifier.d.ts","sourceRoot":"","sources":["Identifier.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AACH,8BAAsB,UAAU;IAE5B,QAAQ,CAAC,KAAK,EAAE,MAAM,CAAC;IAEvB,SAAS,aAAa,KAAK,EAAE,MAAM;IASnC,MAAM,CAAC,KAAK,EAAE,UAAU,GAAG,OAAO;IAIlC,QAAQ,IAAI,MAAM;CAIrB"}
