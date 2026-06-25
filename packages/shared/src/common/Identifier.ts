@@ -1,43 +1,55 @@
-import { describe, expect, it } from "vitest";
-import { Identifier } from "../src/common/Identifier.js";
+/**
+ * Base class for strongly typed immutable identifiers.
+ *
+ * All domain identifiers in Parmana derive from this class.
+ *
+ * Examples:
+ * - TransactionId
+ * - AuthorityId
+ * - IntentId
+ * - EvidenceId
+ * - VerificationId
+ */
+export abstract class Identifier {
+  /**
+   * Immutable identifier value.
+   */
+  public readonly value: string;
 
-class TestIdentifier extends Identifier {
-  constructor(value: string) {
-    super(value);
+  protected constructor(value: string) {
+    if (typeof value !== "string") {
+      throw new TypeError("Identifier must be a string.");
+    }
+
+    const normalized = value.trim();
+
+    if (normalized.length === 0) {
+      throw new Error("Identifier cannot be empty.");
+    }
+
+    this.value = normalized;
+
+    Object.freeze(this);
+  }
+
+  /**
+   * Compares two identifiers.
+   */
+  public equals(other: Identifier): boolean {
+    return this.value === other.value;
+  }
+
+  /**
+   * Returns the identifier as a string.
+   */
+  public toString(): string {
+    return this.value;
+  }
+
+  /**
+   * Enables JSON serialization.
+   */
+  public toJSON(): string {
+    return this.value;
   }
 }
-
-describe("Identifier", () => {
-  it("creates a valid identifier", () => {
-    const id = new TestIdentifier("txn_123");
-
-    expect(id.value).toBe("txn_123");
-  });
-
-  it("compares identifiers correctly", () => {
-    const a = new TestIdentifier("txn_123");
-    const b = new TestIdentifier("txn_123");
-
-    expect(a.equals(b)).toBe(true);
-  });
-
-  it("rejects an empty identifier", () => {
-    expect(() => new TestIdentifier("")).toThrow(
-      "Identifier cannot be empty."
-    );
-  });
-
-  it("returns the identifier as a string", () => {
-    const id = new TestIdentifier("txn_123");
-
-    expect(id.toString()).toBe("txn_123");
-  });
-
-  it("serializes to JSON", () => {
-    const id = new TestIdentifier("txn_123");
-
-    expect(JSON.parse(JSON.stringify(id))).toEqual({
-      value: "txn_123",
-    });
-  });
-});
