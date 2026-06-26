@@ -1,25 +1,29 @@
 {
-    "name":  "@parmana/shared",
-    "version":  "0.1.0",
-    "type":  "module",
-    "main":  "./dist/index.js",
-    "types":  "./dist/index.d.ts",
-    "exports":  {
-                    ".":  {
-                              "types":  "./dist/index.d.ts",
-                              "import":  "./dist/index.js"
-                          }
-                },
-    "scripts":  {
-                    "clean":  "rmdir /s /q dist",
-                    "build":  "tsc -p tsconfig.json",
-                    "typecheck":  "tsc --noEmit -p tsconfig.json"
-                },
-    "dependencies":  {
-                         "express":  "^5.2.1",
-                         "vitest":  "^4.1.9"
-                     },
-    "devDependencies":  {
-                            "@types/express":  "^5.0.6"
-                        }
+    "name": "@parmana/shared",
+    "version": "0.1.0",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "clean": "rmdir /s /q dist",
+        "build": "tsc -p tsconfig.json",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "test": "vitest run"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.108.2",
+        "dotenv": "^17.4.2",
+        "express": "^5.2.1",
+        "vitest": "^4.1.9"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.6",
+        "tsx": "^4.22.4"
+    }
 }

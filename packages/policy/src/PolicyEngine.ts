@@ -1,43 +1,47 @@
 import { Policy, PolicyCondition } from "./types/Policy.js";
-
-export type PolicyDecision = {
-  policyId: string;
-  policyVersion: string;
-  matchedRuleId: string;
-  action: "approve" | "reject" | "override";
-  requiresOverride: boolean;
-  reason: string;
-};
+import { LedgerEntry } from "./types/LedgerEntry.js";
+import { hashLedger } from "./utils/hash.js";
 
 export class PolicyEngine {
-  evaluate(policy: Policy, signals: any): PolicyDecision {
-    const rule = this.findFirstMatch(policy.rules, signals);
+  evaluate(policy: Policy, signals: any): LedgerEntry {
+    const trace: string[] = [];
 
-    if (rule) {
-      return {
-        policyId: policy.policyId,
-        policyVersion: policy.policyVersion ?? "0.0.0",
-        matchedRuleId: rule.id,
-        action: rule.outcome.action,
-        requiresOverride: rule.outcome.requiresOverride ?? false,
-        reason: rule.outcome.reason,
-      };
-    }
+    const rule = this.findFirstMatch(policy.rules, signals, trace);
 
-    const fallback = policy.rules.find(r => r.id.includes("catch-all"));
+    const base = {
+      executionId: crypto.randomUUID(),
 
-    return {
       policyId: policy.policyId,
       policyVersion: policy.policyVersion ?? "0.0.0",
-      matchedRuleId: fallback?.id ?? "none",
-      action: "reject",
-      requiresOverride: true,
-      reason: "no_rule_matched",
+
+      input: signals,
+
+      matchedRuleId: rule?.id ?? "none",
+      action: rule?.outcome?.action ?? "reject",
+      reason: rule?.outcome?.reason ?? "no_rule_matched",
+
+      trace: {
+        evaluatedRules: trace.length,
+        matchedPath: trace,
+      },
+
+      timestamp: Date.now(),
+    };
+
+    return {
+      ...base,
+      hash: hashLedger(base),
     };
   }
 
-  private findFirstMatch(rules: any[], signals: any) {
+  private findFirstMatch(
+    rules: any[],
+    signals: any,
+    trace: string[]
+  ) {
     for (const rule of rules) {
+      trace.push(rule.id);
+
       if (this.evaluateCondition(rule.condition, signals)) {
         return rule;
       }
@@ -48,12 +52,11 @@ export class PolicyEngine {
   private evaluateCondition(condition: PolicyCondition, signals: any): boolean {
     if (!condition) return false;
 
-    // CASE 1: leaf condition (signal-based)
-    if ("signal" in condition) {
-      const signalKey = condition.signal;
-      if (!signalKey) return false;
+    // leaf
+    if ("signal" in condition && condition.signal) {
+      const value = signals?.[condition.signal];
 
-      const value = signals?.[signalKey];
+      if (value === undefined || value === null) return false;
 
       if (condition.greater_than !== undefined) {
         return value > condition.greater_than;
@@ -66,17 +69,17 @@ export class PolicyEngine {
       return Boolean(value);
     }
 
-    // CASE 2: AND conditions
-    if (condition.all && condition.all.length > 0) {
-      return condition.all.every((c) =>
-        this.evaluateCondition(c as PolicyCondition, signals)
+    // AND
+    if (Array.isArray(condition.all)) {
+      return condition.all.every((c: any) =>
+        this.evaluateCondition(c, signals)
       );
     }
 
-    // CASE 3: OR conditions
-    if (condition.any && condition.any.length > 0) {
-      return condition.any.some((c) =>
-        this.evaluateCondition(c as PolicyCondition, signals)
+    // OR
+    if (Array.isArray(condition.any)) {
+      return condition.any.some((c: any) =>
+        this.evaluateCondition(c, signals)
       );
     }
 
