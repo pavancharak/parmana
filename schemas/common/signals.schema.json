@@ -1,0 +1,106 @@
+Locked architectural decisions
+
+This is one of the most important schemas in Parmana.
+
+1. Parmana does not define business signals
+
+The signals object is policy-specific.
+
+Examples:
+
+Payment Policy
+
+{
+  "amount": 5000,
+  "currency": "USD"
+}
+
+Loan Policy
+
+{
+  "creditScore": 780,
+  "annualIncome": 120000
+}
+
+Insurance Policy
+
+{
+  "claimAmount": 25000,
+  "policyAge": 5
+}
+
+Parmana has no knowledge of these fields.
+
+2. Policy defines the schema
+
+The request supplies:
+
+policy.name
+policy.version
+policy.schemaVersion
+
+Parmana resolves the policy and then validates the signals object against the schema associated with that policy version.
+
+The generic signals.schema.json therefore validates only that:
+
+the value is an object
+it is not empty
+
+Business validation occurs after policy resolution.
+
+3. Signals are immutable
+
+Once a Business Transaction is accepted:
+
+Signals cannot change.
+Replay always uses the original Signals.
+Verification always validates the original Signals.
+The Execution Trust Record stores the original Signals exactly as submitted.
+4. Why additionalProperties: true
+
+This is intentional.
+
+If it were false, Parmana would need to know every possible business field across every domain.
+
+Instead:
+
+Payment systems define payment signals.
+Banking systems define banking signals.
+Insurance systems define insurance signals.
+Healthcare systems define healthcare signals.
+
+Parmana simply evaluates them using the resolved policy.
+
+Canonical Principle (Locked)
+
+Parmana is policy-driven, not domain-driven.
+
+It never defines business fields. The resolved Policy and its associated Signal Schema define the structure and validation rules for the signals object.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/signals.schema.json",
+  "title": "Signals",
+  "description": "Business input evaluated by a resolved Policy.",
+  "type": "object",
+  "minProperties": 1,
+  "additionalProperties": true,
+  "examples": [
+    {
+      "amount": 5000,
+      "currency": "USD",
+      "customerType": "PREMIUM"
+    },
+    {
+      "creditScore": 780,
+      "annualIncome": 120000,
+      "existingDebt": 15000
+    },
+    {
+      "claimAmount": 25000,
+      "policyAge": 5,
+      "incidentType": "ACCIDENT"
+    }
+  ]
+}

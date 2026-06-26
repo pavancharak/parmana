@@ -1,0 +1,63 @@
+POST /v1/transactions/{businessTransactionId}/override
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/requests/override-create-request.schema.json",
+  "title": "Override Create Request",
+  "description": "Request payload for creating an Override for an existing Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "override"
+  ],
+  "properties": {
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "reason"
+      ],
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "description": "Override decision outcome.",
+          "enum": [
+            "APPROVED",
+            "REJECTED"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "description": "Business justification for the override.",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "reference": {
+          "type": "string",
+          "description": "Optional external approval or ticket reference."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional implementation-specific override metadata.",
+          "additionalProperties": true
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "override": {
+        "outcome": "APPROVED",
+        "reason": "Manager approved exceptional payment.",
+        "reference": "CHG-12345"
+      }
+    },
+    {
+      "override": {
+        "outcome": "REJECTED",
+        "reason": "Compliance review confirmed original rejection."
+      }
+    }
+  ]
+}

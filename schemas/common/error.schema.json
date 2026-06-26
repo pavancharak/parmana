@@ -1,0 +1,150 @@
+Locked architectural decisions
+1. Single error contract
+
+Every Parmana API endpoint returns the same error envelope:
+
+{
+  "error": {
+    "code": "...",
+    "message": "..."
+  }
+}
+
+This applies consistently across all resources.
+
+2. Stable error codes
+
+Clients must make programmatic decisions using the code field.
+
+The message is intended for humans and may be revised for clarity without changing the API contract.
+
+3. Optional diagnostic information
+
+The following fields are optional:
+
+details
+timestamp
+traceId
+
+They provide additional diagnostic context without changing the error semantics.
+
+4. No internal implementation details
+
+Responses must never expose:
+
+stack traces,
+SQL queries,
+filesystem paths,
+internal exceptions,
+cryptographic secrets,
+implementation-specific details.
+5. Deterministic failures
+
+Errors do not partially modify immutable resources.
+
+If a request fails:
+
+no Business Transaction is created,
+no Execution Trust Record is created,
+no partial trust artifacts are persisted.
+Canonical Principle (Locked)
+
+Errors are deterministic, machine-readable, and consistent across the entire Parmana API.
+
+Every failure is represented using a single canonical error envelope with stable error codes, optional diagnostic metadata, and no leakage of internal implementation details, preserving the integrity and predictability of the Execution Trust platform.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/error.schema.json",
+  "title": "Error Response",
+  "description": "Canonical error response returned by the Parmana API.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "error"
+  ],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Stable machine-readable error code.",
+          "enum": [
+            "INVALID_REQUEST",
+            "INVALID_METADATA",
+            "INVALID_POLICY",
+            "INVALID_SIGNALS",
+            "INVALID_SCHEMA",
+            "UNAUTHENTICATED",
+            "INVALID_TOKEN",
+            "TOKEN_EXPIRED",
+            "FORBIDDEN",
+            "INSUFFICIENT_PERMISSIONS",
+            "BUSINESS_TRANSACTION_NOT_FOUND",
+            "EXECUTION_NOT_FOUND",
+            "RECEIPT_NOT_FOUND",
+            "POLICY_NOT_FOUND",
+            "VERIFICATION_NOT_FOUND",
+            "DUPLICATE_TRANSACTION",
+            "OVERRIDE_NOT_ALLOWED",
+            "IMMUTABLE_RESOURCE",
+            "VERIFICATION_FAILED",
+            "INVALID_SIGNATURE",
+            "TRUST_RECORD_CORRUPTED",
+            "POLICY_MISMATCH",
+            "INTERNAL_ERROR",
+            "STORAGE_FAILURE",
+            "UNEXPECTED_ERROR"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable error description."
+        },
+        "details": {
+          "type": "object",
+          "description": "Optional structured error details.",
+          "additionalProperties": true
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the error occurred."
+        },
+        "traceId": {
+          "type": "string",
+          "description": "Unique identifier for correlating logs and diagnostics."
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "error": {
+        "code": "POLICY_NOT_FOUND",
+        "message": "The requested policy 'payment-approval' version '2.1.0' could not be found.",
+        "details": {
+          "policy": "payment-approval",
+          "version": "2.1.0"
+        },
+        "timestamp": "2026-06-26T13:00:00Z",
+        "traceId": "TRC-7f8c4d9e"
+      }
+    },
+    {
+      "error": {
+        "code": "DUPLICATE_TRANSACTION",
+        "message": "A Business Transaction with the same identifier already exists with different content.",
+        "timestamp": "2026-06-26T13:05:00Z",
+        "traceId": "TRC-1a2b3c4d"
+      }
+    }
+  ]
+}

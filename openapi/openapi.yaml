@@ -1,0 +1,923 @@
+openapi: 3.1.0
+
+info:
+  title: Parmana API
+  version: 1.0.0
+  description: >
+    Parmana is an Execution Trust Infrastructure that ensures there is no gap
+    between what humans decide and what AI systems do. The API enables creation,
+    execution, verification, replay, and auditing of Business Transactions
+    through cryptographically verifiable Execution Trust Records.
+
+  contact:
+    name: Parmana
+    email: support@parmana.ai
+
+  license:
+    name: Apache-2.0
+
+servers:
+  - url: https://api.parmana.ai/v1
+    description: Production
+
+  - url: https://sandbox.api.parmana.ai/v1
+    description: Sandbox
+
+tags:
+  - name: Transactions
+    description: Business Transaction operations
+
+  - name: Executions
+    description: Execution operations
+
+  - name: Overrides
+    description: Override operations
+
+  - name: Verification
+    description: Verification operations
+
+  - name: Receipts
+    description: Execution Trust Receipts
+
+  - name: Trust Chain
+    description: Execution Trust Chain
+
+  - name: Policies
+    description: Policy discovery
+
+  - name: System
+    description: Operational endpoints
+
+components:
+
+  securitySchemes:
+
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+
+paths:
+
+  /health:
+    get:
+      tags:
+        - System
+      summary: Service health check
+      operationId: getHealth
+      description: Returns the operational health of the Parmana service.
+      responses:
+        '200':
+          description: Service health information.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/health-response.schema.json'
+
+  /version:
+    get:
+      tags:
+        - System
+      summary: Service version
+      operationId: getVersion
+      description: Returns the running service version and deployment metadata.
+      responses:
+        '200':
+          description: Service version information.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/version-response.schema.json'
+
+  /transactions:
+    post:
+      tags:
+        - Transactions
+      summary: Create Business Transaction
+      operationId: createTransaction
+      description: >
+        Creates a new Business Transaction. The request is idempotent based on
+        businessTransactionId. If an identical transaction already exists,
+        the existing resource is returned. If the payload differs, the request
+        fails with a conflict.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/requests/transaction-create-request.schema.json'
+      responses:
+        '201':
+          description: Business Transaction created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/transaction-response.schema.json'
+
+        '409':
+          description: Duplicate Business Transaction with different payload.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '400':
+          description: Invalid request.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+    get:
+      tags:
+        - Transactions
+      summary: List Business Transactions
+      operationId: listTransactions
+      description: Returns a paginated list of Business Transactions.
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+
+      responses:
+        '200':
+          description: List of Business Transactions.
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /transactions/{businessTransactionId}:
+    get:
+      tags:
+        - Transactions
+      summary: Get Business Transaction
+      operationId: getTransaction
+      description: >
+        Returns the current state of a Business Transaction together with
+        its Metadata, Policy, Signals, Decision, lifecycle status and
+        related resources.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Business Transaction found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/transaction-response.schema.json'
+
+        '404':
+          description: Business Transaction not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '403':
+          description: Access denied.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/executions:
+
+    post:
+      tags:
+        - Executions
+      summary: Create Execution
+      operationId: createExecution
+      description: >
+        Creates a new Execution for an existing Business Transaction.
+        Execution may be synchronous or asynchronous depending on the
+        execution mode specified in the request.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/requests/execution-create-request.schema.json'
+
+      responses:
+        '201':
+          description: Execution created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/execution-response.schema.json'
+
+        '400':
+          description: Invalid execution request.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Business Transaction not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '409':
+          description: Execution cannot be created for the current transaction state.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+    get:
+      tags:
+        - Executions
+      summary: List Executions
+      operationId: listExecutions
+      description: >
+        Returns the execution history for a Business Transaction.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          schema:
+            type: string
+
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+
+      responses:
+        '200':
+          description: Execution history.
+          content:
+            application/json:
+              schema:
+                type: object
+
+        '404':
+          description: Business Transaction not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/executions/{executionId}:
+
+    get:
+      tags:
+        - Executions
+      summary: Get Execution
+      operationId: getExecution
+      description: >
+        Returns a single Execution for the specified Business Transaction.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          schema:
+            type: string
+
+        - name: executionId
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Execution found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/execution-response.schema.json'
+
+        '404':
+          description: Execution not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/override:
+
+    post:
+      tags:
+        - Overrides
+      summary: Create Override
+      operationId: createOverride
+      description: >
+        Creates an authorized human Override for an existing Business
+        Transaction. Overrides are only permitted before a terminal
+        Execution and become part of the immutable Execution Trust Record.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/requests/override-create-request.schema.json'
+
+      responses:
+        '201':
+          description: Override created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/override-response.schema.json'
+
+        '400':
+          description: Invalid override request.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '403':
+          description: Caller is not authorized to perform an override.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Business Transaction not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '409':
+          description: >
+            Override not allowed because an Override already exists
+            or the Business Transaction has reached a terminal Execution state.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+    get:
+      tags:
+        - Overrides
+      summary: Get Override
+      operationId: getOverride
+      description: >
+        Returns the Override associated with the specified Business Transaction.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Override found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/override-response.schema.json'
+
+        '404':
+          description: Override not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/verify:
+
+    post:
+      tags:
+        - Verification
+      summary: Verify Execution Trust Record
+      operationId: verifyTransaction
+      description: >
+        Verifies the complete Execution Trust Record associated with the
+        specified Business Transaction. Verification is deterministic,
+        validates all trust artifacts, and creates a new immutable
+        Verification artifact.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Verification completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/verification-response.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Business Transaction not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '409':
+          description: Verification failed because the Execution Trust Record is inconsistent or corrupted.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '500':
+          description: Internal verification error.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/receipt:
+
+    get:
+      tags:
+        - Receipts
+      summary: Get Latest Receipt
+      operationId: getReceipt
+      description: >
+        Returns the latest Execution Trust Receipt for the specified
+        Business Transaction.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Receipt found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/receipt-response.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Receipt not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/executions/{executionId}/receipt:
+
+    get:
+      tags:
+        - Receipts
+      summary: Get Execution Receipt
+      operationId: getExecutionReceipt
+      description: >
+        Returns the Execution Trust Receipt associated with a specific
+        Execution.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          schema:
+            type: string
+
+        - name: executionId
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Receipt found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/receipt-response.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Receipt not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /transactions/{businessTransactionId}/trust-chain:
+
+    get:
+      tags:
+        - Trust Chain
+      summary: Get Execution Trust Chain
+      operationId: getTrustChain
+      description: >
+        Returns the complete Execution Trust Record for the specified
+        Business Transaction, including Metadata, Policy, Signals,
+        Decision, Override history, Execution history,
+        Verification history, Receipt history, and Trust Metadata.
+
+      parameters:
+        - name: businessTransactionId
+          in: path
+          required: true
+          description: Unique Business Transaction identifier.
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Execution Trust Chain found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/trust-chain-response.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Business Transaction not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /policies:
+
+    get:
+      tags:
+        - Policies
+      summary: List Policies
+      operationId: listPolicies
+      description: >
+        Returns a paginated list of published Policies available for
+        Business Transaction evaluation.
+
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+
+      responses:
+        '200':
+          description: List of Policies.
+          content:
+            application/json:
+              schema:
+                type: object
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+  /policies/{name}/{version}:
+
+    get:
+      tags:
+        - Policies
+      summary: Get Policy
+      operationId: getPolicy
+      description: >
+        Returns a specific published Policy identified by its name and version.
+
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Policy name.
+          schema:
+            type: string
+
+        - name: version
+          in: path
+          required: true
+          description: Policy version.
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Policy found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/responses/policy-response.schema.json'
+
+        '401':
+          description: Authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+        '404':
+          description: Policy not found.
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/common/error.schema.json'
+
+components:
+
+  securitySchemes:
+
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    Metadata:
+      $ref: "../schemas/common/metadata.schema.json"
+
+    Policy:
+      $ref: "../schemas/common/policy.schema.json"
+
+    Signals:
+      $ref: "../schemas/common/signals.schema.json"
+
+    Decision:
+      $ref: "../schemas/common/decision.schema.json"
+
+    Execution:
+      $ref: "../schemas/common/execution.schema.json"
+
+    Override:
+      $ref: "../schemas/common/override.schema.json"
+
+    Receipt:
+      $ref: "../schemas/common/receipt.schema.json"
+
+    Verification:
+      $ref: "../schemas/common/verification.schema.json"
+
+    ExecutionTrustRecord:
+      $ref: "../schemas/common/execution-trust-record.schema.json"
+
+    Error:
+      $ref: "../schemas/common/error.schema.json"
+
+    Pagination:
+      $ref: "../schemas/common/pagination.schema.json"
+
+    TransactionCreateRequest:
+      $ref: "../schemas/requests/transaction-create-request.schema.json"
+
+    ExecutionCreateRequest:
+      $ref: "../schemas/requests/execution-create-request.schema.json"
+
+    OverrideCreateRequest:
+      $ref: "../schemas/requests/override-create-request.schema.json"
+
+    TransactionResponse:
+      $ref: "../schemas/responses/transaction-response.schema.json"
+
+    ExecutionResponse:
+      $ref: "../schemas/responses/execution-response.schema.json"
+
+    OverrideResponse:
+      $ref: "../schemas/responses/override-response.schema.json"
+
+    VerificationResponse:
+      $ref: "../schemas/responses/verification-response.schema.json"
+
+    ReceiptResponse:
+      $ref: "../schemas/responses/receipt-response.schema.json"
+
+    TrustChainResponse:
+      $ref: "../schemas/responses/trust-chain-response.schema.json"
+
+    PolicyResponse:
+      $ref: "../schemas/responses/policy-response.schema.json"
+
+    HealthResponse:
+      $ref: "../schemas/responses/health-response.schema.json"
+
+    VersionResponse:
+      $ref: "../schemas/responses/version-response.schema.json"
+
+  parameters:
+
+    BusinessTransactionId:
+      name: businessTransactionId
+      in: path
+      required: true
+      description: Unique Business Transaction identifier.
+      schema:
+        type: string
+
+    ExecutionId:
+      name: executionId
+      in: path
+      required: true
+      description: Unique Execution identifier.
+      schema:
+        type: string
+
+    PolicyName:
+      name: name
+      in: path
+      required: true
+      description: Policy name.
+      schema:
+        type: string
+
+    PolicyVersion:
+      name: version
+      in: path
+      required: true
+      description: Policy version.
+      schema:
+        type: string
+
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+
+    PageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+
+  responses:
+
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Unauthorized:
+      description: Authentication failed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Forbidden:
+      description: Access denied.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    Conflict:
+      description: Resource conflict.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

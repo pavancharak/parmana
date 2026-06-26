@@ -1,0 +1,126 @@
+Locked architectural decisions
+1. Override is a separate trust artifact
+
+An Override does not modify the original Decision.
+
+It records a human-authorized exception that becomes part of the Execution Trust Record.
+
+2. Override is immutable
+
+Once recorded:
+
+it cannot be edited;
+it cannot be deleted;
+it becomes part of the permanent audit history.
+3. Override occurs before Execution
+
+Based on the locked architecture:
+
+Decision
+      │
+      ▼
+Rejected
+      │
+      ▼
+Override (Optional)
+      │
+      ▼
+Execution
+
+Overrides are not permitted after a terminal Execution (COMPLETED or FAILED).
+
+4. One active Override per Business Transaction
+
+A Business Transaction may have at most one accepted Override.
+
+Additional override attempts are rejected.
+
+The history remains append-only.
+
+5. Parmana records the authority
+
+The client does not supply:
+
+overriddenBy
+overriddenAt
+
+These values are populated by Parmana from:
+
+the authenticated identity,
+the system clock.
+
+This ensures the integrity of the audit trail.
+
+Canonical Principle (Locked)
+
+An Override records an authorized human exception to an immutable Decision.
+
+It never replaces the original Decision. Instead, it becomes an independent trust artifact that preserves who authorized the exception, when it occurred, and why it was made, maintaining the append-only integrity of the Execution Trust Record.
+
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/override.schema.json",
+  "title": "Override",
+  "description": "Canonical Override artifact for a Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "overrideId",
+    "outcome",
+    "reason",
+    "overriddenBy",
+    "overriddenAt"
+  ],
+  "properties": {
+    "overrideId": {
+      "type": "string",
+      "description": "Unique Override identifier."
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Override decision outcome.",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Business justification for the override.",
+      "minLength": 1
+    },
+    "reference": {
+      "type": "string",
+      "description": "Optional external approval, change request, or ticket reference."
+    },
+    "overriddenBy": {
+      "type": "string",
+      "description": "Authenticated identity that authorized the override."
+    },
+    "overriddenAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the override was recorded."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Implementation-specific override metadata.",
+      "additionalProperties": true
+    }
+  },
+  "examples": [
+    {
+      "overrideId": "OVR-000001",
+      "outcome": "APPROVED",
+      "reason": "Regional manager approved the exception.",
+      "reference": "CHG-12345",
+      "overriddenBy": "manager-001",
+      "overriddenAt": "2026-06-26T11:05:00Z",
+      "metadata": {
+        "department": "Risk Operations"
+      }
+    }
+  ]
+}

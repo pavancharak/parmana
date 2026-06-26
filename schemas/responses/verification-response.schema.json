@@ -1,0 +1,147 @@
+POST /v1/transactions/{businessTransactionId}/verify
+
+Locked architectural decision
+
+This schema aligns with your Verification Model:
+
+Verification always evaluates the entire Execution Trust Record.
+A single verified field provides the overall result.
+The checks object exposes the integrity result for each trust artifact, allowing clients to identify exactly what failed while preserving a deterministic, whole-record verification model.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/verification-response.schema.json",
+  "title": "Verification Response",
+  "description": "Response returned after verifying an Execution Trust Record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "businessTransactionId",
+        "verificationId",
+        "verified",
+        "verifiedAt",
+        "checks"
+      ],
+      "properties": {
+        "businessTransactionId": {
+          "type": "string",
+          "description": "Business Transaction identifier."
+        },
+        "verificationId": {
+          "type": "string",
+          "description": "Unique Verification identifier."
+        },
+        "verified": {
+          "type": "boolean",
+          "description": "Overall verification result."
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when verification completed."
+        },
+        "checks": {
+          "type": "object",
+          "description": "Verification results for each trust artifact.",
+          "additionalProperties": false,
+          "required": [
+            "businessTransaction",
+            "metadata",
+            "policy",
+            "signals",
+            "decision",
+            "override",
+            "execution",
+            "evidence",
+            "receipt"
+          ],
+          "properties": {
+            "businessTransaction": {
+              "type": "boolean"
+            },
+            "metadata": {
+              "type": "boolean"
+            },
+            "policy": {
+              "type": "boolean"
+            },
+            "signals": {
+              "type": "boolean"
+            },
+            "decision": {
+              "type": "boolean"
+            },
+            "override": {
+              "type": "boolean"
+            },
+            "execution": {
+              "type": "boolean"
+            },
+            "evidence": {
+              "type": "boolean"
+            },
+            "receipt": {
+              "type": "boolean"
+            }
+          }
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "self": {
+              "type": "string",
+              "format": "uri"
+            },
+            "transaction": {
+              "type": "string",
+              "format": "uri"
+            },
+            "receipt": {
+              "type": "string",
+              "format": "uri"
+            },
+            "trustChain": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "businessTransactionId": "PAY-1001",
+        "verificationId": "VER-000001",
+        "verified": true,
+        "verifiedAt": "2026-06-26T12:15:00Z",
+        "checks": {
+          "businessTransaction": true,
+          "metadata": true,
+          "policy": true,
+          "signals": true,
+          "decision": true,
+          "override": true,
+          "execution": true,
+          "evidence": true,
+          "receipt": true
+        },
+        "links": {
+          "self": "/v1/transactions/PAY-1001/verify",
+          "transaction": "/v1/transactions/PAY-1001",
+          "receipt": "/v1/transactions/PAY-1001/receipt",
+          "trustChain": "/v1/transactions/PAY-1001/trust-chain"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+Locked architectural decisions
+Decision is immutable
+
+Once produced by policy evaluation, a Decision never changes.
+
+A Decision has only two outcomes
+APPROVED
+REJECTED
+
+There are no intermediate decision states such as:
+
+PENDING
+REVIEW
+PROCESSING
+
+Those belong to the Business Transaction or Execution lifecycle, not the Decision itself.
+
+Override does not modify the Decision
+
+If a human override occurs:
+
+the original Decision remains unchanged;
+the Override is recorded as a separate trust artifact;
+both are preserved in the Execution Trust Record.
+Policy is recorded with the Decision
+
+The Decision records the exact Policy reference used during evaluation, ensuring deterministic replay and independent verification.
+
+Canonical Principle (Locked)
+
+A Decision is the immutable outcome of Policy evaluation.
+
+It records what the Policy decided, not what was ultimately executed. Human Overrides and Executions are separate trust artifacts that build upon the Decision without altering it.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/decision.schema.json",
+  "title": "Decision",
+  "description": "Canonical Policy Decision produced by evaluating a Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decisionId",
+    "outcome",
+    "evaluatedAt"
+  ],
+  "properties": {
+    "decisionId": {
+      "type": "string",
+      "description": "Unique Decision identifier."
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Policy evaluation outcome.",
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Human-readable explanation of the decision."
+    },
+    "evaluatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when policy evaluation completed."
+    },
+    "policy": {
+      "$ref": "./policy.schema.json"
+    }
+  },
+  "examples": [
+    {
+      "decisionId": "DEC-000001",
+      "outcome": "APPROVED",
+      "reason": "Payment amount is within the approved policy threshold.",
+      "evaluatedAt": "2026-06-26T10:15:43Z",
+      "policy": {
+        "name": "payment-approval",
+        "version": "2.1.0",
+        "schemaVersion": "1.0"
+      }
+    }
+  ]
+}

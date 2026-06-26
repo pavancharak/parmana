@@ -1,0 +1,202 @@
+Locked architectural decisions
+1. Canonical trust object
+
+The Execution Trust Record (ETR) is the authoritative record for a Business Transaction.
+
+Every other trust artifact is associated with exactly one Execution Trust Record.
+
+2. One Execution Trust Record per Business Transaction
+Business Transaction
+        │
+        ▼
+Execution Trust Record
+
+The relationship is one-to-one.
+
+3. Append-only evolution
+
+After creation, the following collections may only grow:
+
+overrides
+executions
+verifications
+receipts
+
+Existing entries are never modified or deleted.
+
+4. Immutable core
+
+The following fields never change after creation:
+
+businessTransactionId
+metadata
+policy
+signals
+decision
+
+This guarantees deterministic replay and verification.
+
+5. Trust anchor
+
+The Execution Trust Record is the foundation for:
+
+Receipts
+Verification
+Replay
+Trust Chain
+Independent verification
+
+All of these are derived from or operate against the same canonical record.
+
+6. Cryptographic integrity
+
+recordHash is the canonical cryptographic digest of the Execution Trust Record.
+
+It is used to:
+
+generate Receipts,
+support independent verification,
+detect tampering,
+establish integrity across trust artifacts.
+Canonical Principle (Locked)
+
+The Execution Trust Record is the single source of truth for execution trust.
+
+It binds the immutable Business Transaction, Policy, Signals, and Decision with append-only Overrides, Executions, Verifications, and Receipts into a s
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/execution-trust-record.schema.json",
+  "title": "Execution Trust Record",
+  "description": "Canonical Execution Trust Record for a Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "executionTrustRecordId",
+    "businessTransactionId",
+    "metadata",
+    "policy",
+    "signals",
+    "decision",
+    "executions",
+    "createdAt",
+    "recordVersion"
+  ],
+  "properties": {
+    "executionTrustRecordId": {
+      "type": "string",
+      "description": "Unique Execution Trust Record identifier."
+    },
+    "businessTransactionId": {
+      "type": "string",
+      "description": "Business Transaction identifier."
+    },
+    "metadata": {
+      "$ref": "./metadata.schema.json"
+    },
+    "policy": {
+      "$ref": "./policy.schema.json"
+    },
+    "signals": {
+      "$ref": "./signals.schema.json"
+    },
+    "decision": {
+      "$ref": "./decision.schema.json"
+    },
+    "overrides": {
+      "type": "array",
+      "description": "Override history.",
+      "items": {
+        "$ref": "./override.schema.json"
+      },
+      "default": []
+    },
+    "executions": {
+      "type": "array",
+      "description": "Execution history.",
+      "items": {
+        "$ref": "./execution.schema.json"
+      }
+    },
+    "verifications": {
+      "type": "array",
+      "description": "Verification history.",
+      "items": {
+        "$ref": "./verification.schema.json"
+      },
+      "default": []
+    },
+    "receipts": {
+      "type": "array",
+      "description": "Receipt history.",
+      "items": {
+        "$ref": "./receipt.schema.json"
+      },
+      "default": []
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the Execution Trust Record was created."
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the record was last extended."
+    },
+    "recordVersion": {
+      "type": "string",
+      "description": "Execution Trust Record schema version."
+    },
+    "recordHash": {
+      "type": "string",
+      "description": "Canonical cryptographic hash of the Execution Trust Record."
+    }
+  },
+  "examples": [
+    {
+      "executionTrustRecordId": "ETR-000001",
+      "businessTransactionId": "PAY-1001",
+      "metadata": {
+        "businessTransactionId": "PAY-1001"
+      },
+      "policy": {
+        "name": "payment-approval",
+        "version": "2.1.0",
+        "schemaVersion": "1.0"
+      },
+      "signals": {
+        "amount": 5000,
+        "currency": "USD"
+      },
+      "decision": {
+        "decisionId": "DEC-000001",
+        "outcome": "APPROVED",
+        "reason": "Payment approved by policy.",
+        "evaluatedAt": "2026-06-26T10:15:43Z",
+        "policy": {
+          "name": "payment-approval",
+          "version": "2.1.0",
+          "schemaVersion": "1.0"
+        }
+      },
+      "overrides": [],
+      "executions": [
+        {
+          "executionId": "EXEC-000001",
+          "status": "COMPLETED",
+          "mode": "SYNC",
+          "startedAt": "2026-06-26T10:30:00Z",
+          "completedAt": "2026-06-26T10:30:02Z"
+        }
+      ],
+      "verifications": [],
+      "receipts": [],
+      "createdAt": "2026-06-26T10:15:40Z",
+      "updatedAt": "2026-06-26T10:30:03Z",
+      "recordVersion": "1.0",
+      "recordHash": "4c2b1a8c8b0c3e3b5d1d7fef2d8c6d9c2a6b9f9f87c9a9b6b8e7f6d5c4b3a2f1"
+    }
+  ]
+}

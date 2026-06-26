@@ -1,0 +1,98 @@
+GET /v1/policies
+
+GET /v1/policies/{name}/{version}
+
+Locked architectural decisions
+Policies are read-only resources from the API consumer's perspective.
+Policy resolution is based on the request's name, version, and schemaVersion, which you've already locked in the Policy Resolution Model.
+A policy's lifecycle (ACTIVE, DEPRECATED, RETIRED) describes its availability for use but does not change the behavior of previously recorded Business Transactions. Historical transactions always remain bound to the exact policy version that was used during evaluation.
+This schema is used for both:
+GET /v1/policies (as a collection of policy objects)
+GET /v1/policies/{name}/{version} (as a single policy object)
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/policy-response.schema.json",
+  "title": "Policy Response",
+  "description": "Response returned for a Policy resource.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "schemaVersion",
+        "status",
+        "publishedAt"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Policy name."
+        },
+        "version": {
+          "type": "string",
+          "description": "Policy version."
+        },
+        "schemaVersion": {
+          "type": "string",
+          "description": "Signals schema version expected by this policy."
+        },
+        "status": {
+          "type": "string",
+          "description": "Policy lifecycle state.",
+          "enum": [
+            "ACTIVE",
+            "DEPRECATED",
+            "RETIRED"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable policy description."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the policy version was published."
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "self": {
+              "type": "string",
+              "format": "uri"
+            },
+            "transactions": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "name": "payment-approval",
+        "version": "2.1.0",
+        "schemaVersion": "1.0",
+        "status": "ACTIVE",
+        "description": "Policy used to evaluate payment approval requests.",
+        "publishedAt": "2026-06-20T09:00:00Z",
+        "links": {
+          "self": "/v1/policies/payment-approval/2.1.0",
+          "transactions": "/v1/transactions"
+        }
+      }
+    }
+  ]
+}

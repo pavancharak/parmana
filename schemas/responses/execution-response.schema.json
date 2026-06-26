@@ -1,0 +1,121 @@
+POST /v1/transactions/{businessTransactionId}/executions
+
+GET /v1/transactions/{businessTransactionId}/executions/{executionId}
+
+
+Locked architectural decision
+status is the only execution state field.
+Valid values are:
+PROCESSING
+COMPLETED
+FAILED
+There is no separate outcome field.
+Execution success or failure is determined solely from status.
+
+This keeps the API aligned with the locked Execution Lifecycle Model and avoids duplicate state.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/execution-response.schema.json",
+  "title": "Execution Response",
+  "description": "Response returned for an Execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "businessTransactionId",
+        "executionId",
+        "status",
+        "startedAt"
+      ],
+      "properties": {
+        "businessTransactionId": {
+          "type": "string",
+          "description": "Business Transaction identifier."
+        },
+        "executionId": {
+          "type": "string",
+          "description": "Unique Execution identifier."
+        },
+        "status": {
+          "type": "string",
+          "description": "Execution lifecycle state.",
+          "enum": [
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED"
+          ]
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when execution started."
+        },
+        "completedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when execution completed. Present only when the execution reaches a terminal state."
+        },
+        "evidence": {
+          "type": "object",
+          "description": "Execution evidence generated during processing.",
+          "additionalProperties": true
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "self": {
+              "type": "string",
+              "format": "uri"
+            },
+            "transaction": {
+              "type": "string",
+              "format": "uri"
+            },
+            "receipt": {
+              "type": "string",
+              "format": "uri"
+            },
+            "verification": {
+              "type": "string",
+              "format": "uri"
+            },
+            "trustChain": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "businessTransactionId": "PAY-1001",
+        "executionId": "EXEC-000001",
+        "status": "COMPLETED",
+        "startedAt": "2026-06-26T10:30:00Z",
+        "completedAt": "2026-06-26T10:30:02Z",
+        "evidence": {
+          "targetSystem": "Payment Gateway",
+          "referenceId": "PG-987654321"
+        },
+        "links": {
+          "self": "/v1/transactions/PAY-1001/executions/EXEC-000001",
+          "transaction": "/v1/transactions/PAY-1001",
+          "receipt": "/v1/transactions/PAY-1001/executions/EXEC-000001/receipt",
+          "verification": "/v1/transactions/PAY-1001/verify",
+          "trustChain": "/v1/transactions/PAY-1001/trust-chain"
+        }
+      }
+    }
+  ]
+}

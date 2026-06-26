@@ -1,0 +1,131 @@
+Locked architectural decisions
+1. Execution is independent of the Decision
+
+The Decision determines whether execution is authorized.
+
+The Execution records what actually happened.
+
+2. Execution lifecycle is authoritative
+
+Execution state is represented only by:
+
+PROCESSING
+COMPLETED
+FAILED
+
+There is no separate outcome field.
+
+3. Multiple Executions are supported
+
+A Business Transaction may have:
+
+zero Executions
+one Execution
+multiple Executions
+
+Each Execution has its own:
+
+executionId
+lifecycle
+evidence
+timestamps
+4. Evidence belongs to the Execution
+
+Evidence is generated during execution and is permanently associated with that specific Execution.
+
+Examples include:
+
+external transaction reference
+API response
+execution logs
+downstream acknowledgment
+execution hash
+5. Execution is immutable
+
+Once an Execution reaches a terminal state:
+
+COMPLETED
+FAILED
+
+it cannot be modified.
+
+Any subsequent attempt is recorded as a new Execution, preserving the append-only history defined by the Execution Trust Model.
+
+Canonical Principle (Locked)
+
+Execution records what happened after authorization.
+
+It is an immutable trust artifact that captures execution state, timestamps, and evidence without altering the original Decision or Business Transaction.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/execution.schema.json",
+  "title": "Execution",
+  "description": "Canonical Execution artifact for a Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "executionId",
+    "status",
+    "startedAt"
+  ],
+  "properties": {
+    "executionId": {
+      "type": "string",
+      "description": "Unique Execution identifier."
+    },
+    "status": {
+      "type": "string",
+      "description": "Execution lifecycle state.",
+      "enum": [
+        "PROCESSING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "description": "Execution mode.",
+      "enum": [
+        "SYNC",
+        "ASYNC"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when execution started."
+    },
+    "completedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when execution completed."
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Execution evidence captured during execution.",
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Execution-specific metadata.",
+      "additionalProperties": true
+    }
+  },
+  "examples": [
+    {
+      "executionId": "EXEC-000001",
+      "status": "COMPLETED",
+      "mode": "SYNC",
+      "startedAt": "2026-06-26T10:30:00Z",
+      "completedAt": "2026-06-26T10:30:02Z",
+      "evidence": {
+        "targetSystem": "Payment Gateway",
+        "referenceId": "PG-987654321"
+      },
+      "metadata": {
+        "executor": "payment-service"
+      }
+    }
+  ]
+}

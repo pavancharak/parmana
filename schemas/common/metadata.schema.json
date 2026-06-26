@@ -1,0 +1,60 @@
+Locked architectural decisions
+
+Based on the architecture you've locked:
+
+businessTransactionId is the only mandatory metadata field.
+It is the canonical identifier for the Business Transaction and the idempotency key.
+All other fields are optional metadata supplied by the calling application.
+Parmana treats metadata as immutable once the Business Transaction is created.
+Policy evaluation operates only on the signals object. Metadata identifies and provides context for the transaction but is not evaluated by policy logic.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/metadata.schema.json",
+  "title": "Metadata",
+  "description": "Canonical Business Transaction metadata.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "businessTransactionId"
+  ],
+  "properties": {
+    "businessTransactionId": {
+      "type": "string",
+      "description": "Unique Business Transaction identifier.",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "correlationId": {
+      "type": "string",
+      "description": "Optional correlation identifier used by the calling application."
+    },
+    "tenantId": {
+      "type": "string",
+      "description": "Optional tenant identifier for multi-tenant deployments."
+    },
+    "sourceSystem": {
+      "type": "string",
+      "description": "Originating application or service."
+    },
+    "submittedBy": {
+      "type": "string",
+      "description": "Identity of the calling application or principal."
+    },
+    "submittedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the Business Transaction was submitted."
+    }
+  },
+  "examples": [
+    {
+      "businessTransactionId": "PAY-1001",
+      "correlationId": "CORR-20260626-001",
+      "tenantId": "tenant-001",
+      "sourceSystem": "payment-service",
+      "submittedBy": "payment-api",
+      "submittedAt": "2026-06-26T10:15:40Z"
+    }
+  ]
+}

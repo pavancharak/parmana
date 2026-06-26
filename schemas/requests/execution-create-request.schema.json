@@ -1,0 +1,78 @@
+POST /v1/transactions/{businessTransactionId}/executions
+
+  {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/requests/execution-create-request.schema.json",
+  "title": "Execution Create Request",
+  "description": "Request payload for creating a new Execution for an existing Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "execution"
+  ],
+  "properties": {
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "Execution mode.",
+          "enum": [
+            "SYNC",
+            "ASYNC"
+          ]
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Maximum execution time in seconds.",
+          "minimum": 1
+        },
+        "callbackUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Required when mode is ASYNC."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Execution-specific metadata.",
+          "additionalProperties": true
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "ASYNC"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "callbackUrl"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "execution": {
+        "mode": "SYNC",
+        "timeout": 30
+      }
+    },
+    {
+      "execution": {
+        "mode": "ASYNC",
+        "timeout": 300,
+        "callbackUrl": "https://payments.example.com/parmana/callback"
+      }
+    }
+  ]
+}

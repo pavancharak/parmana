@@ -1,0 +1,183 @@
+GET /v1/transactions/{businessTransactionId}/trust-chain
+
+Locked architectural decision
+
+This schema directly reflects the Execution Trust Record.
+
+The Trust Chain is not a different resource with its own business data. It is a structured representation of the complete Execution Trust Record, exposing:
+
+Metadata
+Policy
+Signals
+Decision
+Override History
+Execution History
+Verification History
+Receipt History
+Trust Metadata
+
+This keeps the Trust Chain consistent with the locked Execution Trust Record Model, where the Trust Chain is a representation of the canonical trust record rather than a separate source of truth.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/trust-chain-response.schema.json",
+  "title": "Trust Chain Response",
+  "description": "Response returned for the Execution Trust Chain of a Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "businessTransactionId",
+        "executionTrustRecordId",
+        "metadata",
+        "policy",
+        "signals",
+        "decision",
+        "overrides",
+        "executions",
+        "verifications",
+        "receipts",
+        "trustMetadata"
+      ],
+      "properties": {
+        "businessTransactionId": {
+          "type": "string",
+          "description": "Unique Business Transaction identifier."
+        },
+        "executionTrustRecordId": {
+          "type": "string",
+          "description": "Execution Trust Record identifier."
+        },
+        "metadata": {
+          "$ref": "../common/metadata.schema.json"
+        },
+        "policy": {
+          "$ref": "../common/policy.schema.json"
+        },
+        "signals": {
+          "type": "object",
+          "description": "Business signals evaluated by the policy.",
+          "additionalProperties": true
+        },
+        "decision": {
+          "$ref": "../common/decision.schema.json"
+        },
+        "overrides": {
+          "type": "array",
+          "description": "Override history.",
+          "items": {
+            "$ref": "../common/override.schema.json"
+          }
+        },
+        "executions": {
+          "type": "array",
+          "description": "Execution history.",
+          "items": {
+            "$ref": "../common/execution.schema.json"
+          }
+        },
+        "verifications": {
+          "type": "array",
+          "description": "Verification history.",
+          "items": {
+            "$ref": "../common/verification.schema.json"
+          }
+        },
+        "receipts": {
+          "type": "array",
+          "description": "Receipt history.",
+          "items": {
+            "$ref": "../common/receipt.schema.json"
+          }
+        },
+        "trustMetadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "recordVersion",
+            "createdAt"
+          ],
+          "properties": {
+            "recordVersion": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastVerifiedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "self": {
+              "type": "string",
+              "format": "uri"
+            },
+            "transaction": {
+              "type": "string",
+              "format": "uri"
+            },
+            "receipt": {
+              "type": "string",
+              "format": "uri"
+            },
+            "verification": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "businessTransactionId": "PAY-1001",
+        "executionTrustRecordId": "ETR-000001",
+        "metadata": {
+          "businessTransactionId": "PAY-1001"
+        },
+        "policy": {
+          "name": "payment-approval",
+          "version": "2.1.0",
+          "schemaVersion": "1.0"
+        },
+        "signals": {
+          "amount": 5000,
+          "currency": "USD"
+        },
+        "decision": {
+          "outcome": "APPROVED",
+          "evaluatedAt": "2026-06-26T10:15:43Z"
+        },
+        "overrides": [],
+        "executions": [],
+        "verifications": [],
+        "receipts": [],
+        "trustMetadata": {
+          "recordVersion": "1.0",
+          "createdAt": "2026-06-26T10:15:40Z"
+        },
+        "links": {
+          "self": "/v1/transactions/PAY-1001/trust-chain",
+          "transaction": "/v1/transactions/PAY-1001",
+          "receipt": "/v1/transactions/PAY-1001/receipt",
+          "verification": "/v1/transactions/PAY-1001/verify"
+        }
+      }
+    }
+  ]
+}

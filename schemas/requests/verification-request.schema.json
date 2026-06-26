@@ -1,0 +1,67 @@
+POST /v1/transactions/{businessTransactionId}/verify
+
+or you can omit the schema entirely if your OpenAPI definition specifies that POST /v1/transactions/{businessTransactionId}/verify has no request body. That is the simplest and most consistent design with the architecture you've locked.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/requests/verification-request.schema.json",
+  "title": "Verification Request",
+  "description": "Request payload for verifying the Execution Trust Record of an existing Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verification"
+  ],
+  "properties": {
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "verifyReceipt": {
+          "type": "boolean",
+          "description": "Verify the cryptographic receipt if one exists.",
+          "default": true
+        },
+        "verifyEvidence": {
+          "type": "boolean",
+          "description": "Verify execution evidence.",
+          "default": true
+        },
+        "verifyExecution": {
+          "type": "boolean",
+          "description": "Verify execution integrity and lifecycle.",
+          "default": true
+        },
+        "verifyPolicy": {
+          "type": "boolean",
+          "description": "Verify the recorded policy information.",
+          "default": true
+        },
+        "verifyDecision": {
+          "type": "boolean",
+          "description": "Verify the recorded decision.",
+          "default": true
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Optional implementation-specific verification metadata.",
+          "additionalProperties": true
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "verification": {}
+    },
+    {
+      "verification": {
+        "verifyReceipt": true,
+        "verifyEvidence": true,
+        "verifyExecution": true,
+        "verifyPolicy": true,
+        "verifyDecision": true
+      }
+    }
+  ]
+}

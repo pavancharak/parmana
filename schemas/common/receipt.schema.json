@@ -1,0 +1,124 @@
+Locked architectural decisions
+1. Receipt is a portable trust artifact
+
+The Receipt is generated from the Execution Trust Record.
+
+It is designed for sharing and independent verification without exposing the complete trust record.
+
+2. One Receipt per terminal Execution
+
+A Receipt is issued only after an Execution reaches a terminal state:
+
+COMPLETED
+FAILED
+
+No Receipt exists while an Execution is still PROCESSING.
+
+3. Receipt is immutable
+
+Once issued:
+
+it cannot be modified;
+it cannot be regenerated with different contents;
+it permanently represents the Execution Trust Record at the time of issuance.
+4. Cryptographic integrity
+
+Every Receipt contains:
+
+executionTrustRecordHash
+signature
+keyId
+algorithm
+
+These fields enable independent verification without requiring access to Parmana.
+
+5. Receipt is not the source of truth
+
+The canonical source of truth remains the Execution Trust Record.
+
+The Receipt is a signed, portable representation of that record.
+
+Canonical Principle (Locked)
+
+A Receipt is a cryptographically signed, portable proof of execution.
+
+It represents the Execution Trust Record at a specific point in time and enables independent verification while preserving the Execution Trust Record as the authoritative source of truth.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/receipt.schema.json",
+  "title": "Receipt",
+  "description": "Canonical Execution Trust Receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receiptId",
+    "executionTrustRecordId",
+    "businessTransactionId",
+    "executionId",
+    "issuedAt",
+    "receiptVersion",
+    "executionTrustRecordHash",
+    "signature"
+  ],
+  "properties": {
+    "receiptId": {
+      "type": "string",
+      "description": "Unique Receipt identifier."
+    },
+    "executionTrustRecordId": {
+      "type": "string",
+      "description": "Execution Trust Record identifier."
+    },
+    "businessTransactionId": {
+      "type": "string",
+      "description": "Business Transaction identifier."
+    },
+    "executionId": {
+      "type": "string",
+      "description": "Execution identifier."
+    },
+    "issuedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the Receipt was issued."
+    },
+    "receiptVersion": {
+      "type": "string",
+      "description": "Receipt specification version."
+    },
+    "executionTrustRecordHash": {
+      "type": "string",
+      "description": "Canonical hash of the Execution Trust Record."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Digital signature over the Receipt."
+    },
+    "keyId": {
+      "type": "string",
+      "description": "Identifier of the signing key used to generate the Receipt."
+    },
+    "algorithm": {
+      "type": "string",
+      "description": "Digital signature algorithm.",
+      "examples": [
+        "Ed25519"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "receiptId": "RCT-000001",
+      "executionTrustRecordId": "ETR-000001",
+      "businessTransactionId": "PAY-1001",
+      "executionId": "EXEC-000001",
+      "issuedAt": "2026-06-26T10:30:03Z",
+      "receiptVersion": "1.0",
+      "executionTrustRecordHash": "4c2b1a8c8b0c3e3b5d1d7fef2d8c6d9c2a6b9f9f87c9a9b6b8e7f6d5c4b3a2f1",
+      "signature": "MEUCIQDf9M5o8iD0r8JmPj8Y4h2vQ2J6Q3dJgS1vPqK0xY8xVAIgX3k8L2mQ9yN6vB4wH7tD5eJ1nP8zQ2aM6yR9uW3vX0Y=",
+      "keyId": "trust-root-2026-01",
+      "algorithm": "Ed25519"
+    }
+  ]
+}

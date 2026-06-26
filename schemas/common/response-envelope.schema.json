@@ -1,0 +1,149 @@
+Locked architectural decisions
+1. Every successful response uses the same envelope
+
+Single resource:
+
+{
+  "data": { ... }
+}
+
+Collection:
+
+{
+  "data": [ ... ],
+  "pagination": { ... }
+}
+2. Business objects never appear at the top level
+
+Never:
+
+{
+  "businessTransactionId": "...",
+  ...
+}
+
+Always:
+
+{
+  "data": {
+    ...
+  }
+}
+3. Errors use a different envelope
+
+Success:
+
+{
+  "data": { ... }
+}
+
+Failure:
+
+{
+  "error": { ... }
+}
+
+The two response envelopes are intentionally distinct.
+
+4. Resource schemas remain independent
+
+For example:
+
+transaction-response.schema.json
+
+contains the Transaction payload.
+
+response-envelope.schema.json
+
+defines only the common API wrapper.
+
+One recommendation before locking
+
+I would actually remove this file entirely.
+
+Why?
+
+Every response schema you've created already defines:
+
+{
+  "data": {
+    ...
+  }
+}
+
+Adding another generic envelope schema duplicates that structure without providing additional validation value. In OpenAPI, you can directly reference the resource-specific response schemas, which already include the envelope.
+
+That leaves:
+
+common/
+├── metadata.schema.json
+├── policy.schema.json
+├── signals.schema.json
+├── decision.schema.json
+├── execution.schema.json
+├── override.schema.json
+├── receipt.schema.json
+├── verification.schema.json
+├── execution-trust-record.schema.json
+├── error.schema.json
+└── pagination.schema.json
+
+This is cleaner because every common schema represents a reusable business object, whereas the response envelope is an API convention rather than a reusable domain model. I recommend not including response-envelope.schema.json in the final v1 architecture. It avoids duplication and keeps the schema library focused on reusable components.
+
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/response-envelope.schema.json",
+  "title": "Response Envelope",
+  "description": "Canonical response envelope used by all successful Parmana API responses.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "description": "Response payload.",
+      "oneOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "array"
+        }
+      ]
+    },
+    "pagination": {
+      "$ref": "./pagination.schema.json"
+    },
+    "meta": {
+      "type": "object",
+      "description": "Optional response metadata.",
+      "additionalProperties": true
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "businessTransactionId": "PAY-1001"
+      }
+    },
+    {
+      "data": [
+        {
+          "name": "payment-approval",
+          "version": "2.1.0"
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "pageSize": 25,
+        "totalItems": 1,
+        "totalPages": 1,
+        "hasNext": false,
+        "hasPrevious": false
+      }
+    }
+  ]
+}

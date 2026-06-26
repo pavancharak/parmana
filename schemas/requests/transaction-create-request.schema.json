@@ -1,0 +1,46 @@
+POST /v1/transactions
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/requests/transaction-create-request.schema.json",
+  "title": "Transaction Create Request",
+  "description": "Request payload for creating a new Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "metadata",
+    "policy",
+    "signals"
+  ],
+  "properties": {
+    "metadata": {
+      "$ref": "../common/metadata.schema.json"
+    },
+    "policy": {
+      "$ref": "../common/policy.schema.json"
+    },
+    "signals": {
+      "type": "object",
+      "description": "Business input evaluated by the specified policy.",
+      "minProperties": 1,
+      "additionalProperties": true
+    }
+  },
+  "examples": [
+    {
+      "metadata": {
+        "businessTransactionId": "PAY-1001"
+      },
+      "policy": {
+        "name": "payment-approval",
+        "version": "2.1.0",
+        "schemaVersion": "1.0"
+      },
+      "signals": {
+        "amount": 5000,
+        "currency": "USD",
+        "customerType": "PREMIUM"
+      }
+    }
+  ]
+}

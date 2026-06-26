@@ -1,0 +1,82 @@
+GET /v1/version
+
+
+Locked architectural decisions
+/version is an operational endpoint used to identify the running service version.
+It is independent of the Execution Trust architecture and does not expose any Business Transactions or trust artifacts.
+It reports deployment metadata only, including:
+Service version
+API version
+Build timestamp
+Git commit (if available)
+Deployment environment
+The endpoint is intended for diagnostics, deployment verification, support, and operational tooling, and has no effect on business state or the Execution Trust Record.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/version-response.schema.json",
+  "title": "Version Response",
+  "description": "Response returned by the Parmana version endpoint.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service",
+        "version",
+        "apiVersion",
+        "buildTime"
+      ],
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "Service name."
+        },
+        "version": {
+          "type": "string",
+          "description": "Running service version."
+        },
+        "apiVersion": {
+          "type": "string",
+          "description": "Supported API version."
+        },
+        "buildTime": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the running service was built."
+        },
+        "gitCommit": {
+          "type": "string",
+          "description": "Git commit identifier used to build the service."
+        },
+        "environment": {
+          "type": "string",
+          "description": "Deployment environment.",
+          "enum": [
+            "LOCAL",
+            "DEVELOPMENT",
+            "STAGING",
+            "PRODUCTION"
+          ]
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "service": "Parmana Trust Core",
+        "version": "1.0.0",
+        "apiVersion": "v1",
+        "buildTime": "2026-06-26T08:15:00Z",
+        "gitCommit": "8c4b3c0",
+        "environment": "PRODUCTION"
+      }
+    }
+  ]
+}

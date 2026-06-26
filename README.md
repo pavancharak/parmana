@@ -1,394 +1,176 @@
-\# Parmana
+# Parmana Trust Core
 
+**Execution Trust Infrastructure**
 
+Parmana ensures there is no gap between what humans decide and what AI systems do.
 
-> \*\*Execution Trust Infrastructure\*\*
+Traditional systems can prove who approved a decision and when it was approved. They rarely prove that execution actually matched what was authorized.
 
+Parmana establishes a verifiable trust chain between authority, intent, and execution by producing immutable Execution Trust Records that support replay, audit, verification, and independently verifiable execution receipts.
 
+---
 
-Parmana establishes a verifiable trust chain between \*\*authority\*\*, \*\*intent\*\*, and \*\*execution\*\*, ensuring there is no gap between what humans decide and what AI systems do.
+# Core Principle
 
-
-
-\---
-
-
-
-\# Why Parmana?
-
-
-
-Traditional systems answer questions such as:
-
-
-
-\* Who approved this?
-
-\* When was it approved?
-
-
-
-Modern AI systems introduce a more important question:
-
-
-
-> \*\*Did execution actually match what was authorized?\*\*
-
-
-
-Parmana answers that question.
-
-
-
-It records immutable execution facts, produces verifiable evidence, and enables independent verification of every execution.
-
-
-
-\---
-
-
-
-\# Core Principle
-
-
-
-```
-
+```text
 Authority
-
-&#x20;     │
-
-&#x20;     ▼
-
-Intent
-
-&#x20;     │
-
-&#x20;     ▼
-
-Authorization
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ▼
+Business Transaction
+      │
+      ▼
+Policy Evaluation
+      │
+      ▼
+Decision
+      │
+      ▼
+Override (Optional)
+      │
+      ▼
 Execution
-
-&#x20;     │
-
-&#x20;     ▼
-
-Evidence
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ▼
+Receipt
+      │
+      ▼
 Verification
-
-&#x20;     │
-
-&#x20;     ▼
-
-Execution Trust
-
+      │
+      ▼
+Execution Trust Record
 ```
 
+---
 
+# What Parmana Provides
 
-Execution Trust is established when an independent verifier can demonstrate that execution faithfully reflects authorized intent.
+* Business Transaction processing
+* Policy-based decision evaluation
+* Human override support
+* Execution lifecycle management
+* Execution evidence collection
+* Cryptographically signed Receipts
+* Deterministic replay
+* Independent verification
+* Complete Execution Trust Records
 
+---
 
+# Repository Structure
 
-\---
-
-
-
-\# Architecture
-
-
-
-The platform consists of independent packages.
-
-
-
-```
-
-packages/
-
-
-
-core/
-
-runtime/
-
-verification/
-
-crypto/
-
-storage/
-
-sdk/
-
-api/
-
-cli/
-
-```
-
-
-
-Each package has a single responsibility.
-
-
-
-\---
-
-
-
-\# Design Principles
-
-
-
-Parmana is built on seven architectural principles:
-
-
-
-1\. ExecutionTransaction is the aggregate root.
-
-2\. The Core domain model is immutable.
-
-3\. Verification is independent of Runtime.
-
-4\. Runtime is implemented as a deterministic pipeline.
-
-5\. Evidence is append-only.
-
-6\. Cryptography is algorithm-agnostic.
-
-7\. Execution is deterministic.
-
-
-
-These principles are documented in the Architecture Decision Records.
-
-
-
-\---
-
-
-
-\# Documentation
-
-
-
-```
-
+```text
 docs/
-
-
-
-000–017      Specifications
-
-
-
-adr/         Architecture Decision Records
-
-
-
-rfcs/        Future proposals
-
-
-
-guides/      Developer guides
-
-```
-
-
-
-\---
-
-
-
-\# Repository Layout
-
-
-
-```
-
-parmana/
-
-
-
-docs/
-
-packages/
-
-examples/
-
+schemas/
+openapi/
+src/
 tests/
-
-scripts/
-
-.github/
-
-
-
-README.md
-
-ROADMAP.md
-
-CONTRIBUTING.md
-
-LICENSE
-
 ```
 
+---
 
+# Documentation
 
-\---
-
-
-
-\# Development
-
-
-
-Install dependencies:
-
-
-
-```bash
-
-npm install
+Architecture Specifications
 
 ```
-
-
-
-Build:
-
-
-
-```bash
-
-npm run build
-
+docs/specifications/
 ```
 
-
-
-Run tests:
-
-
-
-```bash
-
-npm test
+API Documentation
 
 ```
-
-
-
-Type checking:
-
-
-
-```bash
-
-npm run typecheck
-
+docs/api/
 ```
 
+OpenAPI Specification
 
+```
+openapi/openapi.yaml
+```
 
-\---
+JSON Schemas
 
+```
+schemas/
+```
 
+---
 
-\# Roadmap
+# REST API
 
+```
+POST /v1/transactions
 
+GET /v1/transactions
 
-Current implementation phases:
+GET /v1/transactions/{businessTransactionId}
 
+POST /v1/transactions/{businessTransactionId}/executions
 
+GET /v1/transactions/{businessTransactionId}/executions
 
-\* Core
+GET /v1/transactions/{businessTransactionId}/executions/{executionId}
 
-\* Runtime
+POST /v1/transactions/{businessTransactionId}/override
 
-\* Verification
+GET /v1/transactions/{businessTransactionId}/override
 
-\* Cryptography
+POST /v1/transactions/{businessTransactionId}/verify
 
-\* Storage
+GET /v1/transactions/{businessTransactionId}/receipt
 
-\* SDK
+GET /v1/transactions/{businessTransactionId}/executions/{executionId}/receipt
 
-\* API
+GET /v1/transactions/{businessTransactionId}/trust-chain
 
-\* CLI
+GET /v1/policies
 
+GET /v1/policies/{name}/{version}
 
+GET /v1/health
 
-See `ROADMAP.md` for details.
+GET /v1/version
+```
 
+---
 
+# Design Principles
 
-\---
+* Execution Trust Infrastructure
+* Resource-oriented REST API
+* Immutable Business Transactions
+* Immutable Decisions
+* Append-only trust artifacts
+* Deterministic replay
+* Deterministic verification
+* Cryptographically verifiable receipts
+* Contract-first API design
+* OpenAPI 3.1
+* JSON Schema validation
 
+---
 
+# Status
 
-\# Contributing
+Current Version
 
+```
+v1.0.0
+```
 
+Status
 
-Please read:
+```
+Architecture Locked
+API Locked
+Schemas Locked
+OpenAPI Locked
 
+Ready for Implementation
+```
 
+---
 
-\* `CONTRIBUTING.md`
+# License
 
-\* `docs/adr/`
-
-\* `docs/000-CONSTITUTION.md`
-
-
-
-Architectural changes should begin with an RFC or ADR before implementation.
-
-
-
-\---
-
-
-
-\# License
-
-
-
-See `LICENSE`.
-
-
-
-\---
-
-
-
-\# Vision
-
-
-
-Parmana is an Execution Trust Infrastructure.
-
-
-
-Its purpose is not merely to execute software, but to make execution independently verifiable through immutable evidence, deterministic behavior, and cryptographic integrity.
-
-
-
-Execution Trust is the foundation upon which trustworthy autonomous systems can be built.
-
-
-
+Apache License 2.0

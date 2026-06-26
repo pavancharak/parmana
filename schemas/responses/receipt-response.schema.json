@@ -1,0 +1,147 @@
+GET /v1/transactions/{businessTransactionId}/receipt
+
+GET /v1/transactions/{businessTransactionId}/executions/{executionId}/receipt
+
+Locked architectural decisions
+One Receipt is issued for each terminal Execution (COMPLETED or FAILED).
+The Receipt is derived from the Execution Trust Record and never replaces it.
+executionStatus uses the final execution lifecycle state, consistent with the Execution Lifecycle Model.
+The Receipt contains the cryptographic hash and signature required for independent verification, making it the portable trust artifact defined in the Receipt Model.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/receipt-response.schema.json",
+  "title": "Receipt Response",
+  "description": "Response returned for an Execution Trust Receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receiptId",
+        "businessTransactionId",
+        "executionId",
+        "executionTrustRecordId",
+        "policy",
+        "decision",
+        "executionStatus",
+        "issuedAt",
+        "executionTrustRecordHash",
+        "signature",
+        "receiptVersion"
+      ],
+      "properties": {
+        "receiptId": {
+          "type": "string",
+          "description": "Unique Receipt identifier."
+        },
+        "businessTransactionId": {
+          "type": "string",
+          "description": "Business Transaction identifier."
+        },
+        "executionId": {
+          "type": "string",
+          "description": "Execution identifier."
+        },
+        "executionTrustRecordId": {
+          "type": "string",
+          "description": "Execution Trust Record identifier."
+        },
+        "policy": {
+          "$ref": "../common/policy.schema.json"
+        },
+        "decision": {
+          "$ref": "../common/decision.schema.json"
+        },
+        "executionStatus": {
+          "type": "string",
+          "description": "Final Execution lifecycle state.",
+          "enum": [
+            "COMPLETED",
+            "FAILED"
+          ]
+        },
+        "issuedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the Receipt was issued."
+        },
+        "executionTrustRecordHash": {
+          "type": "string",
+          "description": "Canonical hash of the Execution Trust Record."
+        },
+        "signature": {
+          "type": "string",
+          "description": "Digital signature protecting the Receipt."
+        },
+        "receiptVersion": {
+          "type": "string",
+          "description": "Receipt specification version."
+        },
+        "links": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "self": {
+              "type": "string",
+              "format": "uri"
+            },
+            "transaction": {
+              "type": "string",
+              "format": "uri"
+            },
+            "execution": {
+              "type": "string",
+              "format": "uri"
+            },
+            "verification": {
+              "type": "string",
+              "format": "uri"
+            },
+            "trustChain": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "receiptId": "RCT-000001",
+        "businessTransactionId": "PAY-1001",
+        "executionId": "EXEC-000001",
+        "executionTrustRecordId": "ETR-000001",
+        "policy": {
+          "name": "payment-approval",
+          "version": "2.1.0",
+          "schemaVersion": "1.0"
+        },
+        "decision": {
+          "outcome": "APPROVED",
+          "evaluatedAt": "2026-06-26T10:15:43Z"
+        },
+        "executionStatus": "COMPLETED",
+        "issuedAt": "2026-06-26T10:30:03Z",
+        "executionTrustRecordHash": "4c2b1a8c8b0c3e3b5d1d7fef2d8c6d9c2a6b9f9f87c9a9b6b8e7f6d5c4b3a2f1",
+        "signature": "MEUCIQDf9M5o8iD0r8JmPj8Y4h2vQ2J6Q3dJgS1vPqK0xY8xVAIgX3k8L2mQ9yN6vB4wH7tD5eJ1nP8zQ2aM6yR9uW3vX0Y=",
+        "receiptVersion": "1.0",
+        "links": {
+          "self": "/v1/transactions/PAY-1001/receipt",
+          "transaction": "/v1/transactions/PAY-1001",
+          "execution": "/v1/transactions/PAY-1001/executions/EXEC-000001",
+          "verification": "/v1/transactions/PAY-1001/verify",
+          "trustChain": "/v1/transactions/PAY-1001/trust-chain"
+        }
+      }
+    }
+  ]
+}

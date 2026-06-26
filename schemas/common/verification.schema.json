@@ -1,0 +1,153 @@
+Locked architectural decisions
+1. Verification validates the complete Execution Trust Record
+
+Verification is not selective.
+
+Every verification validates:
+
+Business Transaction
+Metadata
+Policy
+Signals
+Decision
+Override History
+Execution History
+Evidence
+Receipt
+2. Verification is read-only
+
+Verification never modifies:
+
+Business Transaction
+Decision
+Override
+Execution
+Receipt
+
+It only evaluates their integrity and consistency.
+
+3. Verification is append-only
+
+Each verification creates a new Verification artifact.
+
+Verification history becomes part of the Execution Trust Record and supports long-term auditability.
+
+4. Overall result
+
+verified represents the final outcome:
+
+true — every required trust artifact passed verification.
+false — one or more trust artifacts failed verification.
+
+The checks object provides detailed results for each trust artifact.
+
+5. Independent verification
+
+The Verification artifact records the outcome of a verification operation.
+
+Independent verifiers can reproduce the same result using:
+
+the Execution Trust Record,
+the Receipt,
+Parmana's public verification key,
+the recorded policy version,
+the recorded schema version.
+Canonical Principle (Locked)
+
+Verification is a deterministic, read-only validation of the complete Execution Trust Record.
+
+It produces an immutable Verification artifact that records the integrity and consistency of every trust artifact without modifying the underlying Business Transaction or its execution history.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/verification.schema.json",
+  "title": "Verification",
+  "description": "Canonical Verification artifact for an Execution Trust Record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "verificationId",
+    "verified",
+    "verifiedAt",
+    "checks"
+  ],
+  "properties": {
+    "verificationId": {
+      "type": "string",
+      "description": "Unique Verification identifier."
+    },
+    "verified": {
+      "type": "boolean",
+      "description": "Overall verification result."
+    },
+    "verifiedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when verification completed."
+    },
+    "checks": {
+      "type": "object",
+      "description": "Verification results for individual trust artifacts.",
+      "additionalProperties": false,
+      "required": [
+        "businessTransaction",
+        "metadata",
+        "policy",
+        "signals",
+        "decision",
+        "override",
+        "execution",
+        "evidence",
+        "receipt"
+      ],
+      "properties": {
+        "businessTransaction": {
+          "type": "boolean"
+        },
+        "metadata": {
+          "type": "boolean"
+        },
+        "policy": {
+          "type": "boolean"
+        },
+        "signals": {
+          "type": "boolean"
+        },
+        "decision": {
+          "type": "boolean"
+        },
+        "override": {
+          "type": "boolean"
+        },
+        "execution": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "boolean"
+        },
+        "receipt": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "verificationId": "VER-000001",
+      "verified": true,
+      "verifiedAt": "2026-06-26T12:15:00Z",
+      "checks": {
+        "businessTransaction": true,
+        "metadata": true,
+        "policy": true,
+        "signals": true,
+        "decision": true,
+        "override": true,
+        "execution": true,
+        "evidence": true,
+        "receipt": true
+      }
+    }
+  ]
+}

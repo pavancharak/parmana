@@ -1,0 +1,110 @@
+GET /v1/health
+
+
+Locked architectural decisions
+/health is an operational endpoint, not part of the Execution Trust pipeline.
+It does not expose Business Transactions, Policies, Decisions, or any trust artifacts.
+It reports only the runtime health of the service and its infrastructure.
+The endpoint is intended for load balancers, orchestrators (for example, Kubernetes), monitoring systems, and operational dashboards. It has no effect on the Execution Trust Record or business state.
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/health-response.schema.json",
+  "title": "Health Response",
+  "description": "Response returned by the Parmana health endpoint.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "timestamp"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "Overall service health.",
+          "enum": [
+            "UP",
+            "DOWN",
+            "DEGRADED"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the health check was generated."
+        },
+        "version": {
+          "type": "string",
+          "description": "Running API version."
+        },
+        "uptime": {
+          "type": "integer",
+          "description": "Service uptime in seconds.",
+          "minimum": 0
+        },
+        "components": {
+          "type": "object",
+          "description": "Health status of internal service components.",
+          "additionalProperties": false,
+          "properties": {
+            "api": {
+              "type": "string",
+              "enum": [
+                "UP",
+                "DOWN",
+                "DEGRADED"
+              ]
+            },
+            "database": {
+              "type": "string",
+              "enum": [
+                "UP",
+                "DOWN",
+                "DEGRADED"
+              ]
+            },
+            "policyStore": {
+              "type": "string",
+              "enum": [
+                "UP",
+                "DOWN",
+                "DEGRADED"
+              ]
+            },
+            "trustStore": {
+              "type": "string",
+              "enum": [
+                "UP",
+                "DOWN",
+                "DEGRADED"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "status": "UP",
+        "timestamp": "2026-06-26T12:30:00Z",
+        "version": "1.0.0",
+        "uptime": 86400,
+        "components": {
+          "api": "UP",
+          "database": "UP",
+          "policyStore": "UP",
+          "trustStore": "UP"
+        }
+      }
+    }
+  ]
+}

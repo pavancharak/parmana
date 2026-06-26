@@ -1,0 +1,172 @@
+The primary endpoint for this schema is:
+
+```http
+GET /v1/transactions/{businessTransactionId}
+```
+
+It is also returned by:
+
+```http
+POST /v1/transactions
+```
+
+when a new Business Transaction is successfully created (or an existing one is returned due to idempotency).
+
+### Response Mapping
+
+| Endpoint                                       | Method | Response Schema                                      |
+| ---------------------------------------------- | ------ | ---------------------------------------------------- |
+| `POST /v1/transactions`                        | POST   | `schemas/responses/transaction-response.schema.json` |
+| `GET /v1/transactions/{businessTransactionId}` | GET    | `schemas/responses/transaction-response.schema.json` |
+
+### Purpose
+
+This response represents the current state of the Business Transaction, including:
+
+* Business Transaction identifier
+* Metadata
+* Policy
+* Signals
+* Decision
+* Current lifecycle status
+* Related resource links
+
+Subsequent resources have their own dedicated response schemas:
+
+| Endpoint                                                   | Response Schema                               |
+| ---------------------------------------------------------- | --------------------------------------------- |
+| `POST /v1/transactions/{businessTransactionId}/executions` | `execution-response.schema.json`              |
+| `GET /v1/transactions/{businessTransactionId}/executions`  | `execution-response.schema.json` (collection) |
+| `POST /v1/transactions/{businessTransactionId}/override`   | `override-response.schema.json`               |
+| `POST /v1/transactions/{businessTransactionId}/verify`     | `verification-response.schema.json`           |
+| `GET /v1/transactions/{businessTransactionId}/receipt`     | `receipt-response.schema.json`                |
+| `GET /v1/transactions/{businessTransactionId}/trust-chain` | `trust-chain-response.schema.json`            |
+
+This keeps each API resource aligned with its own response contract while using the Business Transaction response as the canonical representation of the primary resource.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/responses/transaction-response.schema.json",
+  "title": "Transaction Response",
+  "description": "Response returned for a Business Transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "businessTransactionId",
+        "metadata",
+        "policy",
+        "signals",
+        "decision",
+        "status",
+        "createdAt"
+      ],
+      "properties": {
+        "businessTransactionId": {
+          "type": "string",
+          "description": "Unique Business Transaction identifier."
+        },
+        "metadata": {
+          "$ref": "../common/metadata.schema.json"
+        },
+        "policy": {
+          "$ref": "../common/policy.schema.json"
+        },
+        "signals": {
+          "type": "object",
+          "description": "Business signals evaluated by the resolved policy.",
+          "additionalProperties": true
+        },
+        "decision": {
+          "$ref": "../common/decision.schema.json"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current Business Transaction lifecycle state.",
+          "enum": [
+            "RECEIVED",
+            "EXECUTING",
+            "COMPLETED",
+            "FAILED"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when the Business Transaction was created."
+        },
+        "links": {
+          "type": "object",
+          "description": "Related API resources.",
+          "additionalProperties": false,
+          "properties": {
+            "self": {
+              "type": "string",
+              "format": "uri"
+            },
+            "executions": {
+              "type": "string",
+              "format": "uri"
+            },
+            "override": {
+              "type": "string",
+              "format": "uri"
+            },
+            "receipt": {
+              "type": "string",
+              "format": "uri"
+            },
+            "verifications": {
+              "type": "string",
+              "format": "uri"
+            },
+            "trustChain": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "data": {
+        "businessTransactionId": "PAY-1001",
+        "metadata": {
+          "businessTransactionId": "PAY-1001"
+        },
+        "policy": {
+          "name": "payment-approval",
+          "version": "2.1.0",
+          "schemaVersion": "1.0"
+        },
+        "signals": {
+          "amount": 5000,
+          "currency": "USD"
+        },
+        "decision": {
+          "outcome": "APPROVED",
+          "evaluatedAt": "2026-06-26T10:15:43Z"
+        },
+        "status": "RECEIVED",
+        "createdAt": "2026-06-26T10:15:40Z",
+        "links": {
+          "self": "/v1/transactions/PAY-1001",
+          "executions": "/v1/transactions/PAY-1001/executions",
+          "override": "/v1/transactions/PAY-1001/override",
+          "receipt": "/v1/transactions/PAY-1001/receipt",
+          "verifications": "/v1/transactions/PAY-1001/verifications",
+          "trustChain": "/v1/transactions/PAY-1001/trust-chain"
+        }
+      }
+    }
+  ]
+}

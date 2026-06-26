@@ -1,0 +1,98 @@
+Locked architectural decisions
+1. Used only for collections
+
+This schema is never used for single-resource responses.
+
+2. Separate from data
+
+Collection responses follow the pattern:
+
+{
+  "data": [
+    ...
+  ],
+  "pagination": {
+    ...
+  }
+}
+
+not
+
+{
+  "data": {
+    "items": [],
+    "pagination": {}
+  }
+}
+
+This keeps every collection response consistent.
+
+3. Independent of resource type
+
+The same schema is reused for:
+
+Executions
+Verifications
+Policies
+Future collection resources
+Canonical Principle (Locked)
+
+Pagination is a reusable metadata object for collection resources only.
+
+It is independent of business resources and provides a consistent navigation model across all paginated Parmana APIs.
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.parmana.ai/common/pagination.schema.json",
+  "title": "Pagination",
+  "description": "Canonical pagination metadata for collection responses.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "page",
+    "pageSize",
+    "totalItems",
+    "totalPages"
+  ],
+  "properties": {
+    "page": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current page number."
+    },
+    "pageSize": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of items returned per page."
+    },
+    "totalItems": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of available items."
+    },
+    "totalPages": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of available pages."
+    },
+    "hasNext": {
+      "type": "boolean",
+      "description": "Indicates whether another page exists."
+    },
+    "hasPrevious": {
+      "type": "boolean",
+      "description": "Indicates whether a previous page exists."
+    }
+  },
+  "examples": [
+    {
+      "page": 1,
+      "pageSize": 25,
+      "totalItems": 142,
+      "totalPages": 6,
+      "hasNext": true,
+      "hasPrevious": false
+    }
+  ]
+}
