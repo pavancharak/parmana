@@ -10,3 +10,10 @@ export * from "./repositories/VerificationRepository.js";
 export * from "./repositories/CryptoProofRepository.js";
 
 export * from "./errors/StorageError.js";
+
+//
+// In-memory repositories
+//
+export * from "./memory/MemoryBusinessTransactionRepository.js";
+export * from "./memory/MemoryExecutionTrustRecordRepository.js";
+export * from "./memory/MemoryPolicyRepository.js";
