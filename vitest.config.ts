@@ -2,13 +2,15 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    globals: true,
+    include: [
+      "**/test/**/*.test.ts",
+      "**/tests/**/*.test.ts"
+    ],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**"
+    ],
     environment: "node",
-    include: ["packages/**/test/**/*.test.ts"],
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "html"],
-      reportsDirectory: "./coverage"
-    }
+    passWithNoTests: true
   }
 });

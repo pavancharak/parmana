@@ -1,9 +1,27 @@
 {
-  "name": "@parmana/policy",
-  "version": "0.1.0",
-  "type": "module",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc -p tsconfig.json"
-  }
+    "name":  "@parmana/policy",
+    "version":  "0.1.0",
+    "type":  "module",
+    "main":  "./dist/index.js",
+    "types":  "./dist/index.d.ts",
+    "exports":  {
+                    ".":  {
+                              "types":  "./dist/index.d.ts",
+                              "import":  "./dist/index.js"
+                          }
+                },
+    "files":  [
+                  "dist"
+              ],
+    "scripts":  {
+                    "build":  "tsc -p tsconfig.json",
+                    "typecheck":  "tsc --noEmit"
+                },
+    "dependencies":  {
+                         "express":  "^5.2.1",
+                         "vitest":  "^4.1.9"
+                     },
+    "devDependencies":  {
+                            "@types/express":  "^5.0.6"
+                        }
 }

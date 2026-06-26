@@ -1,33 +1,36 @@
 {
-  "name": "@parmana/crypto",
-  "version": "0.1.0",
-  "description": "Parmana Crypto Module",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit",
-    "clean": "rmdir /s /q dist"
-  },
-  "dependencies": {
-    "@parmana/shared": "0.1.0"
-  },
-  "devDependencies": {
-    "@types/node": "^24.0.0",
-    "typescript": "^5.9.0"
-  },
-  "engines": {
-    "node": ">=22"
-  },
-  "license": "Apache-2.0"
+    "name":  "@parmana/crypto",
+    "version":  "0.1.0",
+    "description":  "Parmana Crypto Module",
+    "type":  "module",
+    "main":  "dist/index.js",
+    "types":  "dist/index.d.ts",
+    "exports":  {
+                    ".":  {
+                              "types":  "./dist/index.d.ts",
+                              "import":  "./dist/index.js"
+                          }
+                },
+    "files":  [
+                  "dist"
+              ],
+    "scripts":  {
+                    "clean":  "rmdir /s /q dist",
+                    "build":  "tsc -p tsconfig.json",
+                    "typecheck":  "tsc --noEmit"
+                },
+    "dependencies":  {
+                         "@parmana/shared":  "0.1.0",
+                         "express":  "^5.2.1",
+                         "vitest":  "^4.1.9"
+                     },
+    "devDependencies":  {
+                            "@types/express":  "^5.0.6",
+                            "@types/node":  "^24.0.0",
+                            "typescript":  "^5.9.0"
+                        },
+    "engines":  {
+                    "node":  "\u003e=22"
+                },
+    "license":  "Apache-2.0"
 }

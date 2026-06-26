@@ -1,0 +1,42 @@
+{
+  "policyId": "fraud-block",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "amount": { "type": "integer" },
+    "currency": { "type": "string" },
+    "recipient": { "type": "string" }
+  },
+
+  "rules": [
+    {
+      "id": "block-high-value",
+      "condition": {
+        "all": [
+          {
+            "signal": "amount",
+            "greater_than": 5000
+          }
+        ]
+      },
+      "outcome": {
+        "action": "reject",
+        "requires_override": true,
+        "reason": "high_value_transaction_blocked"
+      }
+    },
+
+    {
+      "id": "default-approve",
+      "condition": {
+        "all": []
+      },
+      "outcome": {
+        "action": "approve",
+        "requires_override": false,
+        "reason": "default_allowed"
+      }
+    }
+  ]
+}

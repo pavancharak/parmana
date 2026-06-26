@@ -1,0 +1,42 @@
+{
+  "policyId": "payment-release",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "signalsSchema": {
+    "amount": "number",
+    "kycVerified": "boolean"
+  },
+  "rules": [
+    {
+      "id": "auto-approve-small",
+      "condition": {
+        "all": [
+          {
+            "signal": "amount",
+            "greater_than": 0
+          },
+          {
+            "signal": "amount",
+            "greater_than": 0
+          }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "auto_approved"
+      }
+    },
+    {
+      "id": "catch-all",
+      "condition": {
+        "all": []
+      },
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": true,
+        "reason": "fallback_reject"
+      }
+    }
+  ]
+}
