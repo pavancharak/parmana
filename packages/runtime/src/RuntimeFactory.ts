@@ -3,6 +3,8 @@ import {
   ExecutionTrustRecordRepository,
 } from "@parmana/shared";
 
+import { ExecutionTrustApplication } from "./ExecutionTrustApplication.js";
+
 import { Runtime } from "./Runtime.js";
 import { RuntimeBuilder } from "./RuntimeBuilder.js";
 
@@ -10,6 +12,7 @@ import { ExecutionComponent } from "./components/ExecutionComponent.js";
 import { VerificationComponent } from "./components/VerificationComponent.js";
 import { ReceiptComponent } from "./components/ReceiptComponent.js";
 
+import { BusinessTransactionService } from "./services/business-transaction-service.js";
 import { ExecutionService } from "./services/execution-service.js";
 import { VerificationService } from "./services/verification-service.js";
 import { ReceiptService } from "./services/receipt-service.js";
@@ -17,14 +20,22 @@ import { ReceiptService } from "./services/receipt-service.js";
 /**
  * Runtime Factory.
  *
- * Creates a fully configured Runtime from the
- * supplied repository implementations.
+ * Creates a fully configured
+ * Execution Trust Application.
  */
 export class RuntimeFactory {
   static create(
     transactions: BusinessTransactionRepository,
     trustRecords: ExecutionTrustRecordRepository
-  ): Runtime {
+  ): ExecutionTrustApplication {
+
+    //
+    // Application services
+    //
+    const transactionService =
+      new BusinessTransactionService(
+        transactions
+      );
 
     const executionService =
       new ExecutionService(
@@ -42,22 +53,34 @@ export class RuntimeFactory {
         trustRecords
       );
 
-    return new RuntimeBuilder()
-      .addStage(
-        new ExecutionComponent(
-          executionService
+    //
+    // Runtime
+    //
+    const runtime: Runtime =
+      new RuntimeBuilder()
+        .addStage(
+          new ExecutionComponent(
+            executionService
+          )
         )
-      )
-      .addStage(
-        new VerificationComponent(
-          verificationService
+        .addStage(
+          new VerificationComponent(
+            verificationService
+          )
         )
-      )
-      .addStage(
-        new ReceiptComponent(
-          receiptService
+        .addStage(
+          new ReceiptComponent(
+            receiptService
+          )
         )
-      )
-      .build();
+        .build();
+
+    //
+    // Application
+    //
+    return new ExecutionTrustApplication(
+      transactionService,
+      runtime
+    );
   }
 }
