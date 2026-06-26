@@ -3,11 +3,8 @@ import { RuntimeContext } from "./context/RuntimeContext.js";
 /**
  * Runtime Component.
  *
- * A Runtime Component performs exactly one
- * deterministic operation on the RuntimeContext.
- *
- * Components should never mutate the supplied context.
- * They should return the next immutable RuntimeContext.
+ * Performs one deterministic operation on the
+ * RuntimeContext.
  */
 export interface RuntimeComponent {
   /**
@@ -15,5 +12,5 @@ export interface RuntimeComponent {
    */
   execute(
     context: RuntimeContext
-  ): RuntimeContext;
+  ): Promise<RuntimeContext>;
 }

@@ -1,4 +1,5 @@
 import {
+  BusinessTransactionNotFoundError,
   BusinessTransactionRepository,
   Execution,
   ExecutionMode,
@@ -29,9 +30,8 @@ export class ExecutionService {
     businessTransactionId: string,
     mode: ExecutionMode
   ): Promise<Execution> {
-
     //
-    // 1. Verify transaction exists
+    // 1. Verify Business Transaction exists
     //
     const transaction =
       await this.transactions.findById(
@@ -39,12 +39,16 @@ export class ExecutionService {
       );
 
     if (!transaction) {
-      throw new Error("Business Transaction not found.");
+      throw new BusinessTransactionNotFoundError(
+        businessTransactionId
+      );
     }
 
     //
     // 2. Create immutable Execution
     //
+    const now = new Date();
+
     const execution: Execution = {
       executionId: crypto.randomUUID(),
 
@@ -54,11 +58,11 @@ export class ExecutionService {
 
       mode,
 
-      startedAt: new Date(),
+      startedAt: now,
     };
 
     //
-    // 3. Append to Trust Record
+    // 3. Append Execution to the Trust Record
     //
     await this.trustRecords.appendExecution(
       businessTransactionId,
@@ -74,7 +78,6 @@ export class ExecutionService {
   async complete(
     execution: Execution
   ): Promise<Execution> {
-
     const completed: Execution = {
       ...execution,
 
@@ -96,7 +99,6 @@ export class ExecutionService {
   async fail(
     execution: Execution
   ): Promise<Execution> {
-
     const failed: Execution = {
       ...execution,
 

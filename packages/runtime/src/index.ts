@@ -13,3 +13,4 @@ export * from "./stages/ExecutionStage.js";
 
 export { Runtime } from "./Runtime.js";
 export { RuntimeFactory } from "./RuntimeFactory.js";
+export * from "./components/index.js";

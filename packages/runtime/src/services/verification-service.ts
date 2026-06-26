@@ -1,6 +1,7 @@
 import {
   ExecutionTrustRecordRepository,
   Verification,
+  VerificationFailedError,
   VerificationStatus,
 } from "@parmana/shared";
 
@@ -8,8 +9,8 @@ import {
  * Application service responsible for verifying
  * Execution Trust Records.
  *
- * Verification is deterministic and always
- * validates the complete Execution Trust Record.
+ * Verification is deterministic and validates
+ * the complete Execution Trust Record.
  */
 export class VerificationService {
   constructor(
@@ -22,7 +23,6 @@ export class VerificationService {
   async verify(
     businessTransactionId: string
   ): Promise<Verification> {
-
     //
     // 1. Load Trust Record
     //
@@ -32,7 +32,7 @@ export class VerificationService {
       );
 
     if (!trustRecord) {
-      throw new Error(
+      throw new VerificationFailedError(
         "Execution Trust Record not found."
       );
     }
@@ -40,9 +40,11 @@ export class VerificationService {
     //
     // 2. Verify Trust Record
     //
-    // Placeholder for VerificationEngine.
+    // TODO(v0.5):
+    // Replace with the Verification Engine.
     //
-    const verificationSucceeded = true;
+    const verificationSucceeded =
+      this.verifyTrustRecord(trustRecord);
 
     //
     // 3. Create immutable Verification artifact
@@ -67,7 +69,7 @@ export class VerificationService {
     };
 
     //
-    // 4. Append Verification
+    // 4. Persist Verification
     //
     await this.trustRecords.appendVerification(
       businessTransactionId,
@@ -75,5 +77,17 @@ export class VerificationService {
     );
 
     return verification;
+  }
+
+  /**
+   * Temporary verification implementation.
+   *
+   * TODO(v0.5):
+   * Delegate to the Verification Engine.
+   */
+  private verifyTrustRecord(
+    _trustRecord: unknown
+  ): boolean {
+    return true;
   }
 }

@@ -8,7 +8,7 @@ import type { RuntimeComponent } from "./RuntimeComponent.js";
  * Executes an ordered sequence of Runtime Components.
  *
  * Each Runtime Component receives an immutable RuntimeContext
- * and returns the next RuntimeContext.
+ * and asynchronously returns the next RuntimeContext.
  *
  * The Runtime Pipeline performs orchestration only.
  * It contains no business logic.
@@ -31,14 +31,13 @@ export class RuntimePipeline {
   /**
    * Executes the configured runtime stages.
    */
-  execute(
+  public async execute(
     context: RuntimeContext
-  ): RuntimeContext {
-
+  ): Promise<RuntimeContext> {
     let current = context;
 
     for (const component of this.components) {
-      current = component.execute(current);
+      current = await component.execute(current);
     }
 
     return current;
@@ -47,21 +46,21 @@ export class RuntimePipeline {
   /**
    * Returns configured runtime stages.
    */
-  getComponents(): readonly RuntimeComponent[] {
+  public getComponents(): readonly RuntimeComponent[] {
     return this.components;
   }
 
   /**
    * Number of configured stages.
    */
-  size(): number {
+  public size(): number {
     return this.components.length;
   }
 
   /**
    * Returns true when no stages exist.
    */
-  isEmpty(): boolean {
+  public isEmpty(): boolean {
     return this.components.length === 0;
   }
 }

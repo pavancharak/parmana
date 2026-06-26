@@ -1,6 +1,7 @@
 import {
   ExecutionTrustRecordRepository,
   Receipt,
+  ReceiptGenerationError,
   VerificationStatus,
 } from "@parmana/shared";
 
@@ -23,7 +24,6 @@ export class ReceiptService {
   async generate(
     businessTransactionId: string
   ): Promise<Receipt> {
-
     //
     // 1. Load Trust Record
     //
@@ -33,36 +33,38 @@ export class ReceiptService {
       );
 
     if (!trustRecord) {
-      throw new Error(
+      throw new ReceiptGenerationError(
         "Execution Trust Record not found."
       );
     }
 
     //
-    // 2. Verify latest Verification succeeded
+    // 2. Ensure latest Verification succeeded
     //
     const latestVerification =
       trustRecord.verifications.at(-1);
 
     if (
       !latestVerification ||
-      latestVerification.status !== VerificationStatus.VERIFIED
+      latestVerification.status !==
+        VerificationStatus.VERIFIED
     ) {
-      throw new Error(
+      throw new ReceiptGenerationError(
         "Execution Trust Record must be successfully verified before a Receipt can be generated."
       );
     }
 
     //
-    // 3. Delegate hashing & signing
+    // 3. Generate cryptographic artifacts
     //
-    // Placeholder:
+    // TODO(v0.5):
+    // Replace with packages/crypto implementations.
     //
-    // const receiptHash = await receiptHasher.hash(trustRecord);
-    // const signature = await signer.sign(receiptHash);
-    //
-    const receiptHash = "";
-    const signature = "";
+    const receiptHash =
+      this.generateReceiptHash(trustRecord);
+
+    const signature =
+      this.signReceipt(receiptHash);
 
     //
     // 4. Create immutable Receipt
@@ -85,7 +87,7 @@ export class ReceiptService {
     };
 
     //
-    // 5. Append Receipt
+    // 5. Persist Receipt
     //
     await this.trustRecords.appendReceipt(
       businessTransactionId,
@@ -93,5 +95,29 @@ export class ReceiptService {
     );
 
     return receipt;
+  }
+
+  /**
+   * Temporary receipt hashing implementation.
+   *
+   * TODO(v0.5):
+   * Delegate to TrustRecordHasher.
+   */
+  private generateReceiptHash(
+    _trustRecord: unknown
+  ): string {
+    return "";
+  }
+
+  /**
+   * Temporary signature implementation.
+   *
+   * TODO(v0.5):
+   * Delegate to the signing provider.
+   */
+  private signReceipt(
+    _receiptHash: string
+  ): string {
+    return "";
   }
 }

@@ -10,18 +10,8 @@ import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
 /**
  * Parmana Runtime.
  *
- * The Runtime orchestrates execution by:
- *
- *   BusinessTransaction
- *          │
- *          ▼
- *   RuntimePipeline
- *          │
- *          ▼
- *   ExecutionTrustPipeline
- *          │
- *          ▼
- *   ExecutionTrustRecord
+ * Executes Business Transactions through the
+ * configured Runtime Pipeline.
  */
 export class Runtime {
   private readonly trustPipeline =
@@ -36,31 +26,31 @@ export class Runtime {
   /**
    * Executes a Business Transaction.
    */
-  public execute(
+  public async execute(
     transaction: BusinessTransaction
-  ): ExecutionTrustRecord {
+  ): Promise<ExecutionTrustRecord> {
 
-    const context: RuntimeContext = {
+    let context: RuntimeContext = {
       transaction,
     };
 
-    const updatedContext =
-      this.pipeline.execute(context);
+    context =
+      await this.pipeline.execute(context);
 
     return this.trustPipeline.execute(
-      updatedContext
+      context
     );
   }
 
   /**
-   * Returns true if the Runtime has no configured stages.
+   * Returns true if no runtime stages exist.
    */
   public isEmpty(): boolean {
     return this.pipeline.isEmpty();
   }
 
   /**
-   * Returns the number of configured Runtime stages.
+   * Returns the number of runtime stages.
    */
   public size(): number {
     return this.pipeline.size();
