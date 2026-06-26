@@ -1,19 +1,19 @@
-import type { ExecutionTransaction } from "@parmana/shared";
+import { RuntimeContext } from "./context/RuntimeContext.js";
 
 /**
- * Represents a single deterministic stage in the Runtime Pipeline.
+ * Runtime Component.
  *
- * Runtime components are stateless execution units that transform an
- * immutable ExecutionTransaction into a new immutable ExecutionTransaction.
+ * A Runtime Component performs exactly one
+ * deterministic operation on the RuntimeContext.
+ *
+ * Components should never mutate the supplied context.
+ * They should return the next immutable RuntimeContext.
  */
 export interface RuntimeComponent {
   /**
-   * Executes this runtime stage.
-   *
-   * @param transaction Immutable execution transaction.
-   * @returns A new immutable execution transaction.
+   * Executes one runtime stage.
    */
   execute(
-    transaction: ExecutionTransaction
-  ): ExecutionTransaction;
+    context: RuntimeContext
+  ): RuntimeContext;
 }

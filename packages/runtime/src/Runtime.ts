@@ -1,46 +1,55 @@
-import type { ExecutionTransaction } from "@parmana/shared";
+import {
+  BusinessTransaction,
+  ExecutionTrustRecord,
+} from "@parmana/shared";
 
 import { RuntimePipeline } from "./RuntimePipeline.js";
 import { RuntimeContext } from "./context/RuntimeContext.js";
+import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
 
 /**
  * Parmana Runtime.
  *
- * The Runtime is responsible only for orchestrating execution.
- * It delegates all work to the Runtime Pipeline.
+ * The Runtime orchestrates execution by:
+ *
+ *   BusinessTransaction
+ *          │
+ *          ▼
+ *   RuntimePipeline
+ *          │
+ *          ▼
+ *   ExecutionTrustPipeline
+ *          │
+ *          ▼
+ *   ExecutionTrustRecord
  */
 export class Runtime {
-  /**
-   * Runtime execution context.
-   */
-  public readonly context: RuntimeContext;
-
-  /**
-   * Runtime pipeline.
-   */
-  public readonly pipeline: RuntimePipeline;
+  private readonly trustPipeline =
+    new ExecutionTrustPipeline();
 
   constructor(
-    pipeline: RuntimePipeline,
-    context: RuntimeContext = {} as RuntimeContext
+    private readonly pipeline: RuntimePipeline
   ) {
-    this.pipeline = pipeline;
-    this.context = context;
-
     Object.freeze(this);
   }
 
   /**
-   * Executes an immutable ExecutionTransaction through
-   * the configured Runtime Pipeline.
-   *
-   * @param transaction Immutable execution transaction.
-   * @returns The resulting immutable execution transaction.
+   * Executes a Business Transaction.
    */
   public execute(
-    transaction: ExecutionTransaction
-  ): ExecutionTransaction {
-    return this.pipeline.execute(transaction);
+    transaction: BusinessTransaction
+  ): ExecutionTrustRecord {
+
+    const context: RuntimeContext = {
+      transaction,
+    };
+
+    const updatedContext =
+      this.pipeline.execute(context);
+
+    return this.trustPipeline.execute(
+      updatedContext
+    );
   }
 
   /**
@@ -55,15 +64,5 @@ export class Runtime {
    */
   public size(): number {
     return this.pipeline.size();
-  }
-
-  /**
-   * Returns a JSON representation.
-   */
-  public toJSON() {
-    return {
-      context: this.context,
-      stages: this.pipeline.size(),
-    };
   }
 }

@@ -1,20 +1,27 @@
-import type { ExecutionTransaction } from "@parmana/shared";
+import { RuntimeContext } from "./context/RuntimeContext.js";
 
 import type { RuntimeComponent } from "./RuntimeComponent.js";
 
 /**
- * Executes a deterministic sequence of Runtime Components.
+ * Canonical Runtime Pipeline.
  *
- * The Runtime Pipeline is responsible only for orchestration.
+ * Executes an ordered sequence of Runtime Components.
+ *
+ * Each Runtime Component receives an immutable RuntimeContext
+ * and returns the next RuntimeContext.
+ *
+ * The Runtime Pipeline performs orchestration only.
  * It contains no business logic.
  */
 export class RuntimePipeline {
   /**
-   * Ordered pipeline stages.
+   * Ordered runtime stages.
    */
   private readonly components: readonly RuntimeComponent[];
 
-  constructor(components: readonly RuntimeComponent[]) {
+  constructor(
+    components: readonly RuntimeComponent[]
+  ) {
     this.components = [...components];
 
     Object.freeze(this.components);
@@ -22,15 +29,13 @@ export class RuntimePipeline {
   }
 
   /**
-   * Executes all runtime stages in order.
-   *
-   * @param transaction Initial execution transaction.
-   * @returns Final execution transaction.
+   * Executes the configured runtime stages.
    */
-  public execute(
-    transaction: ExecutionTransaction
-  ): ExecutionTransaction {
-    let current = transaction;
+  execute(
+    context: RuntimeContext
+  ): RuntimeContext {
+
+    let current = context;
 
     for (const component of this.components) {
       current = component.execute(current);
@@ -40,23 +45,23 @@ export class RuntimePipeline {
   }
 
   /**
-   * Returns the configured runtime stages.
+   * Returns configured runtime stages.
    */
-  public getComponents(): readonly RuntimeComponent[] {
+  getComponents(): readonly RuntimeComponent[] {
     return this.components;
   }
 
   /**
    * Number of configured stages.
    */
-  public size(): number {
+  size(): number {
     return this.components.length;
   }
 
   /**
-   * Returns true if no stages are configured.
+   * Returns true when no stages exist.
    */
-  public isEmpty(): boolean {
+  isEmpty(): boolean {
     return this.components.length === 0;
   }
 }

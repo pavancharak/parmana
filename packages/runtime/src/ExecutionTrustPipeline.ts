@@ -1,81 +1,58 @@
+import { ExecutionTrustRecord } from "@parmana/shared";
+
 import { RuntimeContext } from "./context/RuntimeContext.js";
 
-import { TrustChainBuilder } from "./TrustChainBuilder.js";
-
-import { ReplayVerifier } from "@parmana/replay";
-
-/**
- * Temporary pipeline result.
- *
- * This will be replaced by ExecutionTrustRecord after the
- * TrustChainBuilder is migrated to the canonical domain model.
- */
-export interface PipelineResult {
-  readonly execution: unknown;
-  readonly proof: unknown;
-  readonly trust: {
-    readonly valid: boolean;
-  };
-}
+import { ExecutionTrustRecordBuilder } from "./ExecutionTrustRecordBuilder.js";
 
 /**
  * Execution Trust Pipeline.
  *
- * Orchestrates the current execution workflow while the
- * runtime is being migrated to the canonical Execution
- * Trust architecture.
+ * Canonical runtime pipeline responsible for producing
+ * an immutable Execution Trust Record.
+ *
+ * The RuntimeContext is expected to contain the artifacts
+ * produced by the runtime services:
+ *
+ *  • Business Transaction
+ *  • Execution
+ *  • Override (optional)
+ *  • Verification (optional)
+ *  • Receipt (optional)
+ *
+ * The pipeline itself contains no business rules.
+ * It simply assembles the canonical trust artifact.
  */
 export class ExecutionTrustPipeline {
-  private readonly builder = new TrustChainBuilder();
-
-  private readonly verifier = new ReplayVerifier();
+  private readonly builder =
+    new ExecutionTrustRecordBuilder();
 
   /**
-   * Execute the pipeline.
+   * Executes the canonical Execution Trust Pipeline.
    */
   execute(
     context: RuntimeContext
-  ): PipelineResult {
-    const execution = this.run(context);
+  ): ExecutionTrustRecord {
+    this.validate(context);
 
-    const proof = this.builder.build({
-      ...context,
-      execution,
-    });
-
-    /**
-     * TODO(v1):
-     *
-     * Replace self-verification with verification of the
-     * reconstructed execution/trust record.
-     */
-    const replayCheck = this.verifier.verify(
-      execution,
-      execution
-    );
-
-    return {
-      execution,
-      proof,
-      trust: {
-        valid:
-          replayCheck &&
-          proof.verification.integrity,
-      },
-    };
+    return this.builder.build(context);
   }
 
   /**
-   * Temporary execution implementation.
-   *
-   * This will later delegate to the ExecutionStage.
+   * Validates the minimum runtime requirements.
    */
-  private run(
+  private validate(
     context: RuntimeContext
-  ) {
-    return {
-      result: "executed",
-      transaction: context.transaction,
-    };
+  ): void {
+    if (!context.transaction) {
+      throw new Error(
+        "Business Transaction is required."
+      );
+    }
+
+    if (!context.execution) {
+      throw new Error(
+        "Execution artifact is required."
+      );
+    }
   }
 }

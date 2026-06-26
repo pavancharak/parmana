@@ -1,11 +1,17 @@
 import { Runtime } from "./Runtime.js";
-import { RuntimePipeline } from "./RuntimePipeline.js";
+import { RuntimeBuilder } from "./RuntimeBuilder.js";
 
+/**
+ * Runtime Factory.
+ *
+ * Creates canonical Runtime instances using the
+ * RuntimeBuilder.
+ */
 export class RuntimeFactory {
-  static create() {
-    // minimal safe pipeline (empty for now)
-    const pipeline = new RuntimePipeline([]);
-
-    return new Runtime(pipeline);
+  /**
+   * Creates a Runtime with the default configuration.
+   */
+  static create(): Runtime {
+    return new RuntimeBuilder().build();
   }
 }

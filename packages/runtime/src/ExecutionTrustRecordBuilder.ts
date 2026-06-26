@@ -55,7 +55,12 @@ export class ExecutionTrustRecordBuilder {
        * Will be computed by the
        * TrustRecordHasher in packages/crypto.
        */
-      trustRecordHash: "",
+      /**
+ * TODO(v0.4):
+ * Compute canonical SHA-256 hash using
+ * packages/crypto/TrustRecordHasher.
+ */
+trustRecordHash: "",
 
       createdAt: new Date(),
 
