@@ -22,7 +22,7 @@ export class Runtime {
 
   constructor(
     pipeline: RuntimePipeline,
-    context: RuntimeContext = new RuntimeContext()
+    context: RuntimeContext = {} as RuntimeContext
   ) {
     this.pipeline = pipeline;
     this.context = context;

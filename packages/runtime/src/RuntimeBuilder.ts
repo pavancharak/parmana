@@ -15,7 +15,7 @@ export class RuntimeBuilder {
   /**
    * Runtime context.
    */
-  private context: RuntimeContext = new RuntimeContext();
+  private context: RuntimeContext = {} as RuntimeContext;
 
   /**
    * Adds a runtime stage.

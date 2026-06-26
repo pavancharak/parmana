@@ -1,36 +1,67 @@
-import { Metadata } from "@parmana/shared";
+import {
+  BusinessTransaction,
+  Decision,
+  Execution,
+  ExecutionEvidence,
+  ExecutionTrustRecord,
+  Override,
+  PolicyReference,
+  Receipt,
+  Verification,
+} from "@parmana/shared";
 
 /**
- * Infrastructure context for Runtime execution.
+ * Canonical Runtime Context.
  *
- * RuntimeContext contains infrastructure configuration only.
- * It MUST NOT contain business state such as Authority,
- * Intent, Authorization, Execution, or Evidence.
+ * RuntimeContext is the single immutable object passed
+ * between all stages of the Execution Trust Pipeline.
+ *
+ * Each stage returns a new RuntimeContext with one or
+ * more additional artifacts populated.
  */
-export class RuntimeContext {
+export interface RuntimeContext {
   /**
-   * Runtime metadata.
+   * Root Business Transaction.
    */
-  public readonly metadata: Metadata;
-
-  constructor(
-    metadata: Metadata = {
-  traceId: "",
-  source: "",
-  createdAt: Date.now(),
-}
-  ) {
-    this.metadata = metadata;
-
-    Object.freeze(this);
-  }
+  readonly transaction: BusinessTransaction;
 
   /**
-   * Returns a JSON representation.
+   * Policy resolved for the transaction.
    */
-  public toJSON() {
-    return {
-      metadata: this.metadata,
-    };
-  }
+  readonly policy?: PolicyReference;
+
+  /**
+   * Decision produced by the Policy Engine.
+   */
+  readonly decision?: Decision;
+
+  /**
+   * Execution artifact.
+   */
+  readonly execution?: Execution;
+
+  /**
+   * Optional human override.
+   */
+  readonly override?: Override;
+
+  /**
+   * Evidence captured during execution.
+   */
+  readonly evidence?: readonly ExecutionEvidence[];
+
+  /**
+   * Verification artifact.
+   */
+  readonly verification?: Verification;
+
+  /**
+   * Cryptographic receipt.
+   */
+  readonly receipt?: Receipt;
+
+  /**
+   * Final aggregate produced by the pipeline.
+   */
+  readonly trustRecord?: ExecutionTrustRecord;
 }
