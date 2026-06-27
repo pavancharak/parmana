@@ -10,17 +10,13 @@ import type {
  * for a storage backend.
  */
 export interface StorageProvider {
-
   /**
    * Business Transaction repository.
    */
-  readonly businessTransactions:
-    BusinessTransactionRepository;
+  readonly businessTransactions: BusinessTransactionRepository;
 
   /**
    * Execution Trust Record repository.
    */
-  readonly trustRecords:
-    ExecutionTrustRecordRepository;
-
+  readonly trustRecords: ExecutionTrustRecordRepository;
 }

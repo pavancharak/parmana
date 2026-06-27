@@ -22,7 +22,7 @@ export class VerificationEngine {
 
   constructor(
     pipeline: VerificationPipeline,
-    context: VerificationContext = new VerificationContext()
+    context: VerificationContext = new VerificationContext(),
   ) {
     this.pipeline = pipeline;
     this.context = context;
@@ -36,9 +36,7 @@ export class VerificationEngine {
    * @param verification Immutable verification.
    * @returns Verified immutable verification.
    */
-  public execute(
-    verification: Verification
-  ): Verification {
+  public execute(verification: Verification): Verification {
     return this.pipeline.execute(verification);
   }
 

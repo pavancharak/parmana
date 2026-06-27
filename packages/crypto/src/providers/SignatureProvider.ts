@@ -1,6 +1,4 @@
-import type {
-  SignatureAlgorithm,
-} from "@parmana/shared";
+import type { SignatureAlgorithm } from "@parmana/shared";
 
 /**
  * Signature Provider.
@@ -16,15 +14,10 @@ export interface SignatureProvider {
   /**
    * Creates a signature.
    */
-  sign(
-    data: Uint8Array
-  ): Promise<string>;
+  sign(data: Uint8Array): Promise<string>;
 
   /**
    * Verifies a signature.
    */
-  verify(
-    data: Uint8Array,
-    signature: string
-  ): Promise<boolean>;
+  verify(data: Uint8Array, signature: string): Promise<boolean>;
 }

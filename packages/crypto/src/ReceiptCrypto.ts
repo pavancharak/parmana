@@ -1,22 +1,12 @@
-import type {
-  Receipt,
-} from "@parmana/shared";
+import type { Receipt } from "@parmana/shared";
 
-import {
-  CryptoBootstrap,
-} from "./CryptoBootstrap.js";
+import { CryptoBootstrap } from "./CryptoBootstrap.js";
 
-import {
-  ReceiptHasher,
-} from "./ReceiptHasher.js";
+import { ReceiptHasher } from "./ReceiptHasher.js";
 
-import {
-  ReceiptSigner,
-} from "./ReceiptSigner.js";
+import { ReceiptSigner } from "./ReceiptSigner.js";
 
-import {
-  TrustRecordHasher,
-} from "./TrustRecordHasher.js";
+import { TrustRecordHasher } from "./TrustRecordHasher.js";
 
 /**
  * Receipt cryptographic operations.
@@ -28,49 +18,26 @@ import {
  * are configured.
  */
 export class ReceiptCrypto {
+  private readonly crypto = CryptoBootstrap.create();
 
-  private readonly crypto =
-    CryptoBootstrap.create();
+  private readonly trustRecordHasher = new TrustRecordHasher(this.crypto);
 
-  private readonly trustRecordHasher =
-    new TrustRecordHasher(
-      this.crypto
-    );
+  private readonly receiptHasher = new ReceiptHasher(this.trustRecordHasher);
 
-  private readonly receiptHasher =
-    new ReceiptHasher(
-      this.trustRecordHasher
-    );
-
-  private readonly signer =
-    new ReceiptSigner(
-      this.crypto
-    );
+  private readonly signer = new ReceiptSigner(this.crypto);
 
   /**
    * Computes the canonical receipt hash.
    */
-  async hash(
-    trustRecord: unknown
-  ): Promise<string> {
-
-    return this.receiptHasher.hash(
-      trustRecord
-    );
-
+  async hash(trustRecord: unknown): Promise<string> {
+    return this.receiptHasher.hash(trustRecord);
   }
 
   /**
    * Signs any canonical object.
    */
-  async sign(
-    value: unknown
-  ): Promise<string> {
-
-    return this.signer.sign(
-      value
-    );
-
+  async sign(value: unknown): Promise<string> {
+    return this.signer.sign(value);
   }
 
   /**
@@ -80,34 +47,20 @@ export class ReceiptCrypto {
    * the configured SignatureProvider.
    */
   async createReceipt(
-    payload: Omit<
-      Receipt,
-      "signature" | "algorithm"
-    >
+    payload: Omit<Receipt, "signature" | "algorithm">,
   ): Promise<Receipt> {
-
     const unsignedReceipt = {
-
       ...payload,
 
-      algorithm:
-        this.crypto.signature.algorithm,
-
+      algorithm: this.crypto.signature.algorithm,
     };
 
-    const signature =
-      await this.sign(
-        unsignedReceipt
-      );
+    const signature = await this.sign(unsignedReceipt);
 
     return {
-
       ...unsignedReceipt,
 
       signature,
-
     };
-
   }
-
 }

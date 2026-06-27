@@ -8,172 +8,109 @@ beforeAll(() => {
 import app from "../src/app.js";
 
 describe("Execution Trust Record Lifecycle", () => {
-
   it("maintains the complete trust lifecycle", async () => {
-
     //
     // Execute
     //
-    const executeResponse =
-      await request(app)
+    const executeResponse = await request(app)
+      .post("/execute")
 
-        .post("/execute")
+      .send({
+        businessTransactionId: crypto.randomUUID(),
 
-        .send({
+        status: "AUTHORIZED",
 
-          businessTransactionId:
-            crypto.randomUUID(),
+        metadata: {},
 
-          status: "AUTHORIZED",
+        policy: {},
 
-          metadata: {},
+        signals: {},
 
-          policy: {},
+        decision: {},
+      });
 
-          signals: {},
+    expect(executeResponse.status).toBe(200);
 
-          decision: {},
-
-        });
-
-    expect(
-      executeResponse.status
-    ).toBe(200);
-
-    const trustRecord =
-      executeResponse.body;
+    const trustRecord = executeResponse.body;
 
     //
     // Trust Record after Execute
     //
-    const trustRecordAfterExecute =
-      await request(app)
+    const trustRecordAfterExecute = await request(app).get(
+      `/trust-records/${trustRecord.businessTransactionId}`,
+    );
 
-        .get(
-          `/trust-records/${trustRecord.businessTransactionId}`
-        );
+    expect(trustRecordAfterExecute.status).toBe(200);
 
-    expect(
-      trustRecordAfterExecute.status
-    ).toBe(200);
+    expect(trustRecordAfterExecute.body.executions.length).toBe(1);
 
-    expect(
-      trustRecordAfterExecute.body.executions.length
-    ).toBe(1);
+    expect(trustRecordAfterExecute.body.verifications.length).toBe(0);
 
-    expect(
-      trustRecordAfterExecute.body.verifications.length
-    ).toBe(0);
-
-    expect(
-      trustRecordAfterExecute.body.receipts.length
-    ).toBe(0);
+    expect(trustRecordAfterExecute.body.receipts.length).toBe(0);
 
     //
     // Verify
     //
-    const verifyResponse =
-      await request(app)
+    const verifyResponse = await request(app)
+      .post("/verify")
 
-        .post("/verify")
+      .send({
+        businessTransactionId: trustRecord.businessTransactionId,
+      });
 
-        .send({
-
-          businessTransactionId:
-            trustRecord.businessTransactionId,
-
-        });
-
-    expect(
-      verifyResponse.status
-    ).toBe(200);
+    expect(verifyResponse.status).toBe(200);
 
     //
     // Trust Record after Verify
     //
-    const trustRecordAfterVerify =
-      await request(app)
+    const trustRecordAfterVerify = await request(app).get(
+      `/trust-records/${trustRecord.businessTransactionId}`,
+    );
 
-        .get(
-          `/trust-records/${trustRecord.businessTransactionId}`
-        );
+    expect(trustRecordAfterVerify.status).toBe(200);
 
-    expect(
-      trustRecordAfterVerify.status
-    ).toBe(200);
+    expect(trustRecordAfterVerify.body.executions.length).toBe(1);
 
-    expect(
-      trustRecordAfterVerify.body.executions.length
-    ).toBe(1);
+    expect(trustRecordAfterVerify.body.verifications.length).toBe(1);
 
-    expect(
-      trustRecordAfterVerify.body.verifications.length
-    ).toBe(1);
-
-    expect(
-      trustRecordAfterVerify.body.receipts.length
-    ).toBe(0);
+    expect(trustRecordAfterVerify.body.receipts.length).toBe(0);
 
     //
     // Receipt
     //
-    const receiptResponse =
-      await request(app)
+    const receiptResponse = await request(app)
+      .post("/receipt")
 
-        .post("/receipt")
+      .send({
+        businessTransactionId: trustRecord.businessTransactionId,
+      });
 
-        .send({
-
-          businessTransactionId:
-            trustRecord.businessTransactionId,
-
-        });
-
-    expect(
-      receiptResponse.status
-    ).toBe(200);
+    expect(receiptResponse.status).toBe(200);
 
     //
     // Trust Record after Receipt
     //
-    const trustRecordAfterReceipt =
-      await request(app)
+    const trustRecordAfterReceipt = await request(app).get(
+      `/trust-records/${trustRecord.businessTransactionId}`,
+    );
 
-        .get(
-          `/trust-records/${trustRecord.businessTransactionId}`
-        );
+    expect(trustRecordAfterReceipt.status).toBe(200);
 
-    expect(
-      trustRecordAfterReceipt.status
-    ).toBe(200);
+    expect(trustRecordAfterReceipt.body.executions.length).toBe(1);
 
-    expect(
-      trustRecordAfterReceipt.body.executions.length
-    ).toBe(1);
+    expect(trustRecordAfterReceipt.body.verifications.length).toBe(1);
 
-    expect(
-      trustRecordAfterReceipt.body.verifications.length
-    ).toBe(1);
-
-    expect(
-      trustRecordAfterReceipt.body.receipts.length
-    ).toBe(1);
+    expect(trustRecordAfterReceipt.body.receipts.length).toBe(1);
 
     //
     // Invariants
     //
-    expect(
-      trustRecordAfterReceipt.body.businessTransactionId
-    ).toBe(
-      trustRecord.businessTransactionId
+    expect(trustRecordAfterReceipt.body.businessTransactionId).toBe(
+      trustRecord.businessTransactionId,
     );
 
-    expect(
-      trustRecordAfterReceipt.body.trustRecordHash
-    ).toBe(
-      trustRecord.trustRecordHash
+    expect(trustRecordAfterReceipt.body.trustRecordHash).toBe(
+      trustRecord.trustRecordHash,
     );
-
   });
-
 });

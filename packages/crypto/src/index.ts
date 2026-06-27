@@ -15,9 +15,6 @@ export * from "./providers/ProviderFactory.js";
 export * from "./providers/HashProvider.js";
 export * from "./providers/SignatureProvider.js";
 
-export * from "./algorithms/SHA256Provider.js";
-export * from "./algorithms/Ed25519Provider.js";
-
 export * from "./errors/CryptoError.js";
 export * from "./ReceiptCrypto.js";
 export * from "./VerificationCrypto.js";

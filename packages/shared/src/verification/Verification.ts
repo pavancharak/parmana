@@ -62,7 +62,7 @@ export class Verification {
     status: VerificationStatus,
     invariants: readonly VerificationInvariant[],
     verifiedAt: Timestamp = Timestamp.now(),
-    metadata: Metadata = new Metadata()
+    metadata: Metadata = new Metadata(),
   ) {
     this.status = status;
     this.invariants = Object.freeze([...invariants]);
@@ -83,7 +83,7 @@ export class Verification {
    * Returns an invariant by name.
    */
   public getInvariant(
-    name: VerificationInvariant["name"]
+    name: VerificationInvariant["name"],
   ): VerificationInvariant | undefined {
     return this.invariants.find((i) => i.name === name);
   }

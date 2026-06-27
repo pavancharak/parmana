@@ -10,7 +10,5 @@ export interface RuntimeComponent {
   /**
    * Executes one runtime stage.
    */
-  execute(
-    context: RuntimeContext
-  ): Promise<RuntimeContext>;
+  execute(context: RuntimeContext): Promise<RuntimeContext>;
 }

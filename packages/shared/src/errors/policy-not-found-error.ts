@@ -5,8 +5,7 @@ export class PolicyNotFoundError extends ParmanaError {
     super(
       "POLICY_NOT_FOUND",
       `Policy '${name}' version '${version}' not found.`,
-      404
+      404,
     );
   }
 }
-

@@ -30,7 +30,7 @@ export class EvidenceArtifact {
     type: EvidenceType,
     payload: Record<string, unknown>,
     createdAt: Timestamp = Timestamp.now(),
-    metadata: Metadata = new Metadata()
+    metadata: Metadata = new Metadata(),
   ) {
     this.type = type;
     this.payload = Object.freeze({ ...payload });

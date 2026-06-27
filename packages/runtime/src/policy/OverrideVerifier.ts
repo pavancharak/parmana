@@ -8,11 +8,7 @@ export class OverrideVerifier {
    * @param signature - base64 signature from authority
    * @param publicKey - authority public key (PEM format)
    */
-  static verify(
-    data: string,
-    signature: string,
-    publicKey: string
-  ): boolean {
+  static verify(data: string, signature: string, publicKey: string): boolean {
     try {
       const verifier = createVerify("SHA256");
 

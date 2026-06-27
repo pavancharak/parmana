@@ -17,21 +17,18 @@ export class TransactionService {
   constructor(
     private readonly transactions: BusinessTransactionRepository,
     private readonly trustRecords: ExecutionTrustRecordRepository,
-    private readonly policies: PolicyRepository
+    private readonly policies: PolicyRepository,
   ) {}
 
   /**
    * Creates a Business Transaction.
    */
-  async create(
-    transaction: BusinessTransaction
-  ): Promise<BusinessTransaction> {
-
+  async create(transaction: BusinessTransaction): Promise<BusinessTransaction> {
     //
     // 1. Idempotency
     //
     const existing = await this.transactions.findById(
-      transaction.businessTransactionId
+      transaction.businessTransactionId,
     );
 
     if (existing) {
@@ -43,7 +40,7 @@ export class TransactionService {
     //
     const policy = await this.policies.resolve(
       transaction.policy.name,
-      transaction.policy.version
+      transaction.policy.version,
     );
 
     if (!policy) {
@@ -61,8 +58,7 @@ export class TransactionService {
     const trustRecord: ExecutionTrustRecord = {
       trustRecordId: crypto.randomUUID(),
 
-      businessTransactionId:
-        created.businessTransactionId,
+      businessTransactionId: created.businessTransactionId,
 
       transaction: created,
 

@@ -11,14 +11,8 @@
 
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "test"
-  ],
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules", "test"],
   "references": [
     {
       "path": "../storage"

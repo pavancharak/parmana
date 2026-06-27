@@ -5,8 +5,7 @@ export class BusinessTransactionNotFoundError extends ParmanaError {
     super(
       "BUSINESS_TRANSACTION_NOT_FOUND",
       `Business Transaction '${businessTransactionId}' not found.`,
-      404
+      404,
     );
   }
 }
-

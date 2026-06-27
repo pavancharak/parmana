@@ -1,23 +1,12 @@
-import type {
-  HashAlgorithm,
-  SignatureAlgorithm,
-} from "./CryptoAlgorithms.js";
+import type { HashAlgorithm, SignatureAlgorithm } from "./CryptoAlgorithms.js";
 
-import type {
-  StorageProvider,
-} from "./StorageProviders.js";
+import type { StorageProvider } from "./StorageProviders.js";
 
-import {
-  optionalProperty,
-} from "./ConfigUtils.js";
+import { optionalProperty } from "./ConfigUtils.js";
 
-import type {
-  KeyProvider,
-} from "./KeyProviders.js";
+import type { KeyProvider } from "./KeyProviders.js";
 
-import type {
-  TrustProfile,
-} from "./TrustProfiles.js";
+import type { TrustProfile } from "./TrustProfiles.js";
 
 import {
   parseStorageProvider,
@@ -123,92 +112,45 @@ export interface LoggingConfig {
  * should be accessed.
  */
 export function loadConfig(): Readonly<Config> {
-
   return Object.freeze({
-
     environment: Object.freeze({
-
-      nodeEnv:
-        process.env.NODE_ENV ??
-        "development",
-
+      nodeEnv: process.env.NODE_ENV ?? "development",
     }),
 
     storage: Object.freeze({
+      provider: parseStorageProvider(process.env.DATABASE_PROVIDER),
 
-  provider:
-    parseStorageProvider(
-      process.env.DATABASE_PROVIDER
-    ),
-
-  ...optionalProperty(
-  "databaseUrl",
-  process.env.DATABASE_URL
-),
-
-}),
+      ...optionalProperty("databaseUrl", process.env.DATABASE_URL),
+    }),
 
     crypto: Object.freeze({
+      hashProvider: parseHashAlgorithm(process.env.HASH_PROVIDER),
 
-      hashProvider:
-        parseHashAlgorithm(
-          process.env.HASH_PROVIDER
-        ),
-
-      signatureProvider:
-        parseSignatureAlgorithm(
-          process.env.SIGNATURE_PROVIDER
-        ),
-
+      signatureProvider: parseSignatureAlgorithm(
+        process.env.SIGNATURE_PROVIDER,
+      ),
     }),
 
     keys: Object.freeze({
+      provider: parseKeyProvider(process.env.KEY_PROVIDER),
 
-  provider:
-    parseKeyProvider(
-      process.env.KEY_PROVIDER
-    ),
+      ...optionalProperty("privateKeyPath", process.env.PRIVATE_KEY_PATH),
 
-  ...optionalProperty(
-  "privateKeyPath",
-  process.env.PRIVATE_KEY_PATH
-),
-
-...optionalProperty(
-  "publicKeyPath",
-  process.env.PUBLIC_KEY_PATH
-),
-
-}),
+      ...optionalProperty("publicKeyPath", process.env.PUBLIC_KEY_PATH),
+    }),
 
     trust: Object.freeze({
+      profile: parseTrustProfile(process.env.TRUST_PROFILE),
 
-      profile:
-        parseTrustProfile(
-          process.env.TRUST_PROFILE
-        ),
-
-      receiptVersion:
-        process.env.RECEIPT_VERSION ??
-        "1",
-
+      receiptVersion: process.env.RECEIPT_VERSION ?? "1",
     }),
 
     api: Object.freeze({
-
-      port: Number(
-        process.env.PORT ?? 3000
-      ),
-
+      port: Number(process.env.PORT ?? 3000),
     }),
 
     logging: Object.freeze({
-
-      level:
-        process.env.LOG_LEVEL ??
-        "info",
-
+      level: process.env.LOG_LEVEL ?? "info",
     }),
-
   });
 }

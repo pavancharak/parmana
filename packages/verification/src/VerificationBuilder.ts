@@ -23,9 +23,7 @@ export class VerificationBuilder {
    * @param component Verification stage.
    * @returns This builder.
    */
-  public addStage(
-    component: VerificationComponent
-  ): this {
+  public addStage(component: VerificationComponent): this {
     this.components.push(component);
     return this;
   }
@@ -36,9 +34,7 @@ export class VerificationBuilder {
    * @param components Verification stages.
    * @returns This builder.
    */
-  public addStages(
-    ...components: VerificationComponent[]
-  ): this {
+  public addStages(...components: VerificationComponent[]): this {
     this.components.push(...components);
     return this;
   }
@@ -49,9 +45,7 @@ export class VerificationBuilder {
    * @param context Verification context.
    * @returns This builder.
    */
-  public withContext(
-    context: VerificationContext
-  ): this {
+  public withContext(context: VerificationContext): this {
     this.context = context;
     return this;
   }
@@ -72,13 +66,8 @@ export class VerificationBuilder {
    * @returns Configured verification engine.
    */
   public build(): VerificationEngine {
-    const pipeline = new VerificationPipeline(
-      this.components
-    );
+    const pipeline = new VerificationPipeline(this.components);
 
-    return new VerificationEngine(
-      pipeline,
-      this.context
-    );
+    return new VerificationEngine(pipeline, this.context);
   }
 }

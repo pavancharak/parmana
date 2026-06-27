@@ -4,45 +4,28 @@ import request from "supertest";
 import app from "../src/app.js";
 
 describe("POST /execute", () => {
+  it("returns a validation error for an invalid Business Transaction ID", async () => {
+    const response = await request(app)
+      .post("/execute")
 
-  it(
-    "returns a validation error for an invalid Business Transaction ID",
-    async () => {
+      .send({
+        businessTransactionId: "txn-001",
 
-      const response =
-        await request(app)
+        status: "AUTHORIZED",
 
-          .post("/execute")
+        metadata: {},
 
-          .send({
+        policy: {},
 
-            businessTransactionId:
-              "txn-001",
+        signals: {},
 
-            status: "AUTHORIZED",
+        decision: {},
+      });
 
-            metadata: {},
+    expect(response.status).toBe(400);
 
-            policy: {},
-
-            signals: {},
-
-            decision: {},
-
-          });
-
-      expect(
-        response.status
-      ).toBe(400);
-
-      expect(
-        response.body.error
-      ).toBe(
-        "businessTransactionId must be a valid UUID."
-      );
-
-    }
-
-  );
-
+    expect(response.body.error).toBe(
+      "businessTransactionId must be a valid UUID.",
+    );
+  });
 });

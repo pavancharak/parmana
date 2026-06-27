@@ -18,7 +18,7 @@ export class TransactionId extends Identifier {
 
     if (!value.startsWith(TransactionId.PREFIX)) {
       throw new Error(
-        `TransactionId must start with '${TransactionId.PREFIX}'.`
+        `TransactionId must start with '${TransactionId.PREFIX}'.`,
       );
     }
   }

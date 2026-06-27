@@ -6,7 +6,5 @@ import { ExecutionTransaction } from "@parmana/shared";
  * Components are deterministic and immutable.
  */
 export interface RuntimeComponent {
-  execute(
-    transaction: ExecutionTransaction
-  ): ExecutionTransaction;
+  execute(transaction: ExecutionTransaction): ExecutionTransaction;
 }

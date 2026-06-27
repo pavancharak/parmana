@@ -8,18 +8,14 @@ import type { VerificationComponent } from "./VerificationComponent.js";
 export class VerificationPipeline {
   private readonly components: readonly VerificationComponent[];
 
-  constructor(
-    components: readonly VerificationComponent[]
-  ) {
+  constructor(components: readonly VerificationComponent[]) {
     this.components = [...components];
 
     Object.freeze(this.components);
     Object.freeze(this);
   }
 
-  public execute(
-    verification: Verification
-  ): Verification {
+  public execute(verification: Verification): Verification {
     let current = verification;
 
     for (const component of this.components) {

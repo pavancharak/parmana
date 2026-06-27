@@ -21,5 +21,4 @@ export const EvidenceType = {
   METADATA: "METADATA",
 } as const;
 
-export type EvidenceType =
-  (typeof EvidenceType)[keyof typeof EvidenceType];
+export type EvidenceType = (typeof EvidenceType)[keyof typeof EvidenceType];

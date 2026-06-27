@@ -9,9 +9,7 @@ import { EvidenceArtifact } from "./EvidenceArtifact.js";
 export class Evidence {
   public readonly artifacts: readonly EvidenceArtifact[];
 
-  constructor(
-    artifacts: readonly EvidenceArtifact[] = []
-  ) {
+  constructor(artifacts: readonly EvidenceArtifact[] = []) {
     this.artifacts = Object.freeze([...artifacts]);
 
     Object.freeze(this);
@@ -21,13 +19,8 @@ export class Evidence {
    * Returns a new Evidence instance
    * containing an additional artifact.
    */
-  public append(
-    artifact: EvidenceArtifact
-  ): Evidence {
-    return new Evidence([
-      ...this.artifacts,
-      artifact,
-    ]);
+  public append(artifact: EvidenceArtifact): Evidence {
+    return new Evidence([...this.artifacts, artifact]);
   }
 
   /**

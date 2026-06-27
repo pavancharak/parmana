@@ -54,7 +54,7 @@ export class Execution {
     executor: string,
     reference: string,
     executedAt: Timestamp,
-    metadata: Metadata = new Metadata()
+    metadata: Metadata = new Metadata(),
   ) {
     if (!executor.trim()) {
       throw new Error("Executor cannot be empty.");

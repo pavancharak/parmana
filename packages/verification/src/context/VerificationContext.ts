@@ -1,6 +1,4 @@
-import type {
-  ExecutionTrustRecord,
-} from "@parmana/shared";
+import type { ExecutionTrustRecord } from "@parmana/shared";
 
 /**
  * Verification Context.
@@ -12,9 +10,7 @@ import type {
  * package.
  */
 export class VerificationContext {
-
   constructor(
-
     /**
      * Trust Record currently being verified.
      *
@@ -22,8 +18,7 @@ export class VerificationContext {
      * is fully migrated to the Execution Trust
      * architecture.
      */
-    public readonly trustRecord?:
-      ExecutionTrustRecord,
+    public readonly trustRecord?: ExecutionTrustRecord,
 
     /**
      * Overall verification status.
@@ -33,8 +28,6 @@ export class VerificationContext {
     /**
      * Verification errors collected by stages.
      */
-    public readonly errors: string[] = []
-
+    public readonly errors: string[] = [],
   ) {}
-
 }

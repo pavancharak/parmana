@@ -10,7 +10,7 @@ export class ExecutionStage {
 
     if (execution.status === "FAILED") {
       throw new Error(
-        `Execution failed previously: ${execution.result ?? "unknown"}`
+        `Execution failed previously: ${execution.result ?? "unknown"}`,
       );
     }
 

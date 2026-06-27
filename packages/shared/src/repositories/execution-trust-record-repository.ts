@@ -11,13 +11,10 @@ import {
  * Execution Trust Records.
  */
 export interface ExecutionTrustRecordRepository {
-
-  create(
-    record: ExecutionTrustRecord
-  ): Promise<ExecutionTrustRecord>;
+  create(record: ExecutionTrustRecord): Promise<ExecutionTrustRecord>;
 
   findByTransactionId(
-    businessTransactionId: string
+    businessTransactionId: string,
   ): Promise<ExecutionTrustRecord | null>;
 
   /**
@@ -25,7 +22,7 @@ export interface ExecutionTrustRecordRepository {
    */
   appendExecution(
     businessTransactionId: string,
-    execution: Execution
+    execution: Execution,
   ): Promise<void>;
 
   /**
@@ -41,16 +38,14 @@ export interface ExecutionTrustRecordRepository {
    * compatibility and should not be used in new
    * implementations.
    */
-  replaceExecution(
-    execution: Execution
-  ): Promise<void>;
+  replaceExecution(execution: Execution): Promise<void>;
 
   /**
    * Appends an immutable Override.
    */
   appendOverride(
     businessTransactionId: string,
-    override: Override
+    override: Override,
   ): Promise<void>;
 
   /**
@@ -58,15 +53,11 @@ export interface ExecutionTrustRecordRepository {
    */
   appendVerification(
     businessTransactionId: string,
-    verification: Verification
+    verification: Verification,
   ): Promise<void>;
 
   /**
    * Appends an immutable Receipt.
    */
-  appendReceipt(
-    businessTransactionId: string,
-    receipt: Receipt
-  ): Promise<void>;
-
+  appendReceipt(businessTransactionId: string, receipt: Receipt): Promise<void>;
 }

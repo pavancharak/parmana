@@ -46,32 +46,20 @@ app.use("/verification", verificationRoutes);
  */
 app.use("/receipt", receiptRoutes);
 
-app.use(
-  "/receipt/latest",
-  receiptLatestRoutes
-);
+app.use("/receipt/latest", receiptLatestRoutes);
 
 /**
  * Business Transactions
  */
-app.use(
-  "/transactions",
-  transactionsRoutes
-);
+app.use("/transactions", transactionsRoutes);
 
 /**
  * Execution Trust Records
  */
-app.use(
-  "/trust-records",
-  trustRecordRoutes
-);
+app.use("/trust-records", trustRecordRoutes);
 /**
  * Replay
  */
-app.use(
-  "/replay",
-  replayRoutes
-);
+app.use("/replay", replayRoutes);
 
 export default app;

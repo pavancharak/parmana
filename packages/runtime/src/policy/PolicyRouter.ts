@@ -1,26 +1,29 @@
 import { readFileSync, readdirSync } from "fs";
+
 import path from "path";
 
-export class PolicyRouter {
-  constructor(private policyDir: string) {}
+import type { JsonValue } from "@parmana/shared";
 
-  route(tx: any) {
+import type { Policy, PolicyCondition } from "@parmana/policy";
+
+import type { RuntimeTransaction } from "./types/RuntimeTransaction.js";
+
+export class PolicyRouter {
+  constructor(private readonly policyDir: string) {}
+
+  route(tx: RuntimeTransaction): Policy {
     const policies = this.loadAllPolicies();
 
-    // 1. FIRST MATCH WINS
     for (const policy of policies) {
       if (this.evaluatePolicy(policy, tx)) {
         return policy;
       }
     }
 
-    // 2. FALLBACK: "all match" policy
-    const fallback = policies.find(
-      (p) =>
-        p.rules?.some(
-          (r: any) =>
-            !r.condition?.all || r.condition.all.length === 0
-        )
+    const fallback = policies.find((policy) =>
+      policy.rules.some(
+        (rule) => !rule.condition.all || rule.condition.all.length === 0,
+      ),
     );
 
     if (fallback) {
@@ -30,49 +33,43 @@ export class PolicyRouter {
     throw new Error("No matching policy found");
   }
 
-  private loadAllPolicies() {
+  private loadAllPolicies(): Policy[] {
     const folders = readdirSync(this.policyDir);
 
     return folders.map((folder) => {
       const filePath = path.join(this.policyDir, folder, "policy.json");
-      return JSON.parse(readFileSync(filePath, "utf-8"));
+
+      return JSON.parse(readFileSync(filePath, "utf8")) as Policy;
     });
   }
 
-  private evaluatePolicy(policy: any, tx: any): boolean {
-    for (const rule of policy.rules) {
-      if (this.matches(rule.condition, tx)) {
-        return true;
-      }
-    }
-    return false;
+  private evaluatePolicy(policy: Policy, tx: RuntimeTransaction): boolean {
+    return policy.rules.some((rule) => this.matches(rule.condition, tx));
   }
 
-  private matches(condition: any, tx: any): boolean {
-    // "all: []" means ALWAYS match
-    if (!condition?.all || condition.all.length === 0) {
+  private matches(condition: PolicyCondition, tx: RuntimeTransaction): boolean {
+    if (!condition.all || condition.all.length === 0) {
       return true;
     }
 
     for (const c of condition.all) {
-      if (c.greater_than !== undefined) {
-        if (tx[c.signal] <= c.greater_than) return false;
+      if (c.signal && c.greater_than !== undefined) {
+        const value = tx[c.signal as keyof RuntimeTransaction];
+
+        if (typeof value !== "number" || value <= c.greater_than) {
+          return false;
+        }
       }
 
-      if (c.equals !== undefined) {
-  const keys = Object.keys(c.equals);
+      if (c.signal && c.equals !== undefined) {
+        const expected = c.equals as JsonValue;
 
-  if (keys.length === 0) return false;
+        const actual = tx[c.signal as keyof RuntimeTransaction] as JsonValue;
 
-  const key = keys[0];
-
-  if (!key) return false;
-
-  const expectedValue = (c.equals as Record<string, any>)[key];
-  const actualValue = (tx as Record<string, any>)[key];
-
-  if (actualValue !== expectedValue) return false;
-}
+        if (actual !== expected) {
+          return false;
+        }
+      }
     }
 
     return true;

@@ -3,17 +3,11 @@ import type {
   ExecutionTrustRecordRepository,
 } from "@parmana/shared";
 
-import type {
-  StorageProvider,
-} from "../StorageProvider.js";
+import type { StorageProvider } from "../StorageProvider.js";
 
-import {
-  MemoryBusinessTransactionRepository,
-} from "./MemoryBusinessTransactionRepository.js";
+import { MemoryBusinessTransactionRepository } from "./MemoryBusinessTransactionRepository.js";
 
-import {
-  MemoryExecutionTrustRecordRepository,
-} from "./MemoryExecutionTrustRecordRepository.js";
+import { MemoryExecutionTrustRecordRepository } from "./MemoryExecutionTrustRecordRepository.js";
 
 /**
  * Memory Storage Provider.
@@ -21,25 +15,16 @@ import {
  * Provides in-memory repository implementations
  * for development, testing, and local execution.
  */
-export class MemoryStorageProvider
-  implements StorageProvider {
+export class MemoryStorageProvider implements StorageProvider {
+  readonly businessTransactions: BusinessTransactionRepository;
 
-  readonly businessTransactions:
-    BusinessTransactionRepository;
-
-  readonly trustRecords:
-    ExecutionTrustRecordRepository;
+  readonly trustRecords: ExecutionTrustRecordRepository;
 
   constructor() {
+    this.businessTransactions = new MemoryBusinessTransactionRepository();
 
-    this.businessTransactions =
-      new MemoryBusinessTransactionRepository();
-
-    this.trustRecords =
-      new MemoryExecutionTrustRecordRepository();
+    this.trustRecords = new MemoryExecutionTrustRecordRepository();
 
     Object.freeze(this);
-
   }
-
 }

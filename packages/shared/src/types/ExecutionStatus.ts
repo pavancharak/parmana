@@ -1,6 +1,2 @@
 export type ExecutionStatus =
-  | "PENDING"
-  | "AUTHORIZED"
-  | "EXECUTED"
-  | "FAILED"
-  | "SUCCEEDED";
+  "PENDING" | "AUTHORIZED" | "EXECUTED" | "FAILED" | "SUCCEEDED";

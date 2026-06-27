@@ -19,9 +19,7 @@ export class RuntimePipeline {
    */
   private readonly components: readonly RuntimeComponent[];
 
-  constructor(
-    components: readonly RuntimeComponent[]
-  ) {
+  constructor(components: readonly RuntimeComponent[]) {
     this.components = [...components];
 
     Object.freeze(this.components);
@@ -31,9 +29,7 @@ export class RuntimePipeline {
   /**
    * Executes the configured runtime stages.
    */
-  public async execute(
-    context: RuntimeContext
-  ): Promise<RuntimeContext> {
+  public async execute(context: RuntimeContext): Promise<RuntimeContext> {
     let current = context;
 
     for (const component of this.components) {

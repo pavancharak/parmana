@@ -6,5 +6,4 @@ export const KeyProviders = {
   HSM: "hsm",
 } as const;
 
-export type KeyProvider =
-  typeof KeyProviders[keyof typeof KeyProviders];
+export type KeyProvider = (typeof KeyProviders)[keyof typeof KeyProviders];

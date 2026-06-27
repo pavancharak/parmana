@@ -81,5 +81,5 @@ export enum BusinessTransactionStatus {
 
   FAILED = "FAILED",
 
-  VERIFIED = "VERIFIED"
+  VERIFIED = "VERIFIED",
 }

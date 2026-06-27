@@ -9,100 +9,53 @@ import {
 
 const router = Router();
 
-const application =
-  RuntimeFactory.create(
-    businessTransactionRepository,
-    executionTrustRecordRepository
-  );
+const application = RuntimeFactory.create(
+  businessTransactionRepository,
+  executionTrustRecordRepository,
+);
 
 /**
  * GET /transactions
  *
  * Lists accepted Business Transactions.
  */
-router.get(
-  "/",
-  async (req, res) => {
+router.get("/", async (req, res) => {
+  try {
+    const page = Number(req.query.page ?? 1);
 
-    try {
+    const pageSize = Number(req.query.pageSize ?? 25);
 
-      const page =
-        Number(req.query.page ?? 1);
+    const transactions = await application.listTransactions(page, pageSize);
 
-      const pageSize =
-        Number(req.query.pageSize ?? 25);
-
-      const transactions =
-        await application.listTransactions(
-          page,
-          pageSize
-        );
-
-      res.json(
-        transactions
-      );
-
-    } catch (err) {
-
-      res.status(500).json({
-
-        error:
-          err instanceof Error
-            ? err.message
-            : "Unknown error",
-
-      });
-
-    }
-
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
   }
-);
+});
 
 /**
  * GET /transactions/:id
  *
  * Returns a Business Transaction.
  */
-router.get(
-  "/:id",
-  async (req, res) => {
+router.get("/:id", async (req, res) => {
+  try {
+    const transaction = await application.getTransaction(req.params.id);
 
-    try {
-
-      const transaction =
-        await application.getTransaction(
-          req.params.id
-        );
-
-      if (!transaction) {
-
-        return res.status(404).json({
-
-          error:
-            "Business Transaction not found.",
-
-        });
-
-      }
-
-      res.json(
-        transaction
-      );
-
-    } catch (err) {
-
-      res.status(500).json({
-
-        error:
-          err instanceof Error
-            ? err.message
-            : "Unknown error",
-
+    if (!transaction) {
+      return res.status(404).json({
+        error: "Business Transaction not found.",
       });
-
     }
 
+    res.json(transaction);
+  } catch (err) {
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
   }
-);
+});
 
 export default router;

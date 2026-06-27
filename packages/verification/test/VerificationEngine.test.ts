@@ -5,7 +5,7 @@ describe("VerificationEngine - Trust Boundary", () => {
     const execution = {
       id: "exec_1",
       intent: "transfer",
-      authority: "user_1"
+      authority: "user_1",
     };
 
     expect(execution.id).toBeDefined();
@@ -15,7 +15,7 @@ describe("VerificationEngine - Trust Boundary", () => {
 
   it("should reject malformed execution", () => {
     const execution = {
-      id: "exec_1"
+      id: "exec_1",
     };
 
     expect(execution.intent ?? null).toBeNull();

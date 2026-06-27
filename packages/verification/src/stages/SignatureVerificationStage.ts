@@ -9,9 +9,7 @@ import { VerificationError } from "../errors/VerificationError.js";
  * This is currently a placeholder implementation.
  * Future versions will delegate verification to the Crypto package.
  */
-export class SignatureVerificationStage
-  implements VerificationComponent
-{
+export class SignatureVerificationStage implements VerificationComponent {
   /**
    * Executes the signature verification stage.
    *
@@ -19,13 +17,9 @@ export class SignatureVerificationStage
    * @returns The same immutable verification.
    * @throws VerificationError if the verification is missing.
    */
-  public execute(
-    verification: Verification
-  ): Verification {
+  public execute(verification: Verification): Verification {
     if (!verification) {
-      throw new VerificationError(
-        "Verification cannot be null or undefined."
-      );
+      throw new VerificationError("Verification cannot be null or undefined.");
     }
 
     return verification;

@@ -1,8 +1,6 @@
 import { CanonicalSerializer } from "./CanonicalSerializer.js";
 
-import type {
-  CryptoProvider,
-} from "./providers/CryptoProvider.js";
+import type { CryptoProvider } from "./providers/CryptoProvider.js";
 
 /**
  * Signature Verifier.
@@ -11,31 +9,18 @@ import type {
  * SignatureProvider.
  */
 export class SignatureVerifier {
-
   constructor(
-  private readonly crypto:
-    CryptoProvider,
+    private readonly crypto: CryptoProvider,
 
-  private readonly serializer =
-    new CanonicalSerializer()
-) {}
+    private readonly serializer = new CanonicalSerializer(),
+  ) {}
 
   /**
    * Verifies a signature.
    */
-  async verify(
-    artifact: unknown,
-    signature: string
-  ): Promise<boolean> {
+  async verify(artifact: unknown, signature: string): Promise<boolean> {
+    const bytes = this.serializer.serialize(artifact);
 
-    const bytes =
-      this.serializer.serialize(
-        artifact
-      );
-
-    return this.crypto.signature.verify(
-      bytes,
-      signature
-    );
+    return this.crypto.signature.verify(bytes, signature);
   }
 }

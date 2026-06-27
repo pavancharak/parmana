@@ -12,11 +12,7 @@ export abstract class ParmanaError extends Error {
    */
   public readonly status: number;
 
-  protected constructor(
-    code: string,
-    message: string,
-    status: number
-  ) {
+  protected constructor(code: string, message: string, status: number) {
     super(message);
 
     this.name = this.constructor.name;

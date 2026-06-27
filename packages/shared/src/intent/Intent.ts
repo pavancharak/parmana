@@ -29,7 +29,7 @@ export class Intent {
   constructor(
     action: string,
     parameters: Record<string, unknown> = {},
-    metadata: Metadata = new Metadata()
+    metadata: Metadata = new Metadata(),
   ) {
     if (!action.trim()) {
       throw new Error("Intent action cannot be empty.");
@@ -45,8 +45,7 @@ export class Intent {
   public equals(other: Intent): boolean {
     return (
       this.action === other.action &&
-      JSON.stringify(this.parameters) ===
-        JSON.stringify(other.parameters)
+      JSON.stringify(this.parameters) === JSON.stringify(other.parameters)
     );
   }
 

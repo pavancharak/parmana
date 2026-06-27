@@ -7,41 +7,43 @@ export interface PolicyMeta {
 }
 
 export class PolicyRegistry {
-  private policies: Map<string, PolicyMeta> = new Map();
+  private readonly policies = new Map<string, PolicyMeta>();
 
-  register(policy: PolicyMeta) {
-    const key = this.getKey(policy.id, policy.version);
-    this.policies.set(key, policy);
+  register(policy: PolicyMeta): void {
+    this.policies.set(this.getKey(policy.id, policy.version), policy);
   }
 
-  getPolicy(id: string, version?: string): any {
+  getPolicy(id: string, version?: string): PolicyEngine {
     const key = this.resolveKey(id, version);
+
     const meta = this.policies.get(key);
 
     if (!meta) {
-      throw new Error(`Policy not found: ${id}:${version || "latest"}`);
+      throw new Error(`Policy not found: ${id}:${version ?? "latest"}`);
     }
 
-    const engine = new PolicyEngine();
-return engine;
+    return new PolicyEngine();
   }
 
-  list() {
-    return Array.from(this.policies.values());
+  list(): PolicyMeta[] {
+    return [...this.policies.values()];
   }
 
-  private resolveKey(id: string, version?: string) {
-    if (version) return `${id}@${version}`;
+  private resolveKey(id: string, version?: string): string {
+    if (version) {
+      return this.getKey(id, version);
+    }
 
-    // fallback: pick latest registered version
     for (const key of this.policies.keys()) {
-      if (key.startsWith(id + "@")) return key;
+      if (key.startsWith(`${id}@`)) {
+        return key;
+      }
     }
 
     return `${id}@latest`;
   }
 
-  private getKey(id: string, version: string) {
+  private getKey(id: string, version: string): string {
     return `${id}@${version}`;
   }
 }

@@ -8,103 +8,60 @@ beforeAll(() => {
 import app from "../src/app.js";
 
 describe("Trust Record GET Integration", () => {
-
   it("retrieves an existing Execution Trust Record", async () => {
-
     //
     // Execute
     //
-    const executeResponse =
-      await request(app)
+    const executeResponse = await request(app)
+      .post("/execute")
 
-        .post("/execute")
+      .send({
+        businessTransactionId: crypto.randomUUID(),
 
-        .send({
+        status: "AUTHORIZED",
 
-          businessTransactionId:
-            crypto.randomUUID(),
+        metadata: {},
 
-          status: "AUTHORIZED",
+        policy: {},
 
-          metadata: {},
+        signals: {},
 
-          policy: {},
+        decision: {},
+      });
 
-          signals: {},
+    expect(executeResponse.status).toBe(200);
 
-          decision: {},
-
-        });
-
-    expect(
-      executeResponse.status
-    ).toBe(200);
-
-    const trustRecord =
-      executeResponse.body;
+    const trustRecord = executeResponse.body;
 
     //
     // Retrieve Trust Record
     //
-    const getResponse =
-      await request(app)
-
-        .get(
-          `/trust-records/${trustRecord.businessTransactionId}`
-        );
-
-    console.log(
-      "TRUST RECORD:",
-      getResponse.status
+    const getResponse = await request(app).get(
+      `/trust-records/${trustRecord.businessTransactionId}`,
     );
 
-    console.log(
-      getResponse.body
+    console.log("TRUST RECORD:", getResponse.status);
+
+    console.log(getResponse.body);
+
+    expect(getResponse.status).toBe(200);
+
+    expect(getResponse.body.businessTransactionId).toBe(
+      trustRecord.businessTransactionId,
     );
 
-    expect(
-      getResponse.status
-    ).toBe(200);
+    expect(getResponse.body.trustRecordId).toBe(trustRecord.trustRecordId);
 
-    expect(
-      getResponse.body.businessTransactionId
-    ).toBe(
-      trustRecord.businessTransactionId
-    );
-
-    expect(
-      getResponse.body.trustRecordId
-    ).toBe(
-      trustRecord.trustRecordId
-    );
-
-    expect(
-      getResponse.body.trustRecordHash
-    ).toBe(
-      trustRecord.trustRecordHash
-    );
-
+    expect(getResponse.body.trustRecordHash).toBe(trustRecord.trustRecordHash);
   });
 
   it("returns an error for an unknown Business Transaction", async () => {
-
-    const response =
-      await request(app)
-
-        .get(
-          `/trust-records/${crypto.randomUUID()}`
-        );
-
-    expect(
-      response.status
-    ).toBe(404);
-
-    expect(
-      response.body.error
-    ).toContain(
-      "Execution Trust Record"
+    const response = await request(app).get(
+      `/trust-records/${crypto.randomUUID()}`,
     );
 
-  });
+    expect(response.status).toBe(404);
 
+    expect(response.body.error).toContain("Execution Trust Record");
+  });
 });

@@ -1,10 +1,6 @@
-import type {
-  HashProvider,
-} from "./HashProvider.js";
+import type { HashProvider } from "./HashProvider.js";
 
-import type {
-  SignatureProvider,
-} from "./SignatureProvider.js";
+import type { SignatureProvider } from "./SignatureProvider.js";
 
 /**
  * Configured cryptographic capabilities.
@@ -15,7 +11,6 @@ import type {
  * algorithms.
  */
 export interface CryptoProvider {
-
   readonly hash: HashProvider;
 
   readonly signature: SignatureProvider;

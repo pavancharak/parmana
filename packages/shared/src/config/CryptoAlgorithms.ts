@@ -10,7 +10,7 @@ export const HashAlgorithms = {
 } as const;
 
 export type HashAlgorithm =
-  typeof HashAlgorithms[keyof typeof HashAlgorithms];
+  (typeof HashAlgorithms)[keyof typeof HashAlgorithms];
 
 /**
  * Canonical signature algorithms.
@@ -28,4 +28,4 @@ export const SignatureAlgorithms = {
 } as const;
 
 export type SignatureAlgorithm =
-  typeof SignatureAlgorithms[keyof typeof SignatureAlgorithms];
+  (typeof SignatureAlgorithms)[keyof typeof SignatureAlgorithms];

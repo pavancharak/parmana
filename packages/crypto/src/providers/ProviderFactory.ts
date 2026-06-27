@@ -1,10 +1,6 @@
-import type {
-  CryptoProvider,
-} from "./CryptoProvider.js";
+import type { CryptoProvider } from "./CryptoProvider.js";
 
-import {
-  CryptoBootstrap,
-} from "../CryptoBootstrap.js";
+import { CryptoBootstrap } from "../CryptoBootstrap.js";
 
 /**
  * Provider Factory.
@@ -13,11 +9,7 @@ import {
  * canonical CryptoBootstrap.
  */
 export class ProviderFactory {
-
   static create(): CryptoProvider {
-
     return CryptoBootstrap.create();
-
   }
-
 }

@@ -8,105 +8,71 @@ beforeAll(() => {
 import app from "../src/app.js";
 
 describe("Replay Integration", () => {
-
   it("replays a previously executed Business Transaction", async () => {
-
     //
     // Execute
     //
-    const execute =
-      await request(app)
+    const execute = await request(app)
+      .post("/execute")
 
-        .post("/execute")
+      .send({
+        businessTransactionId: crypto.randomUUID(),
 
-        .send({
+        status: "AUTHORIZED",
 
-          businessTransactionId:
-            crypto.randomUUID(),
+        metadata: {},
 
-          status: "AUTHORIZED",
+        policy: {},
 
-          metadata: {},
+        signals: {},
 
-          policy: {},
+        decision: {},
+      });
 
-          signals: {},
-
-          decision: {},
-
-        });
-
-    expect(
-      execute.status
-    ).toBe(200);
+    expect(execute.status).toBe(200);
 
     //
     // Verify
     //
     await request(app)
-
       .post("/verify")
 
       .send({
-
-        businessTransactionId:
-          execute.body.businessTransactionId,
-
+        businessTransactionId: execute.body.businessTransactionId,
       });
 
     //
     // Receipt
     //
     await request(app)
-
       .post("/receipt")
 
       .send({
-
-        businessTransactionId:
-          execute.body.businessTransactionId,
-
+        businessTransactionId: execute.body.businessTransactionId,
       });
 
     //
     // Replay
     //
-    const replay =
-      await request(app)
+    const replay = await request(app)
+      .post("/replay")
 
-        .post("/replay")
+      .send({
+        businessTransactionId: execute.body.businessTransactionId,
+      });
 
-        .send({
-
-          businessTransactionId:
-            execute.body.businessTransactionId,
-
-        });
-
-    expect(
-      replay.status
-    ).toBe(200);
+    expect(replay.status).toBe(200);
 
     //
     // Replay should produce the same
     // deterministic Trust Record hash.
     //
-    expect(
-      replay.body.businessTransactionId
-    ).toBe(
-      execute.body.businessTransactionId
+    expect(replay.body.businessTransactionId).toBe(
+      execute.body.businessTransactionId,
     );
 
-    expect(
-      replay.body.trustRecordHash
-    ).toBe(
-      execute.body.trustRecordHash
-    );
+    expect(replay.body.trustRecordHash).toBe(execute.body.trustRecordHash);
 
-    expect(
-      replay.body.verified
-    ).toBe(true);
-
+    expect(replay.body.verified).toBe(true);
   });
-
 });

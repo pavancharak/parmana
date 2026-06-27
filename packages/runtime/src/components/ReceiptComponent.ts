@@ -5,23 +5,15 @@ import { ReceiptService } from "../services/receipt-service.js";
 /**
  * Receipt Component.
  */
-export class ReceiptComponent
-  implements RuntimeComponent {
-
-  constructor(
-    private readonly receiptService: ReceiptService
-  ) {
+export class ReceiptComponent implements RuntimeComponent {
+  constructor(private readonly receiptService: ReceiptService) {
     Object.freeze(this);
   }
 
-  public async execute(
-    context: RuntimeContext
-  ): Promise<RuntimeContext> {
-
-    const receipt =
-      await this.receiptService.generate(
-        context.transaction.businessTransactionId
-      );
+  public async execute(context: RuntimeContext): Promise<RuntimeContext> {
+    const receipt = await this.receiptService.generate(
+      context.transaction.businessTransactionId,
+    );
 
     return {
       ...context,

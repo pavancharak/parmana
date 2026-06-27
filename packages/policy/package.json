@@ -1,31 +1,35 @@
 {
-    "name": "@parmana/policy",
-    "version": "0.1.0",
-    "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        }
-    },
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "build": "tsc -p tsconfig.json",
-        "typecheck": "tsc --noEmit",
-        "test": "vitest run"
-    },
-    "dependencies": {
-        "@supabase/supabase-js": "^2.108.2",
-        "dotenv": "^17.4.2",
-        "express": "^5.2.1",
-        "vitest": "^4.1.9"
-    },
-    "devDependencies": {
-        "@types/express": "^5.0.6",
-        "tsx": "^4.22.4"
+  "name": "@parmana/policy",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "vitest": "^4.1.9"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "tsx": "^4.22.4",
+    "typescript-eslint": "^8.62.0"
+  }
 }

@@ -1,27 +1,16 @@
-import type {
-  ExecutionTrustRecord,
-} from "@parmana/shared";
+import type { ExecutionTrustRecord } from "@parmana/shared";
 
-import {
-  TrustRecordHasher,
-} from "./TrustRecordHasher.js";
+import { TrustRecordHasher } from "./TrustRecordHasher.js";
 
-import {
-  CryptoBootstrap,
-} from "./CryptoBootstrap.js";
+import { CryptoBootstrap } from "./CryptoBootstrap.js";
 
 /**
  * Verification cryptographic operations.
  */
 export class VerificationCrypto {
+  private readonly crypto = CryptoBootstrap.create();
 
-  private readonly crypto =
-    CryptoBootstrap.create();
-
-  private readonly hasher =
-    new TrustRecordHasher(
-      this.crypto
-    );
+  private readonly hasher = new TrustRecordHasher(this.crypto);
 
   /**
    * Creates the canonical immutable view of an
@@ -32,67 +21,36 @@ export class VerificationCrypto {
    * excluded so the Trust Record hash remains
    * stable throughout its lifetime.
    */
-  private canonicalRecord(
-    trustRecord: ExecutionTrustRecord
-  ) {
-
+  private canonicalRecord(trustRecord: ExecutionTrustRecord) {
     return {
+      trustRecordId: trustRecord.trustRecordId,
 
-      trustRecordId:
-        trustRecord.trustRecordId,
+      businessTransactionId: trustRecord.businessTransactionId,
 
-      businessTransactionId:
-        trustRecord.businessTransactionId,
+      transaction: trustRecord.transaction,
 
-      transaction:
-        trustRecord.transaction,
+      overrides: trustRecord.overrides,
 
-      overrides:
-        trustRecord.overrides,
+      executions: trustRecord.executions,
 
-      executions:
-        trustRecord.executions,
-
-      createdAt:
-        trustRecord.createdAt,
-
+      createdAt: trustRecord.createdAt,
     };
-
   }
 
   /**
    * Computes the canonical Trust Record hash.
    */
-  async hash(
-    trustRecord: ExecutionTrustRecord
-  ): Promise<string> {
-
-    return this.hasher.hash(
-      this.canonicalRecord(
-        trustRecord
-      )
-    );
-
+  async hash(trustRecord: ExecutionTrustRecord): Promise<string> {
+    return this.hasher.hash(this.canonicalRecord(trustRecord));
   }
 
   /**
    * Verifies that the Trust Record matches
    * the stored hash.
    */
-  async verify(
-    trustRecord: ExecutionTrustRecord
-  ): Promise<boolean> {
+  async verify(trustRecord: ExecutionTrustRecord): Promise<boolean> {
+    const actual = await this.hash(trustRecord);
 
-    const actual =
-      await this.hash(
-        trustRecord
-      );
-
-    return (
-      actual ===
-      trustRecord.trustRecordHash
-    );
-
+    return actual === trustRecord.trustRecordHash;
   }
-
 }

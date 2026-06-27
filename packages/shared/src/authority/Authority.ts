@@ -11,8 +11,7 @@ export const AuthorityType = {
   EXTERNAL_SYSTEM: "EXTERNAL_SYSTEM",
 } as const;
 
-export type AuthorityType =
-  (typeof AuthorityType)[keyof typeof AuthorityType];
+export type AuthorityType = (typeof AuthorityType)[keyof typeof AuthorityType];
 
 /**
  * Represents the authority responsible for authorizing execution.
@@ -44,7 +43,7 @@ export class Authority {
     id: string,
     name: string,
     type: AuthorityType,
-    metadata: Metadata = new Metadata()
+    metadata: Metadata = new Metadata(),
   ) {
     if (!id.trim()) {
       throw new Error("Authority id cannot be empty.");

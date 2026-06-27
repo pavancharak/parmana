@@ -1,9 +1,11 @@
 import { ReplayEngine } from "./ReplayEngine.js";
 
-export class ReplayBuilder {
-  constructor(private context: any) {}
+import type { ReplayContext } from "./types/ReplayContext.js";
 
-  build() {
+export class ReplayBuilder {
+  constructor(private readonly context: ReplayContext) {}
+
+  build(): ReplayEngine {
     return new ReplayEngine();
   }
 }

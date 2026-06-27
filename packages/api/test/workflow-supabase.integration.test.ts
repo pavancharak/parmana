@@ -8,106 +8,65 @@ beforeAll(() => {
 import app from "../src/app.js";
 
 describe("Supabase Workflow Integration", () => {
-
   it("executes a Business Transaction", async () => {
-
     //
     // Execute
     //
-    const response =
-      await request(app)
+    const response = await request(app)
+      .post("/execute")
 
-        .post("/execute")
+      .send({
+        businessTransactionId: crypto.randomUUID(),
 
-        .send({
+        status: "AUTHORIZED",
 
-          businessTransactionId:
-            crypto.randomUUID(),
+        metadata: {},
 
-          status: "AUTHORIZED",
+        policy: {},
 
-          metadata: {},
+        signals: {},
 
-          policy: {},
+        decision: {},
+      });
 
-          signals: {},
+    console.log("EXECUTE:", response.status);
 
-          decision: {},
+    console.log(response.body);
 
-        });
+    expect(response.status).toBe(200);
 
-    console.log(
-      "EXECUTE:",
-      response.status
-    );
-
-    console.log(
-      response.body
-    );
-
-    expect(
-      response.status
-    ).toBe(200);
-
-    const trustRecord =
-      response.body;
+    const trustRecord = response.body;
 
     //
     // Verify
     //
-    const verifyResponse =
-      await request(app)
+    const verifyResponse = await request(app)
+      .post("/verify")
 
-        .post("/verify")
+      .send({
+        businessTransactionId: trustRecord.businessTransactionId,
+      });
 
-        .send({
+    console.log("VERIFY:", verifyResponse.status);
 
-          businessTransactionId:
-            trustRecord.businessTransactionId,
+    console.log(verifyResponse.body);
 
-        });
-
-    console.log(
-      "VERIFY:",
-      verifyResponse.status
-    );
-
-    console.log(
-      verifyResponse.body
-    );
-
-    expect(
-      verifyResponse.status
-    ).toBe(200);
+    expect(verifyResponse.status).toBe(200);
 
     //
     // Receipt
     //
-    const receiptResponse =
-      await request(app)
+    const receiptResponse = await request(app)
+      .post("/receipt")
 
-        .post("/receipt")
+      .send({
+        businessTransactionId: trustRecord.businessTransactionId,
+      });
 
-        .send({
+    console.log("RECEIPT:", receiptResponse.status);
 
-          businessTransactionId:
-            trustRecord.businessTransactionId,
+    console.log(receiptResponse.body);
 
-        });
-
-    console.log(
-      "RECEIPT:",
-      receiptResponse.status
-    );
-
-    console.log(
-      receiptResponse.body
-    );
-
-    expect(
-      receiptResponse.status
-    ).toBe(200);
-
+    expect(receiptResponse.status).toBe(200);
   });
-
 });

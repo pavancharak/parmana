@@ -3,5 +3,5 @@ export enum SignatureAlgorithm {
 
   ECDSA_P256 = "ECDSA-P256",
 
-  RSA_PSS = "RSA-PSS"
+  RSA_PSS = "RSA-PSS",
 }

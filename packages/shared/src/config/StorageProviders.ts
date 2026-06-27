@@ -5,4 +5,4 @@ export const StorageProviders = {
 } as const;
 
 export type StorageProvider =
-  typeof StorageProviders[keyof typeof StorageProviders];
+  (typeof StorageProviders)[keyof typeof StorageProviders];

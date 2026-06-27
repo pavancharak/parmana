@@ -1,13 +1,17 @@
-export type LedgerEntry = {
+import type { PolicySignals } from "./PolicySignals.js";
+
+export interface LedgerEntry {
   executionId: string;
 
   policyId: string;
   policyVersion: string;
 
-  input: any;
+  input: PolicySignals;
 
   matchedRuleId: string;
+
   action: "approve" | "reject" | "override";
+
   reason: string;
 
   trace: {
@@ -18,4 +22,4 @@ export type LedgerEntry = {
   timestamp: number;
 
   hash: string;
-};
+}

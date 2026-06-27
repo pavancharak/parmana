@@ -7,7 +7,7 @@ describe("ReplayEngine - Deterministic Execution", () => {
 
     const input = [
       { id: "1", action: "A" },
-      { id: "2", action: "B" }
+      { id: "2", action: "B" },
     ];
 
     const r1 = engine.replay(input, {});
@@ -19,10 +19,7 @@ describe("ReplayEngine - Deterministic Execution", () => {
   it("should preserve execution order", () => {
     const engine = new ReplayEngine();
 
-    const input = [
-      { id: "1" },
-      { id: "2" }
-    ];
+    const input = [{ id: "1" }, { id: "2" }];
 
     const result = engine.replay(input, {});
 

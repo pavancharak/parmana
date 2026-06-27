@@ -4,9 +4,7 @@ import request from "supertest";
 import app from "../src/app.js";
 
 describe("Execution Trust Workflow", () => {
-
   it("executes the complete workflow", async () => {
-
     //
     // Step 1
     // Execute Business Transaction
@@ -44,10 +42,7 @@ describe("Execution Trust Workflow", () => {
       createdAt: new Date(),
     };
 
-    const execute =
-      await request(app)
-        .post("/execute")
-        .send(transaction);
+    const execute = await request(app).post("/execute").send(transaction);
 
     //
     // The remaining assertions will become
@@ -56,7 +51,5 @@ describe("Execution Trust Workflow", () => {
     //
 
     expect(execute.status).toBeDefined();
-
   });
-
 });
