@@ -1,6 +1,5 @@
 import {
-  CryptoBootstrap,
-  TrustRecordHasher,
+  VerificationCrypto,
 } from "@parmana/crypto";
 
 import {
@@ -16,6 +15,9 @@ import { RuntimeContext } from "./context/RuntimeContext.js";
  * During migration both builders coexist.
  */
 export class ExecutionTrustRecordBuilder {
+
+  private readonly crypto =
+    new VerificationCrypto();
 
   /**
    * Builds an immutable Execution Trust Record
@@ -64,10 +66,6 @@ export class ExecutionTrustRecordBuilder {
           ? [context.receipt]
           : [],
 
-      //
-      // Placeholder while computing
-      // the canonical hash.
-      //
       trustRecordHash: "",
 
       createdAt:
@@ -75,21 +73,14 @@ export class ExecutionTrustRecordBuilder {
 
       updatedAt:
         new Date(),
+
     };
 
     //
-    // Compute canonical hash.
+    // Compute canonical Trust Record hash.
     //
-    const cryptoProvider =
-      CryptoBootstrap.create();
-
-    const hasher =
-      new TrustRecordHasher(
-        cryptoProvider
-      );
-
     const trustRecordHash =
-      await hasher.hash(
+      await this.crypto.hash(
         record
       );
 
@@ -104,5 +95,7 @@ export class ExecutionTrustRecordBuilder {
       trustRecordHash,
 
     };
+
   }
+
 }

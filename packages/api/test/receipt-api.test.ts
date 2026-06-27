@@ -6,7 +6,7 @@ import app from "../src/app.js";
 describe("POST /receipt", () => {
 
   it(
-    "returns an application error when the Execution Trust Record does not exist",
+    "returns a validation error for an invalid Business Transaction ID",
     async () => {
 
       const response =
@@ -19,13 +19,15 @@ describe("POST /receipt", () => {
 
           });
 
-      expect(response.status)
-        .toBe(500);
+      expect(
+        response.status
+      ).toBe(400);
 
-      expect(response.body.error)
-        .toBe(
-          "Execution Trust Record not found."
-        );
+      expect(
+        response.body.error
+      ).toBe(
+        "businessTransactionId must be a valid UUID."
+      );
 
     }
   );

@@ -4,47 +4,45 @@ import request from "supertest";
 import app from "../src/app.js";
 
 describe("POST /execute", () => {
-  it("returns an application error when the transaction has not been persisted", async () => {
 
-    const transaction = {
-      businessTransactionId: "txn-001",
+  it(
+    "returns a validation error for an invalid Business Transaction ID",
+    async () => {
 
-      metadata: {
-        businessTransactionId: "txn-001",
-      },
+      const response =
+        await request(app)
 
-      policy: {
-        name: "payment-approval",
-        version: "1.0.0",
-        schemaVersion: "1.0",
-      },
+          .post("/execute")
 
-      signals: {},
+          .send({
 
-      decision: {
-        decisionId: "dec-001",
-        outcome: "APPROVED",
-        evaluatedAt: new Date(),
-        policy: {
-          name: "payment-approval",
-          version: "1.0.0",
-          schemaVersion: "1.0",
-        },
-      },
+            businessTransactionId:
+              "txn-001",
 
-      status: "APPROVED",
+            status: "AUTHORIZED",
 
-      createdAt: new Date(),
-    };
+            metadata: {},
 
-    const response = await request(app)
-      .post("/execute")
-      .send(transaction);
+            policy: {},
 
-    expect(response.status).toBe(500);
+            signals: {},
 
-    expect(response.body.error).toBe(
-      "Execution Trust Record not found."
-    );
-  });
+            decision: {},
+
+          });
+
+      expect(
+        response.status
+      ).toBe(400);
+
+      expect(
+        response.body.error
+      ).toBe(
+        "businessTransactionId must be a valid UUID."
+      );
+
+    }
+
+  );
+
 });

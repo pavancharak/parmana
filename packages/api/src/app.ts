@@ -9,6 +9,7 @@ import trustRecordRoutes from "./routes/trust-records.js";
 import verificationRoutes from "./routes/verify-get.js";
 import verifyRoutes from "./routes/verify.js";
 import versionRoutes from "./routes/version.js";
+import replayRoutes from "./routes/replay.js";
 
 const app = express();
 
@@ -64,6 +65,13 @@ app.use(
 app.use(
   "/trust-records",
   trustRecordRoutes
+);
+/**
+ * Replay
+ */
+app.use(
+  "/replay",
+  replayRoutes
 );
 
 export default app;

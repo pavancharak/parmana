@@ -2,6 +2,10 @@ import {
   MemoryStorageProvider,
 } from "./memory/MemoryStorageProvider.js";
 
+import {
+  SupabaseStorageProvider,
+} from "./supabase/SupabaseStorageProvider.js";
+
 import type {
   StorageProvider,
 } from "./StorageProvider.js";
@@ -30,12 +34,17 @@ export class StorageFactory {
         return new MemoryStorageProvider();
 
       case "supabase":
-      case "postgres":
-      case "sqlite":
+  return new SupabaseStorageProvider();
 
-        throw new Error(
-          `${configuration.provider} storage provider not implemented.`
-        );
+case "postgres":
+  throw new Error(
+    "Postgres storage provider not implemented."
+  );
+
+case "sqlite":
+  throw new Error(
+    "SQLite storage provider not implemented."
+  );
 
     }
 

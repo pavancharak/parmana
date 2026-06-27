@@ -1,4 +1,8 @@
 import {
+  VerificationCrypto,
+} from "@parmana/crypto";
+
+import {
   BusinessTransaction,
   ExecutionTrustRecord,
   ExecutionTrustRecordRepository,
@@ -27,6 +31,9 @@ import { VerificationService } from "./services/verification-service.js";
  * It contains no business rules.
  */
 export class ExecutionTrustApplication {
+
+  private readonly crypto =
+    new VerificationCrypto();
 
   constructor(
     private readonly transactions: BusinessTransactionService,
@@ -81,6 +88,50 @@ export class ExecutionTrustApplication {
     return this.receipts.generate(
       businessTransactionId
     );
+  }
+
+  /**
+   * Replays an existing Execution Trust Record.
+   *
+   * Replay deterministically recomputes the Trust Record
+   * hash and verifies its integrity without executing the
+   * Business Transaction again.
+   */
+  async replay(
+    businessTransactionId: string
+  ): Promise<{
+    businessTransactionId: string;
+    trustRecordHash: string;
+    verified: boolean;
+  }> {
+
+    const trustRecord =
+      await this.trustRecords.findByTransactionId(
+        businessTransactionId
+      );
+
+    if (!trustRecord) {
+      throw new Error(
+        "Execution Trust Record not found."
+      );
+    }
+
+    const verified =
+      await this.crypto.verify(
+        trustRecord
+      );
+
+    return {
+
+      businessTransactionId,
+
+      trustRecordHash:
+        trustRecord.trustRecordHash,
+
+      verified,
+
+    };
+
   }
 
   /**

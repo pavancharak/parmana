@@ -1,3 +1,10 @@
+import {
+  generateKeyPairSync,
+  sign,
+  verify,
+  type KeyObject,
+} from "node:crypto";
+
 import type {
   SignatureAlgorithm,
 } from "@parmana/shared";
@@ -13,10 +20,9 @@ import type {
 /**
  * Ed25519 Signature Provider.
  *
- * Placeholder implementation.
- *
- * Signing will be implemented once the
- * KeyProvider abstraction is introduced.
+ * Temporary implementation using a process-local
+ * key pair. A persistent KeyProvider will replace
+ * this in a later version.
  */
 export class Ed25519SignatureProvider
   implements SignatureProvider {
@@ -24,22 +30,59 @@ export class Ed25519SignatureProvider
   public readonly algorithm: SignatureAlgorithm =
     SignatureAlgorithms.ED25519;
 
+  private readonly privateKey: KeyObject;
+
+  private readonly publicKey: KeyObject;
+
+  constructor() {
+
+    const keys =
+      generateKeyPairSync(
+        "ed25519"
+      );
+
+    this.privateKey =
+      keys.privateKey;
+
+    this.publicKey =
+      keys.publicKey;
+
+    Object.freeze(this);
+
+  }
+
   async sign(
-    _data: Uint8Array
+    data: Uint8Array
   ): Promise<string> {
 
-    throw new Error(
-      "Ed25519 signing not implemented."
+    const signature =
+      sign(
+        null,
+        Buffer.from(data),
+        this.privateKey
+      );
+
+    return signature.toString(
+      "base64"
     );
+
   }
 
   async verify(
-    _data: Uint8Array,
-    _signature: string
+    data: Uint8Array,
+    signature: string
   ): Promise<boolean> {
 
-    throw new Error(
-      "Ed25519 verification not implemented."
+    return verify(
+      null,
+      Buffer.from(data),
+      this.publicKey,
+      Buffer.from(
+        signature,
+        "base64"
+      )
     );
+
   }
+
 }
