@@ -1,5 +1,3 @@
-import { createHash } from "node:crypto";
-
 import {
   HashAlgorithms,
 } from "@parmana/shared";
@@ -9,11 +7,17 @@ import type {
 } from "../providers/HashProvider.js";
 
 import {
-  CryptoError,
-} from "../errors/CryptoError.js";
+  SHA256HashProvider,
+} from "../providers/hash/SHA256HashProvider.js";
 
 /**
- * SHA-256 hash provider.
+ * Legacy SHA-256 provider.
+ *
+ * @deprecated
+ * Use SHA256HashProvider instead.
+ *
+ * This class is retained for backward compatibility
+ * and delegates to the canonical implementation.
  */
 export class SHA256Provider
   implements HashProvider {
@@ -21,22 +25,17 @@ export class SHA256Provider
   readonly algorithm =
     HashAlgorithms.SHA256;
 
+  private readonly provider =
+    new SHA256HashProvider();
+
   async hash(
     data: Uint8Array
   ): Promise<string> {
 
-    try {
+    return this.provider.hash(
+      data
+    );
 
-      return createHash("sha256")
-        .update(data)
-        .digest("hex");
-
-    } catch (error) {
-
-      throw new CryptoError(
-        `SHA-256 hashing failed: ${String(error)}`
-      );
-
-    }
   }
+
 }
