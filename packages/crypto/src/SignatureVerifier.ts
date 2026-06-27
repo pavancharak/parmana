@@ -13,12 +13,12 @@ import type {
 export class SignatureVerifier {
 
   constructor(
-    private readonly serializer =
-      new CanonicalSerializer(),
+  private readonly crypto:
+    CryptoProvider,
 
-    private readonly crypto:
-      CryptoProvider
-  ) {}
+  private readonly serializer =
+    new CanonicalSerializer()
+) {}
 
   /**
    * Verifies a signature.

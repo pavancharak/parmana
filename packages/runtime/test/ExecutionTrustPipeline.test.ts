@@ -5,7 +5,7 @@ import { createRuntimeContext } from "./fixtures/runtime-context.js";
 
 describe("ExecutionTrustPipeline", () => {
 
-  it("should generate an Execution Trust Record", () => {
+  it("should generate an Execution Trust Record", async () => {
 
     const pipeline =
       new ExecutionTrustPipeline();
@@ -14,7 +14,9 @@ describe("ExecutionTrustPipeline", () => {
       createRuntimeContext();
 
     const record =
-      pipeline.execute(context);
+      await pipeline.execute(
+        context
+      );
 
     expect(record.businessTransactionId)
       .toBe(
@@ -46,7 +48,7 @@ describe("ExecutionTrustPipeline", () => {
 
   });
 
-  it("should produce the same business transaction", () => {
+  it("should produce the same business transaction", async () => {
 
     const pipeline =
       new ExecutionTrustPipeline();
@@ -55,10 +57,14 @@ describe("ExecutionTrustPipeline", () => {
       createRuntimeContext();
 
     const r1 =
-      pipeline.execute(context);
+      await pipeline.execute(
+        context
+      );
 
     const r2 =
-      pipeline.execute(context);
+      await pipeline.execute(
+        context
+      );
 
     expect(
       r1.businessTransactionId

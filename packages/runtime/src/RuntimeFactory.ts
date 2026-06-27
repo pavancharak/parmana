@@ -79,8 +79,10 @@ export class RuntimeFactory {
     // Application
     //
     return new ExecutionTrustApplication(
-      transactionService,
-      runtime
-    );
+  transactionService,
+  runtime,
+  verificationService,
+  receiptService
+);
   }
-}
+}	
