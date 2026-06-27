@@ -5,12 +5,12 @@ import type {
 } from "./providers/CryptoProvider.js";
 
 /**
- * Trust Record Hasher.
+ * Signature Verifier.
  *
- * Produces a deterministic cryptographic hash
- * for immutable trust artifacts.
+ * Verifies signatures using the configured
+ * SignatureProvider.
  */
-export class TrustRecordHasher {
+export class SignatureVerifier {
 
   constructor(
     private readonly serializer =
@@ -21,19 +21,21 @@ export class TrustRecordHasher {
   ) {}
 
   /**
-   * Hashes an immutable object.
+   * Verifies a signature.
    */
-  async hash(
-    value: unknown
-  ): Promise<string> {
+  async verify(
+    artifact: unknown,
+    signature: string
+  ): Promise<boolean> {
 
     const bytes =
       this.serializer.serialize(
-        value
+        artifact
       );
 
-    return this.crypto.hash.hash(
-      bytes
+    return this.crypto.signature.verify(
+      bytes,
+      signature
     );
   }
 }

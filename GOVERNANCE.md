@@ -1,500 +1,298 @@
-\# Parmana Governance
+# Parmana Governance
 
+## Execution Trust Governance Model
 
+**Version:** v1.0
 
-\*\*Version:\*\* 0.1.0
+---
 
+# Purpose
 
+Parmana establishes governance over computational execution.
 
-\*\*Status:\*\* Active
+Its purpose is not simply to authorize actions, but to ensure that every execution can be independently verified against the authority and intent that produced it.
 
+Governance in Parmana is evidence-driven.
 
+Every governance decision produces immutable trust artifacts.
 
-\---
+---
 
+# Governance Philosophy
 
+Traditional governance answers:
 
-\# Purpose
+* Who approved?
+* When was it approved?
 
+Execution governance answers:
 
+* Who authorized execution?
+* What exactly was intended?
+* Which policy applied?
+* What decision was produced?
+* What actually executed?
+* Was execution compliant?
+* Can this be independently verified?
 
-This document defines how the Parmana architecture, specifications, and implementations evolve.
+Parmana governs execution rather than approval alone.
 
+---
 
-
-The objective of governance is to preserve long-term architectural integrity while allowing controlled evolution.
-
-
-
-\---
-
-
-
-\# Governance Principles
-
-
-
-Parmana is governed by the following principles:
-
-
-
-\* Execution Trust first.
-
-\* Architecture before implementation.
-
-\* Deterministic behavior.
-
-\* Immutable execution records.
-
-\* Independent verification.
-
-\* Backward compatibility where practical.
-
-\* Explicit architectural decisions.
-
-
-
-\---
-
-
-
-\# Governance Hierarchy
-
-
-
-The repository follows this order of authority.
-
-
+# Governance Chain
 
 ```text
-
-Constitution
-
-&#x20;     │
-
-&#x20;     ▼
-
-Specifications (000–017)
-
-&#x20;     │
-
-&#x20;     ▼
-
-Architecture Decision Records
-
-&#x20;     │
-
-&#x20;     ▼
-
-RFCs
-
-&#x20;     │
-
-&#x20;     ▼
-
-Implementation
-
+Authority
+        │
+        ▼
+Intent
+        │
+        ▼
+Policy
+        │
+        ▼
+Decision
+        │
+        ▼
+Business Transaction
+        │
+        ▼
+Execution
+        │
+        ▼
+Verification
+        │
+        ▼
+Receipt
+        │
+        ▼
+Execution Trust Record
 ```
 
+Every artifact extends the trust chain.
 
+Nothing is overwritten.
 
-A lower level SHALL NOT contradict a higher level.
+Everything is additive.
 
+---
 
+# Governance Layers
 
-\---
+## Layer 1 — Authority
 
+Authority defines who is permitted to initiate execution.
 
+Examples include:
 
-\# Roles
+* Human operators
+* Enterprise applications
+* Service accounts
+* Autonomous agents acting under delegated authority
 
+Authority answers:
 
+> Who is allowed to initiate execution?
 
-\## Maintainers
+---
 
+## Layer 2 — Intent
 
+Intent defines what should happen.
 
-Maintainers are responsible for:
+Intent exists before execution.
 
+Intent is immutable.
 
+Execution is evaluated against intent.
 
-\* Reviewing architectural changes.
+---
 
-\* Approving ADRs.
+## Layer 3 — Policy
 
-\* Maintaining specifications.
+Policy defines the governing business rules.
 
-\* Protecting long-term consistency.
+Policies are versioned.
 
+Policy versions never change.
 
+Historical execution always references the exact policy version used.
 
-\---
+---
 
+## Layer 4 — Decision
 
+A Decision records the outcome of policy evaluation.
 
-\## Contributors
+Typical outcomes include:
 
+* Approved
+* Rejected
 
+Every Decision references the Policy that produced it.
 
-Contributors are responsible for:
+---
 
+## Layer 5 — Business Transaction
 
+A Business Transaction represents the accepted business request.
 
-\* Following specifications.
+It becomes the root identifier for the complete trust chain.
 
-\* Writing tests.
+Every downstream artifact references the originating Business Transaction.
 
-\* Updating documentation.
+---
 
-\* Proposing RFCs for significant changes.
+## Layer 6 — Execution
 
+Execution records what actually happened.
 
+Execution evidence is immutable.
 
-\---
+Multiple executions may exist for the same Business Transaction if retries or recovery are required.
 
+Historical executions are never deleted.
 
+---
 
-\# Change Categories
+## Layer 7 — Verification
 
+Verification determines whether execution matched approved intent.
 
+Verification evaluates:
 
-\## Bug Fix
+* Structural integrity
+* Policy consistency
+* Execution completeness
+* Evidence integrity
 
+Verification never modifies execution.
 
+It only produces additional evidence.
 
-Characteristics:
+---
 
+## Layer 8 — Receipt
 
+Receipts provide cryptographic attestation.
 
-\* No architectural impact.
+Receipts prove that verification completed successfully.
 
-\* No specification changes.
+Receipts contain:
 
+* Trust Record hash
+* Receipt hash
+* Signature
+* Algorithm identifier
+* Timestamp
 
+---
 
-Requirements:
+## Layer 9 — Execution Trust Record
 
+The Execution Trust Record aggregates all immutable artifacts.
 
+It represents the complete evidence package for a Business Transaction.
 
-\* Tests.
+It is the primary object used for:
 
-\* Pull request.
+* Audit
+* Compliance
+* Investigation
+* Replay
+* Independent verification
 
+---
 
+# Governance Principles
 
-\---
+## Immutability
 
+Trust artifacts are never modified.
 
+Corrections are represented by new artifacts.
 
-\## Feature
+---
 
+## Determinism
 
+The same inputs should produce the same governance outcome.
 
-Characteristics:
+---
 
+## Traceability
 
+Every artifact references its predecessor.
 
-\* New capability.
+Nothing exists in isolation.
 
-\* Existing architecture preserved.
+---
 
+## Evidence First
 
+Governance is based on evidence rather than assumptions.
 
-Requirements:
+---
 
+## Independent Verification
 
+Third parties should be able to verify trust artifacts without trusting Parmana itself.
 
-\* Documentation update.
+---
 
-\* Tests.
+# Audit Model
 
-
-
-\---
-
-
-
-\## Architectural Change
-
-
-
-Characteristics:
-
-
-
-\* Changes package responsibilities.
-
-\* Changes execution model.
-
-\* Changes platform guarantees.
-
-
-
-Requirements:
-
-
-
-\* RFC.
-
-\* ADR.
-
-\* Specification update.
-
-\* Maintainer approval.
-
-
-
-\---
-
-
-
-\## Breaking Change
-
-
-
-Characteristics:
-
-
-
-\* Changes public behavior.
-
-\* Changes contracts.
-
-\* Changes compatibility.
-
-
-
-Requirements:
-
-
-
-\* Major version increment.
-
-\* Migration documentation.
-
-\* Updated conformance tests.
-
-
-
-\---
-
-
-
-\# Architectural Review Checklist
-
-
-
-Every architectural proposal should answer:
-
-
-
-\* Does it preserve Execution Trust?
-
-\* Does it preserve determinism?
-
-\* Does it preserve immutability?
-
-\* Does it preserve independent verification?
-
-\* Does it preserve package boundaries?
-
-\* Does it preserve replayability?
-
-
-
-If any answer is "No," the proposal requires explicit justification.
-
-
-
-\---
-
-
-
-\# Specification Lifecycle
-
-
-
-Specifications progress through these states:
-
-
+Every Business Transaction produces a complete audit trail.
 
 ```text
-
-Draft
-
-&#x20;   │
-
-&#x20;   ▼
-
-Review
-
-&#x20;   │
-
-&#x20;   ▼
-
-Accepted
-
-&#x20;   │
-
-&#x20;   ▼
-
-Implemented
-
-&#x20;   │
-
-&#x20;   ▼
-
-Frozen
-
+Business Transaction
+        │
+        ▼
+Decision
+        │
+        ▼
+Execution
+        │
+        ▼
+Verification
+        │
+        ▼
+Receipt
+        │
+        ▼
+Execution Trust Record
 ```
 
+Audit records are append-only.
 
+Historical evidence is preserved.
 
-Frozen specifications should only change through a new ADR.
+---
 
+# Future Governance
 
+The governance model is execution-engine independent.
 
-\---
+The same governance principles apply to:
 
+* Enterprise software
+* Cloud services
+* AI systems
+* AI agents
+* Multi-agent systems
+* Robotics
+* Distributed systems
+* Edge computing
+* Future quantum computing platforms
 
+Execution technology may evolve.
 
-\# ADR Lifecycle
+Governance remains stable.
 
+---
 
+# Closing Statement
 
-```text
+Parmana governs computational execution by establishing an immutable trust chain between authority, intent, policy, execution, verification, and evidence.
 
-Proposed
-
-&#x20;   │
-
-&#x20;   ▼
-
-Accepted
-
-&#x20;   │
-
-&#x20;   ▼
-
-Implemented
-
-&#x20;   │
-
-&#x20;   ▼
-
-Superseded
-
-```
-
-
-
-Superseded ADRs remain part of the permanent project history.
-
-
-
-\---
-
-
-
-\# RFC Lifecycle
-
-
-
-```text
-
-Draft
-
-&#x20;   │
-
-&#x20;   ▼
-
-Discussion
-
-&#x20;   │
-
-&#x20;   ▼
-
-Accepted / Rejected
-
-&#x20;   │
-
-&#x20;   ▼
-
-Implemented
-
-```
-
-
-
-RFCs describe proposals.
-
-
-
-They do not change the architecture until accepted and reflected in an ADR or specification.
-
-
-
-\---
-
-
-
-\# Versioning
-
-
-
-Parmana follows Semantic Versioning.
-
-
-
-\* MAJOR — Breaking architectural or public API changes.
-
-\* MINOR — Backward-compatible features.
-
-\* PATCH — Bug fixes and documentation improvements.
-
-
-
-\---
-
-
-
-\# Quality Gates
-
-
-
-Every merge to the default branch should satisfy:
-
-
-
-\* Build passes.
-
-\* Type checking passes.
-
-\* Unit tests pass.
-
-\* Conformance tests pass (when applicable).
-
-\* Documentation updated (when applicable).
-
-
-
-\---
-
-
-
-\# Long-Term Commitment
-
-
-
-Parmana prioritizes long-term architectural stability over short-term implementation convenience.
-
-
-
-Execution Trust remains the primary design objective for every decision.
-
-
-
-All governance decisions should strengthen that objective.
-
-
-
+The objective is not simply to automate execution, but to ensure that every execution can be independently understood, audited, and verified.

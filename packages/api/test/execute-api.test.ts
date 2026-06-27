@@ -43,8 +43,8 @@ describe("POST /execute", () => {
 
     expect(response.status).toBe(500);
 
-    expect(response.body.error).toContain(
-      "Business Transaction"
+    expect(response.body.error).toBe(
+      "Execution Trust Record not found."
     );
   });
 });

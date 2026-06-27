@@ -1,35 +1,83 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import { ExecutionTrustPipeline } from "../src/ExecutionTrustPipeline.js";
+import { createRuntimeContext } from "./fixtures/runtime-context.js";
 
-describe("ExecutionTrustPipeline - Trust Guarantee", () => {
-  it("should generate valid execution proof", () => {
-    const pipeline = new ExecutionTrustPipeline();
+describe("ExecutionTrustPipeline", () => {
 
-    const result = pipeline.execute({
-      executionId: "1",
-      decisionId: "d1",
-      intent: "transfer funds",
-    });
+  it("should generate an Execution Trust Record", () => {
 
-    expect(result.trust.valid).toBe(true);
-    expect(result.proof.executionId).toBe("1");
+    const pipeline =
+      new ExecutionTrustPipeline();
+
+    const context =
+      createRuntimeContext();
+
+    const record =
+      pipeline.execute(context);
+
+    expect(record.businessTransactionId)
+      .toBe(
+        context.transaction.businessTransactionId
+      );
+
+    expect(record.transaction)
+      .toBe(
+        context.transaction
+      );
+
+    expect(record.executions)
+      .toHaveLength(1);
+
+    expect(
+      record.executions[0].executionId
+    ).toBe(
+      context.execution!.executionId
+    );
+
+    expect(record.trustRecordId)
+      .toBeTruthy();
+
+    expect(record.createdAt)
+      .toBeInstanceOf(Date);
+
+    expect(record.updatedAt)
+      .toBeInstanceOf(Date);
+
   });
 
-  it("should produce deterministic execution structure", () => {
-    const pipeline = new ExecutionTrustPipeline();
+  it("should produce the same business transaction", () => {
 
-    const r1 = pipeline.execute({
-      executionId: "x",
-      decisionId: "d1",
-      intent: "test",
-    });
+    const pipeline =
+      new ExecutionTrustPipeline();
 
-    const r2 = pipeline.execute({
-      executionId: "x",
-      decisionId: "d1",
-      intent: "test",
-    });
+    const context =
+      createRuntimeContext();
 
-    expect(r1.proof.executionHash).toBe(r2.proof.executionHash);
+    const r1 =
+      pipeline.execute(context);
+
+    const r2 =
+      pipeline.execute(context);
+
+    expect(
+      r1.businessTransactionId
+    ).toBe(
+      r2.businessTransactionId
+    );
+
+    expect(
+      r1.transaction
+    ).toEqual(
+      r2.transaction
+    );
+
+    expect(
+      r1.executions[0].executionId
+    ).toBe(
+      r2.executions[0].executionId
+    );
+
   });
+
 });

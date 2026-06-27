@@ -1,35 +1,42 @@
 import { createHash } from "node:crypto";
 
-import type { HashProvider } from "../HashProvider.js";
-import { CryptoError } from "../errors/CryptoError.js";
+import {
+  HashAlgorithms,
+} from "@parmana/shared";
+
+import type {
+  HashProvider,
+} from "../providers/HashProvider.js";
+
+import {
+  CryptoError,
+} from "../errors/CryptoError.js";
 
 /**
- * SHA-256 hashing implementation using Node.js crypto.
+ * SHA-256 hash provider.
  */
-export class SHA256Provider implements HashProvider {
-  public readonly algorithm = "SHA-256";
+export class SHA256Provider
+  implements HashProvider {
 
-  public hash(data: Uint8Array): Uint8Array {
-    try {
-      const hash = createHash("sha256");
-      hash.update(data);
-      return new Uint8Array(hash.digest());
-    } catch (err: unknown) {
-      throw new CryptoError(
-        `SHA256 hashing failed: ${String(err)}`
-      );
-    }
-  }
+  readonly algorithm =
+    HashAlgorithms.SHA256;
 
-  public hashHex(data: Uint8Array): string {
+  async hash(
+    data: Uint8Array
+  ): Promise<string> {
+
     try {
-      const hash = createHash("sha256");
-      hash.update(data);
-      return hash.digest("hex");
-    } catch (err: unknown) {
+
+      return createHash("sha256")
+        .update(data)
+        .digest("hex");
+
+    } catch (error) {
+
       throw new CryptoError(
-        `SHA256 hex hashing failed: ${String(err)}`
+        `SHA-256 hashing failed: ${String(error)}`
       );
+
     }
   }
 }

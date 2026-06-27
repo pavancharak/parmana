@@ -5,12 +5,12 @@ import type {
 } from "./providers/CryptoProvider.js";
 
 /**
- * Trust Record Hasher.
+ * Receipt Signer.
  *
- * Produces a deterministic cryptographic hash
- * for immutable trust artifacts.
+ * Signs canonical receipt bytes using the
+ * configured SignatureProvider.
  */
-export class TrustRecordHasher {
+export class ReceiptSigner {
 
   constructor(
     private readonly serializer =
@@ -21,18 +21,18 @@ export class TrustRecordHasher {
   ) {}
 
   /**
-   * Hashes an immutable object.
+   * Signs a receipt.
    */
-  async hash(
-    value: unknown
+  async sign(
+    receipt: unknown
   ): Promise<string> {
 
     const bytes =
       this.serializer.serialize(
-        value
+        receipt
       );
 
-    return this.crypto.hash.hash(
+    return this.crypto.signature.sign(
       bytes
     );
   }

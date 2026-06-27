@@ -1,176 +1,175 @@
-# Parmana Trust Core
+# Parmana
 
-**Execution Trust Infrastructure**
+> **Execution Trust Infrastructure**
 
-Parmana ensures there is no gap between what humans decide and what AI systems do.
+Parmana ensures there is no gap between what humans decide and what computational systems do.
 
-Traditional systems can prove who approved a decision and when it was approved. They rarely prove that execution actually matched what was authorized.
+Modern organizations increasingly rely on AI systems, autonomous software, APIs, and intelligent automation to make and execute decisions. While these systems can automate execution, they often cannot independently prove:
 
-Parmana establishes a verifiable trust chain between authority, intent, and execution by producing immutable Execution Trust Records that support replay, audit, verification, and independently verifiable execution receipts.
+* What was authorized
+* What was intended
+* What actually executed
+* Whether execution complied with approved policy
+
+Parmana solves this problem by creating an immutable **Execution Trust Record** for every business transaction.
 
 ---
 
-# Core Principle
+# Why Parmana
+
+Traditional governance systems answer:
+
+* Who approved an action?
+* When was it approved?
+
+Parmana extends governance to execution.
+
+It establishes a verifiable trust chain between:
 
 ```text
 Authority
-      │
-      ▼
-Business Transaction
-      │
-      ▼
-Policy Evaluation
-      │
-      ▼
+        │
+        ▼
+Intent
+        │
+        ▼
+Policy
+        │
+        ▼
 Decision
-      │
-      ▼
-Override (Optional)
-      │
-      ▼
+        │
+        ▼
+Business Transaction
+        │
+        ▼
 Execution
-      │
-      ▼
-Receipt
-      │
-      ▼
+        │
+        ▼
 Verification
-      │
-      ▼
+        │
+        ▼
+Receipt
+        │
+        ▼
 Execution Trust Record
 ```
 
+This allows organizations to independently verify that execution matched approved intent.
+
 ---
 
-# What Parmana Provides
+# Core Principles
 
-* Business Transaction processing
-* Policy-based decision evaluation
-* Human override support
-* Execution lifecycle management
-* Execution evidence collection
-* Cryptographically signed Receipts
-* Deterministic replay
-* Independent verification
-* Complete Execution Trust Records
+* Immutable trust artifacts
+* Deterministic execution
+* Cryptographic verification
+* Replayable execution
+* Independent auditability
+* Storage-agnostic architecture
+* Execution-engine agnostic design
 
 ---
 
 # Repository Structure
 
 ```text
-docs/
-schemas/
-openapi/
-src/
-tests/
+packages/
+
+api/
+crypto/
+policy/
+replay/
+runtime/
+shared/
+storage/
+verification/
+```
+
+| Package      | Responsibility                                   |
+| ------------ | ------------------------------------------------ |
+| shared       | Canonical domain model and repository interfaces |
+| runtime      | Application workflow and execution orchestration |
+| storage      | Repository implementations                       |
+| crypto       | Hashing, signatures, receipts                    |
+| replay       | Replay verification                              |
+| verification | Trust verification                               |
+| policy       | Policy evaluation                                |
+| api          | REST interface                                   |
+
+---
+
+# Architecture
+
+```text
+ExecutionTrustApplication
+            │
+            ▼
+BusinessTransactionService
+            │
+            ▼
+Runtime
+            │
+            ▼
+RuntimePipeline
+            │
+            ▼
+Execution
+            │
+            ▼
+Verification
+            │
+            ▼
+Receipt
+            │
+            ▼
+Execution Trust Record
 ```
 
 ---
 
-# Documentation
+# Current Status
 
-Architecture Specifications
+Current milestone:
 
-```
-docs/specifications/
-```
+**v0.6 – Application Layer**
 
-API Documentation
+Completed:
 
-```
-docs/api/
-```
+* Canonical domain model
+* Runtime orchestration
+* Application layer
+* Repository abstractions
+* In-memory repositories
+* Execution Trust pipeline
+* API composition root
 
-OpenAPI Specification
+In progress:
 
-```
-openapi/openapi.yaml
-```
-
-JSON Schemas
-
-```
-schemas/
-```
+* Cryptographic hashing
+* Digital signatures
+* Persistent storage
+* REST APIs
+* End-to-end integration tests
 
 ---
 
-# REST API
+# Roadmap
 
-```
-POST /v1/transactions
-
-GET /v1/transactions
-
-GET /v1/transactions/{businessTransactionId}
-
-POST /v1/transactions/{businessTransactionId}/executions
-
-GET /v1/transactions/{businessTransactionId}/executions
-
-GET /v1/transactions/{businessTransactionId}/executions/{executionId}
-
-POST /v1/transactions/{businessTransactionId}/override
-
-GET /v1/transactions/{businessTransactionId}/override
-
-POST /v1/transactions/{businessTransactionId}/verify
-
-GET /v1/transactions/{businessTransactionId}/receipt
-
-GET /v1/transactions/{businessTransactionId}/executions/{executionId}/receipt
-
-GET /v1/transactions/{businessTransactionId}/trust-chain
-
-GET /v1/policies
-
-GET /v1/policies/{name}/{version}
-
-GET /v1/health
-
-GET /v1/version
-```
+* **v0.7** — Cryptographic Trust
+* **v0.8** — Persistent Storage
+* **v0.9** — Production REST API
+* **v1.0** — Production Release
 
 ---
 
-# Design Principles
+# Long-Term Vision
 
-* Execution Trust Infrastructure
-* Resource-oriented REST API
-* Immutable Business Transactions
-* Immutable Decisions
-* Append-only trust artifacts
-* Deterministic replay
-* Deterministic verification
-* Cryptographically verifiable receipts
-* Contract-first API design
-* OpenAPI 3.1
-* JSON Schema validation
+Parmana is designed to become the universal **Execution Trust Infrastructure** for intelligent computing.
 
----
-
-# Status
-
-Current Version
-
-```
-v1.0.0
-```
-
-Status
-
-```
-Architecture Locked
-API Locked
-Schemas Locked
-OpenAPI Locked
-
-Ready for Implementation
-```
+Whether execution occurs on enterprise software, AI systems, autonomous agents, robotics, distributed platforms, or future computing technologies, Parmana provides a stable trust layer that makes execution independently verifiable.
 
 ---
 
 # License
 
-Apache License 2.0
+Apache-2.0
