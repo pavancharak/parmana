@@ -3,6 +3,7 @@ import request from "supertest";
 
 import {
   CryptoBootstrap,
+  SignatureVerifier,
 } from "@parmana/crypto";
 
 beforeAll(() => {
@@ -85,15 +86,23 @@ describe("Receipt Signature", () => {
     const cryptoProvider =
       CryptoBootstrap.create();
 
-    const encoder =
-      new TextEncoder();
+    const verifier =
+      new SignatureVerifier(
+        cryptoProvider
+      );
+
+    const unsignedReceipt = {
+
+      ...receipt.body,
+
+    };
+
+    delete (unsignedReceipt as any).signature;
 
     const verified =
-      await cryptoProvider.signature.verify(
+      await verifier.verify(
 
-        encoder.encode(
-          receipt.body.receiptHash
-        ),
+        unsignedReceipt,
 
         receipt.body.signature
 
