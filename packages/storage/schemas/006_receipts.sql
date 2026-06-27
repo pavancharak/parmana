@@ -1,4 +1,4 @@
-CREATE TABLE receipts (
+CREATE TABLE IF NOT EXISTS receipts (
 
     receipt_id TEXT PRIMARY KEY,
 
@@ -17,5 +17,7 @@ CREATE TABLE receipts (
         REFERENCES business_transactions(
             business_transaction_id
         )
+
+        ON DELETE RESTRICT
 
 );

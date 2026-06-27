@@ -1,4 +1,4 @@
-CREATE TABLE business_transactions (
+CREATE TABLE IF NOT EXISTS business_transactions (
 
     business_transaction_id TEXT PRIMARY KEY,
 

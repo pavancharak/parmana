@@ -1,4 +1,4 @@
-CREATE TABLE overrides (
+CREATE TABLE IF NOT EXISTS overrides (
 
     override_id TEXT PRIMARY KEY,
 
@@ -17,5 +17,7 @@ CREATE TABLE overrides (
         REFERENCES business_transactions(
             business_transaction_id
         )
+
+        ON DELETE RESTRICT
 
 );

@@ -1,16 +1,22 @@
 import {
-  MemoryBusinessTransactionRepository,
-  MemoryExecutionTrustRecordRepository,
+  StorageFactory,
 } from "@parmana/storage";
+
+/**
+ * Shared storage provider.
+ *
+ * Selected once during application startup.
+ */
+const storage =
+  StorageFactory.createFromEnvironment();
 
 /**
  * Shared repositories.
  *
  * Every API route uses these instances.
  */
-
 export const businessTransactionRepository =
-  new MemoryBusinessTransactionRepository();
+  storage.businessTransactions;
 
 export const executionTrustRecordRepository =
-  new MemoryExecutionTrustRecordRepository();
+  storage.trustRecords;

@@ -1,4 +1,4 @@
-CREATE TABLE execution_trust_records (
+CREATE TABLE IF NOT EXISTS execution_trust_records (
 
     trust_record_id TEXT PRIMARY KEY,
 
@@ -21,5 +21,7 @@ CREATE TABLE execution_trust_records (
         REFERENCES business_transactions(
             business_transaction_id
         )
+
+        ON DELETE RESTRICT
 
 );
