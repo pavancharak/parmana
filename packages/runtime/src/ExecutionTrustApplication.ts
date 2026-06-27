@@ -1,11 +1,15 @@
 import {
   BusinessTransaction,
   ExecutionTrustRecord,
+  Receipt,
+  Verification,
 } from "@parmana/shared";
 
 import { Runtime } from "./Runtime.js";
 
 import { BusinessTransactionService } from "./services/business-transaction-service.js";
+import { ReceiptService } from "./services/receipt-service.js";
+import { VerificationService } from "./services/verification-service.js";
 
 /**
  * Execution Trust Application.
@@ -21,9 +25,15 @@ import { BusinessTransactionService } from "./services/business-transaction-serv
  * It contains no business rules.
  */
 export class ExecutionTrustApplication {
+
   constructor(
     private readonly transactions: BusinessTransactionService,
-    private readonly runtime: Runtime
+
+    private readonly runtime: Runtime,
+
+    private readonly verification: VerificationService,
+
+    private readonly receipts: ReceiptService
   ) {
     Object.freeze(this);
   }
@@ -35,18 +45,36 @@ export class ExecutionTrustApplication {
     transaction: BusinessTransaction
   ): Promise<ExecutionTrustRecord> {
 
-    //
-    // Accept the transaction.
-    //
     await this.transactions.accept(
       transaction
     );
 
-    //
-    // Execute the transaction.
-    //
     return this.runtime.execute(
       transaction
+    );
+  }
+
+  /**
+   * Verifies an Execution Trust Record.
+   */
+  async verify(
+    businessTransactionId: string
+  ): Promise<Verification> {
+
+    return this.verification.verify(
+      businessTransactionId
+    );
+  }
+
+  /**
+   * Generates a Receipt.
+   */
+  async generateReceipt(
+    businessTransactionId: string
+  ): Promise<Receipt> {
+
+    return this.receipts.generate(
+      businessTransactionId
     );
   }
 

@@ -13,11 +13,10 @@ import type {
 export class TrustRecordHasher {
 
   constructor(
-    private readonly serializer =
-      new CanonicalSerializer(),
+    private readonly crypto: CryptoProvider,
 
-    private readonly crypto:
-      CryptoProvider
+    private readonly serializer =
+      new CanonicalSerializer()
   ) {}
 
   /**

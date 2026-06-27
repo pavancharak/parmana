@@ -6,6 +6,7 @@ export * from "./ReceiptSigner.js";
 export * from "./SignatureVerifier.js";
 
 export * from "./CryptoBuilder.js";
+export * from "./CryptoBootstrap.js";
 export * from "./KeyPair.js";
 export * from "./KeyStore.js";
 

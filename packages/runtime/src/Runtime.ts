@@ -37,9 +37,9 @@ export class Runtime {
     context =
       await this.pipeline.execute(context);
 
-    return this.trustPipeline.execute(
-      context
-    );
+    return await this.trustPipeline.execute(
+  context
+);
   }
 
   /**

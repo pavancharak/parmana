@@ -1,42 +1,39 @@
 import express from "express";
-
-import { RuntimeFactory } from "@parmana/runtime";
-
-import {
-  MemoryBusinessTransactionRepository,
-  MemoryExecutionTrustRecordRepository,
-} from "@parmana/storage";
+import trustRecordRoutes
+  from "./routes/trust-records.js";
+import executeRoutes from "./routes/execute.js";
+import healthRoutes from "./routes/health.js";
+import versionRoutes from "./routes/version.js";
+import verifyRoutes from "./routes/verify.js";
+import receiptRoutes from "./routes/receipt.js";
 
 const app = express();
 
 app.use(express.json());
 
-const runtime = RuntimeFactory.create(
-  new MemoryBusinessTransactionRepository(),
-  new MemoryExecutionTrustRecordRepository()
-);
-
 app.get("/", (_req, res) => {
   res.json({
-    status: "API running",
+    name: "Parmana",
+    status: "UP",
   });
 });
 
-app.post("/execute", async (req, res) => {
-  try {
-    const result = await runtime.execute(req.body);
+app.use("/health", healthRoutes);
 
-    res.json(result);
-  } catch (err) {
-    const message =
-      err instanceof Error
-        ? err.message
-        : "Unknown error";
+app.use("/version", versionRoutes);
 
-    res.status(500).json({
-      error: message,
-    });
-  }
-});
+app.use("/execute", executeRoutes);
+app.use(
+  "/trust-records",
+  trustRecordRoutes
+);
+app.use(
+  "/verify",
+  verifyRoutes
+);
+app.use(
+  "/receipt",
+  receiptRoutes
+);
 
 export default app;

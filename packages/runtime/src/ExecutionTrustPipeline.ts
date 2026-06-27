@@ -13,28 +13,34 @@ import { ExecutionTrustRecordBuilder } from "./ExecutionTrustRecordBuilder.js";
  * The RuntimeContext is expected to contain the artifacts
  * produced by the runtime services:
  *
- *  • Business Transaction
- *  • Execution
- *  • Override (optional)
- *  • Verification (optional)
- *  • Receipt (optional)
+ * • Business Transaction
+ * • Execution
+ * • Override (optional)
+ * • Verification (optional)
+ * • Receipt (optional)
  *
  * The pipeline itself contains no business rules.
  * It simply assembles the canonical trust artifact.
  */
 export class ExecutionTrustPipeline {
+
   private readonly builder =
     new ExecutionTrustRecordBuilder();
 
   /**
    * Executes the canonical Execution Trust Pipeline.
    */
-  execute(
+  async execute(
     context: RuntimeContext
-  ): ExecutionTrustRecord {
-    this.validate(context);
+  ): Promise<ExecutionTrustRecord> {
 
-    return this.builder.build(context);
+    this.validate(
+      context
+    );
+
+    return await this.builder.build(
+      context
+    );
   }
 
   /**
@@ -43,6 +49,7 @@ export class ExecutionTrustPipeline {
   private validate(
     context: RuntimeContext
   ): void {
+
     if (!context.transaction) {
       throw new Error(
         "Business Transaction is required."
