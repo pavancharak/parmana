@@ -5,6 +5,10 @@ import {
   VerificationStatus,
 } from "@parmana/shared";
 
+import {
+  VerificationCrypto,
+} from "@parmana/crypto";
+
 /**
  * Application service responsible for verifying
  * Execution Trust Records.
@@ -13,8 +17,13 @@ import {
  * the complete Execution Trust Record.
  */
 export class VerificationService {
+
+  private readonly crypto =
+    new VerificationCrypto();
+
   constructor(
-    private readonly trustRecords: ExecutionTrustRecordRepository
+    private readonly trustRecords:
+      ExecutionTrustRecordRepository
   ) {}
 
   /**
@@ -23,6 +32,7 @@ export class VerificationService {
   async verify(
     businessTransactionId: string
   ): Promise<Verification> {
+
     //
     // 1. Load Trust Record
     //
@@ -38,34 +48,39 @@ export class VerificationService {
     }
 
     //
-    // 2. Verify Trust Record
+    // 2. Verify Trust Record integrity
     //
-    // TODO(v0.5):
-    // Replace with the Verification Engine.
-    //
-    const verificationSucceeded =
-      this.verifyTrustRecord(trustRecord);
+    const verified =
+      await this.crypto.verify(
+        trustRecord
+      );
 
     //
-    // 3. Create immutable Verification artifact
+    // 3. Create immutable Verification
     //
     const verification: Verification = {
-      verificationId: crypto.randomUUID(),
+
+      verificationId:
+        crypto.randomUUID(),
 
       businessTransactionId,
 
-      status: verificationSucceeded
-        ? VerificationStatus.VERIFIED
-        : VerificationStatus.FAILED,
+      status:
+        verified
+          ? VerificationStatus.VERIFIED
+          : VerificationStatus.FAILED,
 
-      message: verificationSucceeded
-        ? "Execution Trust Record verified successfully."
-        : "Execution Trust Record verification failed.",
+      message:
+        verified
+          ? "Execution Trust Record verified successfully."
+          : "Execution Trust Record verification failed.",
 
-      verifiedAt: new Date(),
+      verifiedAt:
+        new Date(),
 
       trustRecordHash:
         trustRecord.trustRecordHash,
+
     };
 
     //
@@ -77,17 +92,7 @@ export class VerificationService {
     );
 
     return verification;
+
   }
 
-  /**
-   * Temporary verification implementation.
-   *
-   * TODO(v0.5):
-   * Delegate to the Verification Engine.
-   */
-  private verifyTrustRecord(
-    _trustRecord: unknown
-  ): boolean {
-    return true;
-  }
 }

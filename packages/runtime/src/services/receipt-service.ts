@@ -5,6 +5,10 @@ import {
   VerificationStatus,
 } from "@parmana/shared";
 
+import {
+  ReceiptCrypto,
+} from "@parmana/crypto";
+
 /**
  * Application service responsible for generating
  * Execution Trust Receipts.
@@ -13,8 +17,13 @@ import {
  * of verified Execution Trust Records.
  */
 export class ReceiptService {
+
+  private readonly crypto =
+    new ReceiptCrypto();
+
   constructor(
-    private readonly trustRecords: ExecutionTrustRecordRepository
+    private readonly trustRecords:
+      ExecutionTrustRecordRepository
   ) {}
 
   /**
@@ -24,6 +33,7 @@ export class ReceiptService {
   async generate(
     businessTransactionId: string
   ): Promise<Receipt> {
+
     //
     // 1. Load Trust Record
     //
@@ -55,36 +65,33 @@ export class ReceiptService {
     }
 
     //
-    // 3. Generate cryptographic artifacts
-    //
-    // TODO(v0.5):
-    // Replace with packages/crypto implementations.
+    // 3. Compute receipt hash
     //
     const receiptHash =
-      this.generateReceiptHash(trustRecord);
-
-    const signature =
-      this.signReceipt(receiptHash);
+      await this.crypto.hash(
+        trustRecord
+      );
 
     //
-    // 4. Create immutable Receipt
+    // 4. Build and sign Receipt
     //
-    const receipt: Receipt = {
-      receiptId: crypto.randomUUID(),
+    const receipt =
+      await this.crypto.createReceipt({
 
-      businessTransactionId,
+        receiptId:
+          crypto.randomUUID(),
 
-      trustRecordHash:
-        trustRecord.trustRecordHash,
+        businessTransactionId,
 
-      receiptHash,
+        trustRecordHash:
+          trustRecord.trustRecordHash,
 
-      signature,
+        receiptHash,
 
-      algorithm: "Ed25519",
+        issuedAt:
+          new Date(),
 
-      issuedAt: new Date(),
-    };
+      });
 
     //
     // 5. Persist Receipt
@@ -95,29 +102,7 @@ export class ReceiptService {
     );
 
     return receipt;
+
   }
 
-  /**
-   * Temporary receipt hashing implementation.
-   *
-   * TODO(v0.5):
-   * Delegate to TrustRecordHasher.
-   */
-  private generateReceiptHash(
-    _trustRecord: unknown
-  ): string {
-    return "";
-  }
-
-  /**
-   * Temporary signature implementation.
-   *
-   * TODO(v0.5):
-   * Delegate to the signing provider.
-   */
-  private signReceipt(
-    _receiptHash: string
-  ): string {
-    return "";
-  }
 }

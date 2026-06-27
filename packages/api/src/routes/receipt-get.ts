@@ -16,27 +16,48 @@ const application =
   );
 
 /**
- * POST /verify
+ * GET /receipt/:id
  *
- * Verifies an existing Execution Trust Record.
+ * Returns the latest Receipt.
  */
-router.post(
-  "/",
+router.get(
+  "/:id",
   async (req, res) => {
 
     try {
 
-      const {
-        businessTransactionId,
-      } = req.body;
-
-      const verification =
-        await application.verify(
-          businessTransactionId
+      const record =
+        await application.getTrustRecord(
+          req.params.id
         );
 
+      if (!record) {
+
+        return res.status(404).json({
+
+          error:
+            "Execution Trust Record not found.",
+
+        });
+
+      }
+
+      const receipt =
+        record.receipts.at(-1);
+
+      if (!receipt) {
+
+        return res.status(404).json({
+
+          error:
+            "Receipt not found.",
+
+        });
+
+      }
+
       res.json(
-        verification
+        receipt
       );
 
     } catch (err) {

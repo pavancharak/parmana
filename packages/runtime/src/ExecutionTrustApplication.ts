@@ -1,6 +1,7 @@
 import {
   BusinessTransaction,
   ExecutionTrustRecord,
+  ExecutionTrustRecordRepository,
   Receipt,
   Verification,
 } from "@parmana/shared";
@@ -19,7 +20,8 @@ import { VerificationService } from "./services/verification-service.js";
  * 1. Accept the Business Transaction.
  * 2. Persist it.
  * 3. Execute it through the Runtime.
- * 4. Return the resulting Execution Trust Record.
+ * 4. Verify the resulting Execution Trust Record.
+ * 5. Generate an Execution Trust Receipt.
  *
  * This class contains application orchestration only.
  * It contains no business rules.
@@ -33,7 +35,10 @@ export class ExecutionTrustApplication {
 
     private readonly verification: VerificationService,
 
-    private readonly receipts: ReceiptService
+    private readonly receipts: ReceiptService,
+
+    private readonly trustRecords:
+      ExecutionTrustRecordRepository
   ) {
     Object.freeze(this);
   }
@@ -79,6 +84,18 @@ export class ExecutionTrustApplication {
   }
 
   /**
+   * Returns an Execution Trust Record.
+   */
+  async getTrustRecord(
+    businessTransactionId: string
+  ): Promise<ExecutionTrustRecord | null> {
+
+    return this.trustRecords.findByTransactionId(
+      businessTransactionId
+    );
+  }
+
+  /**
    * Returns a previously accepted
    * Business Transaction.
    */
@@ -104,4 +121,5 @@ export class ExecutionTrustApplication {
       pageSize
     );
   }
+
 }

@@ -12,8 +12,17 @@ export * from "./repositories/CryptoProofRepository.js";
 export * from "./errors/StorageError.js";
 
 //
-// In-memory repositories
+// Storage abstraction
 //
+export * from "./StorageProvider.js";
+export * from "./StorageFactory.js";
+
+//
+// Memory provider
+//
+export * from "./StorageConfiguration.js";
+export * from "./memory/MemoryStorageProvider.js";
+
 export * from "./memory/MemoryBusinessTransactionRepository.js";
 export * from "./memory/MemoryExecutionTrustRecordRepository.js";
 export * from "./memory/MemoryPolicyRepository.js";

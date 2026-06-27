@@ -82,7 +82,8 @@ export class RuntimeFactory {
   transactionService,
   runtime,
   verificationService,
-  receiptService
+  receiptService,
+  trustRecords
 );
   }
 }	

@@ -16,24 +16,45 @@ const application =
   );
 
 /**
- * POST /verify
+ * GET /verify/:id
  *
- * Verifies an existing Execution Trust Record.
+ * Returns the latest Verification.
  */
-router.post(
-  "/",
+router.get(
+  "/:id",
   async (req, res) => {
 
     try {
 
-      const {
-        businessTransactionId,
-      } = req.body;
+      const record =
+        await application.getTrustRecord(
+          req.params.id
+        );
+
+      if (!record) {
+
+        return res.status(404).json({
+
+          error:
+            "Execution Trust Record not found.",
+
+        });
+
+      }
 
       const verification =
-        await application.verify(
-          businessTransactionId
-        );
+        record.verifications.at(-1);
+
+      if (!verification) {
+
+        return res.status(404).json({
+
+          error:
+            "Verification not found.",
+
+        });
+
+      }
 
       res.json(
         verification
