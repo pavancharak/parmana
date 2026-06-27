@@ -11,33 +11,57 @@ const router = Router();
 
 const application = RuntimeFactory.create(
   businessTransactionRepository,
-  executionTrustRecordRepository
+  executionTrustRecordRepository,
 );
 
+/**
+ * Returns true when the Business Transaction ID
+ * is a valid UUID.
+ */
+function isValidBusinessTransactionId(value: unknown): value is string {
+  return (
+    typeof value === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    )
+  );
+}
+
+/**
+ * POST /verify
+ *
+ * Verifies an existing Execution Trust Record.
+ */
 router.post("/", async (req, res) => {
+  const { businessTransactionId } = req.body ?? {};
 
-  try {
-
-    const result =
-      await application.verify(
-        req.body.businessTransactionId
-      );
-
-    res.json(result);
-
-  } catch (err) {
-
-    res.status(500).json({
-
-      error:
-        err instanceof Error
-          ? err.message
-          : "Unknown error",
-
+  //
+  // Required field
+  //
+  if (!businessTransactionId) {
+    return res.status(400).json({
+      error: "businessTransactionId is required.",
     });
-
   }
 
+  //
+  // UUID validation
+  //
+  if (!isValidBusinessTransactionId(businessTransactionId)) {
+    return res.status(400).json({
+      error: "businessTransactionId must be a valid UUID.",
+    });
+  }
+
+  try {
+    const verification = await application.verify(businessTransactionId);
+
+    res.json(verification);
+  } catch (err) {
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
+  }
 });
 
 export default router;

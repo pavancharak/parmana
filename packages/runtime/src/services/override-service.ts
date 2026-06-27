@@ -17,7 +17,7 @@ import {
 export class OverrideService {
   constructor(
     private readonly transactions: BusinessTransactionRepository,
-    private readonly trustRecords: ExecutionTrustRecordRepository
+    private readonly trustRecords: ExecutionTrustRecordRepository,
   ) {}
 
   /**
@@ -27,16 +27,12 @@ export class OverrideService {
     businessTransactionId: string,
     approvedBy: string,
     reason: string,
-    justification?: string
+    justification?: string,
   ): Promise<Override> {
-
     //
     // 1. Verify Business Transaction exists
     //
-    const transaction =
-      await this.transactions.findById(
-        businessTransactionId
-      );
+    const transaction = await this.transactions.findById(businessTransactionId);
 
     if (!transaction) {
       throw new Error("Business Transaction not found.");
@@ -45,10 +41,9 @@ export class OverrideService {
     //
     // 2. Retrieve Trust Record
     //
-    const trustRecord =
-      await this.trustRecords.findByTransactionId(
-        businessTransactionId
-      );
+    const trustRecord = await this.trustRecords.findByTransactionId(
+      businessTransactionId,
+    );
 
     if (!trustRecord) {
       throw new Error("Execution Trust Record not found.");
@@ -58,9 +53,7 @@ export class OverrideService {
     // 3. Enforce one Override rule
     //
     if (trustRecord.overrides.length > 0) {
-      throw new Error(
-        "Override already exists for this Business Transaction."
-      );
+      throw new Error("Override already exists for this Business Transaction.");
     }
 
     //
@@ -73,28 +66,23 @@ export class OverrideService {
     // 4. Create immutable Override
     //
     const override: Override = {
-  overrideId: crypto.randomUUID(),
+      overrideId: crypto.randomUUID(),
 
-  businessTransactionId,
+      businessTransactionId,
 
-  approvedBy,
+      approvedBy,
 
-  reason,
+      reason,
 
-  ...(justification !== undefined
-    ? { justification }
-    : {}),
+      ...(justification !== undefined ? { justification } : {}),
 
-  approvedAt: new Date(),
-};
+      approvedAt: new Date(),
+    };
 
     //
     // 5. Append to Trust Record
     //
-    await this.trustRecords.appendOverride(
-      businessTransactionId,
-      override
-    );
+    await this.trustRecords.appendOverride(businessTransactionId, override);
 
     return override;
   }

@@ -1,12 +1,15 @@
-export type ExecutionRecord = {
+import type { PolicySignals } from "./PolicySignals.js";
+
+export interface ExecutionRecord {
   executionId: string;
 
   policyId: string;
   policyVersion: string;
 
-  input: any;
+  input: PolicySignals;
 
   matchedRuleId: string;
+
   action: "approve" | "reject" | "override";
 
   reason: string;
@@ -19,4 +22,4 @@ export type ExecutionRecord = {
   hash: string;
 
   timestamp: number;
-};
+}

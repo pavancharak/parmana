@@ -50,5 +50,5 @@ export interface Verification {
 export enum VerificationStatus {
   VERIFIED = "VERIFIED",
 
-  FAILED = "FAILED"
+  FAILED = "FAILED",
 }

@@ -14,10 +14,7 @@ export class KeyPair {
    */
   public readonly privateKey: Uint8Array;
 
-  constructor(
-    publicKey: Uint8Array,
-    privateKey: Uint8Array
-  ) {
+  constructor(publicKey: Uint8Array, privateKey: Uint8Array) {
     if (!publicKey || publicKey.length === 0) {
       throw new Error("Public key cannot be empty.");
     }
@@ -39,7 +36,7 @@ export class KeyPair {
   public toJSON() {
     return {
       publicKey: Buffer.from(this.publicKey).toString("base64"),
-      privateKey: "***REDACTED***"
+      privateKey: "***REDACTED***",
     };
   }
 }

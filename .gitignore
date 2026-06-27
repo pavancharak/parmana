@@ -49,3 +49,16 @@ Thumbs.db
 
 tmp/
 temp/
+packages/crypto/keys/*.pem
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+.env
+.env.*
+
+.vscode/
+.idea/
+
+.DS_Store

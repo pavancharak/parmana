@@ -13,9 +13,13 @@
     "express": "^4.18.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/supertest": "^7.2.0",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
     "supertest": "^7.2.2",
     "tsx": "^4.22.4",
+    "typescript-eslint": "^8.62.0",
     "vitest": "^4.1.9"
   }
 }

@@ -44,9 +44,7 @@ export class Metadata {
    * Returns all metadata as a plain object.
    */
   public toObject(): Readonly<Record<string, string>> {
-    return Object.freeze(
-      Object.fromEntries(this.values.entries())
-    );
+    return Object.freeze(Object.fromEntries(this.values.entries()));
   }
 
   /**

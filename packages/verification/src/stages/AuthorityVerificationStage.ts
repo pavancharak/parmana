@@ -10,16 +10,10 @@ import { VerificationError } from "../errors/VerificationError.js";
  * instance is present. More detailed authority validation
  * will be added as the Verification domain model evolves.
  */
-export class AuthorityVerificationStage
-  implements VerificationComponent
-{
-  public execute(
-    verification: Verification
-  ): Verification {
+export class AuthorityVerificationStage implements VerificationComponent {
+  public execute(verification: Verification): Verification {
     if (!verification) {
-      throw new VerificationError(
-        "Verification cannot be null or undefined."
-      );
+      throw new VerificationError("Verification cannot be null or undefined.");
     }
 
     return verification;

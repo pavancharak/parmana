@@ -11,7 +11,7 @@ describe("RuntimeFactory", () => {
   it("creates a Runtime instance", () => {
     const runtime = RuntimeFactory.create(
       new MemoryBusinessTransactionRepository(),
-      new MemoryExecutionTrustRecordRepository()
+      new MemoryExecutionTrustRecordRepository(),
     );
 
     expect(runtime).toBeDefined();

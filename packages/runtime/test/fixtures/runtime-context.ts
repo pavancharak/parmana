@@ -10,9 +10,7 @@ import {
 } from "@parmana/shared";
 
 export function createRuntimeContext(): RuntimeContext {
-
   const transaction: BusinessTransaction = {
-
     businessTransactionId: "txn-001",
 
     metadata: {
@@ -39,38 +37,28 @@ export function createRuntimeContext(): RuntimeContext {
       },
     },
 
-    status:
-      BusinessTransactionStatus.EXECUTING,
+    status: BusinessTransactionStatus.EXECUTING,
 
-    createdAt:
-      new Date("2026-01-01T00:00:00Z"),
+    createdAt: new Date("2026-01-01T00:00:00Z"),
   };
 
   const execution: Execution = {
-
     executionId: "exec-001",
 
-    businessTransactionId:
-      transaction.businessTransactionId,
+    businessTransactionId: transaction.businessTransactionId,
 
-    status:
-      ExecutionStatus.COMPLETED,
+    status: ExecutionStatus.COMPLETED,
 
-    mode:
-      ExecutionMode.SYNC,
+    mode: ExecutionMode.SYNC,
 
-    startedAt:
-      new Date("2026-01-01T00:00:01Z"),
+    startedAt: new Date("2026-01-01T00:00:01Z"),
 
-    completedAt:
-      new Date("2026-01-01T00:00:02Z"),
+    completedAt: new Date("2026-01-01T00:00:02Z"),
   };
 
   return {
-
     transaction,
 
     execution,
-
   };
 }

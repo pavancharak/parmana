@@ -14,44 +14,26 @@ import {
  * replacing the stored Execution Trust Record rather
  * than mutating it.
  */
-export class MemoryExecutionTrustRecordRepository
-  implements ExecutionTrustRecordRepository {
+export class MemoryExecutionTrustRecordRepository implements ExecutionTrustRecordRepository {
+  private readonly records = new Map<string, ExecutionTrustRecord>();
 
-  private readonly records =
-    new Map<string, ExecutionTrustRecord>();
-
-  async create(
-    record: ExecutionTrustRecord
-  ): Promise<ExecutionTrustRecord> {
-
-    this.records.set(
-      record.businessTransactionId,
-      record
-    );
+  async create(record: ExecutionTrustRecord): Promise<ExecutionTrustRecord> {
+    this.records.set(record.businessTransactionId, record);
 
     return record;
   }
 
   async findByTransactionId(
-    businessTransactionId: string
+    businessTransactionId: string,
   ): Promise<ExecutionTrustRecord | null> {
-
-    return (
-      this.records.get(
-        businessTransactionId
-      ) ?? null
-    );
+    return this.records.get(businessTransactionId) ?? null;
   }
 
   async appendExecution(
     businessTransactionId: string,
-    execution: Execution
+    execution: Execution,
   ): Promise<void> {
-
-    const record =
-      this.records.get(
-        businessTransactionId
-      );
+    const record = this.records.get(businessTransactionId);
 
     if (!record) {
       return;
@@ -59,26 +41,14 @@ export class MemoryExecutionTrustRecordRepository
 
     const updated: ExecutionTrustRecord = {
       ...record,
-      executions: [
-        ...record.executions,
-        execution,
-      ],
+      executions: [...record.executions, execution],
     };
 
-    this.records.set(
-      businessTransactionId,
-      updated
-    );
+    this.records.set(businessTransactionId, updated);
   }
 
-  async replaceExecution(
-    execution: Execution
-  ): Promise<void> {
-
-    const record =
-      this.records.get(
-        execution.businessTransactionId
-      );
+  async replaceExecution(execution: Execution): Promise<void> {
+    const record = this.records.get(execution.businessTransactionId);
 
     if (!record) {
       return;
@@ -86,30 +56,19 @@ export class MemoryExecutionTrustRecordRepository
 
     const updated: ExecutionTrustRecord = {
       ...record,
-      executions: record.executions.map(
-        existing =>
-          existing.executionId ===
-          execution.executionId
-            ? execution
-            : existing
+      executions: record.executions.map((existing) =>
+        existing.executionId === execution.executionId ? execution : existing,
       ),
     };
 
-    this.records.set(
-      execution.businessTransactionId,
-      updated
-    );
+    this.records.set(execution.businessTransactionId, updated);
   }
 
   async appendOverride(
     businessTransactionId: string,
-    overrideArtifact: Override
+    overrideArtifact: Override,
   ): Promise<void> {
-
-    const record =
-      this.records.get(
-        businessTransactionId
-      );
+    const record = this.records.get(businessTransactionId);
 
     if (!record) {
       return;
@@ -117,27 +76,17 @@ export class MemoryExecutionTrustRecordRepository
 
     const updated: ExecutionTrustRecord = {
       ...record,
-      overrides: [
-        ...record.overrides,
-        overrideArtifact,
-      ],
+      overrides: [...record.overrides, overrideArtifact],
     };
 
-    this.records.set(
-      businessTransactionId,
-      updated
-    );
+    this.records.set(businessTransactionId, updated);
   }
 
   async appendVerification(
     businessTransactionId: string,
-    verification: Verification
+    verification: Verification,
   ): Promise<void> {
-
-    const record =
-      this.records.get(
-        businessTransactionId
-      );
+    const record = this.records.get(businessTransactionId);
 
     if (!record) {
       return;
@@ -145,27 +94,17 @@ export class MemoryExecutionTrustRecordRepository
 
     const updated: ExecutionTrustRecord = {
       ...record,
-      verifications: [
-        ...record.verifications,
-        verification,
-      ],
+      verifications: [...record.verifications, verification],
     };
 
-    this.records.set(
-      businessTransactionId,
-      updated
-    );
+    this.records.set(businessTransactionId, updated);
   }
 
   async appendReceipt(
     businessTransactionId: string,
-    receipt: Receipt
+    receipt: Receipt,
   ): Promise<void> {
-
-    const record =
-      this.records.get(
-        businessTransactionId
-      );
+    const record = this.records.get(businessTransactionId);
 
     if (!record) {
       return;
@@ -173,15 +112,9 @@ export class MemoryExecutionTrustRecordRepository
 
     const updated: ExecutionTrustRecord = {
       ...record,
-      receipts: [
-        ...record.receipts,
-        receipt,
-      ],
+      receipts: [...record.receipts, receipt],
     };
 
-    this.records.set(
-      businessTransactionId,
-      updated
-    );
+    this.records.set(businessTransactionId, updated);
   }
 }

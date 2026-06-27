@@ -6,37 +6,58 @@ import {
   Verification,
 } from "../domain/index.js";
 
+/**
+ * Repository for immutable
+ * Execution Trust Records.
+ */
 export interface ExecutionTrustRecordRepository {
-
-  create(
-    record: ExecutionTrustRecord
-  ): Promise<ExecutionTrustRecord>;
+  create(record: ExecutionTrustRecord): Promise<ExecutionTrustRecord>;
 
   findByTransactionId(
-    businessTransactionId: string
+    businessTransactionId: string,
   ): Promise<ExecutionTrustRecord | null>;
 
+  /**
+   * Appends a new immutable Execution.
+   */
   appendExecution(
     businessTransactionId: string,
-    execution: Execution
+    execution: Execution,
   ): Promise<void>;
 
-  replaceExecution(
-    execution: Execution
-  ): Promise<void>;
+  /**
+   * @deprecated
+   *
+   * Parmana uses an append-only execution model.
+   *
+   * Execution state transitions must be represented
+   * by appending a new immutable Execution using
+   * appendExecution().
+   *
+   * This method exists only for backward
+   * compatibility and should not be used in new
+   * implementations.
+   */
+  replaceExecution(execution: Execution): Promise<void>;
 
+  /**
+   * Appends an immutable Override.
+   */
   appendOverride(
     businessTransactionId: string,
-    override: Override
+    override: Override,
   ): Promise<void>;
 
+  /**
+   * Appends an immutable Verification.
+   */
   appendVerification(
     businessTransactionId: string,
-    verification: Verification
+    verification: Verification,
   ): Promise<void>;
 
-  appendReceipt(
-    businessTransactionId: string,
-    receipt: Receipt
-  ): Promise<void>;
+  /**
+   * Appends an immutable Receipt.
+   */
+  appendReceipt(businessTransactionId: string, receipt: Receipt): Promise<void>;
 }

@@ -23,43 +23,27 @@ import { ExecutionTrustRecordBuilder } from "./ExecutionTrustRecordBuilder.js";
  * It simply assembles the canonical trust artifact.
  */
 export class ExecutionTrustPipeline {
-
-  private readonly builder =
-    new ExecutionTrustRecordBuilder();
+  private readonly builder = new ExecutionTrustRecordBuilder();
 
   /**
    * Executes the canonical Execution Trust Pipeline.
    */
-  async execute(
-    context: RuntimeContext
-  ): Promise<ExecutionTrustRecord> {
+  async execute(context: RuntimeContext): Promise<ExecutionTrustRecord> {
+    this.validate(context);
 
-    this.validate(
-      context
-    );
-
-    return await this.builder.build(
-      context
-    );
+    return await this.builder.build(context);
   }
 
   /**
    * Validates the minimum runtime requirements.
    */
-  private validate(
-    context: RuntimeContext
-  ): void {
-
+  private validate(context: RuntimeContext): void {
     if (!context.transaction) {
-      throw new Error(
-        "Business Transaction is required."
-      );
+      throw new Error("Business Transaction is required.");
     }
 
     if (!context.execution) {
-      throw new Error(
-        "Execution artifact is required."
-      );
+      throw new Error("Execution artifact is required.");
     }
   }
 }

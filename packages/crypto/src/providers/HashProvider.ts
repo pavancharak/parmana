@@ -1,6 +1,4 @@
-import type {
-  HashAlgorithm,
-} from "@parmana/shared";
+import type { HashAlgorithm } from "@parmana/shared";
 
 /**
  * Hash Provider.
@@ -16,7 +14,5 @@ export interface HashProvider {
   /**
    * Computes a cryptographic hash.
    */
-  hash(
-    data: Uint8Array
-  ): Promise<string>;
+  hash(data: Uint8Array): Promise<string>;
 }

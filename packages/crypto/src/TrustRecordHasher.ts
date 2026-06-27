@@ -1,8 +1,6 @@
 import { CanonicalSerializer } from "./CanonicalSerializer.js";
 
-import type {
-  CryptoProvider,
-} from "./providers/CryptoProvider.js";
+import type { CryptoProvider } from "./providers/CryptoProvider.js";
 
 /**
  * Trust Record Hasher.
@@ -11,28 +9,18 @@ import type {
  * for immutable trust artifacts.
  */
 export class TrustRecordHasher {
-
   constructor(
     private readonly crypto: CryptoProvider,
 
-    private readonly serializer =
-      new CanonicalSerializer()
+    private readonly serializer = new CanonicalSerializer(),
   ) {}
 
   /**
    * Hashes an immutable object.
    */
-  async hash(
-    value: unknown
-  ): Promise<string> {
+  async hash(value: unknown): Promise<string> {
+    const bytes = this.serializer.serialize(value);
 
-    const bytes =
-      this.serializer.serialize(
-        value
-      );
-
-    return this.crypto.hash.hash(
-      bytes
-    );
+    return this.crypto.hash.hash(bytes);
   }
 }

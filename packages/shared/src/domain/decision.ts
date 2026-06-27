@@ -38,5 +38,5 @@ export interface Decision {
  */
 export enum DecisionOutcome {
   APPROVED = "APPROVED",
-  REJECTED = "REJECTED"
+  REJECTED = "REJECTED",
 }

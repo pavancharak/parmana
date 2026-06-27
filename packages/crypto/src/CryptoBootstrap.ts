@@ -1,18 +1,16 @@
-import {
-  loadConfig,
-} from "@parmana/shared";
+import { loadConfig } from "@parmana/shared";
 
-import type {
-  CryptoProvider,
-} from "./providers/CryptoProvider.js";
+import type { CryptoProvider } from "./providers/CryptoProvider.js";
 
 import { CryptoBuilder } from "./CryptoBuilder.js";
 
 import { HashRegistry } from "./providers/HashRegistry.js";
+
 import { SignatureRegistry } from "./providers/SignatureRegistry.js";
 
 // Built-in Providers
 import { SHA256HashProvider } from "./providers/hash/SHA256HashProvider.js";
+
 import { Ed25519SignatureProvider } from "./providers/signature/Ed25519SignatureProvider.js";
 
 /**
@@ -27,35 +25,36 @@ import { Ed25519SignatureProvider } from "./providers/signature/Ed25519Signature
  * - Register future plugins
  * - Build the CryptoProvider
  *
+ * The configured CryptoProvider is cached so that
+ * cryptographic providers (especially the signature
+ * provider) are reused for the lifetime of the process.
+ *
  * This is the ONLY place in the crypto package that
  * should reference concrete cryptographic algorithms.
  */
 export class CryptoBootstrap {
+  private static provider: CryptoProvider | undefined;
 
   static create(): CryptoProvider {
+    if (this.provider) {
+      return this.provider;
+    }
 
-    const config =
-      loadConfig();
+    const config = loadConfig();
 
-    const hashRegistry =
-      new HashRegistry();
+    const hashRegistry = new HashRegistry();
 
-    const signatureRegistry =
-      new SignatureRegistry();
+    const signatureRegistry = new SignatureRegistry();
 
     //
     // Register built-in hash providers
     //
-    hashRegistry.register(
-      new SHA256HashProvider()
-    );
+    hashRegistry.register(new SHA256HashProvider());
 
     //
     // Register built-in signature providers
     //
-    signatureRegistry.register(
-      new Ed25519SignatureProvider()
-    );
+    signatureRegistry.register(new Ed25519SignatureProvider());
 
     //
     // Future extension point:
@@ -64,20 +63,14 @@ export class CryptoBootstrap {
     // PluginLoader.load(signatureRegistry);
     //
 
-    return new CryptoBuilder()
+    this.provider = new CryptoBuilder()
 
-      .withHash(
-        hashRegistry.get(
-          config.crypto.hashProvider
-        )
-      )
+      .withHash(hashRegistry.get(config.crypto.hashProvider))
 
-      .withSignature(
-        signatureRegistry.get(
-          config.crypto.signatureProvider
-        )
-      )
+      .withSignature(signatureRegistry.get(config.crypto.signatureProvider))
 
       .build();
+
+    return this.provider;
   }
 }

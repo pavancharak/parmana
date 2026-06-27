@@ -1,6 +1,7 @@
 import {
   BusinessTransaction,
   ExecutionTrustRecord,
+  ExecutionTrustRecordRepository,
 } from "@parmana/shared";
 
 import { RuntimePipeline } from "./RuntimePipeline.js";
@@ -14,11 +15,11 @@ import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
  * configured Runtime Pipeline.
  */
 export class Runtime {
-  private readonly trustPipeline =
-    new ExecutionTrustPipeline();
+  private readonly trustPipeline = new ExecutionTrustPipeline();
 
   constructor(
-    private readonly pipeline: RuntimePipeline
+    private readonly pipeline: RuntimePipeline,
+    private readonly trustRecords: ExecutionTrustRecordRepository,
   ) {
     Object.freeze(this);
   }
@@ -27,19 +28,22 @@ export class Runtime {
    * Executes a Business Transaction.
    */
   public async execute(
-    transaction: BusinessTransaction
+    transaction: BusinessTransaction,
   ): Promise<ExecutionTrustRecord> {
-
     let context: RuntimeContext = {
       transaction,
     };
 
-    context =
-      await this.pipeline.execute(context);
+    context = await this.pipeline.execute(context);
 
-    return await this.trustPipeline.execute(
-  context
-);
+    const trustRecord = await this.trustPipeline.execute(context);
+
+    //
+    // Persist the canonical Trust Record.
+    //
+    await this.trustRecords.create(trustRecord);
+
+    return trustRecord;
   }
 
   /**

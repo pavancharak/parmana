@@ -9,9 +9,7 @@ import { VerificationError } from "../errors/VerificationError.js";
  * This stage is intentionally minimal until the Verification
  * domain model is finalized.
  */
-export class IntentVerificationStage
-  implements VerificationComponent
-{
+export class IntentVerificationStage implements VerificationComponent {
   /**
    * Executes the intent verification stage.
    *
@@ -19,13 +17,9 @@ export class IntentVerificationStage
    * @returns The same immutable verification.
    * @throws VerificationError if the verification is missing.
    */
-  public execute(
-    verification: Verification
-  ): Verification {
+  public execute(verification: Verification): Verification {
     if (!verification) {
-      throw new VerificationError(
-        "Verification cannot be null or undefined."
-      );
+      throw new VerificationError("Verification cannot be null or undefined.");
     }
 
     return verification;

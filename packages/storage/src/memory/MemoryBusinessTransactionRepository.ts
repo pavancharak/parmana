@@ -8,59 +8,33 @@ import {
  *
  * Intended for development and testing.
  */
-export class MemoryBusinessTransactionRepository
-  implements BusinessTransactionRepository {
+export class MemoryBusinessTransactionRepository implements BusinessTransactionRepository {
+  private readonly transactions = new Map<string, BusinessTransaction>();
 
-  private readonly transactions =
-    new Map<string, BusinessTransaction>();
-
-  async create(
-    transaction: BusinessTransaction
-  ): Promise<BusinessTransaction> {
-
-    this.transactions.set(
-      transaction.businessTransactionId,
-      transaction
-    );
+  async create(transaction: BusinessTransaction): Promise<BusinessTransaction> {
+    this.transactions.set(transaction.businessTransactionId, transaction);
 
     return transaction;
   }
 
   async findById(
-    businessTransactionId: string
+    businessTransactionId: string,
   ): Promise<BusinessTransaction | null> {
-
-    return (
-      this.transactions.get(
-        businessTransactionId
-      ) ?? null
-    );
+    return this.transactions.get(businessTransactionId) ?? null;
   }
 
-  async exists(
-    businessTransactionId: string
-  ): Promise<boolean> {
-
-    return this.transactions.has(
-      businessTransactionId
-    );
+  async exists(businessTransactionId: string): Promise<boolean> {
+    return this.transactions.has(businessTransactionId);
   }
 
   async list(
     page: number,
-    pageSize: number
+    pageSize: number,
   ): Promise<readonly BusinessTransaction[]> {
+    const values = [...this.transactions.values()];
 
-    const values = [
-      ...this.transactions.values(),
-    ];
+    const start = (page - 1) * pageSize;
 
-    const start =
-      (page - 1) * pageSize;
-
-    return values.slice(
-      start,
-      start + pageSize
-    );
+    return values.slice(start, start + pageSize);
   }
 }

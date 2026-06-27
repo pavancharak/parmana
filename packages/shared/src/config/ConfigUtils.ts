@@ -4,9 +4,7 @@
  */
 export function optionalProperty<T>(
   key: string,
-  value: T | undefined
+  value: T | undefined,
 ): Record<string, T> {
-  return value === undefined
-    ? {}
-    : { [key]: value };
+  return value === undefined ? {} : { [key]: value };
 }

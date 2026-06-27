@@ -12,8 +12,6 @@ export class LedgerSerializer {
   public hash(entry: LedgerEntry): string {
     const serialized = this.serialize(entry);
 
-    return createHash("sha256")
-      .update(serialized)
-      .digest("hex");
+    return createHash("sha256").update(serialized).digest("hex");
   }
 }

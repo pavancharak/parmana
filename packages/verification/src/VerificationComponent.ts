@@ -13,7 +13,5 @@ export interface VerificationComponent {
    * @param verification Immutable verification.
    * @returns Immutable verification.
    */
-  execute(
-    verification: Verification
-  ): Verification;
+  execute(verification: Verification): Verification;
 }

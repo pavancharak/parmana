@@ -10,29 +10,20 @@ export interface BusinessTransactionRepository {
   /**
    * Creates a new Business Transaction.
    */
-  create(
-    transaction: BusinessTransaction
-  ): Promise<BusinessTransaction>;
+  create(transaction: BusinessTransaction): Promise<BusinessTransaction>;
 
   /**
    * Finds a Business Transaction.
    */
-  findById(
-    businessTransactionId: string
-  ): Promise<BusinessTransaction | null>;
+  findById(businessTransactionId: string): Promise<BusinessTransaction | null>;
 
   /**
    * Checks whether a Business Transaction exists.
    */
-  exists(
-    businessTransactionId: string
-  ): Promise<boolean>;
+  exists(businessTransactionId: string): Promise<boolean>;
 
   /**
    * Lists Business Transactions.
    */
-  list(
-    page: number,
-    pageSize: number
-  ): Promise<readonly BusinessTransaction[]>;
+  list(page: number, pageSize: number): Promise<readonly BusinessTransaction[]>;
 }

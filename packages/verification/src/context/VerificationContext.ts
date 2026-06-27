@@ -1,26 +1,33 @@
-import { Metadata } from "@parmana/shared";
+import type { ExecutionTrustRecord } from "@parmana/shared";
 
 /**
- * Infrastructure context for verification execution.
+ * Verification Context.
+ *
+ * Mutable execution context used internally
+ * while verifying an Execution Trust Record.
+ *
+ * This context never leaves the verification
+ * package.
  */
 export class VerificationContext {
-  public readonly metadata: Metadata;
-
   constructor(
-    metadata: Metadata = {
-  traceId: "",
-  source: "",
-  createdAt: Date.now(),
-}
-  ) {
-    this.metadata = metadata;
+    /**
+     * Trust Record currently being verified.
+     *
+     * Optional until the verification package
+     * is fully migrated to the Execution Trust
+     * architecture.
+     */
+    public readonly trustRecord?: ExecutionTrustRecord,
 
-    Object.freeze(this);
-  }
+    /**
+     * Overall verification status.
+     */
+    public verified = true,
 
-  public toJSON() {
-    return {
-      metadata: this.metadata,
-    };
-  }
+    /**
+     * Verification errors collected by stages.
+     */
+    public readonly errors: string[] = [],
+  ) {}
 }

@@ -9,27 +9,12 @@ import { Ed25519SignatureProvider } from "../providers/signature/Ed25519Signatur
 /**
  * Built-in providers.
  */
-export class BuiltinCryptoModule
-  implements CryptoModule {
-
-  registerHashProviders(
-    registry: HashRegistry
-  ): void {
-
-    registry.register(
-      new SHA256HashProvider()
-    );
-
+export class BuiltinCryptoModule implements CryptoModule {
+  registerHashProviders(registry: HashRegistry): void {
+    registry.register(new SHA256HashProvider());
   }
 
-  registerSignatureProviders(
-    registry: SignatureRegistry
-  ): void {
-
-    registry.register(
-      new Ed25519SignatureProvider()
-    );
-
+  registerSignatureProviders(registry: SignatureRegistry): void {
+    registry.register(new Ed25519SignatureProvider());
   }
-
 }

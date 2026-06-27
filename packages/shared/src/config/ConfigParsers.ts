@@ -1,7 +1,4 @@
-import {
-  StorageProviders,
-  type StorageProvider,
-} from "./StorageProviders.js";
+import { StorageProviders, type StorageProvider } from "./StorageProviders.js";
 
 import {
   HashAlgorithms,
@@ -10,21 +7,15 @@ import {
   type SignatureAlgorithm,
 } from "./CryptoAlgorithms.js";
 
-import {
-  KeyProviders,
-  type KeyProvider,
-} from "./KeyProviders.js";
+import { KeyProviders, type KeyProvider } from "./KeyProviders.js";
 
-import {
-  TrustProfiles,
-  type TrustProfile,
-} from "./TrustProfiles.js";
+import { TrustProfiles, type TrustProfile } from "./TrustProfiles.js";
 
 function requireValue<T extends string>(
   value: string | undefined,
   allowed: readonly T[],
   name: string,
-  defaultValue: T
+  defaultValue: T,
 ): T {
   const resolved = value ?? defaultValue;
 
@@ -33,56 +24,46 @@ function requireValue<T extends string>(
   }
 
   throw new Error(
-    `Invalid ${name}: ${resolved}. Allowed values: ${allowed.join(", ")}`
+    `Invalid ${name}: ${resolved}. Allowed values: ${allowed.join(", ")}`,
   );
 }
 
-export const parseStorageProvider = (
-  value?: string
-): StorageProvider =>
+export const parseStorageProvider = (value?: string): StorageProvider =>
   requireValue(
     value,
     Object.values(StorageProviders),
     "DATABASE_PROVIDER",
-    StorageProviders.MEMORY
+    StorageProviders.MEMORY,
   );
 
-export const parseHashAlgorithm = (
-  value?: string
-): HashAlgorithm =>
+export const parseHashAlgorithm = (value?: string): HashAlgorithm =>
   requireValue(
     value,
     Object.values(HashAlgorithms),
     "HASH_PROVIDER",
-    HashAlgorithms.SHA256
+    HashAlgorithms.SHA256,
   );
 
-export const parseSignatureAlgorithm = (
-  value?: string
-): SignatureAlgorithm =>
+export const parseSignatureAlgorithm = (value?: string): SignatureAlgorithm =>
   requireValue(
     value,
     Object.values(SignatureAlgorithms),
     "SIGNATURE_PROVIDER",
-    SignatureAlgorithms.ED25519
+    SignatureAlgorithms.ED25519,
   );
 
-export const parseKeyProvider = (
-  value?: string
-): KeyProvider =>
+export const parseKeyProvider = (value?: string): KeyProvider =>
   requireValue(
     value,
     Object.values(KeyProviders),
     "KEY_PROVIDER",
-    KeyProviders.LOCAL
+    KeyProviders.LOCAL,
   );
 
-export const parseTrustProfile = (
-  value?: string
-): TrustProfile =>
+export const parseTrustProfile = (value?: string): TrustProfile =>
   requireValue(
     value,
     Object.values(TrustProfiles),
     "TRUST_PROFILE",
-    TrustProfiles.V1
+    TrustProfiles.V1,
   );

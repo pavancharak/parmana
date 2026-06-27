@@ -20,7 +20,7 @@ import {
 export class ExecutionService {
   constructor(
     private readonly transactions: BusinessTransactionRepository,
-    private readonly trustRecords: ExecutionTrustRecordRepository
+    private readonly trustRecords: ExecutionTrustRecordRepository,
   ) {}
 
   /**
@@ -28,20 +28,15 @@ export class ExecutionService {
    */
   async create(
     businessTransactionId: string,
-    mode: ExecutionMode
+    mode: ExecutionMode,
   ): Promise<Execution> {
     //
     // 1. Verify Business Transaction exists
     //
-    const transaction =
-      await this.transactions.findById(
-        businessTransactionId
-      );
+    const transaction = await this.transactions.findById(businessTransactionId);
 
     if (!transaction) {
-      throw new BusinessTransactionNotFoundError(
-        businessTransactionId
-      );
+      throw new BusinessTransactionNotFoundError(businessTransactionId);
     }
 
     //
@@ -64,10 +59,7 @@ export class ExecutionService {
     //
     // 3. Append Execution to the Trust Record
     //
-    await this.trustRecords.appendExecution(
-      businessTransactionId,
-      execution
-    );
+    await this.trustRecords.appendExecution(businessTransactionId, execution);
 
     return execution;
   }
@@ -75,9 +67,7 @@ export class ExecutionService {
   /**
    * Marks an Execution as completed.
    */
-  async complete(
-    execution: Execution
-  ): Promise<Execution> {
+  async complete(execution: Execution): Promise<Execution> {
     const completed: Execution = {
       ...execution,
 
@@ -86,9 +76,7 @@ export class ExecutionService {
       completedAt: new Date(),
     };
 
-    await this.trustRecords.replaceExecution(
-      completed
-    );
+    await this.trustRecords.replaceExecution(completed);
 
     return completed;
   }
@@ -96,9 +84,7 @@ export class ExecutionService {
   /**
    * Marks an Execution as failed.
    */
-  async fail(
-    execution: Execution
-  ): Promise<Execution> {
+  async fail(execution: Execution): Promise<Execution> {
     const failed: Execution = {
       ...execution,
 
@@ -107,9 +93,7 @@ export class ExecutionService {
       completedAt: new Date(),
     };
 
-    await this.trustRecords.replaceExecution(
-      failed
-    );
+    await this.trustRecords.replaceExecution(failed);
 
     return failed;
   }

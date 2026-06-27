@@ -3,11 +3,11 @@ import type { ReplayInput } from "./types/ReplayInput.js";
 import type { ReplayResult } from "./types/ReplayResult.js";
 
 export class ReplayEngine {
-  replay(input: any): ReplayResult {
+  replay(input: ReplayInput): ReplayResult {
     // ✅ normalize input (CRITICAL FIX)
     const transactions = Array.isArray(input)
       ? input
-      : input.transactions ?? [];
+      : (input.transactions ?? []);
 
     if (!Array.isArray(transactions)) {
       throw new Error("Invalid replay input: transactions must be array");
@@ -21,10 +21,10 @@ export class ReplayEngine {
       return String(a.id).localeCompare(String(b.id));
     });
 
-    const executionOrder = sorted.map(t => t.id);
+    const executionOrder = sorted.map((t) => t.id);
 
     // 2. deterministic execution
-    const results = sorted.map(t => ({
+    const results = sorted.map((t) => ({
       id: t.id,
       output: this.execute(t.payload ?? t.action ?? t),
     }));

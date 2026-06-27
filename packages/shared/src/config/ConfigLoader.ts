@@ -1,6 +1,4 @@
-import {
-  loadConfig,
-} from "./Config.js";
+import { loadConfig } from "./Config.js";
 
 /**
  * Returns the immutable Parmana configuration.

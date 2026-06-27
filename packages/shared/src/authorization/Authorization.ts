@@ -41,7 +41,7 @@ export class Authorization {
     decision: AuthorizationDecision,
     policyId: string,
     metadata: Metadata = new Metadata(),
-    reason?: string
+    reason?: string,
   ) {
     if (!policyId.trim()) {
       throw new Error("Policy identifier cannot be empty.");

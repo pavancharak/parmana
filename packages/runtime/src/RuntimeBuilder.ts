@@ -1,3 +1,5 @@
+import { ExecutionTrustRecordRepository } from "@parmana/shared";
+
 import { Runtime } from "./Runtime.js";
 import { RuntimePipeline } from "./RuntimePipeline.js";
 import type { RuntimeComponent } from "./RuntimeComponent.js";
@@ -10,28 +12,41 @@ import type { RuntimeComponent } from "./RuntimeComponent.js";
 export class RuntimeBuilder {
   private readonly components: RuntimeComponent[] = [];
 
-  public addStage(
-    component: RuntimeComponent
-  ): this {
+  /**
+   * Adds a Runtime stage.
+   */
+  public addStage(component: RuntimeComponent): this {
     this.components.push(component);
+
     return this;
   }
 
-  public addStages(
-    ...components: RuntimeComponent[]
-  ): this {
+  /**
+   * Adds multiple Runtime stages.
+   */
+  public addStages(...components: RuntimeComponent[]): this {
     this.components.push(...components);
+
     return this;
   }
 
+  /**
+   * Removes all Runtime stages.
+   */
   public clearStages(): this {
     this.components.length = 0;
+
     return this;
   }
 
-  public build(): Runtime {
+  /**
+   * Builds an immutable Runtime.
+   */
+  public build(trustRecords: ExecutionTrustRecordRepository): Runtime {
     return new Runtime(
-      new RuntimePipeline(this.components)
+      new RuntimePipeline(this.components),
+
+      trustRecords,
     );
   }
 }

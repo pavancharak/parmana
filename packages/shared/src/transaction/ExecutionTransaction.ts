@@ -45,7 +45,7 @@ export class ExecutionTransaction {
     evidence: Evidence,
     createdAt: Timestamp = Timestamp.now(),
     metadata: Metadata = new Metadata(),
-    status: TransactionStatusType = TransactionStatus.COMPLETED
+    status: TransactionStatusType = TransactionStatus.COMPLETED,
   ) {
     this.id = id;
     this.authority = authority;
@@ -65,7 +65,7 @@ export class ExecutionTransaction {
    */
   public withEvidence(
     evidence: Evidence,
-    status: TransactionStatusType = this.status
+    status: TransactionStatusType = this.status,
   ): ExecutionTransaction {
     return new ExecutionTransaction(
       this.id,
@@ -76,16 +76,14 @@ export class ExecutionTransaction {
       evidence,
       this.createdAt,
       this.metadata,
-      status
+      status,
     );
   }
 
   /**
    * Returns a new transaction with a different status.
    */
-  public withStatus(
-    status: TransactionStatusType
-  ): ExecutionTransaction {
+  public withStatus(status: TransactionStatusType): ExecutionTransaction {
     return new ExecutionTransaction(
       this.id,
       this.authority,
@@ -95,7 +93,7 @@ export class ExecutionTransaction {
       this.evidence,
       this.createdAt,
       this.metadata,
-      status
+      status,
     );
   }
 

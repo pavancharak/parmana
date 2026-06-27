@@ -1,8 +1,6 @@
 import { CanonicalSerializer } from "./CanonicalSerializer.js";
 
-import type {
-  CryptoProvider,
-} from "./providers/CryptoProvider.js";
+import type { CryptoProvider } from "./providers/CryptoProvider.js";
 
 /**
  * Receipt Signer.
@@ -11,29 +9,18 @@ import type {
  * configured SignatureProvider.
  */
 export class ReceiptSigner {
-
   constructor(
-  private readonly crypto:
-    CryptoProvider,
+    private readonly crypto: CryptoProvider,
 
-  private readonly serializer =
-    new CanonicalSerializer()
-) {}
+    private readonly serializer = new CanonicalSerializer(),
+  ) {}
 
   /**
    * Signs a receipt.
    */
-  async sign(
-    receipt: unknown
-  ): Promise<string> {
+  async sign(receipt: unknown): Promise<string> {
+    const bytes = this.serializer.serialize(receipt);
 
-    const bytes =
-      this.serializer.serialize(
-        receipt
-      );
-
-    return this.crypto.signature.sign(
-      bytes
-    );
+    return this.crypto.signature.sign(bytes);
   }
 }

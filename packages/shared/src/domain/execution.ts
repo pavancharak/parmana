@@ -63,7 +63,7 @@ export enum ExecutionStatus {
 
   COMPLETED = "COMPLETED",
 
-  FAILED = "FAILED"
+  FAILED = "FAILED",
 }
 
 /**
@@ -72,5 +72,5 @@ export enum ExecutionStatus {
 export enum ExecutionMode {
   SYNC = "SYNC",
 
-  ASYNC = "ASYNC"
+  ASYNC = "ASYNC",
 }
