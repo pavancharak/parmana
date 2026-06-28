@@ -1,34 +1,45 @@
 /**
- * Parmana Runtime SDK
+ * @parmana/runtime
  *
- * Public API
+ * Canonical public API.
  */
 
-// Core
+// -----------------------------------------------------------------------------
+// Public Runtime API
+// -----------------------------------------------------------------------------
+
 export * from "./Runtime.js";
-export * from "./RuntimeEngine.js";
 export * from "./RuntimeBuilder.js";
 export * from "./RuntimeFactory.js";
+export * from "./ExecutionTrustApplication.js";
 
-// Pipeline
+// -----------------------------------------------------------------------------
+// Advanced Runtime API
+// -----------------------------------------------------------------------------
+
+export * from "./RuntimeEngine.js";
+export * from "./ExecutionTrustPipeline.js";
 export * from "./RuntimePipeline.js";
 export * from "./RuntimeComponent.js";
-
-// Execution Trust
-export * from "./ExecutionTrustApplication.js";
-export * from "./ExecutionTrustPipeline.js";
-
-// Context
 export * from "./context/RuntimeContext.js";
 
+// -----------------------------------------------------------------------------
 // Runtime Components
+// -----------------------------------------------------------------------------
+
 export * from "./components/index.js";
 
-// Public Services
+// -----------------------------------------------------------------------------
+// Services
+// -----------------------------------------------------------------------------
+
 export * from "./services/business-transaction-service.js";
 export * from "./services/execution-service.js";
 export * from "./services/receipt-service.js";
 export * from "./services/verification-service.js";
 
+// -----------------------------------------------------------------------------
 // Errors
+// -----------------------------------------------------------------------------
+
 export * from "./errors/RuntimeError.js";
