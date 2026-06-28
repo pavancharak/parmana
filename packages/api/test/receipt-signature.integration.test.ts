@@ -1,3 +1,4 @@
+import { createBusinessTransaction } from "./fixtures/business-transaction.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 
@@ -21,17 +22,18 @@ beforeAll(() => {
 
 describe("Receipt Signature", () => {
   it("generates a verifiable receipt signature", async () => {
+    const businessTransactionId = crypto.randomUUID();
+
+    const authorityId = crypto.randomUUID();
+    const authorizationId = crypto.randomUUID();
+    const intentId = crypto.randomUUID();
+
     //
+    const transaction = createBusinessTransaction();
+
     // Execute
     //
-    const execute = await request(app).post("/execute").send({
-      businessTransactionId: crypto.randomUUID(),
-      status: "AUTHORIZED",
-      metadata: {},
-      policy: {},
-      signals: {},
-      decision: {},
-    });
+    const execute = await request(app).post("/execute").send(transaction);
 
     expect(execute.status).toBe(200);
 
@@ -71,3 +73,6 @@ describe("Receipt Signature", () => {
     expect(verified).toBe(true);
   });
 });
+
+
+

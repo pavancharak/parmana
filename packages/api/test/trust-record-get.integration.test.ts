@@ -1,3 +1,4 @@
+import { createBusinessTransaction } from "./fixtures/business-transaction.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 
@@ -10,24 +11,12 @@ import app from "../src/app.js";
 describe("Trust Record GET Integration", () => {
   it("retrieves an existing Execution Trust Record", async () => {
     //
+    const transaction = createBusinessTransaction();
+
     // Execute
     //
     const executeResponse = await request(app)
-      .post("/execute")
-
-      .send({
-        businessTransactionId: crypto.randomUUID(),
-
-        status: "AUTHORIZED",
-
-        metadata: {},
-
-        policy: {},
-
-        signals: {},
-
-        decision: {},
-      });
+      .post("/execute").send(transaction);
 
     expect(executeResponse.status).toBe(200);
 
@@ -65,3 +54,8 @@ describe("Trust Record GET Integration", () => {
     expect(response.body.error).toContain("Execution Trust Record");
   });
 });
+
+
+
+
+

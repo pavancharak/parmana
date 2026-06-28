@@ -1,17 +1,36 @@
+import { Authority } from "./authority.js";
+import { Authorization } from "./authorization.js";
+import { Intent } from "./intent.js";
 import { TransactionMetadata } from "./metadata.js";
 import { PolicyReference } from "./policy-reference.js";
-import { Decision } from "./decision.js";
 
 /**
  * Parmana Trust Core
  *
  * Business Transaction
  *
- * The primary business resource of the Parmana API.
+ * The canonical immutable business context
+ * accepted by Parmana for execution.
  *
- * A Business Transaction is immutable once accepted.
+ * A Business Transaction captures the complete
+ * upstream trust chain prior to policy evaluation.
+ *
+ * Authority
+ *      ↓
+ * Authorization
+ *      ↓
+ * Intent
+ *      ↓
+ * BusinessTransaction
+ *      ↓
+ * PolicyReference
+ *
+ * The Business Transaction is the immutable input
+ * to deterministic policy evaluation.
+ *
  * Every Business Transaction produces exactly one
- * Execution Trust Record.
+ * Decision, one Execution, and one Execution Trust
+ * Record.
  */
 export interface BusinessTransaction {
   /**
@@ -27,24 +46,39 @@ export interface BusinessTransaction {
   readonly metadata: TransactionMetadata;
 
   /**
-   * Policy explicitly requested by the client
-   * and successfully resolved.
+   * Authority responsible for this
+   * Business Transaction.
+   */
+  readonly authority: Authority;
+
+  /**
+   * Authorization granted by the Authority.
+   */
+  readonly authorization: Authorization;
+
+  /**
+   * Intended business action.
+   */
+  readonly intent: Intent;
+
+  /**
+   * Exact Policy to execute.
+   *
+   * The PolicyReference is part of the
+   * cryptographically verifiable trust chain.
    */
   readonly policy: PolicyReference;
 
   /**
-   * Business signals evaluated by the Policy.
+   * Runtime signals supplied to the Policy.
    *
-   * Parmana treats this as an opaque object.
-   * Validation is performed using the Policy's
-   * associated Signal Schema.
+   * Signals are opaque runtime facts validated
+   * against the Policy's declared Signal Schema.
+   *
+   * Parmana does not assign business meaning to
+   * these values.
    */
-  readonly signals: Record<string, unknown>;
-
-  /**
-   * Immutable Policy Decision.
-   */
-  readonly decision: Decision;
+  readonly signals: Readonly<Record<string, unknown>>;
 
   /**
    * Current Business Transaction lifecycle.
@@ -60,9 +94,6 @@ export interface BusinessTransaction {
 
 /**
  * Business Transaction lifecycle.
- *
- * Represents the overall progress of the
- * Business Transaction.
  */
 export enum BusinessTransactionStatus {
   RECEIVED = "RECEIVED",

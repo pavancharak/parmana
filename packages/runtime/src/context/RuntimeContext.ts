@@ -5,7 +5,6 @@ import {
   ExecutionEvidence,
   ExecutionTrustRecord,
   Override,
-  PolicyReference,
   Receipt,
   Verification,
 } from "@parmana/shared";
@@ -13,27 +12,24 @@ import {
 /**
  * Canonical Runtime Context.
  *
- * RuntimeContext is the single immutable object passed
- * between all stages of the Execution Trust Pipeline.
+ * RuntimeContext is the immutable state passed
+ * between Runtime Components.
  *
- * Each stage returns a new RuntimeContext with one or
- * more additional artifacts populated.
+ * Runtime components append immutable execution
+ * artifacts without modifying the original
+ * BusinessTransaction.
  */
 export interface RuntimeContext {
   /**
-   * Root Business Transaction.
+   * Canonical immutable Business Transaction.
    */
   readonly transaction: BusinessTransaction;
 
   /**
-   * Policy resolved for the transaction.
+   * Decision produced by deterministic
+   * Policy evaluation.
    */
-  readonly policy?: PolicyReference;
-
-  /**
-   * Decision produced by the Policy Engine.
-   */
-  readonly decision?: Decision;
+  readonly decision: Decision;
 
   /**
    * Execution artifact.

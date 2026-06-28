@@ -1,3 +1,4 @@
+import { createBusinessTransaction } from "./fixtures/business-transaction.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 
@@ -10,24 +11,12 @@ import app from "../src/app.js";
 describe("Execution Trust Record Lifecycle", () => {
   it("maintains the complete trust lifecycle", async () => {
     //
+    const transaction = createBusinessTransaction();
+
     // Execute
     //
     const executeResponse = await request(app)
-      .post("/execute")
-
-      .send({
-        businessTransactionId: crypto.randomUUID(),
-
-        status: "AUTHORIZED",
-
-        metadata: {},
-
-        policy: {},
-
-        signals: {},
-
-        decision: {},
-      });
+      .post("/execute").send(transaction);
 
     expect(executeResponse.status).toBe(200);
 
@@ -114,3 +103,8 @@ describe("Execution Trust Record Lifecycle", () => {
     );
   });
 });
+
+
+
+
+

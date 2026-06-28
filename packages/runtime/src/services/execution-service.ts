@@ -1,6 +1,7 @@
 import {
   BusinessTransactionNotFoundError,
   BusinessTransactionRepository,
+  Decision,
   Execution,
   ExecutionMode,
   ExecutionStatus,
@@ -11,11 +12,9 @@ import {
  * Application service responsible for creating
  * immutable Execution artifacts.
  *
- * Business rules:
- * - Execution belongs to one Business Transaction.
- * - Executions are immutable.
- * - Executions are append-only.
- * - Multiple executions may exist.
+ * ExecutionService does not evaluate policies or
+ * construct Decisions. It records the execution of
+ * an already-produced Decision.
  */
 export class ExecutionService {
   constructor(
@@ -28,26 +27,29 @@ export class ExecutionService {
    */
   async create(
     businessTransactionId: string,
+    decision: Decision,
     mode: ExecutionMode,
   ): Promise<Execution> {
     //
-    // 1. Verify Business Transaction exists
+    // Verify Business Transaction exists.
     //
-    const transaction = await this.transactions.findById(businessTransactionId);
+    const transaction =
+      await this.transactions.findById(businessTransactionId);
 
     if (!transaction) {
-      throw new BusinessTransactionNotFoundError(businessTransactionId);
+      throw new BusinessTransactionNotFoundError(
+        businessTransactionId,
+      );
     }
 
-    //
-    // 2. Create immutable Execution
-    //
     const now = new Date();
 
     const execution: Execution = {
       executionId: crypto.randomUUID(),
 
       businessTransactionId,
+
+      decision,
 
       status: ExecutionStatus.PROCESSING,
 
@@ -56,10 +58,10 @@ export class ExecutionService {
       startedAt: now,
     };
 
-    //
-    // 3. Append Execution to the Trust Record
-    //
-    await this.trustRecords.appendExecution(businessTransactionId, execution);
+    await this.trustRecords.appendExecution(
+      businessTransactionId,
+      execution,
+    );
 
     return execution;
   }
@@ -67,7 +69,9 @@ export class ExecutionService {
   /**
    * Marks an Execution as completed.
    */
-  async complete(execution: Execution): Promise<Execution> {
+  async complete(
+    execution: Execution,
+  ): Promise<Execution> {
     const completed: Execution = {
       ...execution,
 
@@ -84,7 +88,9 @@ export class ExecutionService {
   /**
    * Marks an Execution as failed.
    */
-  async fail(execution: Execution): Promise<Execution> {
+  async fail(
+    execution: Execution,
+  ): Promise<Execution> {
     const failed: Execution = {
       ...execution,
 

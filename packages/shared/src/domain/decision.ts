@@ -1,10 +1,21 @@
 import { PolicyReference } from "./policy-reference.js";
 
+import type { JsonValue } from "../types/Json.js";
+
 /**
- * Immutable Policy Decision.
+ * Parmana Trust Core
  *
- * A Decision records the outcome of Policy evaluation.
- * Decisions never change once created.
+ * Decision
+ *
+ * Immutable result produced by evaluating an
+ * Intent against a Policy.
+ *
+ * Decision does not create authority.
+ * Decision does not grant authorization.
+ * Decision does not modify intent.
+ *
+ * Decision records only the outcome of
+ * deterministic Policy evaluation.
  */
 export interface Decision {
   /**
@@ -13,12 +24,30 @@ export interface Decision {
   readonly decisionId: string;
 
   /**
+   * Intent evaluated by this Decision.
+   */
+  readonly intentId: string;
+
+  /**
+   * Exact Policy used.
+   */
+  readonly policy: PolicyReference;
+
+  /**
+   * Runtime signals evaluated by the policy.
+   *
+   * These are captured to support deterministic
+   * replay and independent verification.
+   */
+  readonly signals: Record<string, JsonValue>;
+
+  /**
    * Policy evaluation outcome.
    */
   readonly outcome: DecisionOutcome;
 
   /**
-   * Human-readable explanation.
+   * Optional explanation.
    */
   readonly reason?: string;
 
@@ -26,11 +55,6 @@ export interface Decision {
    * UTC timestamp when evaluation completed.
    */
   readonly evaluatedAt: Date;
-
-  /**
-   * Exact Policy used to produce this Decision.
-   */
-  readonly policy: PolicyReference;
 }
 
 /**
@@ -38,5 +62,6 @@ export interface Decision {
  */
 export enum DecisionOutcome {
   APPROVED = "APPROVED",
+
   REJECTED = "REJECTED",
 }

@@ -1,7 +1,11 @@
+import crypto from "crypto";
+
 import {
   BusinessTransaction,
   ExecutionTrustRecord,
   ExecutionTrustRecordRepository,
+  DecisionOutcome,
+  JsonValue,
 } from "@parmana/shared";
 
 import { RuntimePipeline } from "./RuntimePipeline.js";
@@ -11,8 +15,7 @@ import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
 /**
  * Parmana Runtime.
  *
- * Executes Business Transactions through the
- * configured Runtime Pipeline.
+ * Executes Business Transactions through pipeline + trust layer.
  */
 export class Runtime {
   private readonly trustPipeline = new ExecutionTrustPipeline();
@@ -24,38 +27,42 @@ export class Runtime {
     Object.freeze(this);
   }
 
-  /**
-   * Executes a Business Transaction.
-   */
   public async execute(
     transaction: BusinessTransaction,
   ): Promise<ExecutionTrustRecord> {
+    const signals = transaction.signals as Record<string, JsonValue>;
+
+    const outcome =
+      (signals?.riskScore as number) > 50
+        ? DecisionOutcome.REJECTED
+        : DecisionOutcome.APPROVED;
+
     let context: RuntimeContext = {
       transaction,
+      decision: {
+        decisionId: crypto.randomUUID(),
+        intentId: transaction.intent.intentId,
+        policy: transaction.policy,
+        signals,
+        outcome,
+        reason: "runtime-evaluated",
+        evaluatedAt: new Date(),
+      },
     };
 
     context = await this.pipeline.execute(context);
 
     const trustRecord = await this.trustPipeline.execute(context);
 
-    //
-    // Persist the canonical Trust Record.
-    //
     await this.trustRecords.create(trustRecord);
 
     return trustRecord;
   }
 
-  /**
-   * Returns true if no runtime stages exist.
-   */
   public isEmpty(): boolean {
     return this.pipeline.isEmpty();
   }
 
-  /**
-   * Returns the number of runtime stages.
-   */
   public size(): number {
     return this.pipeline.size();
   }

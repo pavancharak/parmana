@@ -7,3 +7,5 @@ export type {
   PolicyOutcome,
   PolicyInput,
 } from "./types/Policy.js";
+
+export type { PolicySignals } from "./types/PolicySignals.js";

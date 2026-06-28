@@ -1,3 +1,4 @@
+import { createBusinessTransaction } from "./fixtures/business-transaction.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 
@@ -23,24 +24,12 @@ describe("Negative Workflow Integration", () => {
 
   it("fails receipt generation before verification", async () => {
     //
+    const transaction = createBusinessTransaction();
+
     // Execute only
     //
     const execute = await request(app)
-      .post("/execute")
-
-      .send({
-        businessTransactionId: crypto.randomUUID(),
-
-        status: "AUTHORIZED",
-
-        metadata: {},
-
-        policy: {},
-
-        signals: {},
-
-        decision: {},
-      });
+      .post("/execute").send(transaction);
 
     expect(execute.status).toBe(200);
 
@@ -89,3 +78,8 @@ describe("Negative Workflow Integration", () => {
     expect(response.status).toBe(400);
   });
 });
+
+
+
+
+
