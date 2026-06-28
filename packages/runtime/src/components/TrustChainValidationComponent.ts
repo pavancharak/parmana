@@ -62,7 +62,7 @@ export class TrustChainValidationComponent
     //
     // Decision
     //
-    if (!transaction.decision) {
+    if (!context.decision) {
       throw new ValidationError(
         "DECISION_REQUIRED",
         "Decision is required before execution.",
@@ -73,7 +73,7 @@ export class TrustChainValidationComponent
     // Only approved Decisions may execute.
     //
     if (
-      transaction.decision.outcome !==
+      context.decision.outcome !==
       DecisionOutcome.APPROVED
     ) {
       throw new DecisionNotApprovedError();

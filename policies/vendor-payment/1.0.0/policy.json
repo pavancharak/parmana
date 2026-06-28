@@ -1,0 +1,54 @@
+{
+  "policyId": "vendor-payment",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "amount": "number",
+    "vendorVerified": "boolean",
+    "paymentApproved": "boolean"
+  },
+
+  "rules": [
+    {
+      "id": "approve-vendor-payment",
+
+      "condition": {
+        "all": [
+          {
+            "signal": "amount",
+            "greater_than": 0
+          },
+          {
+            "signal": "vendorVerified",
+            "equals": true
+          },
+          {
+            "signal": "paymentApproved",
+            "equals": true
+          }
+        ]
+      },
+
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "vendor_payment_approved"
+      }
+    },
+
+    {
+      "id": "reject-vendor-payment",
+
+      "condition": {
+        "all": []
+      },
+
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": false,
+        "reason": "vendor_payment_rejected"
+      }
+    }
+  ]
+}

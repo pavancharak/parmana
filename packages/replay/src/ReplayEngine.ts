@@ -1,48 +1,85 @@
-import crypto from "crypto";
+import { DecisionOutcome, normalizePolicy } from "@parmana/shared";
+import { PolicyEngine } from "@parmana/policy";
+
 import type { ReplayInput } from "./types/ReplayInput.js";
 import type { ReplayResult } from "./types/ReplayResult.js";
+import { toPolicySignals } from "./utils/to-policy-signals.js";
 
 export class ReplayEngine {
-  replay(input: ReplayInput): ReplayResult {
-    // ✅ normalize input (CRITICAL FIX)
-    const transactions = Array.isArray(input)
-      ? input
-      : (input.transactions ?? []);
+  private readonly policyEngine = new PolicyEngine();
 
-    if (!Array.isArray(transactions)) {
-      throw new Error("Invalid replay input: transactions must be array");
+  public replay(input: ReplayInput): ReplayResult {
+    const trustRecord = input.trustRecord;
+
+    if (!trustRecord?.executions?.length) {
+      throw new Error("Invalid trust record");
     }
 
-    // 1. deterministic sort
-    const sorted = [...transactions].sort((a, b) => {
-      if (a.timestamp && b.timestamp) {
-        return a.timestamp - b.timestamp;
-      }
-      return String(a.id).localeCompare(String(b.id));
-    });
+    const execution = trustRecord.executions[0];
 
-    const executionOrder = sorted.map((t) => t.id);
+    if (!execution?.decision) {
+      throw new Error("Missing decision");
+    }
 
-    // 2. deterministic execution
-    const results = sorted.map((t) => ({
-      id: t.id,
-      output: this.execute(t.payload ?? t.action ?? t),
-    }));
+    const recordedDecision = execution.decision;
 
-    // 3. deterministic hash
-    const hash = crypto
-      .createHash("sha256")
-      .update(JSON.stringify({ executionOrder, results }))
-      .digest("hex");
+    //
+    // Canonical replay inputs
+    //
+    const signals = toPolicySignals(input.transaction.signals);
+
+    const policy = normalizePolicy(input.policy ?? {});
+
+    //
+    // Deterministic policy evaluation
+    //
+    const ledger = this.policyEngine.evaluate(
+      policy,
+      signals,
+    );
+
+    const replayedDecision = {
+      decisionId: recordedDecision.decisionId,
+      intentId: recordedDecision.intentId,
+      policy: recordedDecision.policy,
+      signals: recordedDecision.signals,
+
+      outcome:
+        ledger.action === "approve"
+          ? DecisionOutcome.APPROVED
+          : DecisionOutcome.REJECTED,
+
+      reason: ledger.reason,
+
+      // Preserve deterministic timestamp
+      evaluatedAt: recordedDecision.evaluatedAt,
+    };
+
+    //
+    // Temporary debug output
+    //
+    console.log("\n================ REPLAY DEBUG ================");
+    console.log("Recorded Outcome :", recordedDecision.outcome);
+    console.log("Replayed Outcome :", replayedDecision.outcome);
+    console.log("Recorded Policy  :", recordedDecision.policy);
+    console.log("Replay Policy    :", policy);
+    console.log("Signals          :", signals);
+    console.log("Ledger           :", ledger);
+
+    const matches =
+      recordedDecision.outcome ===
+      replayedDecision.outcome;
+
+    console.log("Matches          :", matches);
+    console.log("=============================================\n");
 
     return {
-      executionOrder,
-      results,
-      hash,
-    };
-  }
+      recordedDecision,
+      replayedDecision,
+      matches,
 
-  private execute(payload: unknown): unknown {
-    return payload;
+      // Preserve deterministic timestamp
+      replayedAt: recordedDecision.evaluatedAt,
+    };
   }
 }

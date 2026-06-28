@@ -10,8 +10,8 @@ import {
  * Maps API requests into immutable Business Transactions.
  *
  * This mapper performs structural mapping only.
- * It does not perform validation, persistence,
- * policy evaluation, or execution.
+ * It does not perform validation, policy evaluation,
+ * execution, persistence, or receipt generation.
  */
 export class BusinessTransactionMapper {
   static fromRequest(
@@ -34,8 +34,6 @@ export class BusinessTransactionMapper {
       policy: request.policy,
 
       signals: request.signals,
-
-      decision: request.decision,
 
       status: BusinessTransactionStatus.RECEIVED,
 

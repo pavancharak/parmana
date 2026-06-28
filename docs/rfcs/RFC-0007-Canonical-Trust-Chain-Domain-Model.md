@@ -1,658 +1,205 @@
-\# RFC-0007
+# RFC-0007: Canonical Trust Chain Domain Model
 
+**Status:** Accepted
 
+## Purpose
 
-\# Canonical Trust Chain Domain Model
+This RFC defines the canonical domain model for Parmana.
 
+It establishes the immutable trust chain linking authority, authorization, intent, policy, execution, evidence, and verification.
 
+The trust chain is the foundation of Parmana's Execution Trust Infrastructure.
 
-\## Status
+---
 
+# Canonical Trust Chain
 
-
-Draft
-
-
-
-\---
-
-
-
-\# Problem
-
-
-
-Current implementation models policy evaluation.
-
-
-
-Parmana must model trust.
-
-
-
-Trust begins \*\*before policy evaluation\*\*.
-
-
-
-\---
-
-
-
-\# Core Principle
-
-
-
-Every link in the trust chain is an immutable artifact.
-
-
-
-No link should be implied.
-
-
-
-No link should be reconstructed.
-
-
-
-No link should be hidden.
-
-
-
-\---
-
-
-
-\# Canonical Domain Model
-
-
-
-```text
-
+```
 Authority
-
-&#x20;       ↓
-
+    │
+    ▼
 Authorization
-
-&#x20;       ↓
-
+    │
+    ▼
 Intent
-
-&#x20;       ↓
-
+    │
+    ▼
+BusinessTransaction
+    │
+    ▼
 PolicyReference
-
-&#x20;       ↓
-
+(name, version, schemaVersion)
+    │
+    ▼
 Decision
-
-&#x20;       ↓
-
-BusinessTransaction
-
-&#x20;       ↓
-
-Execution
-
-&#x20;       ↓
-
-ExecutionEvidence
-
-&#x20;       ↓
-
-Verification
-
-&#x20;       ↓
-
+    │
+    ▼
+TrustRecord
+    │
+    ▼
 Receipt
-
+    │
+    ▼
+Independent Verification
 ```
 
+Every execution artifact is cryptographically linked to the previous artifact.
 
+---
 
-\---
+# Domain Objects
 
+## Authority
 
-
-\# Artifact Responsibilities
-
-
-
-\## Authority
-
-
-
-Represents the entity empowered to authorize execution.
-
-
-
-Questions answered:
-
-
-
-\* Who possesses authority?
-
-\* Under which identity?
-
-\* Under which organization?
-
-
-
-\---
-
-
-
-\## Authorization
-
-
-
-Represents delegated permission.
-
-
-
-Questions answered:
-
-
-
-\* What execution is permitted?
-
-\* What constraints exist?
-
-\* What scope was granted?
-
-
-
-\---
-
-
-
-\## Intent
-
-
-
-Represents the desired outcome.
-
-
-
-Questions answered:
-
-
-
-\* What should happen?
-
-\* Which target?
-
-\* Which parameters?
-
-
-
-Intent exists before policy.
-
-
-
-\---
-
-
-
-\## PolicyReference
-
-
-
-Identifies the policy used.
-
-
-
-Questions answered:
-
-
-
-\* Which policy?
-
-\* Which version?
-
-
-
-Policy never contains intent.
-
-
-
-Policy never contains authority.
-
-
-
-\---
-
-
-
-\## Decision
-
-
-
-Decision records policy evaluation.
-
-
-
-Questions answered:
-
-
-
-\* Approved?
-
-\* Rejected?
-
-\* Why?
-
-
-
-Decision never owns authority.
-
-
-
-Decision never owns intent.
-
-
-
-Decision never owns authorization.
-
-
-
-\---
-
-
-
-\## BusinessTransaction
-
-
-
-BusinessTransaction becomes the immutable business state.
-
-
-
-```text
-
-BusinessTransaction
-
-
-
-metadata
-
-
-
-authority
-
-
-
-authorization
-
-
-
-intent
-
-
-
-policy
-
-
-
-signals
-
-
-
-decision
-
-
-
-status
-
-```
-
-
-
-\---
-
-
-
-\## Execution
-
-
-
-Execution records what actually occurred.
-
-
-
-Execution never determines authorization.
-
-
-
-Execution never evaluates policy.
-
-
-
-Execution never changes intent.
-
-
-
-\---
-
-
-
-\## ExecutionEvidence
-
-
-
-Evidence records observable facts.
-
-
+Represents the entity permitted to authorize execution.
 
 Examples:
 
+* Human approver
+* Service account
+* Organization
+* Workflow owner
 
+---
 
-\* hashes
+## Authorization
 
+Represents the approval allowing execution.
 
+Examples:
 
-\* logs
+* Approval ID
+* Digital signature
+* Approval timestamp
 
+---
 
+## Intent
 
-\* traces
+Represents what is intended to happen.
 
+Intent is independent of implementation.
 
+Examples:
 
-\* outputs
+* Release vendor payment
+* Approve loan
+* Grant access
 
+---
 
+## BusinessTransaction
 
-\* signatures
+Represents the execution request.
 
+A BusinessTransaction SHALL contain a PolicyReference.
 
+The BusinessTransaction is the canonical execution input.
 
-Evidence never decides.
+---
 
+## PolicyReference
 
-
-\---
-
-
-
-\## Verification
-
-
-
-Verification answers one question:
-
-
-
-Does observed execution match the approved trust chain?
-
-
-
-Not merely:
-
-
-
-Did execution complete?
-
-
-
-\---
-
-
-
-\## Receipt
-
-
-
-Receipt certifies the trust record state.
-
-
-
-\---
-
-
-
-\# Execution Trust Record
-
-
-
-ExecutionTrustRecord becomes:
-
-
-
-```text
-
-ExecutionTrustRecord
-
-
-
-BusinessTransaction
-
-
-
-Execution\[]
-
-
-
-Verification\[]
-
-
-
-Receipt\[]
-
+```ts
+interface PolicyReference {
+    readonly name: string;
+    readonly version: string;
+    readonly schemaVersion: string;
+}
 ```
 
+The PolicyReference identifies the exact policy artifact used during execution.
 
+Runtime SHALL NOT infer or discover policies.
 
-BusinessTransaction already contains:
+---
 
+## Decision
 
+Represents the deterministic outcome produced by evaluating the referenced policy.
 
+A Decision is derived only from:
+
+* Policy
+* Signals
+* Deterministic evaluation
+
+---
+
+## TrustRecord
+
+Immutable evidence describing execution.
+
+A TrustRecord binds together:
+
+* BusinessTransaction
+* PolicyReference
+* Decision
+* Hashes
+* Metadata
+
+---
+
+## Receipt
+
+Cryptographically signed proof of execution.
+
+A Receipt enables independent verification without trusting the runtime.
+
+---
+
+## Verification
+
+Verification independently proves that:
+
+* the correct policy executed,
+* the execution has not been modified,
+* the evidence is authentic,
+* the receipt signature is valid.
+
+---
+
+# Trust Chain Principles
+
+The system SHALL maintain a cryptographically verifiable chain:
+
+```
 Authority
+→ Authorization
+→ Intent
+→ BusinessTransaction
+→ PolicyReference
+→ Decision
+→ TrustRecord
+→ Receipt
+→ Verification
+```
 
+Each stage depends only on the previous stage.
 
+---
 
-↓
+# Architectural Invariants
 
+* BusinessTransaction SHALL reference exactly one PolicyReference.
+* PolicyReference SHALL contain `name`, `version`, and `schemaVersion`.
+* Runtime SHALL execute exactly one policy.
+* Runtime SHALL NOT discover, scan, or guess policies.
+* Decisions SHALL be deterministic.
+* TrustRecords SHALL be immutable once created.
+* Receipts SHALL be digitally signed.
+* Verification SHALL be independent of the runtime.
 
+---
 
-Authorization
+# Scope
 
+This RFC defines the canonical trust-chain domain model only.
 
+Policy loading, runtime architecture, policy versioning, and schema evolution are defined in separate RFCs.
 
-↓
+---
 
+# Status
 
-
-Intent
-
-
-
-↓
-
-
-
-Policy
-
-
-
-↓
-
-
-
-Decision
-
-
-
-Therefore the complete trust chain becomes part of the canonical trust record.
-
-
-
-\---
-
-
-
-\# Design Rules
-
-
-
-Every artifact:
-
-
-
-\* immutable
-
-
-
-\* independently identifiable
-
-
-
-\* serializable
-
-
-
-\* hashable
-
-
-
-\* replayable
-
-
-
-\* verifiable
-
-
-
-No artifact owns another artifact's responsibility.
-
-
-
-Every trust-chain link must be independently inspectable.
-
-
-
-\---
-
-
-
-\# Migration Plan
-
-
-
-Phase 1
-
-
-
-Introduce Authority.
-
-
-
-Introduce Authorization.
-
-
-
-Introduce Intent.
-
-
-
-Phase 2
-
-
-
-Update BusinessTransaction.
-
-
-
-Phase 3
-
-
-
-Update builders.
-
-
-
-Phase 4
-
-
-
-Update runtime.
-
-
-
-Phase 5
-
-
-
-Update verification.
-
-
-
-Phase 6
-
-
-
-Update replay.
-
-
-
-Phase 7
-
-
-
-Update API.
-
-
-
-\---
-
-
-
-\# Success Criteria
-
-
-
-A verifier should answer these questions without trusting the runtime:
-
-
-
-1\. Who possessed authority?
-
-
-
-2\. What authorization existed?
-
-
-
-3\. What intent was approved?
-
-
-
-4\. Which policy evaluated the request?
-
-
-
-5\. What decision was produced?
-
-
-
-6\. What execution occurred?
-
-
-
-7\. What evidence was produced?
-
-
-
-8\. Does execution match the approved intent?
-
-
-
-9\. Can another verifier independently reach the same conclusion?
-
-
-
-Only then has Parmana implemented a complete cryptographically verifiable execution trust chain.
-
-
-
+This document is the canonical domain model for Parmana Phase 1 and serves as the foundation for all subsequent architecture and implementation RFCs.

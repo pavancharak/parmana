@@ -1,5 +1,7 @@
 import { PolicyReference } from "./policy-reference.js";
 
+import type { JsonValue } from "../types/Json.js";
+
 /**
  * Parmana Trust Core
  *
@@ -30,6 +32,14 @@ export interface Decision {
    * Exact Policy used.
    */
   readonly policy: PolicyReference;
+
+  /**
+   * Runtime signals evaluated by the policy.
+   *
+   * These are captured to support deterministic
+   * replay and independent verification.
+   */
+  readonly signals: Record<string, JsonValue>;
 
   /**
    * Policy evaluation outcome.

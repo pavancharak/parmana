@@ -4,13 +4,17 @@ CREATE TABLE IF NOT EXISTS business_transactions (
 
     status TEXT NOT NULL,
 
+    authority_json JSONB NOT NULL,
+
+    authorization_json JSONB NOT NULL,
+
+    intent_json JSONB NOT NULL,
+
     metadata_json JSONB NOT NULL,
 
     policy_json JSONB NOT NULL,
 
     signals_json JSONB NOT NULL,
-
-    decision_json JSONB NOT NULL,
 
     created_at TIMESTAMPTZ NOT NULL
 

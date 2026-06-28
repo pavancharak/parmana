@@ -1,13 +1,30 @@
+import type {
+  BusinessTransaction,
+  ExecutionTrustRecord,
+} from "@parmana/shared";
+
+import type { Policy } from "@parmana/policy";
+
+/**
+ * Input required to deterministically replay
+ * a previously executed Business Transaction.
+ */
 export interface ReplayInput {
-  transactions: Array<{
-    id: string;
-    timestamp?: number;
-    sequence?: number;
+  /**
+   * Immutable Execution Trust Record.
+   */
+  readonly trustRecord: ExecutionTrustRecord;
 
-    payload: unknown;
-  }>;
+  /**
+   * Original Business Transaction.
+   */
+  readonly transaction: BusinessTransaction;
 
-  context?: {
-    deterministicSeed?: string;
-  };
+  /**
+   * Resolved immutable Policy used for replay.
+   *
+   * The runtime is responsible for resolving the
+   * PolicyReference before invoking ReplayEngine.
+   */
+  readonly policy: Policy;
 }

@@ -1,5 +1,6 @@
 import {
   BusinessTransaction,
+  Decision,
   Execution,
   ExecutionEvidence,
   ExecutionTrustRecord,
@@ -14,18 +15,21 @@ import {
  * RuntimeContext is the immutable state passed
  * between Runtime Components.
  *
- * BusinessTransaction is the canonical source of
- * Authority, Authorization, Intent, Policy and
- * Decision.
- *
- * Runtime Components append execution artifacts
- * without modifying the BusinessTransaction.
+ * Runtime components append immutable execution
+ * artifacts without modifying the original
+ * BusinessTransaction.
  */
 export interface RuntimeContext {
   /**
    * Canonical immutable Business Transaction.
    */
   readonly transaction: BusinessTransaction;
+
+  /**
+   * Decision produced by deterministic
+   * Policy evaluation.
+   */
+  readonly decision: Decision;
 
   /**
    * Execution artifact.

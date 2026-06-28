@@ -1,6 +1,5 @@
 import { Authority } from "./authority.js";
 import { Authorization } from "./authorization.js";
-import { Decision } from "./decision.js";
 import { Intent } from "./intent.js";
 import { TransactionMetadata } from "./metadata.js";
 import { PolicyReference } from "./policy-reference.js";
@@ -14,7 +13,7 @@ import { PolicyReference } from "./policy-reference.js";
  * accepted by Parmana for execution.
  *
  * A Business Transaction captures the complete
- * upstream trust chain prior to execution.
+ * upstream trust chain prior to policy evaluation.
  *
  * Authority
  *      ↓
@@ -22,12 +21,16 @@ import { PolicyReference } from "./policy-reference.js";
  *      ↓
  * Intent
  *      ↓
- * Policy
+ * BusinessTransaction
  *      ↓
- * Decision
+ * PolicyReference
  *
- * Every Business Transaction produces exactly
- * one Execution Trust Record.
+ * The Business Transaction is the immutable input
+ * to deterministic policy evaluation.
+ *
+ * Every Business Transaction produces exactly one
+ * Decision, one Execution, and one Execution Trust
+ * Record.
  */
 export interface BusinessTransaction {
   /**
@@ -59,25 +62,23 @@ export interface BusinessTransaction {
   readonly intent: Intent;
 
   /**
-   * Policy explicitly requested by the client
-   * and successfully resolved.
+   * Exact Policy to execute.
+   *
+   * The PolicyReference is part of the
+   * cryptographically verifiable trust chain.
    */
   readonly policy: PolicyReference;
 
   /**
-   * Runtime signals evaluated by the Policy.
+   * Runtime signals supplied to the Policy.
    *
-   * Signals are runtime facts supplied to the
-   * Policy during evaluation. Parmana treats
-   * them as opaque data validated against the
-   * Policy's Signal Schema.
+   * Signals are opaque runtime facts validated
+   * against the Policy's declared Signal Schema.
+   *
+   * Parmana does not assign business meaning to
+   * these values.
    */
   readonly signals: Readonly<Record<string, unknown>>;
-
-  /**
-   * Immutable Policy Decision.
-   */
-  readonly decision: Decision;
 
   /**
    * Current Business Transaction lifecycle.

@@ -17,74 +17,63 @@ import { VerificationService } from "./services/verification-service.js";
 /**
  * Execution Trust Application.
  *
- * Coordinates the complete application workflow:
- *
- * 1. Accept the Business Transaction.
- * 2. Persist it.
- * 3. Execute it through the Runtime.
- * 4. Verify the resulting Execution Trust Record.
- * 5. Generate an Execution Trust Receipt.
- *
- * This class contains application orchestration only.
- * It contains no business rules.
+ * Orchestrates the full lifecycle:
+ * accept → execute → verify → receipt → replay
  */
 export class ExecutionTrustApplication {
   private readonly crypto = new VerificationCrypto();
 
   constructor(
     private readonly transactions: BusinessTransactionService,
-
     private readonly runtime: Runtime,
-
     private readonly verification: VerificationService,
-
     private readonly receipts: ReceiptService,
-
     private readonly trustRecords: ExecutionTrustRecordRepository,
   ) {
     Object.freeze(this);
   }
 
   /**
-   * Accepts and executes a Business Transaction.
+   * Execute Business Transaction through Runtime
    */
   async execute(
     transaction: BusinessTransaction,
   ): Promise<ExecutionTrustRecord> {
     await this.transactions.accept(transaction);
 
+    // IMPORTANT:
+    // Runtime must enrich context internally (decision + execution)
     return this.runtime.execute(transaction);
   }
 
   /**
-   * Verifies an Execution Trust Record.
+   * Verify Execution Trust Record
    */
   async verify(businessTransactionId: string): Promise<Verification> {
     return this.verification.verify(businessTransactionId);
   }
 
   /**
-   * Generates a Receipt.
+   * Generate Receipt
    */
-  async generateReceipt(businessTransactionId: string): Promise<Receipt> {
+  async generateReceipt(
+    businessTransactionId: string,
+  ): Promise<Receipt> {
     return this.receipts.generate(businessTransactionId);
   }
 
   /**
-   * Replays an existing Execution Trust Record.
-   *
-   * Replay deterministically recomputes the Trust Record
-   * hash and verifies its integrity without executing the
-   * Business Transaction again.
+   * Replay execution deterministically
    */
   async replay(businessTransactionId: string): Promise<{
     businessTransactionId: string;
     trustRecordHash: string;
     verified: boolean;
   }> {
-    const trustRecord = await this.trustRecords.findByTransactionId(
-      businessTransactionId,
-    );
+    const trustRecord =
+      await this.trustRecords.findByTransactionId(
+        businessTransactionId,
+      );
 
     if (!trustRecord) {
       throw new Error("Execution Trust Record not found.");
@@ -94,15 +83,13 @@ export class ExecutionTrustApplication {
 
     return {
       businessTransactionId,
-
       trustRecordHash: trustRecord.trustRecordHash,
-
       verified,
     };
   }
 
   /**
-   * Returns an Execution Trust Record.
+   * Get Trust Record
    */
   async getTrustRecord(
     businessTransactionId: string,
@@ -111,8 +98,7 @@ export class ExecutionTrustApplication {
   }
 
   /**
-   * Returns a previously accepted
-   * Business Transaction.
+   * Get Transaction
    */
   async getTransaction(
     businessTransactionId: string,
@@ -121,7 +107,7 @@ export class ExecutionTrustApplication {
   }
 
   /**
-   * Lists accepted Business Transactions.
+   * List Transactions
    */
   async listTransactions(
     page = 1,
