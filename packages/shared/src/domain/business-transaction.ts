@@ -1,17 +1,33 @@
+import { Authority } from "./authority.js";
+import { Authorization } from "./authorization.js";
+import { Decision } from "./decision.js";
+import { Intent } from "./intent.js";
 import { TransactionMetadata } from "./metadata.js";
 import { PolicyReference } from "./policy-reference.js";
-import { Decision } from "./decision.js";
 
 /**
  * Parmana Trust Core
  *
  * Business Transaction
  *
- * The primary business resource of the Parmana API.
+ * The canonical immutable business context
+ * accepted by Parmana for execution.
  *
- * A Business Transaction is immutable once accepted.
- * Every Business Transaction produces exactly one
- * Execution Trust Record.
+ * A Business Transaction captures the complete
+ * upstream trust chain prior to execution.
+ *
+ * Authority
+ *      ↓
+ * Authorization
+ *      ↓
+ * Intent
+ *      ↓
+ * Policy
+ *      ↓
+ * Decision
+ *
+ * Every Business Transaction produces exactly
+ * one Execution Trust Record.
  */
 export interface BusinessTransaction {
   /**
@@ -27,19 +43,36 @@ export interface BusinessTransaction {
   readonly metadata: TransactionMetadata;
 
   /**
+   * Authority responsible for this
+   * Business Transaction.
+   */
+  readonly authority: Authority;
+
+  /**
+   * Authorization granted by the Authority.
+   */
+  readonly authorization: Authorization;
+
+  /**
+   * Intended business action.
+   */
+  readonly intent: Intent;
+
+  /**
    * Policy explicitly requested by the client
    * and successfully resolved.
    */
   readonly policy: PolicyReference;
 
   /**
-   * Business signals evaluated by the Policy.
+   * Runtime signals evaluated by the Policy.
    *
-   * Parmana treats this as an opaque object.
-   * Validation is performed using the Policy's
-   * associated Signal Schema.
+   * Signals are runtime facts supplied to the
+   * Policy during evaluation. Parmana treats
+   * them as opaque data validated against the
+   * Policy's Signal Schema.
    */
-  readonly signals: Record<string, unknown>;
+  readonly signals: Readonly<Record<string, unknown>>;
 
   /**
    * Immutable Policy Decision.
@@ -60,9 +93,6 @@ export interface BusinessTransaction {
 
 /**
  * Business Transaction lifecycle.
- *
- * Represents the overall progress of the
- * Business Transaction.
  */
 export enum BusinessTransactionStatus {
   RECEIVED = "RECEIVED",

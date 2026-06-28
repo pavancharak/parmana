@@ -9,3 +9,6 @@ export * from "./override.js";
 export * from "./verification.js";
 export * from "./receipt.js";
 export * from "./execution-trust-record.js";
+export * from "./authority.js";
+export * from "./authorization.js";
+export * from "./intent.js";

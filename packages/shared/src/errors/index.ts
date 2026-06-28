@@ -8,3 +8,8 @@ export * from "./conflict-error.js";
 export * from "./validation-error.js";
 export * from "./unauthorized-error.js";
 export * from "./forbidden-error.js";
+export * from "./trust-chain-validation-error.js";
+export * from "./authority-required-error.js";
+export * from "./authorization-required-error.js";
+export * from "./intent-required-error.js";
+export * from "./decision-not-approved-error.js";

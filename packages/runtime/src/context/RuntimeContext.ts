@@ -1,11 +1,9 @@
 import {
   BusinessTransaction,
-  Decision,
   Execution,
   ExecutionEvidence,
   ExecutionTrustRecord,
   Override,
-  PolicyReference,
   Receipt,
   Verification,
 } from "@parmana/shared";
@@ -13,27 +11,21 @@ import {
 /**
  * Canonical Runtime Context.
  *
- * RuntimeContext is the single immutable object passed
- * between all stages of the Execution Trust Pipeline.
+ * RuntimeContext is the immutable state passed
+ * between Runtime Components.
  *
- * Each stage returns a new RuntimeContext with one or
- * more additional artifacts populated.
+ * BusinessTransaction is the canonical source of
+ * Authority, Authorization, Intent, Policy and
+ * Decision.
+ *
+ * Runtime Components append execution artifacts
+ * without modifying the BusinessTransaction.
  */
 export interface RuntimeContext {
   /**
-   * Root Business Transaction.
+   * Canonical immutable Business Transaction.
    */
   readonly transaction: BusinessTransaction;
-
-  /**
-   * Policy resolved for the transaction.
-   */
-  readonly policy?: PolicyReference;
-
-  /**
-   * Decision produced by the Policy Engine.
-   */
-  readonly decision?: Decision;
 
   /**
    * Execution artifact.
