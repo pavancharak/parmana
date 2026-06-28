@@ -1,18 +1,10 @@
 import { Router } from "express";
 
-import { RuntimeFactory } from "@parmana/runtime";
-
-import {
-  businessTransactionRepository,
-  executionTrustRecordRepository,
-} from "../repositories.js";
+import { application } from "../application.js";
 
 const router = Router();
 
-const application = RuntimeFactory.create(
-  businessTransactionRepository,
-  executionTrustRecordRepository,
-);
+
 
 /**
  * GET /trust-records/:id

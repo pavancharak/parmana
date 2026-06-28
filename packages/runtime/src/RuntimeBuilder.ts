@@ -1,37 +1,68 @@
-import { ExecutionTrustRecordRepository } from "@parmana/shared";
+import {
+  ExecutionTrustRecordRepository,
+} from "@parmana/shared";
+
+import {
+  PolicyEngine,
+  PolicyRouter,
+} from "@parmana/policy";
+
+import type {
+  PolicyRepository,
+} from "@parmana/policy";
 
 import { Runtime } from "./Runtime.js";
+import { RuntimeEngine } from "./RuntimeEngine.js";
 import { RuntimePipeline } from "./RuntimePipeline.js";
+import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
+
 import type { RuntimeComponent } from "./RuntimeComponent.js";
 
 /**
- * Builder for immutable Runtime instances.
+ * Canonical Runtime Builder.
  *
- * The RuntimeBuilder configures the runtime pipeline.
+ * Responsible only for wiring the runtime.
  */
 export class RuntimeBuilder {
   private readonly components: RuntimeComponent[] = [];
 
+  private policyRepository?: PolicyRepository;
+
   /**
-   * Adds a Runtime stage.
+   * Configure policy directory.
    */
-  public addStage(component: RuntimeComponent): this {
+  public withPolicyRepository(
+  repository: PolicyRepository,
+): this {
+  this.policyRepository = repository;
+
+  return this;
+}
+
+  /**
+   * Add runtime stage.
+   */
+  public addStage(
+    component: RuntimeComponent,
+  ): this {
     this.components.push(component);
 
     return this;
   }
 
   /**
-   * Adds multiple Runtime stages.
+   * Add multiple runtime stages.
    */
-  public addStages(...components: RuntimeComponent[]): this {
+  public addStages(
+    ...components: RuntimeComponent[]
+  ): this {
     this.components.push(...components);
 
     return this;
   }
 
   /**
-   * Removes all Runtime stages.
+   * Remove all stages.
    */
   public clearStages(): this {
     this.components.length = 0;
@@ -40,12 +71,56 @@ export class RuntimeBuilder {
   }
 
   /**
-   * Builds an immutable Runtime.
+   * Build immutable Runtime.
    */
-  public build(trustRecords: ExecutionTrustRecordRepository): Runtime {
-    return new Runtime(
-      new RuntimePipeline(this.components),
+  public build(
+    trustRecords: ExecutionTrustRecordRepository,
+  ): Runtime {
+    //
+    // Runtime pipeline
+    //
+    const pipeline =
+      new RuntimePipeline(this.components);
 
+    //
+    // Policy subsystem
+    //
+    if (!this.policyRepository) {
+  throw new Error(
+    "PolicyRepository is required.",
+  );
+}
+
+const router =
+  new PolicyRouter(
+    this.policyRepository,
+  );
+
+    const engine =
+      new PolicyEngine();
+
+    //
+    // Trust subsystem
+    //
+    const trustPipeline =
+      new ExecutionTrustPipeline();
+
+    //
+    // Runtime engine
+    //
+    const runtimeEngine =
+      new RuntimeEngine(
+        pipeline,
+        router,
+        engine,
+        trustPipeline,
+      );
+
+    //
+    // Runtime façade
+    //
+    return new Runtime(
+      runtimeEngine,
       trustRecords,
     );
   }

@@ -1,0 +1,17 @@
+{
+  "name": "@parmana/examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "hello": "tsx 01-hello-world/run.ts",
+    "policy": "tsx 02-policy-evaluation/run.ts",
+    "runtime": "tsx 03-runtime-execution/run.ts",
+    "trust-record": "tsx 04-trust-record/run.ts",
+    "verification": "tsx 05-verification/run.ts",
+    "replay": "tsx 06-replay/run.ts",
+    "human-approval": "tsx 07-human-approval/run.ts",
+    "vendor-payment": "tsx 08-vendor-payment/run.ts",
+    "expense-approval": "tsx 09-expense-approval/run.ts",
+    "purchase-order": "tsx 10-purchase-order/run.ts"
+  }
+}

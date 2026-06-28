@@ -1,69 +1,59 @@
-import crypto from "crypto";
-
 import {
   BusinessTransaction,
   ExecutionTrustRecord,
   ExecutionTrustRecordRepository,
-  DecisionOutcome,
-  JsonValue,
 } from "@parmana/shared";
 
-import { RuntimePipeline } from "./RuntimePipeline.js";
-import { RuntimeContext } from "./context/RuntimeContext.js";
-import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
+import { RuntimeEngine } from "./RuntimeEngine.js";
 
 /**
- * Parmana Runtime.
+ * Canonical Parmana Runtime.
  *
- * Executes Business Transactions through pipeline + trust layer.
+ * Thin façade over RuntimeEngine.
+ *
+ * Responsibilities:
+ * - Execute Business Transactions.
+ * - Persist Execution Trust Records.
  */
 export class Runtime {
-  private readonly trustPipeline = new ExecutionTrustPipeline();
-
   constructor(
-    private readonly pipeline: RuntimePipeline,
+    private readonly engine: RuntimeEngine,
     private readonly trustRecords: ExecutionTrustRecordRepository,
   ) {
     Object.freeze(this);
   }
 
+  /**
+   * Execute a Business Transaction.
+   */
   public async execute(
     transaction: BusinessTransaction,
   ): Promise<ExecutionTrustRecord> {
-    const signals = transaction.signals as Record<string, JsonValue>;
-
-    const outcome =
-      (signals?.riskScore as number) > 50
-        ? DecisionOutcome.REJECTED
-        : DecisionOutcome.APPROVED;
-
-    let context: RuntimeContext = {
+    const result = await this.engine.execute(
       transaction,
-      decision: {
-        decisionId: crypto.randomUUID(),
-        intentId: transaction.intent.intentId,
-        policy: transaction.policy,
-        signals,
-        outcome,
-        reason: "runtime-evaluated",
-        evaluatedAt: new Date(),
-      },
-    };
+    );
 
-    context = await this.pipeline.execute(context);
+    const trustRecord =
+      result.trustRecord as ExecutionTrustRecord;
 
-    const trustRecord = await this.trustPipeline.execute(context);
-
-    await this.trustRecords.create(trustRecord);
+    await this.trustRecords.create(
+      trustRecord,
+    );
 
     return trustRecord;
   }
 
+  /**
+   * Runtime pipeline is empty.
+   */
   public isEmpty(): boolean {
-    return this.pipeline.isEmpty();
+    return this.engine["pipeline"].isEmpty();
   }
 
+  /**
+   * Number of runtime stages.
+   */
   public size(): number {
-    return this.pipeline.size();
+    return this.engine["pipeline"].size();
   }
 }

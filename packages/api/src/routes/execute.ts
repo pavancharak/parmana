@@ -1,18 +1,19 @@
 import { Router } from "express";
 
-import { RuntimeFactory } from "@parmana/runtime";
+import { application } from "../application.js";
 
 import {
-  businessTransactionRepository,
-  executionTrustRecordRepository,
-} from "../repositories.js";
+  FilePolicyRepository,
+} from "@parmana/policy";
+
+const policyRepository =
+  new FilePolicyRepository(
+    process.env.PARMANA_POLICY_DIR!,
+);
 
 const router = Router();
 
-const runtime = RuntimeFactory.create(
-  businessTransactionRepository,
-  executionTrustRecordRepository,
-);
+
 
 /**
  * Returns true when the value is a UUID.
@@ -38,7 +39,7 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const result = await runtime.execute(req.body);
+    const result = await application.execute(req.body);
 
     res.json(result);
   } catch (err) {
