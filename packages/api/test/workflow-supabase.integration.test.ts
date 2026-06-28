@@ -1,3 +1,4 @@
+import { createBusinessTransaction } from "./fixtures/business-transaction.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 
@@ -10,24 +11,12 @@ import app from "../src/app.js";
 describe("Supabase Workflow Integration", () => {
   it("executes a Business Transaction", async () => {
     //
+   const transaction = createBusinessTransaction();
+
     // Execute
     //
     const response = await request(app)
-      .post("/execute")
-
-      .send({
-        businessTransactionId: crypto.randomUUID(),
-
-        status: "AUTHORIZED",
-
-        metadata: {},
-
-        policy: {},
-
-        signals: {},
-
-        decision: {},
-      });
+      .post("/execute").send(transaction);
 
     console.log("EXECUTE:", response.status);
 
@@ -70,3 +59,8 @@ describe("Supabase Workflow Integration", () => {
     expect(receiptResponse.status).toBe(200);
   });
 });
+
+
+
+
+

@@ -1,3 +1,4 @@
+import { createBusinessTransaction } from "./fixtures/business-transaction.js";
 import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 
@@ -10,24 +11,12 @@ import app from "../src/app.js";
 describe("Replay Integration", () => {
   it("replays a previously executed Business Transaction", async () => {
     //
+  const transaction = createBusinessTransaction();
+
     // Execute
     //
     const execute = await request(app)
-      .post("/execute")
-
-      .send({
-        businessTransactionId: crypto.randomUUID(),
-
-        status: "AUTHORIZED",
-
-        metadata: {},
-
-        policy: {},
-
-        signals: {},
-
-        decision: {},
-      });
+      .post("/execute").send(transaction);
 
     expect(execute.status).toBe(200);
 
@@ -76,3 +65,8 @@ describe("Replay Integration", () => {
     expect(replay.body.verified).toBe(true);
   });
 });
+
+
+
+
+
