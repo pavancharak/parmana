@@ -1,0 +1,56 @@
+{
+  "policyId": "vendor-payment",
+  "policyVersion": "2.0.0",
+  "schemaVersion": "1.0.0",
+  "description": "Vendor payment approval policy v2 with payment limits.",
+  "rules": [
+    {
+      "id": "approve-standard-payment",
+      "condition": {
+        "all": [
+          {
+            "fact": "vendorVerified",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "fact": "paymentApproved",
+            "operator": "eq",
+            "value": true
+          },
+          {
+            "fact": "amount",
+            "operator": "lte",
+            "value": 100000
+          }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "reason": "Verified vendor, approved payment, and amount within limit."
+      }
+    },
+    {
+      "id": "reject-high-value-payment",
+      "condition": {
+        "fact": "amount",
+        "operator": "gt",
+        "value": 100000
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Payment exceeds automatic approval limit."
+      }
+    },
+    {
+      "id": "reject-default",
+      "condition": {
+        "always": true
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Vendor payment policy conditions were not satisfied."
+      }
+    }
+  ]
+}
