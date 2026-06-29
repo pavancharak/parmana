@@ -6,43 +6,7 @@ Version: 1.0
 
 
 
-This document defines the implementation guarantees provided by
-
-Parmana.
-
-
-
-A guarantee is stronger than a feature.
-
-
-
-A feature describes what the software does.
-
-
-
-A guarantee describes what the implementation prevents,
-
-enforces, or proves.
-
-
-
-Every guarantee must satisfy four requirements.
-
-
-
-\- Implemented
-
-\- Tested
-
-\- Audited
-
-\- Verifiable
-
-
-
-A guarantee is considered complete only when all four
-
-requirements are satisfied.
+Status: Normative
 
 
 
@@ -50,33 +14,35 @@ requirements are satisfied.
 
 
 
-\# Guarantee Matrix
+\# Purpose
 
 
 
-| ID | Guarantee | Implemented | Tested | Audited | Proven |
+This document defines the execution trust guarantees provided by Parmana.
 
-|----|-----------|-------------|--------|---------|--------|
 
-| G-01 | Trusted Business Transaction | ⬜ | ⬜ | ⬜ | ⬜ |
 
-| G-02 | Deterministic Policy Selection | ⬜ | ⬜ | ⬜ | ⬜ |
+A guarantee represents a verifiable property of the architecture that is expected to hold for every conforming implementation.
 
-| G-03 | Deterministic Policy Evaluation | ⬜ | ⬜ | ⬜ | ⬜ |
 
-| G-04 | Authorized Execution | ⬜ | ⬜ | ⬜ | ⬜ |
 
-| G-05 | Execution Trust Record Integrity | ⬜ | ⬜ | ⬜ | ⬜ |
+Each guarantee SHALL be supported by:
 
-| G-06 | Receipt Authenticity | ⬜ | ⬜ | ⬜ | ⬜ |
 
-| G-07 | Independent Verification | ⬜ | ⬜ | ⬜ | ⬜ |
 
-| G-08 | Deterministic Replay | ⬜ | ⬜ | ⬜ | ⬜ |
+\* implementation
 
-| G-09 | API Enforcement | ⬜ | ⬜ | ⬜ | ⬜ |
+\* automated tests
 
-| G-10 | End-to-End Execution Trust | ⬜ | ⬜ | ⬜ | ⬜ |
+\* audit evidence
+
+\* documented proof
+
+\* independent verification where applicable
+
+
+
+The implementation status and evidence for each guarantee are documented in `PROOFS.md`.
 
 
 
@@ -84,7 +50,55 @@ requirements are satisfied.
 
 
 
-\# G-01 Trusted Business Transaction
+\# Guarantee Model
+
+
+
+Every guarantee progresses through the following lifecycle.
+
+
+
+```text
+
+Specification
+
+&#x20;     ↓
+
+Implementation
+
+&#x20;     ↓
+
+Unit Tests
+
+&#x20;     ↓
+
+Integration Tests
+
+&#x20;     ↓
+
+Audit
+
+&#x20;     ↓
+
+Proof
+
+&#x20;     ↓
+
+Release
+
+```
+
+
+
+A guarantee SHOULD NOT be considered complete until all stages have been satisfied.
+
+
+
+\---
+
+
+
+\# G-00 — Trust Architecture
 
 
 
@@ -92,271 +106,19 @@ requirements are satisfied.
 
 
 
-Parmana accepts only Business Transactions that satisfy the
+Parmana models execution as an explicit trust chain rather than a sequence of runtime events.
 
-canonical execution trust chain.
 
 
+Every execution artifact has an explicit predecessor.
 
-No Business Transaction may enter runtime execution unless its
 
-trust relationships are internally consistent.
 
+\## Purpose
 
 
-\---
 
-
-
-\## Trust Chain
-
-
-
-Authority
-
-↓
-
-
-
-Authorization
-
-↓
-
-
-
-Intent
-
-↓
-
-
-
-BusinessTransaction
-
-↓
-
-
-
-PolicyReference
-
-
-
-\---
-
-
-
-\## Implementation
-
-
-
-BusinessTransactionValidator
-
-
-
-packages/runtime/src/validators/BusinessTransactionValidator.ts
-
-
-
-\---
-
-
-
-\## Invariants
-
-
-
-The runtime validates the following invariants.
-
-
-
-\### G-01.1
-
-
-
-metadata.businessTransactionId
-
-
-
-must equal
-
-
-
-businessTransactionId
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-01.2
-
-
-
-authorization.authorityId
-
-
-
-must equal
-
-
-
-authority.authorityId
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-01.3
-
-
-
-intent.authorizationId
-
-
-
-must equal
-
-
-
-authorization.authorizationId
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-01.4
-
-
-
-policy.name
-
-
-
-must not be empty.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-01.5
-
-
-
-policy.version
-
-
-
-must not be empty.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-01.6
-
-
-
-intent.action
-
-
-
-must not be empty.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\## Threats Prevented
-
-
-
-This guarantee prevents:
-
-
-
-\- orphan Authorizations
-
-
-
-\- orphan Intents
-
-
-
-\- mismatched Authorities
-
-
-
-\- mismatched Business Transactions
-
-
-
-\- missing Policy References
-
-
-
-\- incomplete execution requests
-
-
-
-\---
+Provide a canonical execution model that links authorization, policy evaluation, execution, evidence generation, verification, and replay.
 
 
 
@@ -364,39 +126,11 @@ This guarantee prevents:
 
 
 
-Implementation
+\* Trust model
 
+\* Canonical domain model
 
-
-packages/runtime/src/validators/BusinessTransactionValidator.ts
-
-
-
-Audit
-
-
-
-examples/audit/AS-001-approved-vendor-payment/AUDIT.md
-
-
-
-Status
-
-
-
-Implemented
-
-
-
-Audited
-
-
-
-Pending Tests
-
-
-
-Independent Verification
+\* Architecture
 
 
 
@@ -404,7 +138,7 @@ Independent Verification
 
 
 
-\# G-02 Deterministic Policy Selection
+\# G-01 — Trusted Business Transaction
 
 
 
@@ -412,67 +146,37 @@ Independent Verification
 
 
 
-Parmana executes exactly one explicitly referenced policy.
+Every execution originates from a validated Business Transaction.
 
 
 
-The runtime never discovers, searches, selects, or substitutes
-
-business policies.
+\## Guarantee
 
 
 
-Policy selection occurs before runtime execution.
+The runtime validates trust-chain consistency before execution begins.
 
 
 
-The Business Transaction completely determines which policy will
-
-execute.
+Required relationships include:
 
 
 
-\---
+\* Authority → Authorization
+
+\* Authorization → Intent
+
+\* BusinessTransaction → Metadata
+
+\* BusinessTransaction → PolicyReference
 
 
 
-\## Trust Chain
+\## Evidence
 
 
 
-BusinessTransaction
-
-
-
-↓
-
-
-
-PolicyReference
-
-
-
-↓
-
-
-
-PolicyRouter
-
-
-
-↓
-
-
-
-PolicyValidator
-
-
-
-↓
-
-
-
-PolicyEngine
+\* BusinessTransactionValidator
 
 
 
@@ -480,243 +184,7 @@ PolicyEngine
 
 
 
-\## Implementation
-
-
-
-PolicyRouter
-
-
-
-packages/runtime/src/policy/PolicyRouter.ts
-
-
-
-PolicyValidator
-
-
-
-packages/runtime/src/policy/PolicyValidator.ts
-
-
-
-\---
-
-
-
-\## Guarantees
-
-
-
-\### G-02.1
-
-
-
-Exactly one policy is loaded.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-02.2
-
-
-
-Policy identity must equal PolicyReference.name.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-02.3
-
-
-
-Policy version must equal PolicyReference.version.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-02.4
-
-
-
-Policy schema version must equal
-
-PolicyReference.schemaVersion.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-02.5
-
-
-
-The loaded policy must contain:
-
-
-
-\- signalsSchema
-
-
-
-\- rules
-
-
-
-\- valid rule identifiers
-
-
-
-\- rule conditions
-
-
-
-\- rule outcomes
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\## Runtime Properties
-
-
-
-The runtime never:
-
-
-
-\- discovers policies
-
-
-
-\- scans directories
-
-
-
-\- selects latest version
-
-
-
-\- performs policy negotiation
-
-
-
-\- falls back to another version
-
-
-
-\---
-
-
-
-\## Threats Prevented
-
-
-
-\- Wrong policy execution
-
-
-
-\- Version drift
-
-
-
-\- Policy substitution
-
-
-
-\- Runtime policy discovery
-
-
-
-\- Silent policy upgrades
-
-
-
-\- Policy ambiguity
-
-
-
-\---
-
-
-
-\## Evidence Matrix
-
-
-
-| Requirement | Status | Evidence |
-
-|------------|--------|----------|
-
-| Implemented | ✅ | PolicyRouter + PolicyValidator |
-
-| Tested | ⬜ | Pending |
-
-| Audited | ✅ | AS-001 Audit |
-
-| Independently Verifiable | ⬜ | Pending |
-
-
-
-\---
-
-
-
-\# G-03 Deterministic Policy Evaluation
+\# G-02 — Deterministic Policy Selection
 
 
 
@@ -724,27 +192,35 @@ The runtime never:
 
 
 
-Parmana deterministically evaluates the explicitly referenced policy
-
-against the supplied runtime signals.
+Every Business Transaction references exactly one Policy.
 
 
 
-For the same:
+\## Guarantee
 
 
 
-\- Policy
-
-\- Policy Version
-
-\- Runtime Signals
+The runtime:
 
 
 
-the Policy Engine produces the same decision outcome and evaluation
+\* MUST load the referenced policy.
 
-path.
+\* MUST validate its identity.
+
+\* MUST validate its version.
+
+\* MUST NOT discover or substitute policies.
+
+
+
+\## Evidence
+
+
+
+\* PolicyRouter
+
+\* PolicyValidator
 
 
 
@@ -752,111 +228,369 @@ path.
 
 
 
-\## Execution Flow
+\# G-03 — Deterministic Policy Evaluation
 
 
+
+\## Statement
+
+
+
+Policy evaluation is deterministic.
+
+
+
+\## Guarantee
+
+
+
+The Policy Engine:
+
+
+
+\* evaluates rules sequentially
+
+\* stops at the first matching rule
+
+\* records evaluation trace
+
+\* records matched rule
+
+\* records decision reason
+
+
+
+\## Evidence
+
+
+
+\* PolicyEngine
+
+
+
+\---
+
+
+
+\# G-04 — Authorized Execution
+
+
+
+\## Statement
+
+
+
+Execution occurs only after trust validation and an approved decision.
+
+
+
+\## Guarantee
+
+
+
+Execution SHALL NOT proceed when:
+
+
+
+\* Authority is missing
+
+\* Authorization is missing
+
+\* Intent is missing
+
+\* Policy is missing
+
+\* Decision is absent
+
+\* Decision outcome is not approved
+
+
+
+\## Evidence
+
+
+
+\* TrustChainValidationComponent
+
+
+
+\---
+
+
+
+\# G-05 — Execution Trust Record Integrity
+
+
+
+\## Statement
+
+
+
+Every successful execution produces immutable execution evidence.
+
+
+
+\## Guarantee
+
+
+
+Execution Trust Records include the artifacts necessary to verify execution integrity.
+
+
+
+Execution Trust Records SHALL be treated as immutable.
+
+
+
+\## Evidence
+
+
+
+\* ExecutionTrustRecordBuilder
+
+
+
+\---
+
+
+
+\# G-06 — Receipt Authenticity
+
+
+
+\## Statement
+
+
+
+Every Receipt is cryptographically verifiable.
+
+
+
+\## Guarantee
+
+
+
+Receipts contain:
+
+
+
+\* Trust Record reference
+
+\* Digital signature
+
+\* Signature metadata
+
+
+
+Receipt integrity can be verified independently.
+
+
+
+\## Evidence
+
+
+
+\* ReceiptCrypto
+
+
+
+\---
+
+
+
+\# G-07 — Independent Verification
+
+
+
+\## Statement
+
+
+
+Execution evidence can be verified independently of the original runtime.
+
+
+
+\## Guarantee
+
+
+
+Verification confirms execution integrity without modifying execution evidence.
+
+
+
+\## Evidence
+
+
+
+\* VerificationComponent
+
+\* VerificationCrypto
+
+
+
+\---
+
+
+
+\# G-08 — Deterministic Replay
+
+
+
+\## Statement
+
+
+
+Recorded executions can be replayed for verification and analysis.
+
+
+
+\## Guarantee
+
+
+
+Replay re-evaluates historical execution without modifying historical evidence.
+
+
+
+Replay is intended to detect meaningful differences between recorded and replayed execution.
+
+
+
+\## Evidence
+
+
+
+\* Replay package
+
+
+
+\---
+
+
+
+\# G-09 — API Enforcement
+
+
+
+\## Statement
+
+
+
+The Parmana API serves as the supported entry point into the execution trust infrastructure.
+
+
+
+\## Guarantee
+
+
+
+Execution requests submitted through the API are processed by the Runtime Engine and its trust validation process.
+
+
+
+\## Evidence
+
+
+
+\* API package
+
+\* Runtime package
+
+
+
+\---
+
+
+
+\# G-10 — End-to-End Execution Trust
+
+
+
+\## Statement
+
+
+
+Parmana establishes a continuous execution trust chain from business authorization to verification.
+
+
+
+\## Guarantee
+
+
+
+Execution proceeds through the following lifecycle:
+
+
+
+```text
+
+Authority
+
+&#x20;   ↓
+
+Authorization
+
+&#x20;   ↓
+
+Intent
+
+&#x20;   ↓
 
 Business Transaction
 
+&#x20;   ↓
 
+Policy Reference
 
-↓
-
-
+&#x20;   ↓
 
 Policy
 
-
-
-↓
-
-
-
-Signals
-
-
-
-↓
-
-
-
-Policy Engine
-
-
-
-↓
-
-
+&#x20;   ↓
 
 Decision
 
-
-
-↓
-
-
+&#x20;   ↓
 
 Execution
 
+&#x20;   ↓
 
+Execution Trust Record
 
-\---
+&#x20;   ↓
 
+Receipt
 
+&#x20;   ↓
 
-\## Implementation
+Verification
 
+&#x20;   ↓
 
+Replay
 
-PolicyEngine
-
-
-
-packages/policy/src/PolicyEngine.ts
-
-
-
-\---
-
-
-
-\## Guarantees
+```
 
 
 
-\### G-03.1
+Each downstream artifact is logically derived from upstream trust artifacts.
 
 
 
-Rules are evaluated sequentially.
+\## Evidence
 
 
 
-Status
+\* Canonical trust model
 
+\* Runtime
 
+\* Policy
 
-✅ Implemented
+\* Crypto
 
-
-
-\---
-
-
-
-\### G-03.2
-
-
-
-Evaluation stops at the first matching rule.
-
-
-
-Status
-
-
-
-✅ Implemented
+\* Replay
 
 
 
@@ -864,39 +598,27 @@ Status
 
 
 
-\### G-03.3
+\# Guarantee Status
 
 
 
-Nested AND conditions are supported.
+Each guarantee has a corresponding proof document that records:
 
 
 
-Status
+\* implementation status
+
+\* test coverage
+
+\* audit status
+
+\* proof status
+
+\* independent verification status
 
 
 
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-03.4
-
-
-
-Nested OR conditions are supported.
-
-
-
-Status
-
-
-
-✅ Implemented
+The authoritative status for each guarantee is maintained in `PROOFS.md`.
 
 
 
@@ -904,303 +626,23 @@ Status
 
 
 
-\### G-03.5
+\# Engineering Principle
 
 
 
-Every evaluation records:
+Guarantees define what Parmana is expected to provide.
 
 
 
-\- matched rule
+Claims describe what Parmana publicly communicates.
 
-\- decision reason
 
-\- evaluation trace
 
-\- evaluated rule count
+Proofs demonstrate that guarantees are supported by implementation evidence.
 
 
 
-Status
+Every public claim SHOULD be traceable to one or more guarantees, and every guarantee SHOULD be traceable to implementation, tests, audit evidence, and documented proof.
 
 
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\### G-03.6
-
-
-
-A ledger hash is generated for the evaluation result.
-
-
-
-Status
-
-
-
-✅ Implemented
-
-
-
-\---
-
-
-
-\## Threats Prevented
-
-
-
-\- Non-deterministic rule evaluation
-
-\- Ambiguous policy outcomes
-
-\- Hidden decision paths
-
-\- Undocumented rule selection
-
-
-
-\---
-
-
-
-\## Current Limitations
-
-
-
-The current implementation generates:
-
-
-
-\- executionId
-
-\- timestamp
-
-
-
-during evaluation.
-
-
-
-These values are runtime metadata and do not influence rule selection,
-
-but dependency injection would improve replayability and testability.
-
-
-
-\---
-
-
-
-\## Evidence Matrix
-
-
-
-| Requirement | Status | Evidence |
-
-|------------|--------|----------|
-
-| Implemented | ✅ | PolicyEngine |
-
-| Tested | ⬜ | Pending |
-
-| Audited | ✅ | AS-001 Audit |
-
-| Independently Verifiable | ⬜ | Pending |
-
-
-
-\---
-
-
-
-\# G-04 Authorized Execution
-
-
-
-\## Statement
-
-
-
-Parmana executes only Business Transactions that have
-
-successfully completed trust-chain validation and policy evaluation.
-
-
-
-Execution is impossible without an APPROVED Decision.
-
-
-
-\---
-
-
-
-\## Execution Flow
-
-
-
-Business Transaction
-
-
-
-↓
-
-
-
-Trust Chain Validation
-
-
-
-↓
-
-
-
-Policy Evaluation
-
-
-
-↓
-
-
-
-Decision (APPROVED)
-
-
-
-↓
-
-
-
-Execution
-
-
-
-\---
-
-
-
-\## Implementation
-
-
-
-TrustChainValidationComponent
-
-
-
-RuntimeEngine
-
-
-
-\---
-
-
-
-\## Guarantees
-
-
-
-\### G-04.1
-
-
-
-Authority required.
-
-
-
-\### G-04.2
-
-
-
-Authorization required.
-
-
-
-\### G-04.3
-
-
-
-Intent required.
-
-
-
-\### G-04.4
-
-
-
-Policy required.
-
-
-
-\### G-04.5
-
-
-
-Decision required.
-
-
-
-\### G-04.6
-
-
-
-Decision outcome must equal APPROVED.
-
-
-
-\### G-04.7
-
-
-
-Execution is rejected otherwise.
-
-
-
-\---
-
-
-
-\## Threats Prevented
-
-
-
-\- Unauthorized execution
-
-\- Missing authorization
-
-\- Missing policy
-
-\- Policy bypass
-
-\- Execution before approval
-
-
-
-\---
-
-
-
-\## Evidence Matrix
-
-
-
-| Requirement | Status | Evidence |
-
-|------------|--------|----------|
-
-| Implemented | ✅ | TrustChainValidationComponent |
-
-| Tested | ⬜ | Pending |
-
-| Audited | ✅ | AS-001 Audit |
-
-| Independently Verifiable | ⬜ | Pending |
 
