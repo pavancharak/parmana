@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
-  ],
+  "packages/*",
+  "typescript"
+],
   "scripts": {
     "build": "tsc -b",
     "clean": "npm run clean --workspaces",

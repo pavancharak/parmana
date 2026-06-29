@@ -1,0 +1,28 @@
+{
+  "name": "@parmana/typescript-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Parmana TypeScript SDK",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx examples/01_basic_execution.ts"
+  },
+  "keywords": [
+    "parmana",
+    "ai",
+    "governance",
+    "trust"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^24.13.2",
+    "tsx": "^4.22.4",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "axios": "^1.18.1"
+  }
+}

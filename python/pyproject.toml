@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=69.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parmana"
+version = "0.1.0"
+description = "Python SDK for Parmana Execution Trust Infrastructure"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+
+authors = [
+  { name = "Parmana" }
+]
+
+keywords = [
+  "ai",
+  "governance",
+  "trust",
+  "execution",
+  "verification",
+  "audit",
+  "policy",
+  "autonomous-systems"
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/parmana/parmana"
+Repository = "https://github.com/parmana/parmana"
+Documentation = "https://docs.parmana.ai"
+
+[tool.setuptools]
+package-dir = { "" = "." }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["parmana*"]
