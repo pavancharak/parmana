@@ -4,6 +4,8 @@ import { readFile } from "node:fs/promises";
 import type { Policy } from "./types/Policy.js";
 import type { PolicyRepository } from "./PolicyRepository.js";
 
+import { PolicyNotFoundError } from "./errors/PolicyNotFoundError.js";
+
 /**
  * File-based Policy Repository.
  *
@@ -32,11 +34,18 @@ export class FilePolicyRepository
       "policy.json",
     );
 
-    const json = await readFile(
-      file,
-      "utf8",
-    );
+    try {
+      const json = await readFile(
+        file,
+        "utf8",
+      );
 
-    return JSON.parse(json) as Policy;
+      return JSON.parse(json) as Policy;
+    } catch {
+      throw new PolicyNotFoundError(
+        name,
+        version,
+      );
+    }
   }
 }

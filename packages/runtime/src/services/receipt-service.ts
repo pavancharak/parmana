@@ -1,9 +1,10 @@
 import {
   ExecutionTrustRecordRepository,
   Receipt,
-  ReceiptGenerationError,
   VerificationStatus,
 } from "@parmana/shared";
+
+import { ReceiptGenerationError } from "../errors/ReceiptGenerationError.js";
 
 import { ReceiptCrypto } from "@parmana/crypto";
 

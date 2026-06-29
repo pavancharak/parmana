@@ -42,4 +42,4 @@ export * from "./services/verification-service.js";
 // Errors
 // -----------------------------------------------------------------------------
 
-export * from "./errors/RuntimeError.js";
+export * from "./errors/index.js";

@@ -46,3 +46,5 @@ export type {
 export type {
   PolicySignals,
 } from "./types/PolicySignals.js";
+
+export * from "./errors/index.js";

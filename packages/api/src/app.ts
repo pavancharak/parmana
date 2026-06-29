@@ -1,15 +1,17 @@
 import express from "express";
 
+import { errorHandler } from "./middleware/error-handler.js";
+
 import executeRoutes from "./routes/execute.js";
 import healthRoutes from "./routes/health.js";
 import receiptRoutes from "./routes/receipt.js";
 import receiptLatestRoutes from "./routes/receipt-get.js";
+import replayRoutes from "./routes/replay.js";
 import transactionsRoutes from "./routes/transactions.js";
 import trustRecordRoutes from "./routes/trust-records.js";
 import verificationRoutes from "./routes/verify-get.js";
 import verifyRoutes from "./routes/verify.js";
 import versionRoutes from "./routes/version.js";
-import replayRoutes from "./routes/replay.js";
 
 const app = express();
 
@@ -26,7 +28,6 @@ app.get("/", (_req, res) => {
  * System
  */
 app.use("/health", healthRoutes);
-
 app.use("/version", versionRoutes);
 
 /**
@@ -38,14 +39,12 @@ app.use("/execute", executeRoutes);
  * Verification
  */
 app.use("/verify", verifyRoutes);
-
 app.use("/verification", verificationRoutes);
 
 /**
  * Receipts
  */
 app.use("/receipt", receiptRoutes);
-
 app.use("/receipt/latest", receiptLatestRoutes);
 
 /**
@@ -57,9 +56,17 @@ app.use("/transactions", transactionsRoutes);
  * Execution Trust Records
  */
 app.use("/trust-records", trustRecordRoutes);
+
 /**
  * Replay
  */
 app.use("/replay", replayRoutes);
+
+/**
+ * Error handling
+ *
+ * Must be registered after all routes.
+ */
+app.use(errorHandler);
 
 export default app;

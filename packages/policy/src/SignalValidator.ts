@@ -1,5 +1,5 @@
 import type { PolicySignals } from "./types/PolicySignals.js";
-
+import { SignalValidationError } from "./errors/SignalValidationError.js";
 /**
  * Canonical Signal Validator.
  *
@@ -20,17 +20,17 @@ export class SignalValidator {
    */
   public validate(signals: PolicySignals): void {
     if (signals == null) {
-      throw new Error("Policy signals are required.");
+      throw new SignalValidationError("Policy signals are required.");
     }
 
     if (typeof signals !== "object") {
-      throw new Error(
+      throw new SignalValidationError(
         "Policy signals must be an object.",
       );
     }
 
     if (Array.isArray(signals)) {
-      throw new Error(
+      throw new SignalValidationError(
         "Policy signals cannot be an array.",
       );
     }
