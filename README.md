@@ -1,3 +1,5 @@
+“Parmana ensures AI only executes policy-compliant actions”
+
 # Parmana
 
 > **Execution Trust Infrastructure**
