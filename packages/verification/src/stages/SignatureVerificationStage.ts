@@ -1,27 +1,44 @@
-import { Verification } from "@parmana/shared";
-
 import type { VerificationComponent } from "../VerificationComponent.js";
+import type { VerificationContext } from "../context/VerificationContext.js";
 import { VerificationError } from "../errors/VerificationError.js";
 
 /**
- * Verifies the cryptographic signature associated with a Verification.
+ * Signature Verification Stage.
+ *
+ * Verifies the cryptographic signature associated
+ * with an Execution Trust Record.
  *
  * This is currently a placeholder implementation.
- * Future versions will delegate verification to the Crypto package.
+ * Future versions will delegate verification to
+ * the Crypto package.
  */
-export class SignatureVerificationStage implements VerificationComponent {
+export class SignatureVerificationStage
+  implements VerificationComponent
+{
   /**
-   * Executes the signature verification stage.
-   *
-   * @param verification Immutable verification.
-   * @returns The same immutable verification.
-   * @throws VerificationError if the verification is missing.
+   * Execute signature verification.
    */
-  public execute(verification: Verification): Verification {
-    if (!verification) {
-      throw new VerificationError("Verification cannot be null or undefined.");
+  public async execute(
+    context: VerificationContext,
+  ): Promise<VerificationContext> {
+    if (!context) {
+      throw new VerificationError(
+        "VerificationContext is required.",
+      );
     }
 
-    return verification;
+    if (!context.trustRecord) {
+      throw new VerificationError(
+        "ExecutionTrustRecord is required.",
+      );
+    }
+
+    //
+    // TODO:
+    // Delegate cryptographic signature verification
+    // to @parmana/crypto.
+    //
+
+    return context;
   }
 }

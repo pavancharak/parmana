@@ -1,9 +1,10 @@
 import {
   ExecutionTrustRecordRepository,
   Verification,
-  VerificationFailedError,
   VerificationStatus,
 } from "@parmana/shared";
+
+import { VerificationFailedError } from "../errors/VerificationFailedError.js";
 
 import { VerificationCrypto } from "@parmana/crypto";
 

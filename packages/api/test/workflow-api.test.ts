@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import request from "supertest";
-
+import { TEST_POLICY } from "./fixtures/policies.js";
 import app from "../src/app.js";
 
 describe("Execution Trust Workflow", () => {
@@ -17,24 +17,20 @@ describe("Execution Trust Workflow", () => {
         businessTransactionId: "txn-workflow-001",
       },
 
-      policy: {
-        name: "payment-approval",
-        version: "1.0.0",
-        schemaVersion: "1.0",
-      },
+policy: TEST_POLICY,
 
-      signals: {},
+      signals: {
+  amount: 1000,
+  vendorVerified: true,
+  paymentApproved: true,
+},
 
       decision: {
         decisionId: "dec-001",
         outcome: "APPROVED",
         evaluatedAt: new Date(),
 
-        policy: {
-          name: "payment-approval",
-          version: "1.0.0",
-          schemaVersion: "1.0",
-        },
+policy: TEST_POLICY,
       },
 
       status: "APPROVED",

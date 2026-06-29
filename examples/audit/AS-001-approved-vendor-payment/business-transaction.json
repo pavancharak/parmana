@@ -1,0 +1,60 @@
+{
+  "businessTransactionId": "bt-001",
+
+  "metadata": {
+    "businessTransactionId": "bt-001",
+    "correlationId": "corr-001",
+    "tenantId": "acme-bank",
+    "sourceSystem": "vendor-payment-service",
+    "submittedBy": "risk-committee",
+    "submittedAt": "2026-06-29T10:15:00.000Z"
+  },
+
+  "authority": {
+    "authorityId": "authority-001",
+    "authorityType": "ORGANIZATION",
+    "principalId": "acme-bank",
+    "displayName": "Acme Bank",
+    "issuedAt": "2026-06-29T10:00:00.000Z"
+  },
+
+  "authorization": {
+    "authorizationId": "authorization-001",
+    "authorityId": "authority-001",
+    "purpose": "Approve vendor payments up to ₹50,000",
+    "issuedAt": "2026-06-29T10:05:00.000Z",
+    "expiresAt": "2026-12-31T23:59:59.000Z"
+  },
+
+  "intent": {
+    "intentId": "intent-001",
+    "authorizationId": "authorization-001",
+    "action": "TransferFunds",
+    "target": "vendor/VENDOR-ABC",
+    "parameters": {
+      "amount": 25000,
+      "currency": "INR",
+      "vendorId": "VENDOR-ABC",
+      "vendorName": "Vendor ABC",
+      "invoiceNumber": "INV-1001"
+    },
+    "createdAt": "2026-06-29T10:10:00.000Z"
+  },
+
+  "policy": {
+    "name": "vendor-payment",
+    "version": "1.0.0",
+    "schemaVersion": "1.0"
+  },
+
+  "signals": {
+    "amount": 25000,
+    "currency": "INR",
+    "vendorVerified": true,
+    "approvalLimit": 50000
+  },
+
+  "status": "RECEIVED",
+
+  "createdAt": "2026-06-29T10:15:00.000Z"
+}

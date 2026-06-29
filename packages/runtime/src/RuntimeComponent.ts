@@ -1,14 +1,22 @@
-import { RuntimeContext } from "./context/RuntimeContext.js";
+import type { RuntimeContext } from "./context/RuntimeContext.js";
 
 /**
  * Runtime Component.
  *
- * Performs one deterministic operation on the
+ * Performs one deterministic transformation of the
  * RuntimeContext.
+ *
+ * Components:
+ * - never mutate the input
+ * - return a new RuntimeContext
+ * - may append execution artifacts
+ * - may throw on validation failure
  */
 export interface RuntimeComponent {
   /**
-   * Executes one runtime stage.
+   * Execute one runtime stage.
    */
-  execute(context: RuntimeContext): Promise<RuntimeContext>;
+  execute(
+    context: RuntimeContext,
+  ): Promise<RuntimeContext>;
 }

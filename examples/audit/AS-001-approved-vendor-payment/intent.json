@@ -1,0 +1,14 @@
+{
+  "intentId": "intent-001",
+  "authorizationId": "authorization-001",
+  "action": "TransferFunds",
+  "target": "vendor/VENDOR-ABC",
+  "parameters": {
+    "amount": 25000,
+    "currency": "INR",
+    "vendorId": "VENDOR-ABC",
+    "vendorName": "Vendor ABC",
+    "invoiceNumber": "INV-1001"
+  },
+  "createdAt": "2026-06-29T10:10:00.000Z"
+}

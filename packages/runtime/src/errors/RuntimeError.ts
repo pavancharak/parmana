@@ -4,16 +4,18 @@
  * All Runtime exceptions should extend this class.
  */
 export class RuntimeError extends Error {
-  /**
-   * Creates a new RuntimeError.
-   *
-   * @param message Error message.
-   */
-  constructor(message: string) {
+  constructor(
+    message: string,
+    public readonly status: number = 500,
+    public readonly code: string = "RUNTIME_ERROR",
+  ) {
     super(message);
 
-    this.name = "RuntimeError";
+    this.name = new.target.name;
 
-    Object.setPrototypeOf(this, new.target.prototype);
+    Object.setPrototypeOf(
+      this,
+      new.target.prototype,
+    );
   }
 }

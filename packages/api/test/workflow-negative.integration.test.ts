@@ -17,7 +17,7 @@ describe("Negative Workflow Integration", () => {
         businessTransactionId: crypto.randomUUID(),
       });
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(404);
 
     expect(response.body.error).toContain("Execution Trust Record not found.");
   });
@@ -43,7 +43,7 @@ describe("Negative Workflow Integration", () => {
         businessTransactionId: execute.body.businessTransactionId,
       });
 
-    expect(receipt.status).toBe(500);
+    expect(receipt.status).toBe(409);
 
     expect(receipt.body.error).toContain(
       "Execution Trust Record must be successfully verified",

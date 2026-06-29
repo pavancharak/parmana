@@ -1,17 +1,16 @@
-import type { Verification } from "@parmana/shared";
+import type { VerificationContext } from "./context/VerificationContext.js";
 
 /**
  * Represents a single deterministic verification stage.
  *
  * Verification components are stateless and transform an immutable
- * Verification into a new immutable Verification.
+ * VerificationContext into a new immutable VerificationContext.
  */
 export interface VerificationComponent {
   /**
-   * Executes this verification stage.
-   *
-   * @param verification Immutable verification.
-   * @returns Immutable verification.
+   * Execute one verification stage.
    */
-  execute(verification: Verification): Verification;
+  execute(
+    context: VerificationContext,
+  ): Promise<VerificationContext>;
 }

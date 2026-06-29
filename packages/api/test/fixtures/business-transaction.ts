@@ -1,5 +1,5 @@
 import type { BusinessTransaction } from "@parmana/shared";
-
+import { TEST_POLICY } from "./policies.js";
 export function createBusinessTransaction(): BusinessTransaction {
   const businessTransactionId = crypto.randomUUID();
 
@@ -40,12 +40,12 @@ export function createBusinessTransaction(): BusinessTransaction {
       issuedAt: new Date(),
     },
 
-    policy: {
-      name: "default",
-      version: "1.0.0",
-    },
-
-    signals: {},
+policy: TEST_POLICY,
+   signals: {
+  amount: 1000,
+  vendorVerified: true,
+  paymentApproved: true,
+},
 
     decision: {
       outcome: "APPROVED",

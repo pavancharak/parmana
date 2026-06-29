@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "Parmana Verification Engine",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -21,9 +21,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@parmana/crypto": "0.1.0",
     "@parmana/shared": "0.1.0",
     "@supabase/supabase-js": "^2.108.2",
-    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "vitest": "^4.1.9"
   },
@@ -31,6 +31,7 @@
     "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
     "@types/node": "^24.0.0",
+    "dotenv": "^17.4.2",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
     "tsx": "^4.22.4",

@@ -1,27 +1,36 @@
-import { Verification } from "@parmana/shared";
-
 import type { VerificationComponent } from "../VerificationComponent.js";
+import type { VerificationContext } from "../context/VerificationContext.js";
 import { VerificationError } from "../errors/VerificationError.js";
 
 /**
- * Verifies that a Verification is present.
+ * Evidence Verification Stage.
  *
- * This stage is intentionally minimal until the Evidence
- * verification model is finalized.
+ * Verifies the execution evidence contained
+ * in the Execution Trust Record.
  */
-export class EvidenceVerificationStage implements VerificationComponent {
-  /**
-   * Executes the evidence verification stage.
-   *
-   * @param verification Immutable verification.
-   * @returns The same immutable verification.
-   * @throws VerificationError if the verification is missing.
-   */
-  public execute(verification: Verification): Verification {
-    if (!verification) {
-      throw new VerificationError("Verification cannot be null or undefined.");
+export class EvidenceVerificationStage
+  implements VerificationComponent
+{
+  public async execute(
+    context: VerificationContext,
+  ): Promise<VerificationContext> {
+    if (!context) {
+      throw new VerificationError(
+        "VerificationContext is required.",
+      );
     }
 
-    return verification;
+    if (!context.trustRecord) {
+      throw new VerificationError(
+        "ExecutionTrustRecord is required.",
+      );
+    }
+
+    //
+    // TODO:
+    // Verify Execution Evidence.
+    //
+
+    return context;
   }
 }
