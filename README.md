@@ -1,177 +1,336 @@
-“Parmana ensures AI only executes policy-compliant actions”
-
 # Parmana
 
-> **Execution Trust Infrastructure**
+> **Proof of Human Authority in AI Systems**
 
-Parmana ensures there is no gap between what humans decide and what computational systems do.
+## Parmana ensures AI executes only policy-compliant actions.
 
-Modern organizations increasingly rely on AI systems, autonomous software, APIs, and intelligent automation to make and execute decisions. While these systems can automate execution, they often cannot independently prove:
+Parmana is an execution authorization infrastructure for AI systems. It evaluates every requested AI action against organizational policy before execution, produces a deterministic authorization decision, and generates cryptographically verifiable execution evidence.
 
-* What was authorized
-* What was intended
-* What actually executed
-* Whether execution complied with approved policy
+Unlike AI orchestration frameworks that focus on what AI can do, Parmana focuses on **what AI is allowed to do**.
 
-Parmana solves this problem by creating an immutable **Execution Trust Record** for every business transaction.
+Organizations use Parmana to ensure AI actions are authorized, policy-compliant, auditable, and independently verifiable.
 
 ---
 
-# Why Parmana
+# The Problem
 
-Traditional governance systems answer:
+Organizations cannot confidently deploy autonomous AI in high-impact workflows because they cannot ensure every AI action complies with business policy, regulatory requirements, and human authority.
 
-* Who approved an action?
-* When was it approved?
+Today's AI systems can generate decisions and execute actions, but most organizations cannot answer critical questions such as:
 
-Parmana extends governance to execution.
+* Was this action authorized?
+* Which policy approved it?
+* Which business intent was evaluated?
+* What evidence supports the execution?
+* Can the execution be independently verified?
 
-It establishes a verifiable trust chain between:
+Without trustworthy execution authorization, AI cannot safely operate in regulated or mission-critical environments.
+
+---
+
+# The Solution
+
+Parmana introduces an execution authorization layer between AI systems and execution systems.
+
+Every requested action is evaluated before execution.
+
+If the action satisfies organizational policy, Parmana authorizes execution.
+
+If the action violates policy, Parmana prevents execution.
+
+Every authorization decision produces immutable execution evidence that can later be independently verified.
+
+---
+
+# How Parmana Works
+
+```text
+                 AI System
+                     │
+                     ▼
+                 AI Intent
+                     │
+                     ▼
+        Parmana Authorization Runtime
+                     │
+      ┌──────────────┼──────────────┐
+      │              │              │
+      ▼              ▼              ▼
+ Load Policy   Evaluate Policy   Create Decision
+                     │
+                     ▼
+          Execution Authorization
+                     │
+             Approved / Rejected
+                     │
+                     ▼
+             Execution System
+                     │
+                     ▼
+          Execution Evidence
+                     │
+                     ▼
+        Execution Trust Record
+                     │
+                     ▼
+       Independent Verification
+```
+
+Only Parmana-approved actions are executed.
+
+---
+
+# Core Concepts
+
+## Authority
+
+The human, organization, or system that possesses the authority to permit an action.
+
+---
+
+## Authorization
+
+The explicit permission allowing an Intent to be evaluated for execution.
+
+Authorization establishes who is allowed to request an action.
+
+---
+
+## Intent
+
+The requested business operation.
+
+Intent defines **what** is being requested, independent of how it will be executed.
+
+---
+
+## Policy Reference
+
+A versioned reference to the organizational policy that governs the requested action.
+
+Policies are immutable and deterministic.
+
+---
+
+## Decision
+
+The deterministic result of evaluating an Intent against a Policy.
+
+A Decision records:
+
+* Policy evaluated
+* Runtime signals
+* Decision outcome
+* Decision reason
+* Evaluation timestamp
+
+A Decision never performs execution.
+
+---
+
+## Execution
+
+Execution is the authorized performance of the requested operation.
+
+Execution occurs only after a successful Decision.
+
+---
+
+## Execution Trust Record
+
+The immutable trust artifact produced after execution.
+
+It links the complete authorization-to-execution chain into cryptographically verifiable evidence.
+
+---
+
+## Verification
+
+Verification independently proves that an execution occurred exactly as recorded.
+
+Verification does not require the original application or runtime.
+
+---
+
+# Execution Lifecycle
+
+Every execution follows the same deterministic lifecycle.
 
 ```text
 Authority
-        │
-        ▼
+      │
+Authorization
+      │
 Intent
-        │
-        ▼
-Policy
-        │
-        ▼
-Decision
-        │
-        ▼
+      │
+Policy Reference
+      │
 Business Transaction
-        │
-        ▼
+      │
+Policy Evaluation
+      │
+Decision
+      │
+Execution Authorization
+      │
 Execution
-        │
-        ▼
-Verification
-        │
-        ▼
-Receipt
-        │
-        ▼
+      │
+Execution Evidence
+      │
 Execution Trust Record
+      │
+Verification
 ```
 
-This allows organizations to independently verify that execution matched approved intent.
+Each artifact is immutable and contributes to the overall trust chain.
 
 ---
 
-# Core Principles
+# Key Guarantees
 
-* Immutable trust artifacts
-* Deterministic execution
-* Cryptographic verification
-* Replayable execution
-* Independent auditability
-* Storage-agnostic architecture
-* Execution-engine agnostic design
+Parmana provides the following guarantees for every authorized execution:
+
+* AI executes only policy-compliant actions.
+* Every execution is explicitly authorized.
+* Policy evaluation is deterministic.
+* Every execution produces immutable evidence.
+* Every trust record is cryptographically verifiable.
+* Every execution can be independently audited.
+* Policy evaluation and execution are cleanly separated.
+* Human authority is preserved throughout the execution lifecycle.
 
 ---
 
-# Repository Structure
+# Architectural Principles
+
+Parmana is designed around several fundamental principles.
+
+## Authorization Before Execution
+
+Execution never occurs before policy evaluation.
+
+---
+
+## Deterministic Decisions
+
+The same policy and inputs always produce the same decision.
+
+---
+
+## Immutable Trust Artifacts
+
+Authorization and execution artifacts are never modified after creation.
+
+---
+
+## Independent Verification
+
+Execution evidence can be verified without trusting the original runtime.
+
+---
+
+## Separation of Responsibilities
+
+Parmana separates:
+
+* Policy evaluation
+* Authorization
+* Execution
+* Evidence generation
+* Verification
+
+Each component has a single well-defined responsibility.
+
+---
+
+# Package Overview
 
 ```text
 packages/
-
-api/
-crypto/
-policy/
-replay/
-runtime/
-shared/
-storage/
-verification/
+├── api
+├── crypto
+├── policy
+├── replay
+├── runtime
+├── shared
+├── storage
+└── verification
 ```
 
-| Package      | Responsibility                                   |
-| ------------ | ------------------------------------------------ |
-| shared       | Canonical domain model and repository interfaces |
-| runtime      | Application workflow and execution orchestration |
-| storage      | Repository implementations                       |
-| crypto       | Hashing, signatures, receipts                    |
-| replay       | Replay verification                              |
-| verification | Trust verification                               |
-| policy       | Policy evaluation                                |
-| api          | REST interface                                   |
+Each package provides a focused capability within the overall execution trust infrastructure.
 
 ---
 
-# Architecture
+# Quick Start
 
-```text
-ExecutionTrustApplication
-            │
-            ▼
-BusinessTransactionService
-            │
-            ▼
-Runtime
-            │
-            ▼
-RuntimePipeline
-            │
-            ▼
-Execution
-            │
-            ▼
-Verification
-            │
-            ▼
-Receipt
-            │
-            ▼
-Execution Trust Record
+Install the project:
+
+```bash
+npm install
+```
+
+Build all packages:
+
+```bash
+npm run build
+```
+
+Run the test suite:
+
+```bash
+npm test
 ```
 
 ---
 
-# Current Status
+# Documentation
 
-Current milestone:
+## Concepts
 
-**v0.6 – Application Layer**
+* Authority
+* Authorization
+* Intent
+* Policy Reference
+* Decision
+* Execution
+* Execution Trust Record
+* Verification
 
-Completed:
+## Guides
 
-* Canonical domain model
-* Runtime orchestration
-* Application layer
-* Repository abstractions
-* In-memory repositories
-* Execution Trust pipeline
-* API composition root
-
-In progress:
-
-* Cryptographic hashing
-* Digital signatures
-* Persistent storage
-* REST APIs
-* End-to-end integration tests
-
----
-
-# Roadmap
-
-* **v0.7** — Cryptographic Trust
-* **v0.8** — Persistent Storage
-* **v0.9** — Production REST API
-* **v1.0** — Production Release
+* Basic Execution
+* Receipt Verification
+* Deterministic Replay
+* Trust Chain Audit
+* Human Override
+* Autonomous Systems
+* Medical AI
+* Financial Governance
+* Multi-Agent Systems
+* Custom Policies
 
 ---
 
-# Long-Term Vision
+# Design Philosophy
 
-Parmana is designed to become the universal **Execution Trust Infrastructure** for intelligent computing.
+Most AI infrastructure focuses on helping AI perform more actions.
 
-Whether execution occurs on enterprise software, AI systems, autonomous agents, robotics, distributed platforms, or future computing technologies, Parmana provides a stable trust layer that makes execution independently verifiable.
+Parmana focuses on ensuring AI performs only the **right** actions.
+
+It establishes a deterministic authorization layer that organizations can trust before allowing AI to execute business operations.
+
+The result is AI that is not only capable, but accountable.
+
+---
+
+# Canonical Product Promise
+
+> **Parmana ensures AI executes only policy-compliant actions.**
+
+This is the foundational guarantee of the Parmana Execution Trust Infrastructure.
 
 ---
 
 # License
 
-Apache-2.0
+See the LICENSE file for licensing information.
