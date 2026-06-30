@@ -1,0 +1,40 @@
+{
+  "policyId": "wire-transfer",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "amount": "number",
+    "amlPassed": "boolean",
+    "sanctionsPassed": "boolean",
+    "accountVerified": "boolean"
+  },
+
+  "rules": [
+    {
+      "id": "approve-wire-transfer",
+      "condition": {
+        "all": [
+          { "signal": "amount", "greater_than": 0 },
+          { "signal": "amlPassed", "equals": true },
+          { "signal": "sanctionsPassed", "equals": true },
+          { "signal": "accountVerified", "equals": true }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "wire_transfer_approved"
+      }
+    },
+    {
+      "id": "reject-wire-transfer",
+      "condition": { "all": [] },
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": false,
+        "reason": "wire_transfer_rejected"
+      }
+    }
+  ]
+}

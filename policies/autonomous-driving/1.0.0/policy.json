@@ -1,0 +1,40 @@
+{
+  "policyId": "autonomous-driving",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "lidarHealthy": "boolean",
+    "gpsHealthy": "boolean",
+    "routeVerified": "boolean",
+    "emergencyStopAvailable": "boolean"
+  },
+
+  "rules": [
+    {
+      "id": "approve-navigation",
+      "condition": {
+        "all": [
+          { "signal": "lidarHealthy", "equals": true },
+          { "signal": "gpsHealthy", "equals": true },
+          { "signal": "routeVerified", "equals": true },
+          { "signal": "emergencyStopAvailable", "equals": true }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "autonomous_navigation_approved"
+      }
+    },
+    {
+      "id": "reject-navigation",
+      "condition": { "all": [] },
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": false,
+        "reason": "autonomous_navigation_rejected"
+      }
+    }
+  ]
+}

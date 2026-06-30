@@ -1,0 +1,38 @@
+{
+  "policyId": "multi-agent",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "plannerApproved": "boolean",
+    "consensusReached": "boolean",
+    "executionReady": "boolean"
+  },
+
+  "rules": [
+    {
+      "id": "approve-coordination",
+      "condition": {
+        "all": [
+          { "signal": "plannerApproved", "equals": true },
+          { "signal": "consensusReached", "equals": true },
+          { "signal": "executionReady", "equals": true }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "multi_agent_execution_approved"
+      }
+    },
+    {
+      "id": "reject-coordination",
+      "condition": { "all": [] },
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": false,
+        "reason": "multi_agent_execution_rejected"
+      }
+    }
+  ]
+}

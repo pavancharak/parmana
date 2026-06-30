@@ -37,14 +37,52 @@ export class ExecutionTrustApplication {
    * Execute Business Transaction through Runtime
    */
   async execute(
-    transaction: BusinessTransaction,
-  ): Promise<ExecutionTrustRecord> {
-    await this.transactions.accept(transaction);
+  transaction: BusinessTransaction,
+): Promise<ExecutionTrustRecord> {
+  //
+  // Accept the Business Transaction.
+  //
+  await this.transactions.accept(
+    transaction,
+  );
 
-    // IMPORTANT:
-    // Runtime must enrich context internally (decision + execution)
-    return this.runtime.execute(transaction);
+  //
+  // Execute through the Runtime.
+  //
+  await this.runtime.execute(
+    transaction,
+  );
+
+  //
+  // Generate Verification.
+  //
+  await this.verification.verify(
+    transaction.businessTransactionId,
+  );
+
+  //
+  // Generate Receipt.
+  //
+  await this.receipts.generate(
+    transaction.businessTransactionId,
+  );
+
+  //
+  // Return the completed Execution Trust Record.
+  //
+  const trustRecord =
+    await this.trustRecords.findByTransactionId(
+      transaction.businessTransactionId,
+    );
+
+  if (!trustRecord) {
+    throw new Error(
+      "Execution Trust Record not found.",
+    );
   }
+
+  return trustRecord;
+}
 
   /**
    * Verify Execution Trust Record
