@@ -1,46 +1,88 @@
-import { Policy, PolicyCondition, PolicyRule } from "./types/Policy.js";
+import {
+  Policy,
+  PolicyCondition,
+  PolicyRule,
+} from "./types/Policy.js";
 
-import type { PolicySignals } from "./types/PolicySignals.js";
+import type {
+  PolicySignals,
+} from "./types/PolicySignals.js";
 
-import { LedgerEntry } from "./types/LedgerEntry.js";
+import type {
+  PolicyDecision,
+  PolicyOutcome,
+} from "./types/PolicyDecision.js";
 
-import { hashLedger } from "./utils/hash.js";
-
+/**
+ * Canonical Policy Engine.
+ *
+ * Responsibilities:
+ * - Evaluate exactly one policy.
+ * - Return a deterministic PolicyDecision.
+ *
+ * This engine does NOT:
+ * - authorize execution
+ * - execute actions
+ * - generate runtime artifacts
+ * - create trust records
+ */
 export class PolicyEngine {
-  evaluate(policy: Policy, signals: PolicySignals): LedgerEntry {
+  public evaluate(
+    policy: Policy,
+    signals: PolicySignals,
+  ): PolicyDecision {
     const trace: string[] = [];
 
-    const rule = this.findFirstMatch(policy.rules, signals, trace);
-
-    const base = {
-      executionId: crypto.randomUUID(),
-
-      policyId: policy.policyId,
-
-      policyVersion: policy.policyVersion ?? "0.0.0",
-
-      input: signals,
-
-      matchedRuleId: rule?.id ?? "none",
-
-      action: rule?.outcome.action ?? "reject",
-
-      reason: rule?.outcome.reason ?? "no_rule_matched",
-
-      trace: {
-        evaluatedRules: trace.length,
-
-        matchedPath: trace,
-      },
-
-      timestamp: Date.now(),
-    };
+    const rule =
+      this.findFirstMatch(
+        policy.rules,
+        signals,
+        trace,
+      );
 
     return {
-      ...base,
+      policyId: policy.policyId,
 
-      hash: hashLedger(base),
+      policyVersion:
+        policy.policyVersion ??
+        "0.0.0",
+
+      outcome:
+        this.toOutcome(
+          rule?.outcome.action,
+        ),
+
+      reason:
+        rule?.outcome.reason ??
+        "no_rule_matched",
+
+      matchedRuleId:
+        rule?.id ??
+        "none",
+
+      evaluatedRules:
+        trace.length,
+
+      matchedPath: trace,
+
+      timestamp:
+        Date.now(),
     };
+  }
+
+  private toOutcome(
+    action?: string,
+  ): PolicyOutcome {
+    switch (action) {
+      case "approve":
+        return "APPROVE";
+
+      case "require_override":
+        return "REQUIRE_OVERRIDE";
+
+      default:
+        return "REJECT";
+    }
   }
 
   private findFirstMatch(
@@ -51,7 +93,12 @@ export class PolicyEngine {
     for (const rule of rules) {
       trace.push(rule.id);
 
-      if (this.evaluateCondition(rule.condition, signals)) {
+      if (
+        this.evaluateCondition(
+          rule.condition,
+          signals,
+        )
+      ) {
         return rule;
       }
     }
@@ -71,22 +118,43 @@ export class PolicyEngine {
     // Leaf condition
     //
     if (condition.signal) {
-      const value = signals[condition.signal];
+      const value =
+        signals[
+          condition.signal
+        ];
 
-      if (value === undefined || value === null) {
+      if (
+        value === undefined ||
+        value === null
+      ) {
         return false;
       }
 
-      if (condition.greater_than !== undefined) {
-        if (typeof value !== "number") {
+      if (
+        condition.greater_than !==
+        undefined
+      ) {
+        if (
+          typeof value !==
+          "number"
+        ) {
           return false;
         }
 
-        return value > condition.greater_than;
+        return (
+          value >
+          condition.greater_than
+        );
       }
 
-      if (condition.equals !== undefined) {
-        return value === condition.equals;
+      if (
+        condition.equals !==
+        undefined
+      ) {
+        return (
+          value ===
+          condition.equals
+        );
       }
 
       return Boolean(value);
@@ -95,18 +163,34 @@ export class PolicyEngine {
     //
     // AND
     //
-    if (Array.isArray(condition.all)) {
-      return condition.all.every((child) =>
-        this.evaluateCondition(child, signals),
+    if (
+      Array.isArray(
+        condition.all,
+      )
+    ) {
+      return condition.all.every(
+        (child) =>
+          this.evaluateCondition(
+            child,
+            signals,
+          ),
       );
     }
 
     //
     // OR
     //
-    if (Array.isArray(condition.any)) {
-      return condition.any.some((child) =>
-        this.evaluateCondition(child, signals),
+    if (
+      Array.isArray(
+        condition.any,
+      )
+    ) {
+      return condition.any.some(
+        (child) =>
+          this.evaluateCondition(
+            child,
+            signals,
+          ),
       );
     }
 
