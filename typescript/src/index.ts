@@ -1,27 +1,91 @@
 /**
  * Parmana TypeScript SDK
  *
- * Public API
+ * Canonical public API.
  *
- * This file exports the complete public surface
- * of the SDK.
+ * This module defines the complete public surface
+ * of the Parmana TypeScript SDK.
  */
 
-export { ParmanaClient } from "./client.js";
+// -----------------------------------------------------------------------------
+// SDK Version
+// -----------------------------------------------------------------------------
 
-export * from "./types/authority.js";
-export * from "./types/authorization.js";
-export * from "./types/intent.js";
-export * from "./types/policy-reference.js";
-export * from "./types/business-transaction.js";
-export * from "./types/decision.js";
-export * from "./types/execution.js";
-export * from "./types/execution-evidence.js";
-export * from "./types/receipt.js";
-export * from "./types/verification.js";
-export * from "./types/override.js";
-export * from "./types/execution-trust-record.js";
+export { VERSION } from "./version.js";
 
-export * from "./errors.js";
-export * from "./replay.js";
-export * from "./verification.js";
+// -----------------------------------------------------------------------------
+// SDK Client
+// -----------------------------------------------------------------------------
+
+export { ParmanaClient } from "./client/ParmanaClient.js";
+
+// -----------------------------------------------------------------------------
+// SDK APIs
+// -----------------------------------------------------------------------------
+
+export { HealthApi } from "./client/HealthApi.js";
+export { RuntimeApi } from "./client/RuntimeApi.js";
+export { VerificationApi } from "./client/VerificationApi.js";
+export { ReplayApi } from "./client/ReplayApi.js";
+// export { PolicyApi } from "./client/PolicyApi.js";
+
+// -----------------------------------------------------------------------------
+// Configuration
+// -----------------------------------------------------------------------------
+
+export type {
+  Configuration,
+} from "./config/Configuration.js";
+
+export type {
+  Credentials,
+} from "./config/Credentials.js";
+
+export {
+  AuthenticationScheme,
+} from "./config/Credentials.js";
+
+export type {
+  RetryPolicy,
+} from "./config/RetryPolicy.js";
+
+export {
+  RetryStrategy,
+} from "./config/RetryPolicy.js";
+
+export type {
+  Transport,
+  TransportRequest,
+  TransportResponse,
+} from "./config/Transport.js";
+
+// -----------------------------------------------------------------------------
+// Transport
+// -----------------------------------------------------------------------------
+
+export {
+  HttpTransport,
+} from "./transport/HttpTransport.js";
+
+// -----------------------------------------------------------------------------
+// Canonical Parmana Domain Model
+// -----------------------------------------------------------------------------
+
+export * from "./models/index.js";
+
+// -----------------------------------------------------------------------------
+// SDK Errors
+//
+// ParmanaError and ValidationError are exported by
+// @parmana/shared via models/index.ts.
+// -----------------------------------------------------------------------------
+
+export * from "./errors/AuthenticationError.js";
+export * from "./errors/AuthorizationError.js";
+export * from "./errors/ConfigurationError.js";
+export * from "./errors/ExecutionRejectedError.js";
+export * from "./errors/InternalServerError.js";
+export * from "./errors/NetworkError.js";
+export * from "./errors/ReplayError.js";
+export * from "./errors/TimeoutError.js";
+export * from "./errors/VerificationError.js";
