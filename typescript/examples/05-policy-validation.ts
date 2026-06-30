@@ -19,8 +19,24 @@ const client =
       }),
   });
 
-const policy =
-  {} as Policy;
+const policy: Policy = {
+  policyId:
+    "vendor-payment",
+
+  policyVersion:
+    "1.0.0",
+
+  schemaVersion:
+    "1.0.0",
+
+  signalsSchema: {
+    amount: "number",
+    vendorVerified: "boolean",
+    paymentApproved: "boolean",
+  },
+
+  rules: [],
+};
 
 const result =
   await client.validatePolicy(
@@ -28,5 +44,9 @@ const result =
   );
 
 console.log(
-  result,
+  JSON.stringify(
+    result,
+    null,
+    2,
+  ),
 );
