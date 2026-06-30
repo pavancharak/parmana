@@ -2,9 +2,9 @@
 /**
  * Parmana TypeScript SDK
  *
- * Example 02
+ * Example 01
  *
- * Verify Receipt
+ * Basic Execution
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -46,53 +46,76 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_js_1 = require("../src/index.js");
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var client, trustRecord, verification, error_1;
+        var client, authority, authorization, intent, policy, transaction, receipt, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     client = new index_js_1.ParmanaClient({
                         endpoint: "http://localhost:8080",
                     });
-                    trustRecord = {
-                        trustRecordId: "trust-record-001",
-                        businessTransactionId: "txn-001",
-                        transaction: {},
-                        overrides: [],
-                        executions: [],
-                        verifications: [],
-                        receipts: [],
-                        trustRecordHash: "7f84e2d3c1d9d8d3d2c8f7e9b6a4c5d2",
+                    authority = {
+                        authorityId: "authority-001",
+                        authorityName: "Acme Corporation",
                         createdAt: new Date(),
-                        updatedAt: new Date(),
+                    };
+                    authorization = {
+                        authorizationId: "authorization-001",
+                        authorityId: authority.authorityId,
+                        subject: "warehouse-robot-01",
+                        permissions: [
+                            "MOVE_PALLET",
+                        ],
+                        issuedAt: new Date(),
+                        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                    };
+                    intent = {
+                        intentId: "intent-001",
+                        authorizationId: authorization.authorizationId,
+                        operation: "MOVE_PALLET",
+                        target: "Loading Bay 3",
+                        createdAt: new Date(),
+                    };
+                    policy = {
+                        policyName: "warehouse-policy",
+                        policyVersion: "1.0.0",
+                    };
+                    transaction = {
+                        businessTransactionId: "txn-001",
+                        authority: authority,
+                        authorization: authorization,
+                        intent: intent,
+                        policy: policy,
+                        createdAt: new Date(),
                     };
                     console.log();
                     console.log("======================================");
                     console.log(" Parmana TypeScript SDK");
-                    console.log(" Example 02 - Verify Receipt");
+                    console.log(" Example 01 - Basic Execution");
                     console.log("======================================");
                     console.log();
-                    console.log("Trust Record");
-                    console.log("-------------------------");
-                    console.log("Trust Record ID :", trustRecord.trustRecordId);
-                    console.log("Transaction ID  :", trustRecord.businessTransactionId);
-                    console.log("Hash            :", trustRecord.trustRecordHash);
+                    console.log("Business Transaction");
+                    console.log("--------------------");
+                    console.log("Transaction:", transaction.businessTransactionId);
+                    console.log("Authority :", authority.authorityName);
+                    console.log("Intent    :", intent.operation);
+                    console.log("Policy    :", "".concat(policy.policyName, " (").concat(policy.policyVersion, ")"));
                     console.log();
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, client.verify(trustRecord)];
+                    return [4 /*yield*/, client.execute(transaction)];
                 case 2:
-                    verification = _a.sent();
-                    console.log("Verification");
-                    console.log("-------------------------");
-                    console.log("Verification ID :", verification.verificationId);
-                    console.log("Status          :", verification.status);
-                    console.log("Verified At     :", verification.verifiedAt);
+                    receipt = _a.sent();
+                    console.log("Execution Receipt");
+                    console.log("-----------------");
+                    console.log("Receipt ID :", receipt.receiptId);
+                    console.log("Algorithm  :", receipt.algorithm);
+                    console.log("Issued At  :", receipt.issuedAt);
                     return [3 /*break*/, 4];
                 case 3:
                     error_1 = _a.sent();
                     console.log();
-                    console.error("Verification service not available (expected during SDK development).");
+                    console.error("Runtime not available (expected during SDK development).");
                     if (error_1 instanceof Error) {
                         console.error(error_1.message);
                     }

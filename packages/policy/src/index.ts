@@ -39,12 +39,28 @@ export type {
   Policy,
   PolicyCondition,
   PolicyInput,
-  PolicyOutcome,
   PolicyRule,
+  PolicyRuleOutcome,
 } from "./types/Policy.js";
 
 export type {
   PolicySignals,
 } from "./types/PolicySignals.js";
+
+export type {
+  PolicyDecision,
+} from "./types/PolicyDecision.js";
+
+export {
+  PolicyAction,
+} from "./types/PolicyAction.js";
+
+export {
+  PolicyOutcome,
+} from "./types/PolicyOutcome.js";
+
+// -----------------------------------------------------------------------------
+// Errors
+// -----------------------------------------------------------------------------
 
 export * from "./errors/index.js";

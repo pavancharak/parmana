@@ -1,8 +1,8 @@
-export type PolicyOutcome =
-  | "APPROVE"
-  | "REJECT"
-  | "REQUIRE_OVERRIDE";
+import { PolicyOutcome } from "./PolicyOutcome.js";
 
+/**
+ * Immutable result returned by PolicyEngine.
+ */
 export interface PolicyDecision {
   policyId: string;
 

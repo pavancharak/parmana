@@ -1,5 +1,7 @@
 import path from "node:path";
-
+import { DecisionBuilder } from "../src/DecisionBuilder.js";
+import { ExecutionBuilder } from "../src/ExecutionBuilder.js";
+import { ExecutionGate } from "../src/ExecutionGate.js";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -25,9 +27,10 @@ describe("RuntimeEngine E2E", () => {
     path.resolve(process.cwd(), "../../policies"),
   );
 
-  const policyRouter = new PolicyRouter(
-    policyRepository,
-  );
+  const router = new PolicyRouter(
+  policyRepository,
+);
+const pipeline = new RuntimePipeline([]);
 
   const policyEngine = new PolicyEngine();
 
@@ -70,11 +73,14 @@ describe("RuntimeEngine E2E", () => {
       };
 
       const runtime = new RuntimeEngine(
-        new RuntimePipeline([]),
-        policyRouter,
-        policyEngine,
-        trustPipeline,
-      );
+  pipeline,
+  router,
+  policyEngine,
+  new DecisionBuilder(),
+  new ExecutionGate(),
+  new ExecutionBuilder(),
+  trustPipeline,
+);
 
       const result =
         await runtime.execute(transaction);
@@ -94,13 +100,15 @@ describe("RuntimeEngine E2E", () => {
   it(
     "fails safely on invalid transaction",
     async () => {
-      const runtime = new RuntimeEngine(
-        new RuntimePipeline([]),
-        policyRouter,
-        policyEngine,
-        trustPipeline,
-      );
-
+const runtime = new RuntimeEngine(
+  pipeline,
+  router,
+  policyEngine,
+  new DecisionBuilder(),
+  new ExecutionGate(),
+  new ExecutionBuilder(),
+  trustPipeline,
+);
       await expect(
         runtime.execute(
           {} as BusinessTransaction,

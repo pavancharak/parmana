@@ -10,8 +10,15 @@ import type {
 
 import type {
   PolicyDecision,
-  PolicyOutcome,
 } from "./types/PolicyDecision.js";
+
+import {
+  PolicyAction,
+} from "./types/PolicyAction.js";
+
+import {
+  PolicyOutcome,
+} from "./types/PolicyOutcome.js";
 
 /**
  * Canonical Policy Engine.
@@ -27,18 +34,20 @@ import type {
  * - create trust records
  */
 export class PolicyEngine {
+  /**
+   * Evaluates exactly one policy using the supplied runtime signals.
+   */
   public evaluate(
     policy: Policy,
     signals: PolicySignals,
   ): PolicyDecision {
     const trace: string[] = [];
 
-    const rule =
-      this.findFirstMatch(
-        policy.rules,
-        signals,
-        trace,
-      );
+    const rule = this.findFirstMatch(
+      policy.rules,
+      signals,
+      trace,
+    );
 
     return {
       policyId: policy.policyId,
@@ -47,10 +56,9 @@ export class PolicyEngine {
         policy.policyVersion ??
         "0.0.0",
 
-      outcome:
-        this.toOutcome(
-          rule?.outcome.action,
-        ),
+      outcome: this.toOutcome(
+        rule?.outcome.action,
+      ),
 
       reason:
         rule?.outcome.reason ??
@@ -65,26 +73,35 @@ export class PolicyEngine {
 
       matchedPath: trace,
 
-      timestamp:
-        Date.now(),
+      timestamp: Date.now(),
     };
   }
 
+  /**
+   * Maps a PolicyAction to the canonical PolicyOutcome.
+   */
   private toOutcome(
-    action?: string,
+    action?: PolicyAction,
   ): PolicyOutcome {
     switch (action) {
-      case "approve":
-        return "APPROVE";
+      case PolicyAction.APPROVE:
+        return PolicyOutcome.APPROVE;
 
-      case "require_override":
-        return "REQUIRE_OVERRIDE";
+      case PolicyAction.REQUIRE_OVERRIDE:
+        return PolicyOutcome.REQUIRE_OVERRIDE;
 
+      case PolicyAction.REJECT:
       default:
-        return "REJECT";
+        return PolicyOutcome.REJECT;
     }
   }
 
+  /**
+   * Returns the first matching policy rule.
+   *
+   * Policy evaluation is deterministic:
+   * the first matching rule wins.
+   */
   private findFirstMatch(
     rules: PolicyRule[],
     signals: PolicySignals,
@@ -106,6 +123,9 @@ export class PolicyEngine {
     return null;
   }
 
+  /**
+   * Recursively evaluates a policy condition.
+   */
   private evaluateCondition(
     condition: PolicyCondition,
     signals: PolicySignals,
@@ -161,7 +181,7 @@ export class PolicyEngine {
     }
 
     //
-    // AND
+    // Logical AND
     //
     if (
       Array.isArray(
@@ -178,7 +198,7 @@ export class PolicyEngine {
     }
 
     //
-    // OR
+    // Logical OR
     //
     if (
       Array.isArray(
