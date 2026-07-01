@@ -20,6 +20,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@noble/post-quantum": "^0.6.1",
     "@supabase/supabase-js": "^2.108.2",
     "express": "^5.2.1",
     "vitest": "^4.1.9"

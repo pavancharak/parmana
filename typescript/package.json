@@ -42,11 +42,13 @@
     "url": "https://github.com/parmana-ai/parmana/issues"
   },
   "homepage": "https://parmana.ai",
-  "dependencies": {},
+  "dependencies": {
+    "@noble/post-quantum": "^0.6.1"
+  },
   "devDependencies": {
+    "@types/node": "^24.0.0",
     "typescript": "^5.8.0",
-    "vitest": "^4.1.9",
-    "@types/node": "^24.0.0"
+    "vitest": "^4.1.9"
   },
   "engines": {
     "node": ">=20"

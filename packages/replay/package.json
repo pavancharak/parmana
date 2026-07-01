@@ -21,6 +21,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@noble/post-quantum": "^0.6.1",
     "@parmana/runtime": "0.1.0",
     "@parmana/storage": "0.1.0",
     "@supabase/supabase-js": "^2.108.2",
