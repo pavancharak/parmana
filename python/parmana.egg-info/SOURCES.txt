@@ -33,6 +33,7 @@ parmana/models/intent.py
 parmana/models/override.py
 parmana/models/policy.py
 parmana/models/receipt.py
+parmana/models/replay.py
 parmana/models/replay_result.py
 parmana/models/trust_record.py
 parmana/models/verification.py
@@ -43,3 +44,9 @@ parmana/transport/__init__.py
 parmana/transport/http_transport.py
 parmana/types/__init__.py
 parmana/types/json.py
+tests/test_client.py
+tests/test_decoder.py
+tests/test_encoder.py
+tests/test_execution_api.py
+tests/test_replay_api.py
+tests/test_verification_api.py
