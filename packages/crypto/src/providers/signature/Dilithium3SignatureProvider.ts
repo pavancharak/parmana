@@ -8,20 +8,29 @@ import {
 } from "@parmana/shared";
 
 import type { SignatureProvider } from "../SignatureProvider.js";
+import { FileKeyProvider } from "../key/FileKeyProvider.js";
 
+/**
+ * Dilithium3 (ML-DSA-65) Signature Provider.
+ *
+ * Uses persistent keys provided by FileKeyProvider.
+ */
 export class Dilithium3SignatureProvider implements SignatureProvider {
   public readonly algorithm: SignatureAlgorithm =
     SignatureAlgorithms.DILITHIUM3;
 
   private readonly publicKey: Uint8Array;
+
   private readonly secretKey: Uint8Array;
 
   constructor() {
-    console.log("[Crypto] Using ML-DSA-65 (Dilithium3)");
-    const { publicKey, secretKey } = ml_dsa65.keygen();
+    const keyProvider = new FileKeyProvider();
 
-    this.publicKey = publicKey;
-    this.secretKey = secretKey;
+    const keys = keyProvider.loadDilithium3();
+
+    this.publicKey = keys.publicKey;
+
+    this.secretKey = keys.secretKey;
 
     Object.freeze(this);
   }

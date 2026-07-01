@@ -1,10 +1,18 @@
-import { generateKeyPairSync, sign, verify, type KeyObject } from "node:crypto";
+import {
+  createPrivateKey,
+  createPublicKey,
+  sign,
+  verify,
+  type KeyObject,
+} from "node:crypto";
 
 import type { SignatureAlgorithm } from "@parmana/shared";
 
 import { SignatureAlgorithms } from "@parmana/shared";
 
 import type { SignatureProvider } from "../SignatureProvider.js";
+
+import { FileKeyProvider } from "../key/FileKeyProvider.js";
 
 /**
  * Ed25519 Signature Provider.
@@ -21,14 +29,16 @@ export class Ed25519SignatureProvider implements SignatureProvider {
   private readonly publicKey: KeyObject;
 
   constructor() {
-    const keys = generateKeyPairSync("ed25519");
+  const keyProvider = new FileKeyProvider();
 
-    this.privateKey = keys.privateKey;
+  const keys = keyProvider.loadEd25519();
 
-    this.publicKey = keys.publicKey;
+  this.privateKey = createPrivateKey(keys.privateKey);
 
-    Object.freeze(this);
-  }
+  this.publicKey = createPublicKey(keys.publicKey);
+
+  Object.freeze(this);
+}
 
   async sign(data: Uint8Array): Promise<string> {
     const signature = sign(null, Buffer.from(data), this.privateKey);
