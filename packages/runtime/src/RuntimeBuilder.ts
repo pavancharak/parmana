@@ -11,12 +11,18 @@ import type {
   PolicyRepository,
 } from "@parmana/policy";
 
+import { DecisionBuilder } from "./DecisionBuilder.js";
+import { ExecutionBuilder } from "./ExecutionBuilder.js";
+import { ExecutionGate } from "./ExecutionGate.js";
+
 import { Runtime } from "./Runtime.js";
 import { RuntimeEngine } from "./RuntimeEngine.js";
 import { RuntimePipeline } from "./RuntimePipeline.js";
 import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
 
-import type { RuntimeComponent } from "./RuntimeComponent.js";
+import type {
+  RuntimeComponent,
+} from "./RuntimeComponent.js";
 
 /**
  * Canonical Runtime Builder.
@@ -109,12 +115,15 @@ const router =
     // Runtime engine
     //
     const runtimeEngine =
-      new RuntimeEngine(
-        pipeline,
-        router,
-        engine,
-        trustPipeline,
-      );
+  new RuntimeEngine(
+    pipeline,
+    router,
+    engine,
+    new DecisionBuilder(),
+    new ExecutionGate(),
+    new ExecutionBuilder(),
+    trustPipeline,
+  );
 
     //
     // Runtime façade

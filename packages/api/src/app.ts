@@ -2,6 +2,7 @@ import express from "express";
 
 import { errorHandler } from "./middleware/error-handler.js";
 
+import policyRoutes from "./routes/policies.js";
 import executeRoutes from "./routes/execute.js";
 import healthRoutes from "./routes/health.js";
 import receiptRoutes from "./routes/receipt.js";
@@ -50,17 +51,34 @@ app.use("/receipt/latest", receiptLatestRoutes);
 /**
  * Business Transactions
  */
-app.use("/transactions", transactionsRoutes);
+app.use(
+  "/transactions",
+  transactionsRoutes,
+);
+
+/**
+ * Policies
+ */
+app.use(
+  "/policies",
+  policyRoutes,
+);
 
 /**
  * Execution Trust Records
  */
-app.use("/trust-records", trustRecordRoutes);
+app.use(
+  "/trust-records",
+  trustRecordRoutes,
+);
 
 /**
  * Replay
  */
-app.use("/replay", replayRoutes);
+app.use(
+  "/replay",
+  replayRoutes,
+);
 
 /**
  * Error handling

@@ -7,18 +7,25 @@ dotenv.config({
     "../../.env",
   ),
 });
-import { FilePolicyRepository } from "@parmana/policy";
-import { RuntimeFactory } from "@parmana/runtime";
+
+import {
+  FilePolicyRepository,
+} from "@parmana/policy";
+
+import {
+  RuntimeFactory,
+} from "@parmana/runtime";
 
 import {
   businessTransactionRepository,
   executionTrustRecordRepository,
 } from "./repositories.js";
 
-const policyRepository =
+export const policyRepository =
   new FilePolicyRepository(
     process.env.PARMANA_POLICY_DIR!,
   );
+
 console.log(
   "PARMANA_POLICY_DIR =",
   process.env.PARMANA_POLICY_DIR,

@@ -1,13 +1,11 @@
-import crypto from "crypto";
+
+import { DecisionBuilder } from "./DecisionBuilder.js";
+import { ExecutionBuilder } from "./ExecutionBuilder.js";
+import { ExecutionGate } from "./ExecutionGate.js";
 
 import {
   BusinessTransaction,
   BusinessTransactionStatus,
-  Decision,
-  DecisionOutcome,
-  Execution,
-  ExecutionMode,
-  ExecutionStatus,
   ExecutionTrustRecord,
   JsonValue,
 } from "@parmana/shared";
@@ -34,11 +32,14 @@ import { ExecutionTrustPipeline } from "./ExecutionTrustPipeline.js";
  */
 export class RuntimeEngine {
   constructor(
-    private readonly pipeline: RuntimePipeline,
-    private readonly policyRouter: PolicyRouter,
-    private readonly policyEngine: PolicyEngine,
-    private readonly trustPipeline: ExecutionTrustPipeline,
-  ) {
+  private readonly pipeline: RuntimePipeline,
+  private readonly policyRouter: PolicyRouter,
+  private readonly policyEngine: PolicyEngine,
+  private readonly decisionBuilder: DecisionBuilder,
+  private readonly executionGate: ExecutionGate,
+  private readonly executionBuilder: ExecutionBuilder,
+  private readonly trustPipeline: ExecutionTrustPipeline,
+) {
     if (!pipeline) {
       throw new Error("RuntimePipeline is required.");
     }
@@ -83,41 +84,29 @@ export class RuntimeEngine {
     //
     // Deterministic policy evaluation.
     //
-    const ledger = this.policyEngine.evaluate(
-      policy,
-      signals,
-    );
+    const policyDecision =
+  this.policyEngine.evaluate(
+    policy,
+    signals,
+  );
 
-    const outcome =
-      ledger.action === "approve"
-        ? DecisionOutcome.APPROVED
-        : DecisionOutcome.REJECTED;
-
-    //
-    // Decision artifact.
-    //
-    const decision: Decision = {
-      decisionId: crypto.randomUUID(),
-      intentId: transaction.intent.intentId,
-      policy: transaction.policy,
-      signals,
-      outcome,
-      reason: ledger.reason,
-      evaluatedAt: new Date(),
-    };
-
+const decision =
+  this.decisionBuilder.build(
+    transaction,
+    policyDecision,
+  );
     //
     // Initial execution artifact.
     //
-    const execution: Execution = {
-      executionId: crypto.randomUUID(),
-      businessTransactionId:
-        transaction.businessTransactionId,
-      decision,
-      status: ExecutionStatus.PROCESSING,
-      mode: ExecutionMode.SYNC,
-      startedAt: new Date(),
-    };
+    this.executionGate.enforce(
+  decision,
+);
+
+const execution =
+  this.executionBuilder.build(
+    transaction,
+    decision,
+  );
 
     //
     // Canonical Runtime Context.

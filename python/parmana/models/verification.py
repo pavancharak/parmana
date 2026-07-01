@@ -1,30 +1,22 @@
-"""
-Verification model.
-"""
+from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 
 
-class VerificationStatus(str, Enum):
-    VERIFIED = "VERIFIED"
-    FAILED = "FAILED"
-
-
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Verification:
     """
-    Immutable verification artifact.
+    Verification produced by the Parmana Runtime.
     """
 
     verification_id: str
 
     business_transaction_id: str
 
-    status: VerificationStatus
+    status: str
 
-    message: str | None = None
+    message: str
 
     verified_at: datetime
 

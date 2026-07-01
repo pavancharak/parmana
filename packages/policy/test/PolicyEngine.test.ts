@@ -36,6 +36,6 @@ describe("PolicyEngine", () => {
 
     const result = engine.evaluate(policy, input);
 
-    expect(result.action).toBe("approve");
+    expect(result.outcome).toBe("APPROVE");
   });
 });

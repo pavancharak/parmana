@@ -1,29 +1,25 @@
-"""
-Execution Trust Receipt.
-"""
+from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Receipt:
     """
-    Cryptographically verifiable receipt.
+    Cryptographic execution receipt.
     """
 
     receipt_id: str
 
     business_transaction_id: str
 
-    execution_id: str | None = None
-
     trust_record_hash: str
 
     receipt_hash: str
 
-    signature: str
+    issued_at: datetime
 
     algorithm: str
 
-    issued_at: datetime
+    signature: str

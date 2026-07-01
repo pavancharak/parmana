@@ -33,27 +33,27 @@ export class ReplayEngine {
     //
     // Deterministic policy evaluation
     //
-    const ledger = this.policyEngine.evaluate(
-      policy,
-      signals,
-    );
+    const policyDecision =
+  this.policyEngine.evaluate(
+    policy,
+    signals,
+  );
 
-    const replayedDecision = {
-      decisionId: recordedDecision.decisionId,
-      intentId: recordedDecision.intentId,
-      policy: recordedDecision.policy,
-      signals: recordedDecision.signals,
+const replayedDecision = {
+  decisionId: recordedDecision.decisionId,
+  intentId: recordedDecision.intentId,
+  policy: recordedDecision.policy,
+  signals: recordedDecision.signals,
 
-      outcome:
-        ledger.action === "approve"
-          ? DecisionOutcome.APPROVED
-          : DecisionOutcome.REJECTED,
+  outcome:
+    policyDecision.outcome === "APPROVE"
+      ? DecisionOutcome.APPROVED
+      : DecisionOutcome.REJECTED,
 
-      reason: ledger.reason,
+  reason: policyDecision.reason,
 
-      // Preserve deterministic timestamp
-      evaluatedAt: recordedDecision.evaluatedAt,
-    };
+  evaluatedAt: recordedDecision.evaluatedAt,
+};
 
     //
     // Temporary debug output
@@ -64,7 +64,10 @@ export class ReplayEngine {
     console.log("Recorded Policy  :", recordedDecision.policy);
     console.log("Replay Policy    :", policy);
     console.log("Signals          :", signals);
-    console.log("Ledger           :", ledger);
+    console.log(
+  "Policy Decision  :",
+  policyDecision,
+);
 
     const matches =
       recordedDecision.outcome ===

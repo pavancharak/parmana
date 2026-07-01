@@ -1,6 +1,7 @@
 import type { JsonValue } from "@parmana/shared";
 
 import type { PolicySignals } from "./PolicySignals.js";
+import { PolicyAction } from "./PolicyAction.js";
 
 /**
  * Canonical input to the PolicyEngine.
@@ -10,12 +11,16 @@ import type { PolicySignals } from "./PolicySignals.js";
 export type PolicyInput = PolicySignals;
 
 /**
- * Result produced by a policy rule.
+ * Canonical outcome declared by a policy rule.
+ *
+ * This represents the action authored in the policy
+ * definition. It is interpreted by PolicyEngine and
+ * normalized into a PolicyDecision.
  */
-export interface PolicyOutcome {
-  action: "approve" | "reject" | "override";
+export interface PolicyRuleOutcome {
+  action: PolicyAction;
+
   reason: string;
-  requiresOverride?: boolean;
 }
 
 /**
@@ -65,7 +70,7 @@ export interface PolicyRule {
   /**
    * Rule outcome.
    */
-  outcome: PolicyOutcome;
+  outcome: PolicyRuleOutcome;
 }
 
 /**

@@ -1,51 +1,53 @@
 [build-system]
-requires = ["setuptools>=69.0"]
+requires = ["setuptools>=69.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "parmana"
-version = "0.1.0"
-description = "Python SDK for Parmana Execution Trust Infrastructure"
+version = "1.0.0"
+description = "Python SDK for Parmana Execution Trust Infrastructure."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 
 authors = [
-  { name = "Parmana" }
+    { name = "Parmana" }
 ]
 
 keywords = [
-  "ai",
-  "governance",
-  "trust",
-  "execution",
-  "verification",
-  "audit",
-  "policy",
-  "autonomous-systems"
+    "ai",
+    "artificial-intelligence",
+    "autonomous-ai",
+    "agents",
+    "governance",
+    "authorization",
+    "execution",
+    "trust",
+    "policy",
+    "sdk"
 ]
 
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Developers",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "License :: OSI Approved :: Apache Software License",
-  "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
 ]
 
-dependencies = []
+dependencies = [
+    "requests>=2.32.0",
+]
 
 [project.urls]
-Homepage = "https://github.com/parmana/parmana"
-Repository = "https://github.com/parmana/parmana"
-Documentation = "https://docs.parmana.ai"
+Homepage = "https://github.com/parmana-ai/parmana"
+Documentation = "https://github.com/parmana-ai/parmana/tree/main/python"
+Repository = "https://github.com/parmana-ai/parmana"
 
 [tool.setuptools]
-package-dir = { "" = "." }
+include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["."]
 include = ["parmana*"]

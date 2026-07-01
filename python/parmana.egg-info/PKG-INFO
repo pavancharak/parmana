@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: parmana
+Version: 1.0.0
+Summary: Python SDK for Parmana Execution Trust Infrastructure.
+Author: Parmana
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/parmana-ai/parmana
+Project-URL: Documentation, https://github.com/parmana-ai/parmana/tree/main/python
+Project-URL: Repository, https://github.com/parmana-ai/parmana
+Keywords: ai,artificial-intelligence,autonomous-ai,agents,governance,authorization,execution,trust,policy,sdk
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.32.0
+Dynamic: license-file
+
+\# Parmana Python SDK
+
+
+
+> Proof of Human Authority in AI Systems
+
+
+
+The official Python SDK for Parmana.
+
+
+
+Parmana ensures AI executes only policy-compliant actions.
+
+
+
+\## Status
+
+
+
+Under active development.
+

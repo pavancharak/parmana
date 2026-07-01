@@ -21,7 +21,7 @@ export class DecisionService {
       signals: input.signals,
       outcome:
         input.outcome ??
-        (result.action === "approve"
+        (result.outcome === "APPROVE"
           ? DecisionOutcome.APPROVED
           : DecisionOutcome.REJECTED),
       reason: result.reason,

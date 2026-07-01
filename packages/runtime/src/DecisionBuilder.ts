@@ -1,0 +1,87 @@
+import crypto from "node:crypto";
+import type {
+  JsonValue,
+} from "@parmana/shared";
+import {
+  BusinessTransaction,
+  Decision,
+  DecisionOutcome,
+} from "@parmana/shared";
+
+import {
+  PolicyDecision,
+  PolicyOutcome,
+} from "@parmana/policy";
+
+/**
+ * Builds the canonical Decision artifact.
+ *
+ * Responsibilities:
+ * - Assign a Decision identifier.
+ * - Map PolicyOutcome to DecisionOutcome.
+ * - Preserve the evaluated PolicyReference.
+ * - Capture runtime signals.
+ *
+ * This builder does NOT:
+ * - evaluate policy
+ * - execute actions
+ * - authorize execution
+ * - create Execution artifacts
+ */
+export class DecisionBuilder {
+  /**
+   * Builds an immutable Decision from a PolicyDecision.
+   */
+  public build(
+    transaction: BusinessTransaction,
+    policyDecision: PolicyDecision,
+  ): Decision {
+    return {
+      decisionId: crypto.randomUUID(),
+
+      intentId:
+        transaction.intent.intentId,
+
+      policy:
+        transaction.policy,
+
+     signals:
+  (transaction.signals ??
+    {}) as Record<
+      string,
+      JsonValue
+    >,
+
+      outcome:
+        this.toDecisionOutcome(
+          policyDecision.outcome,
+        ),
+
+      reason:
+        policyDecision.reason,
+
+      evaluatedAt:
+        new Date(),
+    };
+  }
+
+  /**
+   * Maps the canonical PolicyOutcome into the
+   * runtime DecisionOutcome.
+   */
+  private toDecisionOutcome(
+    outcome: PolicyOutcome,
+  ): DecisionOutcome {
+    switch (outcome) {
+      case PolicyOutcome.APPROVE:
+        return DecisionOutcome.APPROVED;
+
+      case PolicyOutcome.REJECT:
+
+      case PolicyOutcome.REQUIRE_OVERRIDE:
+
+      default:
+        return DecisionOutcome.REJECTED;
+    }
+  }
+}

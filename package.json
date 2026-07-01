@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "workspaces": [
+ "workspaces": [
   "packages/*",
-  "typescript"
+  "typescript",
+  "python"
 ],
   "scripts": {
     "build": "tsc -b",

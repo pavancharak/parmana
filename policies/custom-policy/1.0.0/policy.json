@@ -1,0 +1,36 @@
+{
+  "policyId": "custom-policy",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "customRulePassed": "boolean",
+    "riskAccepted": "boolean"
+  },
+
+  "rules": [
+    {
+      "id": "approve-custom-workflow",
+      "condition": {
+        "all": [
+          { "signal": "customRulePassed", "equals": true },
+          { "signal": "riskAccepted", "equals": true }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "custom_workflow_approved"
+      }
+    },
+    {
+      "id": "reject-custom-workflow",
+      "condition": { "all": [] },
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": false,
+        "reason": "custom_workflow_rejected"
+      }
+    }
+  ]
+}

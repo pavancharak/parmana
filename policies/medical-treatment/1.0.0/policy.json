@@ -1,0 +1,40 @@
+{
+  "policyId": "medical-treatment",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+
+  "signalsSchema": {
+    "physicianApproved": "boolean",
+    "allergiesChecked": "boolean",
+    "dosageWithinLimit": "boolean",
+    "patientStable": "boolean"
+  },
+
+  "rules": [
+    {
+      "id": "approve-treatment",
+      "condition": {
+        "all": [
+          { "signal": "physicianApproved", "equals": true },
+          { "signal": "allergiesChecked", "equals": true },
+          { "signal": "dosageWithinLimit", "equals": true },
+          { "signal": "patientStable", "equals": true }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "requiresOverride": false,
+        "reason": "medical_treatment_approved"
+      }
+    },
+    {
+      "id": "reject-treatment",
+      "condition": { "all": [] },
+      "outcome": {
+        "action": "reject",
+        "requiresOverride": false,
+        "reason": "medical_treatment_rejected"
+      }
+    }
+  ]
+}
