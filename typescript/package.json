@@ -1,5 +1,5 @@
 {
-  "name": "@parmana/typescript-sdk",
+  "name": "parmana",
   "version": "1.0.0",
   "description": "Official Parmana TypeScript SDK",
   "license": "Apache-2.0",
@@ -42,10 +42,7 @@
     "url": "https://github.com/parmana-ai/parmana/issues"
   },
   "homepage": "https://parmana.ai",
-  "dependencies": {
-  "@parmana/shared": "file:../packages/shared",
-  "@parmana/policy": "file:../packages/policy"
-},
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.8.0",
     "vitest": "^4.1.9",

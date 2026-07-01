@@ -23,16 +23,13 @@
 import type {
   BusinessTransaction,
   ExecutionTrustRecord,
+  Receipt,
   Verification,
 } from "../models/index.js";
 
 import type {
-  ReplayRequest,
-} from "../models/ReplayRequest.js";
-
-import type {
   ReplayResult,
-} from "../models/ReplayResult.js";
+} from "../models/replay-result.js";
 
 import type {
   Configuration,
@@ -56,8 +53,8 @@ import {
 } from "./HealthApi.js";
 
 import {
-  RuntimeApi,
-} from "./RuntimeApi.js";
+  ExecutionApi,
+} from "./ExecutionApi.js";
 
 import {
   VerificationApi,
@@ -66,6 +63,18 @@ import {
 import {
   ReplayApi,
 } from "./ReplayApi.js";
+
+import {
+  ReceiptApi,
+} from "./ReceiptApi.js";
+
+import {
+  TransactionApi,
+} from "./TransactionApi.js";
+
+import {
+  TrustRecordApi,
+} from "./TrustRecordApi.js";
 
 import {
   PolicyApi,
@@ -94,7 +103,7 @@ export class ParmanaClient {
   /**
    * Runtime Execution API.
    */
-  private readonly runtimeApi: RuntimeApi;
+  private readonly executionApi: ExecutionApi;
 
   /**
    * Runtime Verification API.
@@ -105,6 +114,21 @@ export class ParmanaClient {
    * Runtime Replay API.
    */
   private readonly replayApi: ReplayApi;
+
+  /**
+   * Runtime Receipt API.
+   */
+  private readonly receiptApi: ReceiptApi;
+
+  /**
+   * Runtime Transaction API.
+   */
+  private readonly transactionApi: TransactionApi;
+
+  /**
+   * Runtime Trust Record API.
+   */
+  private readonly trustRecordApi: TrustRecordApi;
 
   /**
    * Runtime Policy API.
@@ -138,14 +162,23 @@ export class ParmanaClient {
     this.healthApi =
       new HealthApi(this.transport);
 
-    this.runtimeApi =
-      new RuntimeApi(this.transport);
+    this.executionApi =
+      new ExecutionApi(this.transport);
 
     this.verificationApi =
       new VerificationApi(this.transport);
 
     this.replayApi =
       new ReplayApi(this.transport);
+
+    this.receiptApi =
+      new ReceiptApi(this.transport);
+
+    this.transactionApi =
+      new TransactionApi(this.transport);
+
+    this.trustRecordApi =
+      new TrustRecordApi(this.transport);
 
     this.policyApi =
       new PolicyApi(this.transport);
@@ -166,36 +199,81 @@ export class ParmanaClient {
   }
 
   /**
-   * Executes a BusinessTransaction.
+   * Executes a Business Transaction.
    */
   public execute(
     transaction: BusinessTransaction,
   ): Promise<ExecutionTrustRecord> {
-    return this.runtimeApi.execute(
+    return this.executionApi.execute(
       transaction,
     );
   }
 
   /**
-   * Returns the latest Verification for a
- * Business Transaction.
+   * Returns the latest Verification.
    */
   public verify(
-  businessTransactionId: string,
-): Promise<Verification> {
-  return this.verificationApi.verify(
-    businessTransactionId,
-  );
-}
+    businessTransactionId: string,
+  ): Promise<Verification> {
+    return this.verificationApi.verify(
+      businessTransactionId,
+    );
+  }
 
   /**
    * Performs deterministic replay.
    */
   public replay(
-    request: ReplayRequest,
+    businessTransactionId: string,
   ): Promise<ReplayResult> {
     return this.replayApi.replay(
-      request,
+      businessTransactionId,
+    );
+  }
+
+  /**
+   * Generates an execution receipt.
+   */
+  public receipt(
+    businessTransactionId: string,
+  ): Promise<Receipt> {
+    return this.receiptApi.generate(
+      businessTransactionId,
+    );
+  }
+
+  /**
+   * Retrieves a Business Transaction.
+   */
+  public transaction(
+    businessTransactionId: string,
+  ): Promise<BusinessTransaction> {
+    return this.transactionApi.get(
+      businessTransactionId,
+    );
+  }
+
+  /**
+   * Lists Business Transactions.
+   */
+  public transactions(
+    page = 1,
+    pageSize = 25,
+  ): Promise<BusinessTransaction[]> {
+    return this.transactionApi.list(
+      page,
+      pageSize,
+    );
+  }
+
+  /**
+   * Retrieves an Execution Trust Record.
+   */
+  public trustRecord(
+    businessTransactionId: string,
+  ): Promise<ExecutionTrustRecord> {
+    return this.trustRecordApi.get(
+      businessTransactionId,
     );
   }
 

@@ -24,7 +24,7 @@ export { ParmanaClient } from "./client/ParmanaClient.js";
 // -----------------------------------------------------------------------------
 
 export { HealthApi } from "./client/HealthApi.js";
-export { RuntimeApi } from "./client/RuntimeApi.js";
+export { ExecutionApi } from "./client/ExecutionApi.js";
 export { VerificationApi } from "./client/VerificationApi.js";
 export { ReplayApi } from "./client/ReplayApi.js";
 // export { PolicyApi } from "./client/PolicyApi.js";
@@ -89,3 +89,6 @@ export * from "./errors/NetworkError.js";
 export * from "./errors/ReplayError.js";
 export * from "./errors/TimeoutError.js";
 export * from "./errors/VerificationError.js";
+export { ReceiptApi } from "./client/ReceiptApi.js";
+export { TransactionApi } from "./client/TransactionApi.js";
+export { TrustRecordApi } from "./client/TrustRecordApi.js";

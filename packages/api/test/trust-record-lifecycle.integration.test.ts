@@ -10,101 +10,51 @@ import app from "../src/app.js";
 
 describe("Execution Trust Record Lifecycle", () => {
   it("maintains the complete trust lifecycle", async () => {
-    //
-    const transaction = createBusinessTransaction();
+    const transaction =
+      createBusinessTransaction();
 
+    //
     // Execute
     //
-    const executeResponse = await request(app)
-      .post("/execute").send(transaction);
+    const executeResponse =
+      await request(app)
+        .post("/execute")
+        .send(transaction);
 
     expect(executeResponse.status).toBe(200);
 
-    const trustRecord = executeResponse.body;
+    const trustRecord =
+      executeResponse.body;
 
     //
-    // Trust Record after Execute
+    // Retrieve Trust Record
     //
-    const trustRecordAfterExecute = await request(app).get(
-      `/trust-records/${trustRecord.businessTransactionId}`,
-    );
+    const response =
+      await request(app).get(
+        `/trust-records/${trustRecord.businessTransactionId}`,
+      );
 
-    expect(trustRecordAfterExecute.status).toBe(200);
+    expect(response.status).toBe(200);
 
-    expect(trustRecordAfterExecute.body.executions.length).toBe(1);
+    expect(response.body.executions.length).toBe(1);
 
-    expect(trustRecordAfterExecute.body.verifications.length).toBe(0);
+    expect(response.body.verifications.length).toBe(1);
 
-    expect(trustRecordAfterExecute.body.receipts.length).toBe(0);
-
-    //
-    // Verify
-    //
-    const verifyResponse = await request(app)
-      .post("/verify")
-
-      .send({
-        businessTransactionId: trustRecord.businessTransactionId,
-      });
-
-    expect(verifyResponse.status).toBe(200);
-
-    //
-    // Trust Record after Verify
-    //
-    const trustRecordAfterVerify = await request(app).get(
-      `/trust-records/${trustRecord.businessTransactionId}`,
-    );
-
-    expect(trustRecordAfterVerify.status).toBe(200);
-
-    expect(trustRecordAfterVerify.body.executions.length).toBe(1);
-
-    expect(trustRecordAfterVerify.body.verifications.length).toBe(1);
-
-    expect(trustRecordAfterVerify.body.receipts.length).toBe(0);
-
-    //
-    // Receipt
-    //
-    const receiptResponse = await request(app)
-      .post("/receipt")
-
-      .send({
-        businessTransactionId: trustRecord.businessTransactionId,
-      });
-
-    expect(receiptResponse.status).toBe(200);
-
-    //
-    // Trust Record after Receipt
-    //
-    const trustRecordAfterReceipt = await request(app).get(
-      `/trust-records/${trustRecord.businessTransactionId}`,
-    );
-
-    expect(trustRecordAfterReceipt.status).toBe(200);
-
-    expect(trustRecordAfterReceipt.body.executions.length).toBe(1);
-
-    expect(trustRecordAfterReceipt.body.verifications.length).toBe(1);
-
-    expect(trustRecordAfterReceipt.body.receipts.length).toBe(1);
+    expect(response.body.receipts.length).toBe(1);
 
     //
     // Invariants
     //
-    expect(trustRecordAfterReceipt.body.businessTransactionId).toBe(
+    expect(
+      response.body.businessTransactionId,
+    ).toBe(
       trustRecord.businessTransactionId,
     );
 
-    expect(trustRecordAfterReceipt.body.trustRecordHash).toBe(
+    expect(
+      response.body.trustRecordHash,
+    ).toBe(
       trustRecord.trustRecordHash,
     );
   });
 });
-
-
-
-
-

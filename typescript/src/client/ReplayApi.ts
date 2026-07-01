@@ -3,18 +3,7 @@
  *
  * Replay API.
  *
- * Provides deterministic replay of previously
- * executed Business Transactions.
- *
- * Responsibilities:
- * - Submit ReplayRequest objects.
- * - Return ReplayResult objects.
- *
- * This API does NOT:
- * - execute business transactions
- * - evaluate policy
- * - authorize execution
- * - verify trust records
+ * Replay Business Transactions.
  */
 
 import type {
@@ -22,38 +11,30 @@ import type {
 } from "../config/Transport.js";
 
 import type {
-  ReplayRequest,
-} from "../models/ReplayRequest.js";
-
-import type {
   ReplayResult,
-} from "../models/ReplayResult.js";
+} from "../models/replay-result.js";
 
 /**
  * Replay API.
  */
 export class ReplayApi {
-  /**
-   * Creates a Replay API.
-   */
   constructor(
     private readonly transport: Transport,
   ) {}
 
   /**
-   * Performs deterministic replay of an
-   * Execution Trust Record.
+   * Replay a Business Transaction.
    */
   public async replay(
-    request: ReplayRequest,
+    businessTransactionId: string,
   ): Promise<ReplayResult> {
     const response =
       await this.transport.send<ReplayResult>({
-        path: "/replay",
-
         method: "POST",
-
-        body: request,
+        path: "/replay",
+        body: {
+          businessTransactionId,
+        },
       });
 
     return response.body;

@@ -1,22 +1,11 @@
-/**
- * Parmana SDK
- *
- * Canonical Domain Model
- *
- * The SDK does not define its own business domain model.
- * Instead, it re-exports the canonical shared model from
- * @parmana/shared.
- *
- * The shared package is the single source of truth for:
- * - Domain artifacts
- * - Repository contracts
- * - Shared configuration
- * - Shared errors
- * - Common types
- * - Shared utilities
- *
- * SDK consumers should import domain objects from this
- * module rather than depending directly on @parmana/shared.
- */
-
-export * from "@parmana/shared";
+export * from "./authority.js";
+export * from "./authorization.js";
+export * from "./business-transaction.js";
+export * from "./execution.js";
+export * from "./intent.js";
+export * from "./override.js";
+export * from "./policy.js";
+export * from "./receipt.js";
+export * from "./replay-result.js";
+export * from "./trust-record.js";
+export * from "./verification.js";
