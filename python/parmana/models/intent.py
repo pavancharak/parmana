@@ -1,25 +1,24 @@
-"""
-Intent model.
+from __future__ import annotations
 
-Represents the requested operation before execution.
-"""
-
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Intent:
     """
-    Intent submitted for execution.
+    Business intent.
     """
 
     intent_id: str
 
-    operation: str
+    authorization_id: str
+
+    action: str
 
     target: str
 
-    parameters: dict[str, Any] = field(default_factory=dict)
+    parameters: dict[str, Any]
 
-    version: str = "1.0"
+    created_at: datetime

@@ -1,28 +1,22 @@
-"""
-Authority model.
-
-Represents the authority responsible for issuing
-authorizations within the Parmana trust chain.
-"""
+from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Authority:
     """
-    Root authority in the execution trust chain.
+    Human or system authority responsible
+    for authorizing execution.
     """
 
     authority_id: str
+
     authority_type: str
-    authority_name: str
 
-    created_at: datetime
+    principal_id: str
 
-    public_key: str
+    display_name: str
 
-    signature_algorithm: str
-
-    version: str = "1.0"
+    issued_at: datetime

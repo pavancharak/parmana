@@ -1,25 +1,25 @@
 """
-Override model.
+Parmana Override Model.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Override:
     """
-    Authorized human override.
+    Human override.
     """
 
     override_id: str
 
     business_transaction_id: str
 
-    approved_by: str
+    authority_id: str
 
     reason: str
-
-    justification: str | None = None
 
     approved_at: datetime

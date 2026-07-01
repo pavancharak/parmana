@@ -1,31 +1,40 @@
 """
-Execution model.
+Parmana Execution Model.
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
-from typing import Any
 
-from .decision import Decision
-from .execution_evidence import ExecutionEvidence
+from .policy import PolicyReference
 
 
-class ExecutionStatus(str, Enum):
-    PROCESSING = "PROCESSING"
-    COMPLETED = "COMPLETED"
-    FAILED = "FAILED"
+@dataclass(frozen=True)
+class Decision:
+    """
+    Runtime policy decision.
+    """
+
+    decision_id: str
+
+    intent_id: str
+
+    policy: PolicyReference
+
+    signals: dict
+
+    outcome: str
+
+    reason: str
+
+    evaluated_at: datetime
 
 
-class ExecutionMode(str, Enum):
-    SYNC = "SYNC"
-    ASYNC = "ASYNC"
-
-
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class Execution:
     """
-    Immutable execution artifact.
+    Execution performed by the Runtime.
     """
 
     execution_id: str
@@ -34,14 +43,8 @@ class Execution:
 
     decision: Decision
 
-    status: ExecutionStatus
+    status: str
 
-    mode: ExecutionMode
+    mode: str
 
     started_at: datetime
-
-    completed_at: datetime | None = None
-
-    evidence: ExecutionEvidence | None = None
-
-    metadata: dict[str, Any] | None = None
