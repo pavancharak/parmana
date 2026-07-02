@@ -12,6 +12,7 @@ import { SignatureRegistry } from "./providers/SignatureRegistry.js";
 import { SHA256HashProvider } from "./providers/hash/SHA256HashProvider.js";
 
 import { Ed25519SignatureProvider } from "./providers/signature/Ed25519SignatureProvider.js";
+import { Dilithium3SignatureProvider } from "./providers/signature/Dilithium3SignatureProvider.js";
 
 /**
  * Crypto Bootstrap.
@@ -51,10 +52,16 @@ export class CryptoBootstrap {
     //
     hashRegistry.register(new SHA256HashProvider());
 
-    //
-    // Register built-in signature providers
-    //
-    signatureRegistry.register(new Ed25519SignatureProvider());
+
+// Register built-in signature providers
+//
+signatureRegistry.register(
+  new Ed25519SignatureProvider(),
+);
+
+signatureRegistry.register(
+  new Dilithium3SignatureProvider(),
+);
 
     //
     // Future extension point:

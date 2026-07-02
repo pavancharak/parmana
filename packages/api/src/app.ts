@@ -3,7 +3,9 @@ import express from "express";
 import { errorHandler } from "./middleware/error-handler.js";
 
 import policyRoutes from "./routes/policies.js";
-import executeRoutes from "./routes/execute.js";
+import { createApplication } from "./application.js";
+
+import { createExecuteRouter } from "./routes/execute.js";
 import healthRoutes from "./routes/health.js";
 import receiptRoutes from "./routes/receipt.js";
 import receiptLatestRoutes from "./routes/receipt-get.js";
@@ -34,7 +36,12 @@ app.use("/version", versionRoutes);
 /**
  * Execution
  */
-app.use("/execute", executeRoutes);
+const application = createApplication();
+
+app.use(
+  "/execute",
+  createExecuteRouter(application),
+);
 
 /**
  * Verification

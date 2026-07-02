@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@parmana/crypto": "0.1.0",
+    "@parmana/execution-system": "0.1.0",
     "@parmana/policy": "0.1.0",
     "@parmana/shared": "0.1.0",
     "@supabase/supabase-js": "^2.108.2",
