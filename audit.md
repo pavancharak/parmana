@@ -1,508 +1,165 @@
-\# Parmana Architecture Audit Backlog
+I would definitely include an `AUDIT.md`, but I'd make it about **execution auditability**, not repository auditing.
+
+## `AUDIT.md`
+
+### Core Claim
+
+> **Every Parmana-authorized execution is independently auditable through cryptographically verifiable execution evidence.**
+
+## Suggested Sections
+
+### 1. Purpose
+
+Explain that Parmana is designed so an independent auditor can determine:
+
+* Who authorized an action
+* What policy was applied
+* What was executed
+* When it was executed
+* Whether execution matched the approved intent
+* Whether evidence has been tampered with
 
+---
 
+### 2. Audit Principles
 
-\*\*Status:\*\* Active
+* Human Authority
+* Policy Enforcement
+* Authorization Before Execution
+* Cryptographic Integrity
+* Replayability
+* Independent Verification
+* Immutable Execution Evidence (or Tamper-Evident Evidence, depending on your wording)
 
-\*\*Purpose:\*\* Track architectural observations, implementation gaps, design improvements, and verification tasks discovered during the Parmana repository audit.
+---
 
+### 3. Audit Lifecycle
 
+```text
+Business Transaction
+        │
+        ▼
+Authority
+        │
+        ▼
+Authorization
+        │
+        ▼
+Intent
+        │
+        ▼
+Policy Evaluation
+        │
+        ▼
+Execution
+        │
+        ▼
+Execution Evidence
+        │
+        ▼
+Verification
+        │
+        ▼
+Receipt
+        │
+        ▼
+Execution Trust Record
+```
+
+---
+
+### 4. Audit Evidence
+
+Describe every artifact collected.
+
+* Business Transaction
+* Authority
+* Authorization
+* Intent
+* Policy Reference
+* Decision
+* Execution
+* Execution Evidence
+* Verification
+* Receipt
+* Trust Record Hash
+
+---
+
+### 5. Independent Verification
+
+Explain that an auditor can verify:
+
+* receipt signature
+* trust record hash
+* execution evidence
+* policy version
+* authorization
+* verification result
+
+without trusting Parmana itself.
+
+---
 
-\---
+### 6. Replay
 
+Explain that every execution can be replayed using the stored evidence.
 
+Purpose:
 
-\# Audit Status
+* Compliance
+* Incident investigation
+* Internal audit
+* External audit
+* Regulatory reporting
 
+---
 
+### 7. Cryptographic Integrity
 
-| Area                 | Status     |
+Include:
 
-| -------------------- | ---------- |
+* SHA-256 trust hashes
+* ML-DSA (Dilithium3) signatures
+* Receipt verification
+* Tamper detection
 
-| Repository Structure | ✅ Reviewed |
+---
 
-| Runtime Pipeline     | ✅ Reviewed |
+### 8. Audit Guarantees
 
-| Trust Record Builder | ✅ Reviewed |
+State guarantees such as:
 
-| Shared Domain Model  | ⏳ Pending  |
+* Every execution is attributable to an authority.
+* Every execution references an approved authorization.
+* Every execution references the governing policy.
+* Every execution produces execution evidence.
+* Every execution can be independently verified.
+* Every execution can be replayed.
+* Every receipt is cryptographically signed.
 
-| Policy Engine        | ⏳ Pending  |
+---
 
-| Runtime Services     | ⏳ Pending  |
+## Position in the Documentation
 
-| Verification Engine  | ⏳ Pending  |
+I would place it alongside the other core documents:
 
-| Replay Engine        | ⏳ Pending  |
+```text
+README.md
+ARCHITECTURE.md
+EXECUTION_MODEL.md
+TRUST_MODEL.md
+AUDIT.md
+SECURITY.md
+POLICY_ENGINE.md
+EXECUTION_SYSTEMS.md
+RUNTIME.md
+REPLAY.md
+RECEIPTS.md
+API.md
+SDK.md
+PACKAGES.md
+ROADMAP.md
+```
 
-| Cryptography         | ⏳ Pending  |
-
-| API Layer            | ⏳ Pending  |
-
-| Storage Layer        | ⏳ Pending  |
-
-
-
-\---
-
-
-
-\# Confirmed Strengths
-
-
-
-\* Excellent package separation
-
-\* Strong domain-driven structure
-
-\* Runtime orchestration separated from business logic
-
-\* Builder pattern used appropriately
-
-\* Modular cryptography
-
-\* Replay designed as a first-class capability
-
-\* Well-organized testing structure
-
-
-
-\---
-
-
-
-\# Open Findings
-
-
-
-\## AUDIT-001 — Trust Chain Completeness
-
-
-
-\*\*Priority:\*\* High
-
-
-
-\### Observation
-
-
-
-The current `ExecutionTrustRecord` builder assembles:
-
-
-
-\* Business Transaction
-
-\* Execution
-
-\* Override
-
-\* Verification
-
-\* Receipt
-
-
-
-The canonical Parmana trust chain is:
-
-
-
-Authority → Authorization → Intent → Policy → Execution Request → Execution → Evidence → Verification
-
-
-
-\### Verification Required
-
-
-
-\* Determine whether Authority is represented.
-
-\* Determine whether Authorization is represented.
-
-\* Determine whether Intent is represented.
-
-\* Determine whether Policy Snapshot is represented.
-
-\* Confirm whether these are nested inside the transaction or absent from the trust record.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-002 — Immutable Trust Record
-
-
-
-\*\*Priority:\*\* High
-
-
-
-\### Observation
-
-
-
-Documentation states that the builder produces an immutable Execution Trust Record.
-
-
-
-Current implementation returns a standard JavaScript object.
-
-
-
-\### Verification Required
-
-
-
-Determine whether immutability is enforced through:
-
-
-
-\* Object.freeze
-
-\* Deep freeze
-
-\* Readonly domain model
-
-\* Another mechanism
-
-
-
-If none exist, update either implementation or documentation.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-003 — Runtime Trust Enforcement
-
-
-
-\*\*Priority:\*\* High
-
-
-
-\### Observation
-
-
-
-ExecutionTrustPipeline currently validates only:
-
-
-
-\* Transaction
-
-\* Execution
-
-
-
-\### Verification Required
-
-
-
-Identify where the following are enforced:
-
-
-
-\* Authority
-
-\* Authorization
-
-\* Intent
-
-\* Policy evaluation
-
-
-
-Confirm that no execution path bypasses authorization.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-004 — Explicit Trust Chain Representation
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-\### Observation
-
-
-
-The trust record appears execution-centric.
-
-
-
-Evaluate whether the canonical artifact should expose each trust-chain element explicitly rather than relying on nested objects.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-005 — Canonical Hash Verification
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-\### Verification Required
-
-
-
-Confirm:
-
-
-
-\* Canonical serialization
-
-\* Stable property ordering
-
-\* Deterministic timestamp serialization
-
-\* Stable array ordering
-
-\* Cross-platform reproducibility
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-006 — Timestamp Semantics
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-Review whether append-only trust records should contain both:
-
-
-
-\* createdAt
-
-\* updatedAt
-
-
-
-Determine expected lifecycle semantics.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-007 — Domain Errors
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-Replace generic runtime errors with domain-specific error types where appropriate.
-
-
-
-Examples:
-
-
-
-\* MissingExecutionError
-
-\* MissingTransactionError
-
-\* InvalidRuntimeContextError
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-008 — Policy Package Boundaries
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-Review responsibilities of:
-
-
-
-\* packages/policy
-
-\* packages/runtime/policy
-
-
-
-Confirm runtime integrates policy rather than duplicating policy logic.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-009 — Evidence Package Responsibilities
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-Clarify ownership of evidence generation and ensure there is a single canonical implementation.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\## AUDIT-010 — Runtime Responsibilities
-
-
-
-\*\*Priority:\*\* Medium
-
-
-
-Review whether runtime remains an orchestration layer or has accumulated domain logic that belongs elsewhere.
-
-
-
-\*\*Status:\*\* Open
-
-
-
-\---
-
-
-
-\# Future Audit Areas
-
-
-
-\* Shared domain model
-
-\* ExecutionTrustRecord schema
-
-\* Verification engine
-
-\* Replay determinism
-
-\* Cryptographic binding
-
-\* Policy snapshot handling
-
-\* Override governance
-
-\* Receipt integrity
-
-\* API authorization flow
-
-\* Storage integrity
-
-\* Tamper detection
-
-\* Independent verification
-
-
-
-\---
-
-
-
-\# Resolution States
-
-
-
-Each item will eventually be classified as one of:
-
-
-
-\* ✅ Confirmed Issue
-
-\* ⚠️ Design Improvement
-
-\* ℹ️ Intentional Design Choice
-
-\* ❌ Not Reproducible
-
-
-
-\---
-
-
-
-\# Audit Principles
-
-
-
-This audit focuses on determining whether Parmana faithfully implements its architectural promise:
-
-
-
-> There is no gap between what humans decide and what AI systems do.
-
-
-
-Every finding should be supported by code inspection, implementation evidence, or reproducible behavior—not assumptions.
-
-
-
+For Parmana specifically, `AUDIT.md` is a first-class document because auditability is one of the platform's core differentiators. It should explain not just that auditing is possible, but **how the execution evidence, verification, replay, and cryptographic receipts combine to produce independently auditable execution trust**.
