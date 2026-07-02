@@ -1,9 +1,13 @@
 import { Router } from "express";
-import type { NextFunction, Request, Response } from "express";
+import type {
+  NextFunction,
+  Request,
+  Response,
+} from "express";
 
-import { application } from "../application.js";
-
-const router = Router();
+import type {
+  ExecutionTrustApplication,
+} from "@parmana/runtime";
 
 /**
  * Returns true when the value is a UUID.
@@ -19,36 +23,48 @@ function isValidBusinessTransactionId(
   );
 }
 
-router.post(
-  "/",
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const { businessTransactionId } =
-        req.body;
+/**
+ * Creates the Execute router.
+ */
+export function createExecuteRouter(
+  application: ExecutionTrustApplication,
+): Router {
+  const router = Router();
 
-      if (
-        !isValidBusinessTransactionId(
+  router.post(
+    "/",
+    async (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ) => {
+      try {
+        const {
           businessTransactionId,
-        )
-      ) {
-        return res.status(400).json({
-          error:
-            "businessTransactionId must be a valid UUID.",
-        });
+        } = req.body;
+
+        if (
+          !isValidBusinessTransactionId(
+            businessTransactionId,
+          )
+        ) {
+          return res.status(400).json({
+            error:
+              "businessTransactionId must be a valid UUID.",
+          });
+        }
+
+        const result =
+          await application.execute(
+            req.body,
+          );
+
+        res.json(result);
+      } catch (error) {
+        next(error);
       }
+    },
+  );
 
-      const result =
-        await application.execute(req.body);
-
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-export default router;
+  return router;
+}

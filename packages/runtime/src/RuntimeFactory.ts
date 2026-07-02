@@ -5,6 +5,11 @@ import {
   ExecutionTrustRecordRepository,
 } from "@parmana/shared";
 
+import {
+  DefaultExecutionSystem,
+  type ExecutionSystem,
+} from "@parmana/execution-system";
+
 import { ExecutionTrustApplication } from "./ExecutionTrustApplication.js";
 import { Runtime } from "./Runtime.js";
 import { RuntimeBuilder } from "./RuntimeBuilder.js";
@@ -13,6 +18,9 @@ import {
   ExecutionComponent,
   TrustChainValidationComponent,
 } from "./components/index.js";
+
+import { ExecutionEvidenceBuilder } from "./ExecutionEvidenceBuilder.js";
+import { ExecutionRequestBuilder } from "./ExecutionRequestBuilder.js";
 
 import { BusinessTransactionService } from "./services/business-transaction-service.js";
 import { ExecutionService } from "./services/execution-service.js";
@@ -30,6 +38,8 @@ export class RuntimeFactory {
     transactions: BusinessTransactionRepository,
     trustRecords: ExecutionTrustRecordRepository,
     policyRepository: PolicyRepository,
+    executionSystem: ExecutionSystem =
+      new DefaultExecutionSystem(),
   ): ExecutionTrustApplication {
     //
     // Application Services
@@ -56,6 +66,15 @@ export class RuntimeFactory {
       );
 
     //
+    // Execution subsystem
+    //
+    const requestBuilder =
+      new ExecutionRequestBuilder();
+
+    const evidenceBuilder =
+      new ExecutionEvidenceBuilder();
+
+    //
     // Runtime
     //
     const runtime: Runtime =
@@ -69,6 +88,9 @@ export class RuntimeFactory {
         .addStage(
           new ExecutionComponent(
             executionService,
+            requestBuilder,
+            executionSystem,
+            evidenceBuilder,
           ),
         )
         .build(

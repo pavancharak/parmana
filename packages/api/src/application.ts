@@ -16,6 +16,10 @@ import {
   RuntimeFactory,
 } from "@parmana/runtime";
 
+import type {
+  ExecutionSystem,
+} from "@parmana/execution-system";
+
 import {
   businessTransactionRepository,
   executionTrustRecordRepository,
@@ -26,14 +30,16 @@ export const policyRepository =
     process.env.PARMANA_POLICY_DIR!,
   );
 
-console.log(
-  "PARMANA_POLICY_DIR =",
-  process.env.PARMANA_POLICY_DIR,
-);
-
-export const application =
-  RuntimeFactory.create(
+export function createApplication(
+  executionSystem?: ExecutionSystem,
+) {
+  return RuntimeFactory.create(
     businessTransactionRepository,
     executionTrustRecordRepository,
     policyRepository,
+    executionSystem,
   );
+}
+
+export const application =
+  createApplication();
