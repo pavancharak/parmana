@@ -2,11 +2,11 @@
 
 **Human Authority for Enterprise AI**
 
-Parmana is execution authorization and verification infrastructure for enterprise AI. It sits between systems that decide — AI agents, models, or other automated decision systems — and systems that act, ensuring that every action taken on an organization's behalf is authorized under human-defined policy, cryptographically evidenced, and independently verifiable.
+Parmana is execution authorization and verification infrastructure for enterprise AI. It sits between systems that decide AI agents, models, or other automated decision systems — and systems that act, ensuring that every action taken on an organization's behalf is authorized under human-defined policy, cryptographically evidenced, and independently verifiable.
 
 > AI proposes actions. Parmana authorizes them. Execution systems execute them.
 
-Parmana does not perform business operations. It does not move money, place orders, dispatch robots, or call third-party APIs on its own initiative. It authorizes execution and produces the evidence trail that proves that authorization happened correctly. The work itself is carried out by execution systems — ERPs, CRMs, payment rails, banking cores, robotics controllers, or internal services — that Parmana governs but does not replace.
+Parmana does not perform business operations. It does not move money, place orders, dispatch robots, or call third-party APIs on its own initiative. It authorizes execution and produces the evidence trail that proves that authorization happened correctly. The work itself is carried out by execution systems ERPs, CRMs, payment rails, banking cores, robotics controllers, or internal services — that Parmana governs but does not replace.
 
 ---
 
