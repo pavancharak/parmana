@@ -421,26 +421,32 @@ function renderApiActivity(app) {
       <p class="page-intro">Run <code>python run_simulation.py</code> with an OpenAI key set in <code>.env</code> to generate this log.</p>`;
     return;
   }
-  const s = aa.summary;
   const chronological = aa.calls.slice();
+  const m = DASH.detector.metrics;
+  const totalAttacks = DASH.simulation.fraud_transaction_count;
+  const caught = (m.fraud_caught_rate * 100).toFixed(2);
+  const missed = (m.fraud_missed_rate * 100).toFixed(2);
+  const fpr = (m.false_positive_rate * 100).toFixed(2);
 
   app.innerHTML = `
     <p class="eyebrow">API activity</p>
-    <h1>A real log of every AI call this run made</h1>
-    <p class="page-intro">This is not a live call happening in your browser, and it never will be: an API key should never sit in a page anyone could open dev tools on. Every entry below is a record of what actually happened when the pipeline ran, timestamps, token counts, and cost, straight from OpenAI's own response to each call. Replay animates that same real log; it doesn't make new calls or spend anything.</p>
+    <h1>Real attacks, caught by a real detector</h1>
+    <p class="page-intro">These numbers are from an actual run, not a mockup. Below them is the evidence: a real log of every AI call the pipeline made to generate this data, not a live call happening in your browser (an API key should never sit in a page anyone could open dev tools on), a record of what actually happened, timestamps, token counts, and cost, straight from OpenAI's own response to each call.</p>
+
+    <div class="stat-tiles">
+      <div class="stat-tile"><div class="value neutral">${totalAttacks.toLocaleString()}</div><div class="label">Total attacks</div></div>
+      <div class="stat-tile"><div class="value good">${caught}%</div><div class="label">Fraud caught</div></div>
+      <div class="stat-tile"><div class="value bad">${missed}%</div><div class="label">Fraud missed</div></div>
+      <div class="stat-tile"><div class="value bad">${fpr}%</div><div class="label">False positive rate</div></div>
+    </div>
+
+    <h2>Real API call log</h2>
+    <p class="page-intro" style="margin-bottom:1rem">${aa.summary.total_calls} real calls, ${aa.summary.total_tokens.toLocaleString()} tokens, $${aa.summary.total_cost_usd.toFixed(4)} total, ${aa.summary.avg_latency_ms.toLocaleString()}ms average latency. Click Replay to watch this same real log fill back in.</p>
 
     <button class="action" id="replay-btn">▶ Replay</button>
     <span id="replay-status" class="attack-count" style="margin-left:0.9rem"></span>
 
-    <div class="stat-tiles" id="api-stat-tiles" style="margin-top:1.5rem">
-      <div class="stat-tile"><div class="value neutral" id="stat-calls">${s.total_calls}</div><div class="label">Total calls</div></div>
-      <div class="stat-tile"><div class="value neutral" id="stat-tokens">${s.total_tokens.toLocaleString()}</div><div class="label">Total tokens</div></div>
-      <div class="stat-tile"><div class="value neutral" id="stat-cost">$${s.total_cost_usd.toFixed(4)}</div><div class="label">Total cost</div></div>
-      <div class="stat-tile"><div class="value neutral" id="stat-latency">${s.avg_latency_ms.toLocaleString()}ms</div><div class="label">Average latency</div></div>
-    </div>
-
-    <h2>Call log</h2>
-    <div class="grid" style="gap:0.75rem" id="api-call-log">
+    <div class="grid" style="gap:0.75rem; margin-top:1.25rem" id="api-call-log">
       ${aa.calls
         .slice()
         .reverse()
@@ -462,10 +468,6 @@ function _replayApiLog(chronological) {
   logEl.innerHTML = "";
   btn.disabled = true;
 
-  let tokens = 0,
-    cost = 0,
-    latencySum = 0;
-
   const step = (idx) => {
     if (idx >= chronological.length) {
       statusEl.textContent = `Replay complete, ${chronological.length} of ${chronological.length} calls`;
@@ -476,23 +478,11 @@ function _replayApiLog(chronological) {
     const c = chronological[idx];
     logEl.insertAdjacentHTML("afterbegin", _apiCallCardHTML(c, idx));
     _wireApiToggle(idx);
-
-    tokens += c.total_tokens;
-    cost += c.cost_usd;
-    latencySum += c.latency_ms;
-    document.getElementById("stat-calls").textContent = idx + 1;
-    document.getElementById("stat-tokens").textContent = tokens.toLocaleString();
-    document.getElementById("stat-cost").textContent = "$" + cost.toFixed(4);
-    document.getElementById("stat-latency").textContent = Math.round(latencySum / (idx + 1)).toLocaleString() + "ms";
     statusEl.textContent = `Replaying, call ${idx + 1} of ${chronological.length}`;
 
     _replayTimer = setTimeout(() => step(idx + 1), 500);
   };
 
-  document.getElementById("stat-calls").textContent = "0";
-  document.getElementById("stat-tokens").textContent = "0";
-  document.getElementById("stat-cost").textContent = "$0.0000";
-  document.getElementById("stat-latency").textContent = "0ms";
   step(0);
 }
 
