@@ -38,7 +38,7 @@ python generate_docx.py
 python -m http.server 8000 -d ../web
 ```
 
-Open `http://localhost:8000`. `generate_docx.py` writes `mastercard-ai-defense-lab.docx` in the project root, a short written walkthrough with the same real numbers.
+Open `http://localhost:8000`. `generate_docx.py` writes `Parmana.docx` in the project root, a short written walkthrough with the same real numbers.
 
 ## Why this matters
 

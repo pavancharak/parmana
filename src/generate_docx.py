@@ -1,7 +1,7 @@
 """
 Entry point: python generate_docx.py
 
-Builds mastercard-ai-defense-lab.docx, a 3-4 page walkthrough for judges.
+Builds Parmana.docx, a 3-4 page walkthrough for judges.
 Every number in it is read from web/data/dashboard.json and
 decisions/block_decisions.json, the same files the web dashboard and
 README pull from, so this document can never drift out of sync with a
@@ -214,7 +214,7 @@ def build():
         "we say. That is the property worth building on.",
     )
 
-    out_path = ROOT / "mastercard-ai-defense-lab.docx"
+    out_path = ROOT / "Parmana.docx"
     doc.save(str(out_path))
     print(f"Wrote {out_path}")
 
