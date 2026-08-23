@@ -21,6 +21,10 @@ This is verifiable proof, not just a claim.
 - **93.72% caught.** Our system caught nearly all attacks. We admit we missed 6.28%, and explain exactly why below.
 - **Verified blocking.** Every block decision is signed by an authority outside the detector. You can check every signature yourself.
 
+## Live demo
+
+**https://parmana.fly.dev**, the same dashboard, deployed as a static site (no backend, no API key on the server, nothing there can spend real money). It's serving the exact real data from the run described in this document, not a mockup.
+
 ## Run it
 
 ```
