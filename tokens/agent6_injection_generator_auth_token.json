@@ -3,10 +3,10 @@
   "agent_id": "agent6_injection_generator",
   "action": "probe_payment_form",
   "max_operations": 1000,
-  "issued_at": 1787469880.5631902,
-  "expires_at": 1787473480.5631902,
-  "record_id": "98b70273-f592-49b1-b1e0-ad53cd2957a5",
-  "signed_at": 1787469880.563199,
+  "issued_at": 1787478119.5449016,
+  "expires_at": 1787481719.5449016,
+  "record_id": "79ccc915-6e91-41f3-96b1-638cdb56e6f1",
+  "signed_at": 1787478119.5449193,
   "signer": "authority",
-  "signature": "1e57f00af953eb656674eef08ed7d9617a97bc37d18ccf79e43112d87484ddd9fbb1fe8ac0154afebcaa22eb6bce95224665092adf4e5130ec987dccf2b4be08"
+  "signature": "829197fc726ce40052ca398fba8acf0c87ed8ee760c3f9a0c1cb015a1e54b36c2e1c6b99118844a37d9621b55d571c0abdd6590a08ec6ae0e87fe471c613c30d"
 }

@@ -3,10 +3,10 @@
   "agent_id": "agent4_kyc_forger",
   "action": "generate_synthetic_kyc_bundles",
   "max_operations": 175,
-  "issued_at": 1787469737.5026624,
-  "expires_at": 1787473337.5026624,
-  "record_id": "09165c11-06be-46c0-9b2f-adc6cfcc5469",
-  "signed_at": 1787469737.5026882,
+  "issued_at": 1787477964.548926,
+  "expires_at": 1787481564.548926,
+  "record_id": "fae0bd1c-8a03-4351-a287-533ab1a9c09b",
+  "signed_at": 1787477964.5489619,
   "signer": "authority",
-  "signature": "889781790e159e1bb700f40d0f2db8b9eaac5492dbdc4c7875bc53e8148ea18dcd261d2e0c0281efc3577676ced82912d85e090b9d60cae3897e572a8d19810a"
+  "signature": "72e49d8c0d6bae4fca45af1d5df8c31ff598ec18dada5df8f5212dc4bca87101617c88eb0abf36712d0b587d94314ee2d13f5681f0d869bf53959f0930b24d0e"
 }

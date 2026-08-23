@@ -1,1577 +1,1577 @@
 [
   {
-    "full_name": "Emma Johnson",
+    "full_name": "Sophia Johnson",
     "date_of_birth": "1990-05-15",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 33 years old, Emma's income aligns well with the average salary for software engineers in Austin."
-  },
-  {
-    "full_name": "Liam Smith",
-    "date_of_birth": "1985-11-20",
     "city": "San Francisco",
     "country": "USA",
-    "stated_occupation": "Product Manager",
+    "stated_occupation": "Software Engineer",
     "stated_annual_income_usd": 120000,
-    "coherence_notes": "Liam is 37 years old, a typical age for a seasoned product manager, and his income reflects the high cost of living in San Francisco."
+    "coherence_notes": "At 33 years old, Sophia works as a software engineer in a tech hub with a competitive salary."
   },
   {
-    "full_name": "Sophia Miller",
-    "date_of_birth": "1995-02-10",
+    "full_name": "James Smith",
+    "date_of_birth": "1985-10-02",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Marketing Manager",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 38 years old, James's income aligns with the marketing management salaries prevalent in Austin's growing business sector."
+  },
+  {
+    "full_name": "Emma Brown",
+    "date_of_birth": "1992-03-28",
     "city": "Toronto",
     "country": "Canada",
     "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "At 28, Sophia's income is reasonable for a graphic designer living in Toronto."
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "Emma, at 31, is earning a reasonable income for a graphic designer in a culturally rich city like Toronto."
   },
   {
-    "full_name": "Noah Davis",
-    "date_of_birth": "1980-08-30",
+    "full_name": "Liam Wilson",
+    "date_of_birth": "1980-12-01",
     "city": "Seattle",
     "country": "USA",
     "stated_occupation": "Data Scientist",
-    "stated_annual_income_usd": 110000,
-    "coherence_notes": "Noah, at 43, has the experience expected for a data scientist, supported by a competitive salary in Seattle."
-  },
-  {
-    "full_name": "Olivia Garcia",
-    "date_of_birth": "1992-03-12",
-    "city": "Miami",
-    "country": "USA",
-    "stated_occupation": "Marketing Specialist",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "At 31 years old, Olivia's salary is appropriate for a marketing specialist in Miami's vibrant job market."
-  },
-  {
-    "full_name": "James Wilson",
-    "date_of_birth": "1988-06-18",
-    "city": "Vancouver",
-    "country": "Canada",
-    "stated_occupation": "Web Developer",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "James is 35, a common age for web developers, and his income matches the cost of living in Vancouver."
-  },
-  {
-    "full_name": "Isabella Martinez",
-    "date_of_birth": "1994-09-02",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Fashion Designer",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "At 29, Isabella's income is typical for a fashion designer in Los Angeles, where the industry is thriving."
-  },
-  {
-    "full_name": "Ethan Brown",
-    "date_of_birth": "1982-12-25",
-    "city": "New York",
-    "country": "USA",
-    "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 130000,
-    "coherence_notes": "Ethan, at 40, has a strong income for a financial analyst in New York's competitive finance sector."
-  },
-  {
-    "full_name": "Ava Rodriguez",
-    "date_of_birth": "1991-01-30",
-    "city": "Chicago",
-    "country": "USA",
-    "stated_occupation": "Human Resources Manager",
-    "stated_annual_income_usd": 80000,
-    "coherence_notes": "At 32, Ava's salary as a human resources manager is consistent with Chicago's employment landscape."
-  },
-  {
-    "full_name": "Mason Hernandez",
-    "date_of_birth": "1993-04-09",
-    "city": "Phoenix",
-    "country": "USA",
-    "stated_occupation": "Sales Representative",
-    "stated_annual_income_usd": 42000,
-    "coherence_notes": "Mason is 30, and his income aligns well with the average for sales representatives in Phoenix."
-  },
-  {
-    "full_name": "Mia Lee",
-    "date_of_birth": "1987-07-05",
-    "city": "Denver",
-    "country": "USA",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 36, Mia earns a competitive salary for her field in Denver, where civil engineering is in demand."
-  },
-  {
-    "full_name": "Alexander Clark",
-    "date_of_birth": "1990-10-15",
-    "city": "Atlanta",
-    "country": "USA",
-    "stated_occupation": "Project Manager",
-    "stated_annual_income_usd": 100000,
-    "coherence_notes": "At 33, Alexander's salary is appropriate for a project manager in Atlanta's booming market."
-  },
-  {
-    "full_name": "Amelia Lewis",
-    "date_of_birth": "1996-05-02",
-    "city": "Dallas",
-    "country": "USA",
-    "stated_occupation": "Event Planner",
-    "stated_annual_income_usd": 48000,
-    "coherence_notes": "At 27, Amelia's income is in line with the starting salaries for event planners in Dallas."
-  },
-  {
-    "full_name": "Lily Walker",
-    "date_of_birth": "1989-03-11",
-    "city": "Philadelphia",
-    "country": "USA",
-    "stated_occupation": "Nurse",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "At 34, Lily's income as a nurse reflects the average pay in Philadelphia for her experience level."
-  },
-  {
-    "full_name": "Benjamin Hall",
-    "date_of_birth": "1981-04-25",
-    "city": "Boston",
-    "country": "USA",
-    "stated_occupation": "Legal Consultant",
     "stated_annual_income_usd": 140000,
-    "coherence_notes": "Benjamin is 42, with an income fitting for a legal consultant in Boston's legal market."
-  },
-  {
-    "full_name": "Charlotte Young",
-    "date_of_birth": "1995-08-22",
-    "city": "Charlotte",
-    "country": "USA",
-    "stated_occupation": "Accountant",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "At 28, Charlotte's salary is typical for an accountant in Charlotte's growing economy."
-  },
-  {
-    "full_name": "Henry King",
-    "date_of_birth": "1978-11-05",
-    "city": "Minneapolis",
-    "country": "USA",
-    "stated_occupation": "IT Manager",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "Henry, age 45, earns a reasonable amount for his role as an IT manager in Minneapolis."
-  },
-  {
-    "full_name": "Grace Scott",
-    "date_of_birth": "1983-02-27",
-    "city": "Washington",
-    "country": "USA",
-    "stated_occupation": "Public Relations Specialist",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 40, Grace's income is consistent with her role in Washington's competitive market."
-  },
-  {
-    "full_name": "Jack Green",
-    "date_of_birth": "1999-09-09",
-    "city": "Orlando",
-    "country": "USA",
-    "stated_occupation": "Hospitality Manager",
-    "stated_annual_income_usd": 52000,
-    "coherence_notes": "At 24, Jack's income is typical for an entry-level hospitality manager in Orlando."
-  },
-  {
-    "full_name": "Ella Ramirez",
-    "date_of_birth": "1994-12-30",
-    "city": "Houston",
-    "country": "USA",
-    "stated_occupation": "Biologist",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "Ella is 28, and her salary as a biologist fits well within Houston's growing research sector."
-  },
-  {
-    "full_name": "Daniel Adams",
-    "date_of_birth": "1986-06-14",
-    "city": "Las Vegas",
-    "country": "USA",
-    "stated_occupation": "Casino Manager",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 37, Daniel's income is appropriate for a casino manager in Las Vegas."
-  },
-  {
-    "full_name": "Zoe Nelson",
-    "date_of_birth": "1992-07-28",
-    "city": "San Diego",
-    "country": "USA",
-    "stated_occupation": "Marine Biologist",
-    "stated_annual_income_usd": 68000,
-    "coherence_notes": "At 31, Zoe earns a realistic salary for a marine biologist in San Diego."
-  },
-  {
-    "full_name": "Emily Thompson",
-    "date_of_birth": "1988-05-12",
-    "city": "San Diego",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "At 35 years old, Emily's income aligns with typical salaries for a mid-level graphic designer in San Diego."
-  },
-  {
-    "full_name": "James O'Connor",
-    "date_of_birth": "1990-03-22",
-    "city": "Dublin",
-    "country": "Ireland",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 80000,
-    "coherence_notes": "At 33 years old, James's income is consistent with experience in software engineering in Dublin's tech sector."
-  },
-  {
-    "full_name": "Fatima Khan",
-    "date_of_birth": "1985-11-30",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Marketing Manager",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "Fatima, at 37 years old, is well within the expected income range for an experienced marketing manager in Toronto."
-  },
-  {
-    "full_name": "Daniel Smith",
-    "date_of_birth": "1995-07-15",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Data Analyst",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "At 28 years old, Daniel's salary is reasonable for an entry-level data analyst in the growing Austin market."
-  },
-  {
-    "full_name": "Sophie Zhang",
-    "date_of_birth": "1992-09-04",
-    "city": "Sydney",
-    "country": "Australia",
-    "stated_occupation": "Accountant",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Sophie is 31, and her income reflects the typical earnings of an accountant in Sydney."
-  },
-  {
-    "full_name": "Oliver Johnson",
-    "date_of_birth": "1980-12-16",
-    "city": "London",
-    "country": "UK",
-    "stated_occupation": "Project Manager",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 42 years old, Oliver's income fits well within the expected range for a senior project manager in London."
-  },
-  {
-    "full_name": "Hannah Clark",
-    "date_of_birth": "1996-02-28",
-    "city": "Vancouver",
-    "country": "Canada",
-    "stated_occupation": "UX Designer",
-    "stated_annual_income_usd": 62000,
-    "coherence_notes": "At 27, Hannah's income is in line with the average for a UX designer in Vancouver."
-  },
-  {
-    "full_name": "Michael Torres",
-    "date_of_birth": "1983-04-10",
-    "city": "Chicago",
-    "country": "USA",
-    "stated_occupation": "Sales Executive",
-    "stated_annual_income_usd": 72000,
-    "coherence_notes": "Michael's 40 years of age and income match well for an experienced sales executive in Chicago."
-  },
-  {
-    "full_name": "Isabella Rossi",
-    "date_of_birth": "1993-08-03",
-    "city": "Rome",
-    "country": "Italy",
-    "stated_occupation": "Fashion Designer",
-    "stated_annual_income_usd": 58000,
-    "coherence_notes": "Isabella, at 30 years old, has an income reflective of a junior fashion designer in Rome."
-  },
-  {
-    "full_name": "Liam Chen",
-    "date_of_birth": "1989-01-19",
-    "city": "Beijing",
-    "country": "China",
-    "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 34, Liam's income aligns with experienced financial analysts in Beijing's market."
-  },
-  {
-    "full_name": "Mia Patel",
-    "date_of_birth": "1995-06-25",
-    "city": "Dubai",
-    "country": "UAE",
-    "stated_occupation": "Event Coordinator",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "Mia is 28 years old, and her income is typical for an entry-level event coordinator in Dubai."
-  },
-  {
-    "full_name": "Noah Lewis",
-    "date_of_birth": "1982-10-05",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Film Editor",
-    "stated_annual_income_usd": 86000,
-    "coherence_notes": "At 41 years old, Noah's salary reflects years of experience in Los Angeles's entertainment industry."
-  },
-  {
-    "full_name": "Charlotte Evans",
-    "date_of_birth": "1998-07-14",
-    "city": "Auckland",
-    "country": "New Zealand",
-    "stated_occupation": "Social Media Manager",
-    "stated_annual_income_usd": 52000,
-    "coherence_notes": "At 25, Charlotte's salary matches entry-level positions in social media management in Auckland."
-  },
-  {
-    "full_name": "Ethan Murphy",
-    "date_of_birth": "1987-12-20",
-    "city": "Boston",
-    "country": "USA",
-    "stated_occupation": "Research Scientist",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "Ethan, at 35, earns a suitable income for a mid-career research scientist in Boston."
-  },
-  {
-    "full_name": "Chloe Martin",
-    "date_of_birth": "1991-05-07",
-    "city": "Berlin",
-    "country": "Germany",
-    "stated_occupation": "Business Analyst",
-    "stated_annual_income_usd": 68000,
-    "coherence_notes": "At 32 years old, Chloe's income is compatible with a business analyst position in Berlin."
-  },
-  {
-    "full_name": "Matthew Fernandez",
-    "date_of_birth": "1994-11-02",
-    "city": "Madrid",
-    "country": "Spain",
-    "stated_occupation": "Web Developer",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "Matthew's age of 29 aligns with typical starting salaries for web developers in Madrid."
-  },
-  {
-    "full_name": "Chloe Taylor",
-    "date_of_birth": "1990-02-11",
-    "city": "Madrid",
-    "country": "Spain",
-    "stated_occupation": "Content Writer",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "Chloe is 33 and her income is consistent with that of an experienced content writer in Madrid."
-  },
-  {
-    "full_name": "Lucas Hall",
-    "date_of_birth": "1984-09-15",
-    "city": "Melbourne",
-    "country": "Australia",
-    "stated_occupation": "Construction Manager",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 39 years old, Lucas's salary reflects his extensive experience managing construction projects in Melbourne."
-  },
-  {
-    "full_name": "Ella Wilson",
-    "date_of_birth": "1996-04-22",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Data Scientist",
-    "stated_annual_income_usd": 72000,
-    "coherence_notes": "Ella\u2019s age of 27 corresponds to the average salary for early-career data scientists in Seattle."
-  },
-  {
-    "full_name": "Benjamin White",
-    "date_of_birth": "1985-03-10",
-    "city": "Paris",
-    "country": "France",
-    "stated_occupation": "Chef",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 38 years old, Benjamin's income is typical for a chef in a major culinary city like Paris."
-  },
-  {
-    "full_name": "Ava Scott",
-    "date_of_birth": "1992-06-30",
-    "city": "Stockholm",
-    "country": "Sweden",
-    "stated_occupation": "Human Resources Specialist",
-    "stated_annual_income_usd": 58000,
-    "coherence_notes": "Ava, at 31, has an income aligned with HR roles typical in Stockholm."
-  },
-  {
-    "full_name": "Henry Robinson",
-    "date_of_birth": "1981-12-18",
-    "city": "Singapore",
-    "country": "Singapore",
-    "stated_occupation": "Supply Chain Manager",
-    "stated_annual_income_usd": 100000,
-    "coherence_notes": "At 41, Henry's salary fits well for his role managing supply chains in a major global city."
-  },
-  {
-    "full_name": "Grace Lee",
-    "date_of_birth": "1994-02-01",
-    "city": "Bangkok",
-    "country": "Thailand",
-    "stated_occupation": "Tourism Consultant",
-    "stated_annual_income_usd": 50000,
-    "coherence_notes": "At 29 years old, Grace's income is reasonable for a tourism consultant in Bangkok."
-  },
-  {
-    "full_name": "Emily Johnson",
-    "date_of_birth": "1990-02-15",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 33 years old, Emily's income as a Software Engineer in Austin is typical for her age and experience level."
-  },
-  {
-    "full_name": "Michael Smith",
-    "date_of_birth": "1985-07-22",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Product Manager",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "At 38 years old, Michael's income aligns with his senior role in Seattle's tech market."
-  },
-  {
-    "full_name": "Sophia Brown",
-    "date_of_birth": "1992-03-10",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "Sophia, at 31, earns a reasonable salary as a Graphic Designer in Toronto, given the city's living costs."
-  },
-  {
-    "full_name": "James Wilson",
-    "date_of_birth": "1978-11-05",
-    "city": "New York",
-    "country": "USA",
-    "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 110000,
-    "coherence_notes": "At 45 years old, James's salary as a Financial Analyst fits with his expected experience and the New York cost of living."
+    "coherence_notes": "At 42, Liam\u2019s income reflects the high demand for data scientists in Seattle's tech-driven economy."
   },
   {
     "full_name": "Olivia Garcia",
-    "date_of_birth": "1988-04-14",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Marketing Specialist",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Olivia's income of $70k at age 35 is consistent for her role in the competitive Los Angeles market."
-  },
-  {
-    "full_name": "Liam Martinez",
-    "date_of_birth": "1975-09-30",
-    "city": "Miami",
-    "country": "USA",
-    "stated_occupation": "Real Estate Agent",
-    "stated_annual_income_usd": 150000,
-    "coherence_notes": "As a 48-year-old Real Estate Agent in Miami, Liam's income reflects the high-value market he operates in."
-  },
-  {
-    "full_name": "Isabella Davis",
-    "date_of_birth": "1995-01-20",
-    "city": "San Francisco",
-    "country": "USA",
-    "stated_occupation": "Data Scientist",
-    "stated_annual_income_usd": 115000,
-    "coherence_notes": "Isabella, at 28, earns a competitive salary typical for a Data Scientist in the high-cost area of San Francisco."
-  },
-  {
-    "full_name": "Ava Thompson",
-    "date_of_birth": "1980-08-25",
-    "city": "Boston",
-    "country": "USA",
-    "stated_occupation": "Healthcare Administrator",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "Ava's age of 43 pairs well with her income and experience in the healthcare sector in Boston."
-  },
-  {
-    "full_name": "Ethan Lee",
-    "date_of_birth": "1982-12-12",
-    "city": "Chicago",
-    "country": "USA",
-    "stated_occupation": "Cybersecurity Analyst",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "Ethan's income is reflective of his role's requirements and the general salary range in Chicago for his age."
-  },
-  {
-    "full_name": "Mia Hernandez",
-    "date_of_birth": "1993-06-17",
-    "city": "Houston",
-    "country": "USA",
-    "stated_occupation": "Sales Associate",
-    "stated_annual_income_usd": 50000,
-    "coherence_notes": "At 30 years old, Mia's salary as a Sales Associate in Houston aligns with market expectations."
-  },
-  {
-    "full_name": "Benjamin Anderson",
-    "date_of_birth": "1986-03-02",
-    "city": "Denver",
-    "country": "USA",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "Benjamin's age of 37 corresponds to his income level, appropriate for a Civil Engineer in Denver."
-  },
-  {
-    "full_name": "Charlotte Wilson",
-    "date_of_birth": "1990-05-09",
-    "city": "Philadelphia",
-    "country": "USA",
-    "stated_occupation": "Social Worker",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "At 33, Charlotte's income as a Social Worker in Philadelphia is reasonable given her experience."
-  },
-  {
-    "full_name": "Daniel White",
-    "date_of_birth": "1984-10-18",
-    "city": "Phoenix",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "Daniel, aged 39, earns a consistent salary for a Graphic Designer in the affordable Phoenix market."
-  },
-  {
-    "full_name": "Grace Brown",
-    "date_of_birth": "1981-01-05",
-    "city": "Atlanta",
-    "country": "USA",
-    "stated_occupation": "HR Manager",
-    "stated_annual_income_usd": 105000,
-    "coherence_notes": "Grace's income and age are aligned with her role in Human Resources in Atlanta's growing economy."
-  },
-  {
-    "full_name": "Lucas Martinez",
-    "date_of_birth": "1979-02-28",
-    "city": "San Diego",
-    "country": "USA",
-    "stated_occupation": "Web Developer",
-    "stated_annual_income_usd": 80000,
-    "coherence_notes": "At 44 years old, Lucas\u2019s income is fitting for his lengthy career as a Web Developer in San Diego."
-  },
-  {
-    "full_name": "Zoe Rodriguez",
-    "date_of_birth": "1989-07-11",
-    "city": "Dallas",
-    "country": "USA",
-    "stated_occupation": "Nurse",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Zoe, aged 34, has a salary in line with her nursing role in the reasonably priced city of Dallas."
-  },
-  {
-    "full_name": "Alexander Kim",
-    "date_of_birth": "1994-04-24",
-    "city": "Orlando",
-    "country": "USA",
-    "stated_occupation": "Teacher",
-    "stated_annual_income_usd": 48000,
-    "coherence_notes": "At 29 years old, Alexander's income is typical for a Teacher in the education sector of Orlando."
-  },
-  {
-    "full_name": "Ella Walker",
-    "date_of_birth": "1991-08-30",
-    "city": "Charlotte",
-    "country": "USA",
-    "stated_occupation": "Financial Advisor",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "Ella, aged 32, earns a competitive salary suitable for a Financial Advisor in Charlotte's growing economy."
-  },
-  {
-    "full_name": "Oliver Harris",
-    "date_of_birth": "1987-12-01",
-    "city": "Sacramento",
-    "country": "USA",
-    "stated_occupation": "Architect",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 36, Oliver's income is consistent with his profession as an Architect in Sacramento."
-  },
-  {
-    "full_name": "Abigail Clark",
-    "date_of_birth": "1993-09-17",
-    "city": "Nashville",
-    "country": "USA",
-    "stated_occupation": "Musician",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "At 30, Abigail's income as a Musician fits well within Nashville's vibrant music scene."
-  },
-  {
-    "full_name": "Matthew Lee",
-    "date_of_birth": "1983-06-28",
-    "city": "Baltimore",
-    "country": "USA",
-    "stated_occupation": "Police Officer",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Matthew, aged 40, has an income that is typical for a Police Officer in Baltimore."
-  },
-  {
-    "full_name": "Hannah Young",
-    "date_of_birth": "1992-11-15",
-    "city": "Portland",
-    "country": "USA",
-    "stated_occupation": "Research Scientist",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "Hannah's age and income as a Research Scientist in Portland match the expected demographic for that role."
-  },
-  {
-    "full_name": "Alice Johnson",
-    "date_of_birth": "1990-04-15",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At age 33, a software engineer in Seattle typically earns around $95,000, making the income realistic for her age and occupation."
-  },
-  {
-    "full_name": "Michael Smith",
-    "date_of_birth": "1985-11-20",
-    "city": "New York",
-    "country": "USA",
-    "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "Michael is 37, and his salary as a financial analyst in New York aligns well with the city's high cost of living."
-  },
-  {
-    "full_name": "Maria Garcia",
-    "date_of_birth": "1992-03-10",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "At 31, Maria's income is consistent with the typical earnings of graphic designers in Los Angeles."
-  },
-  {
-    "full_name": "John Doe",
-    "date_of_birth": "1978-05-25",
-    "city": "Chicago",
-    "country": "USA",
-    "stated_occupation": "Marketing Manager",
-    "stated_annual_income_usd": 105000,
-    "coherence_notes": "As a 45-year-old marketing manager, John\u2019s salary is appropriate for his experience in Chicago."
-  },
-  {
-    "full_name": "Emily Brown",
-    "date_of_birth": "1995-07-30",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Data Scientist",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 28, Emily's income as a data scientist in Austin is typical for her role and the city's tech scene."
-  },
-  {
-    "full_name": "David Lee",
-    "date_of_birth": "1980-01-01",
-    "city": "San Francisco",
-    "country": "USA",
-    "stated_occupation": "Product Manager",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "Age 43, David's salary as a product manager is fitting given the high demand in San Francisco."
-  },
-  {
-    "full_name": "Jessica Taylor",
-    "date_of_birth": "1988-09-15",
-    "city": "Denver",
-    "country": "USA",
-    "stated_occupation": "Nurse",
-    "stated_annual_income_usd": 80000,
-    "coherence_notes": "Jessica is 35, and her salary as a nurse in Denver aligns well with the local healthcare industry's standards."
-  },
-  {
-    "full_name": "Daniel Martinez",
-    "date_of_birth": "1993-02-12",
-    "city": "Phoenix",
-    "country": "USA",
-    "stated_occupation": "Web Developer",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 30, Daniel's income as a web developer in Phoenix aligns with the job market and his experience level."
-  },
-  {
-    "full_name": "Sarah Wilson",
-    "date_of_birth": "1989-06-14",
-    "city": "Atlanta",
-    "country": "USA",
-    "stated_occupation": "Accountant",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "At 34, Sarah\u2019s earnings as an accountant in Atlanta are consistent with regional salary norms for her field."
-  },
-  {
-    "full_name": "Robert Harris",
-    "date_of_birth": "1982-10-05",
-    "city": "Miami",
-    "country": "USA",
-    "stated_occupation": "Real Estate Agent",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "Robert, age 40, demonstrates a plausible income for an experienced real estate agent in the Miami market."
-  },
-  {
-    "full_name": "Linda Clark",
-    "date_of_birth": "1991-12-18",
-    "city": "Boston",
-    "country": "USA",
-    "stated_occupation": "Research Scientist",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "At 31, Linda's salary as a research scientist in the competitive Boston area is realistic."
-  },
-  {
-    "full_name": "James Robinson",
-    "date_of_birth": "1984-08-22",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Construction Manager",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 39, James's income as a construction manager in Seattle matches industry standards."
-  },
-  {
-    "full_name": "Karen Young",
-    "date_of_birth": "1975-04-30",
-    "city": "San Diego",
-    "country": "USA",
-    "stated_occupation": "High School Teacher",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "Age 48, Karen's income as a high school teacher in San Diego aligns with the district's pay scale."
-  },
-  {
-    "full_name": "Christopher White",
-    "date_of_birth": "1990-03-15",
-    "city": "Portland",
-    "country": "USA",
-    "stated_occupation": "UX Designer",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 33, Christopher\u2019s income as a UX designer in Portland is appropriate for his profession and experience."
-  },
-  {
-    "full_name": "Patricia Lewis",
-    "date_of_birth": "1994-05-05",
-    "city": "Las Vegas",
-    "country": "USA",
-    "stated_occupation": "Event Planner",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "At 29, Patricia's earnings as an event planner in Las Vegas are consistent with local industry rates."
-  },
-  {
-    "full_name": "Charles Hall",
-    "date_of_birth": "1980-08-17",
-    "city": "Orlando",
-    "country": "USA",
-    "stated_occupation": "IT Consultant",
-    "stated_annual_income_usd": 110000,
-    "coherence_notes": "At 43, Charles's salary as an IT consultant in Orlando reflects his experience and the demand for tech skills."
-  },
-  {
-    "full_name": "Nancy Allen",
-    "date_of_birth": "1992-11-01",
-    "city": "Charlotte",
-    "country": "USA",
-    "stated_occupation": "Sales Executive",
-    "stated_annual_income_usd": 80000,
-    "coherence_notes": "At 31, Nancy's income as a sales executive in Charlotte aligns with the city's average compensation in sales."
-  },
-  {
-    "full_name": "Daniel Scott",
-    "date_of_birth": "1987-06-30",
-    "city": "Philadelphia",
-    "country": "USA",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "At 36, Daniel's earnings as a civil engineer in Philadelphia are consistent with industry standards."
-  },
-  {
-    "full_name": "Laura King",
-    "date_of_birth": "1985-01-21",
-    "city": "Nashville",
-    "country": "USA",
-    "stated_occupation": "Musician",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "At 38, Laura's income as a musician in Nashville fits the income expectations for local artists."
-  },
-  {
-    "full_name": "Joshua Martinez",
-    "date_of_birth": "1991-09-03",
-    "city": "Cleveland",
-    "country": "USA",
-    "stated_occupation": "Mechanical Engineer",
-    "stated_annual_income_usd": 82000,
-    "coherence_notes": "At 32, Joshua\u2019s income as a mechanical engineer in Cleveland aligns well with the local salary trends."
-  },
-  {
-    "full_name": "Sophia Anderson",
-    "date_of_birth": "1987-12-09",
-    "city": "Milwaukee",
-    "country": "USA",
-    "stated_occupation": "Chef",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "At 35, Sophia's earnings as a chef in Milwaukee are realistic given the local culinary scene."
-  },
-  {
-    "full_name": "Emily Carter",
-    "date_of_birth": "1990-06-15",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 33 years old, Emily's career as a Software Engineer aligns with her income, which is typical for her profession in Austin."
-  },
-  {
-    "full_name": "James Thompson",
-    "date_of_birth": "1985-04-22",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Marketing Manager",
-    "stated_annual_income_usd": 80000,
-    "coherence_notes": "James, aged 38, has a realistic income for a Marketing Manager in Toronto, reflecting his experience."
-  },
-  {
-    "full_name": "Maria Gonzalez",
-    "date_of_birth": "1978-01-10",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "At 45 years old, Maria's income is reasonable given her experience and the cost of living in Los Angeles."
-  },
-  {
-    "full_name": "Ravi Patel",
-    "date_of_birth": "1982-07-30",
-    "city": "London",
-    "country": "UK",
-    "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 102000,
-    "coherence_notes": "Ravi's age of 41 supports his role as a Financial Analyst with a competitive salary for London."
-  },
-  {
-    "full_name": "Chloe Adams",
-    "date_of_birth": "1995-03-05",
-    "city": "Sydney",
-    "country": "Australia",
-    "stated_occupation": "Social Media Manager",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "At just 28 years old, Chloe has established her career in a dynamic field with a salary aligned to Sydney's market."
-  },
-  {
-    "full_name": "Michael Johnson",
-    "date_of_birth": "1980-05-18",
-    "city": "Berlin",
-    "country": "Germany",
-    "stated_occupation": "Project Manager",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "Michael is 43 and has a suitable income for his role in Berlin's competitive job market."
-  },
-  {
-    "full_name": "Aisha Mohammed",
-    "date_of_birth": "1992-09-29",
-    "city": "Dubai",
-    "country": "UAE",
-    "stated_occupation": "HR Coordinator",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "At 31 years old, Aisha's income as an HR Coordinator fits well within Dubai's economic landscape."
-  },
-  {
-    "full_name": "Liam Smith",
-    "date_of_birth": "1988-11-11",
-    "city": "Dublin",
-    "country": "Ireland",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "Liam's 35 years of age and income are consistent with the typical earnings and experience expected in Dublin."
-  },
-  {
-    "full_name": "Zoe Nguyen",
-    "date_of_birth": "1994-02-23",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Content Writer",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "At 29, Zoe's income as a Content Writer is reasonable for her age and the local market conditions in Toronto."
-  },
-  {
-    "full_name": "Ethan Brown",
-    "date_of_birth": "1975-12-06",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Data Scientist",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "Ethan, aged 47, has a high income which is typical for experienced Data Scientists in Seattle."
-  },
-  {
-    "full_name": "Olivia Wilson",
-    "date_of_birth": "1990-10-02",
-    "city": "San Francisco",
-    "country": "USA",
-    "stated_occupation": "UX Designer",
-    "stated_annual_income_usd": 105000,
-    "coherence_notes": "At 33 years old, Olivia's salary reflects her expertise in a high-demand job market like San Francisco."
-  },
-  {
-    "full_name": "Sofia Russo",
-    "date_of_birth": "1983-03-15",
-    "city": "Rome",
-    "country": "Italy",
-    "stated_occupation": "Tourism Consultant",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Sofia's income and career as a Tourism Consultant align appropriately with her age and the cost of living in Rome."
-  },
-  {
-    "full_name": "Logan Miller",
-    "date_of_birth": "1987-08-28",
-    "city": "Vancouver",
-    "country": "Canada",
-    "stated_occupation": "Web Developer",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "At 36, Logan's web development role and income are consistent with the tech sector in Vancouver."
-  },
-  {
-    "full_name": "Ava Lee",
-    "date_of_birth": "1996-05-20",
-    "city": "Auckland",
-    "country": "New Zealand",
-    "stated_occupation": "Sales Associate",
-    "stated_annual_income_usd": 45000,
-    "coherence_notes": "Ava, at 27 years old, earns a salary typical for early-career Sales Associates in Auckland."
-  },
-  {
-    "full_name": "Samuel Kim",
-    "date_of_birth": "1980-12-31",
-    "city": "Seoul",
-    "country": "South Korea",
-    "stated_occupation": "IT Consultant",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "Samuel's age of 42 and income level align with his senior role as an IT Consultant in Seoul."
-  },
-  {
-    "full_name": "Ella White",
-    "date_of_birth": "1993-07-08",
-    "city": "Madrid",
-    "country": "Spain",
-    "stated_occupation": "Event Planner",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "At 30, Ella's role as an Event Planner comes with an income that reflects her skills and market conditions in Madrid."
-  },
-  {
-    "full_name": "Noah Davis",
-    "date_of_birth": "1989-03-30",
-    "city": "Brisbane",
-    "country": "Australia",
-    "stated_occupation": "Logistics Coordinator",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "Noah, age 34, has a salary suitable for his position in the logistics industry in Brisbane."
-  },
-  {
-    "full_name": "Isabella Rodriguez",
-    "date_of_birth": "1984-11-15",
-    "city": "Mexico City",
-    "country": "Mexico",
-    "stated_occupation": "Architect",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "At 39, Isabella's income as an Architect is consistent with her professional experience and the local cost of living."
-  },
-  {
-    "full_name": "Lucas Wong",
-    "date_of_birth": "1986-02-17",
-    "city": "Singapore",
-    "country": "Singapore",
-    "stated_occupation": "Business Analyst",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "As a 37-year-old Business Analyst, Lucas's income fits well within Singapore's competitive market."
-  },
-  {
-    "full_name": "Mia Patel",
-    "date_of_birth": "1981-09-04",
-    "city": "Mumbai",
-    "country": "India",
-    "stated_occupation": "Content Strategist",
-    "stated_annual_income_usd": 72000,
-    "coherence_notes": "Mia, at 42, has a realistic income as a Content Strategist given her experience and Mumbai's economic conditions."
-  },
-  {
-    "full_name": "Lily Jackson",
-    "date_of_birth": "1995-01-19",
-    "city": "Buenos Aires",
-    "country": "Argentina",
-    "stated_occupation": "Fashion Designer",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "At 28 years old, Lily's income in the fashion industry aligns with local market standards in Buenos Aires."
-  },
-  {
-    "full_name": "Oliver Taylor",
-    "date_of_birth": "1982-06-06",
-    "city": "Copenhagen",
-    "country": "Denmark",
-    "stated_occupation": "Research Scientist",
-    "stated_annual_income_usd": 100000,
-    "coherence_notes": "Oliver, aged 41, has an income that reflects his significant experience as a Research Scientist in Copenhagen."
-  },
-  {
-    "full_name": "Emily Johnson",
-    "date_of_birth": "1990-04-15",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 33 years old, Emily is a typical age for a software engineer earning a competitive salary in Austin's tech market."
-  },
-  {
-    "full_name": "Michael Smith",
-    "date_of_birth": "1985-12-20",
-    "city": "New York",
-    "country": "USA",
-    "stated_occupation": "Investment Banker",
-    "stated_annual_income_usd": 200000,
-    "coherence_notes": "As a 37-year-old investment banker in New York, Michael's income aligns with the high earning potential in this field."
-  },
-  {
-    "full_name": "Sophia Martinez",
-    "date_of_birth": "1995-07-10",
-    "city": "San Francisco",
-    "country": "USA",
-    "stated_occupation": "Marketing Specialist",
-    "stated_annual_income_usd": 68000,
-    "coherence_notes": "At 28, Sophia's role as a marketing specialist in San Francisco is suitable with her income reflecting the area's living costs."
-  },
-  {
-    "full_name": "James Brown",
-    "date_of_birth": "1980-01-30",
+    "date_of_birth": "1988-07-14",
     "city": "Los Angeles",
     "country": "USA",
     "stated_occupation": "Film Producer",
-    "stated_annual_income_usd": 150000,
-    "coherence_notes": "James, being 43 years old, fits well into the film industry, where his income is justifiable given his experience."
+    "stated_annual_income_usd": 180000,
+    "coherence_notes": "Olivia, at 35, has an income suitable for an experienced film producer in the entertainment capital."
   },
   {
-    "full_name": "Olivia Davis",
-    "date_of_birth": "1992-11-05",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 72000,
-    "coherence_notes": "At 30 years old, Olivia's income as a graphic designer is reasonable for Seattle's competitive design scene."
-  },
-  {
-    "full_name": "William Wilson",
-    "date_of_birth": "1988-05-14",
-    "city": "Chicago",
-    "country": "USA",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "William's age of 35 aligns well with being a civil engineer, with an income that matches Chicago's construction market."
-  },
-  {
-    "full_name": "Isabella Taylor",
-    "date_of_birth": "1994-09-22",
+    "full_name": "Noah Martinez",
+    "date_of_birth": "1995-11-20",
     "city": "Miami",
     "country": "USA",
     "stated_occupation": "Real Estate Agent",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "Isabella's role as a real estate agent at 29 is fitting, with her income consistent with Miami's real estate dynamics."
-  },
-  {
-    "full_name": "Benjamin Anderson",
-    "date_of_birth": "1983-03-12",
-    "city": "Boston",
-    "country": "USA",
-    "stated_occupation": "Data Analyst",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "At 40, Benjamin's income as a data analyst in Boston is appropriate considering his experience in a thriving sector."
-  },
-  {
-    "full_name": "Mia Thomas",
-    "date_of_birth": "1996-06-18",
-    "city": "Denver",
-    "country": "USA",
-    "stated_occupation": "Outdoor Guide",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "Mia, at 27, is well-suited for her outdoor guide position with a reasonable income given Colorado's adventure tourism."
-  },
-  {
-    "full_name": "Ethan Jackson",
-    "date_of_birth": "1978-02-25",
-    "city": "Atlanta",
-    "country": "USA",
-    "stated_occupation": "Health Care Administrator",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "Being 45 years old, Ethan's position in health care administration comes with an income typical for his experience in Atlanta."
-  },
-  {
-    "full_name": "Ava White",
-    "date_of_birth": "1989-08-02",
-    "city": "Phoenix",
-    "country": "USA",
-    "stated_occupation": "Teacher",
-    "stated_annual_income_usd": 50000,
-    "coherence_notes": "At 34, Ava's income as a teacher is consistent with the average salary in Phoenix's educational sector."
-  },
-  {
-    "full_name": "Liam Harris",
-    "date_of_birth": "1991-10-09",
-    "city": "Portland",
-    "country": "USA",
-    "stated_occupation": "Software Developer",
-    "stated_annual_income_usd": 98000,
-    "coherence_notes": "Liam, aged 32, is an ideal fit for a software developer, with an income reflective of Portland's tech industry."
-  },
-  {
-    "full_name": "Sophia Clark",
-    "date_of_birth": "1987-04-24",
-    "city": "San Diego",
-    "country": "USA",
-    "stated_occupation": "Nurse",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "At 36, Sophia's role in nursing comes with an expected salary for the healthcare cost of living in San Diego."
-  },
-  {
-    "full_name": "Noah Lewis",
-    "date_of_birth": "1993-12-15",
-    "city": "Dallas",
-    "country": "USA",
-    "stated_occupation": "Business Consultant",
-    "stated_annual_income_usd": 110000,
-    "coherence_notes": "Noah's 30 years of age fit perfectly with becoming a business consultant in Dallas, and his salary is competitive for the region."
-  },
-  {
-    "full_name": "Charlotte Young",
-    "date_of_birth": "1984-01-28",
-    "city": "Houston",
-    "country": "USA",
-    "stated_occupation": "Pharmaceutical Sales",
-    "stated_annual_income_usd": 93000,
-    "coherence_notes": "Charlotte, at 39, has a believable income as a pharmaceutical sales rep, aligned with Houston's health industry."
-  },
-  {
-    "full_name": "Aiden King",
-    "date_of_birth": "1990-03-17",
-    "city": "Charlotte",
-    "country": "USA",
-    "stated_occupation": "Logistics Coordinator",
     "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 33, Aiden's average income in logistics aligns with Charlotte's transportation sector growth."
+    "coherence_notes": "At 28, Noah\u2019s income is reasonable for a rising real estate agent in Miami's competitive housing market."
   },
   {
-    "full_name": "Amelia Scott",
-    "date_of_birth": "1992-07-21",
-    "city": "Nashville",
-    "country": "USA",
-    "stated_occupation": "Musician",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "Amelia, at 30, fits the profile of a musician in Nashville where her income level is common for emerging artists."
-  },
-  {
-    "full_name": "Lucas Hill",
-    "date_of_birth": "1986-06-30",
-    "city": "Orlando",
-    "country": "USA",
-    "stated_occupation": "Theme Park Manager",
-    "stated_annual_income_usd": 115000,
-    "coherence_notes": "At 37, Lucas's managerial role in Orlando's theme parks justifies his income based on the city's tourism revenue."
-  },
-  {
-    "full_name": "Grace Lee",
-    "date_of_birth": "1995-11-13",
-    "city": "Philadelphia",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 67000,
-    "coherence_notes": "Grace is 28 and her income as a graphic designer reflects current salaries in Philadelphia's arts sector."
-  },
-  {
-    "full_name": "Henry Wright",
-    "date_of_birth": "1980-08-09",
-    "city": "San Antonio",
-    "country": "USA",
-    "stated_occupation": "Construction Manager",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "At 43, Henry's earnings as a construction manager match the industry standards in San Antonio."
-  },
-  {
-    "full_name": "Zoe Green",
-    "date_of_birth": "1994-05-01",
-    "city": "Salt Lake City",
-    "country": "USA",
-    "stated_occupation": "Social Media Manager",
-    "stated_annual_income_usd": 67000,
-    "coherence_notes": "Zoe, at 29, has an income typical for a social media manager, which is a growing field in Salt Lake City."
-  },
-  {
-    "full_name": "Jack Adams",
-    "date_of_birth": "1982-02-11",
-    "city": "Columbus",
-    "country": "USA",
-    "stated_occupation": "Accountant",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "Jack, being 41 years old, fits the profile of an accountant with a salary consistent with Columbus's economic framework."
-  },
-  {
-    "full_name": "Johnathan Smith",
-    "date_of_birth": "1990-07-15",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 33 years old, Johnathan has an income that reflects a mid-level software engineer in a tech hub like Austin."
-  },
-  {
-    "full_name": "Emily Johnson",
-    "date_of_birth": "1985-02-28",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Marketing Director",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "As a 38-year-old marketing director in Toronto, Emily's income aligns with industry standards in a high-cost city."
-  },
-  {
-    "full_name": "Samuel Patel",
-    "date_of_birth": "1995-04-12",
-    "city": "London",
-    "country": "UK",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 50000,
-    "coherence_notes": "Samuel, at 28 years old, earns a reasonable salary for a junior graphic designer in London."
-  },
-  {
-    "full_name": "Katherine Lee",
-    "date_of_birth": "1988-11-03",
-    "city": "Melbourne",
-    "country": "Australia",
-    "stated_occupation": "Project Manager",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "At 35, Katherine's income is consistent with a project manager's salary in the Australian market."
-  },
-  {
-    "full_name": "Brittany Davis",
-    "date_of_birth": "1992-09-23",
-    "city": "Berlin",
-    "country": "Germany",
-    "stated_occupation": "Data Analyst",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "Brittany, age 31, has a salary fitting for a data analyst in Berlin's economy."
-  },
-  {
-    "full_name": "Michael Zhang",
-    "date_of_birth": "1980-01-30",
-    "city": "San Francisco",
-    "country": "USA",
-    "stated_occupation": "Entrepreneur",
-    "stated_annual_income_usd": 200000,
-    "coherence_notes": "As a 43-year-old entrepreneur, Michael's income is realistic given the potential success of startups in San Francisco."
-  },
-  {
-    "full_name": "Olivia Garcia",
-    "date_of_birth": "1996-06-17",
-    "city": "Madrid",
-    "country": "Spain",
-    "stated_occupation": "Social Media Manager",
-    "stated_annual_income_usd": 45000,
-    "coherence_notes": "Olivia, being 27, earns a typical salary for her role in Madrid's job market."
-  },
-  {
-    "full_name": "Joshua Kim",
-    "date_of_birth": "1982-12-05",
-    "city": "Seoul",
-    "country": "South Korea",
-    "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "At 40, Joshua's annual income reflects his experience as a financial analyst in a competitive market like Seoul."
-  },
-  {
-    "full_name": "Sophia Martinez",
-    "date_of_birth": "1993-05-25",
-    "city": "Mexico City",
-    "country": "Mexico",
-    "stated_occupation": "Content Writer",
-    "stated_annual_income_usd": 36000,
-    "coherence_notes": "Sophia, 30 years old, has an income typical for a content writer in Mexico City."
-  },
-  {
-    "full_name": "David Nguyen",
-    "date_of_birth": "1987-10-11",
-    "city": "Singapore",
-    "country": "Singapore",
-    "stated_occupation": "Software Tester",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "At 36, David's salary is reasonable for a software tester in Singapore\u2019s tech environment."
-  },
-  {
-    "full_name": "Isabella Brown",
-    "date_of_birth": "1995-03-15",
-    "city": "Dublin",
-    "country": "Ireland",
-    "stated_occupation": "UX Designer",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Isabella, age 28, has a salary consistent with a UX designer's pay in Dublin."
-  },
-  {
-    "full_name": "Liam Robinson",
-    "date_of_birth": "1989-08-19",
-    "city": "Brisbane",
-    "country": "Australia",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "Liam, at 34 years old, earns a typical salary for a civil engineer in Brisbane."
-  },
-  {
-    "full_name": "Charlotte Wilson",
-    "date_of_birth": "1991-12-29",
-    "city": "Atlanta",
-    "country": "USA",
-    "stated_occupation": "Operations Manager",
-    "stated_annual_income_usd": 88000,
-    "coherence_notes": "At 31, Charlotte's salary aligns with that of an operations manager in Atlanta."
-  },
-  {
-    "full_name": "Aiden Smith",
-    "date_of_birth": "1994-07-08",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Web Developer",
-    "stated_annual_income_usd": 60000,
-    "coherence_notes": "Aiden, at 29 years old, has an expected salary for a web developer in Toronto."
-  },
-  {
-    "full_name": "Mia Rodriguez",
-    "date_of_birth": "1984-05-14",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Fashion Designer",
-    "stated_annual_income_usd": 110000,
-    "coherence_notes": "Mia, age 39, has an income that is typical for a fashion designer in a major city like Los Angeles."
-  },
-  {
-    "full_name": "Ethan White",
-    "date_of_birth": "1993-01-22",
-    "city": "Barcelona",
-    "country": "Spain",
-    "stated_occupation": "Photographer",
-    "stated_annual_income_usd": 48000,
-    "coherence_notes": "Ethan, being 30 years old, earns a reasonable income for a photographer in Barcelona."
-  },
-  {
-    "full_name": "Sofia Kim",
-    "date_of_birth": "1990-03-05",
-    "city": "Tokyo",
-    "country": "Japan",
-    "stated_occupation": "Product Manager",
-    "stated_annual_income_usd": 105000,
-    "coherence_notes": "At 33, Sofia's salary is appropriate for a product manager in Tokyo."
-  },
-  {
-    "full_name": "James Taylor",
-    "date_of_birth": "1998-11-21",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Intern",
-    "stated_annual_income_usd": 30000,
-    "coherence_notes": "James, at 25 years old, has a typical entry-level salary for an intern in Seattle."
-  },
-  {
-    "full_name": "Grace Lewis",
-    "date_of_birth": "1986-08-20",
-    "city": "Vancouver",
-    "country": "Canada",
-    "stated_occupation": "Nurse",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "At 37, Grace's salary aligns with an experienced nurse's pay in Vancouver."
-  },
-  {
-    "full_name": "Benjamin Harris",
-    "date_of_birth": "1992-09-10",
-    "city": "Mumbai",
-    "country": "India",
-    "stated_occupation": "Business Consultant",
-    "stated_annual_income_usd": 70000,
-    "coherence_notes": "Benjamin, age 31, earns a salary fitting for a business consultant in a growing market like Mumbai."
-  },
-  {
-    "full_name": "Ella Thompson",
-    "date_of_birth": "1994-12-30",
-    "city": "Nairobi",
-    "country": "Kenya",
-    "stated_occupation": "Environmental Scientist",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "At 29, Ella's income aligns well with that of an environmental scientist in Nairobi."
-  },
-  {
-    "full_name": "Santiago Ortega",
-    "date_of_birth": "1991-02-14",
-    "city": "Santiago",
-    "country": "Chile",
-    "stated_occupation": "Economist",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "Santiago, at 32 years old, has a salary that reflects a mid-level economist's income in Santiago."
-  },
-  {
-    "full_name": "Natalie Baker",
-    "date_of_birth": "1988-06-25",
-    "city": "Auckland",
-    "country": "New Zealand",
-    "stated_occupation": "Teacher",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "At 35, Natalie's salary matches the typical earnings of a teacher in Auckland."
-  },
-  {
-    "full_name": "Emily Carter",
-    "date_of_birth": "1990-05-14",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Software Engineer",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "At 33 years old, Emily's experience as a Software Engineer justifies her high income in Seattle's tech-driven economy."
-  },
-  {
-    "full_name": "Liam Johnson",
-    "date_of_birth": "1985-10-02",
+    "full_name": "Ava Thompson",
+    "date_of_birth": "1989-09-30",
     "city": "New York",
     "country": "USA",
     "stated_occupation": "Financial Analyst",
-    "stated_annual_income_usd": 100000,
-    "coherence_notes": "Liam, aged 38, is well-positioned in New York as a Financial Analyst with a salary that aligns with the city\u2019s financial sector."
-  },
-  {
-    "full_name": "Ava Martinez",
-    "date_of_birth": "1995-03-25",
-    "city": "Austin",
-    "country": "USA",
-    "stated_occupation": "Marketing Specialist",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 28, Ava\u2019s role as a Marketing Specialist in Austin's vibrant startup scene supports her reasonable income."
-  },
-  {
-    "full_name": "Noah Thompson",
-    "date_of_birth": "1988-07-18",
-    "city": "San Francisco",
-    "country": "USA",
-    "stated_occupation": "Product Manager",
-    "stated_annual_income_usd": 150000,
-    "coherence_notes": "Noah, age 35, fits the profile of a successful Product Manager in San Francisco, where high salaries are common in tech roles."
-  },
-  {
-    "full_name": "Sophia Lee",
-    "date_of_birth": "1992-11-30",
-    "city": "Toronto",
-    "country": "Canada",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 65000,
-    "coherence_notes": "Sophia is 31 years old and her income as a Graphic Designer is realistic for the cost of living in Toronto."
-  },
-  {
-    "full_name": "James Brown",
-    "date_of_birth": "1980-04-22",
-    "city": "Vancouver",
-    "country": "Canada",
-    "stated_occupation": "Civil Engineer",
     "stated_annual_income_usd": 95000,
-    "coherence_notes": "At 43, James\u2019s position as a Civil Engineer matches his experience and earnings in Vancouver\u2019s construction industry."
+    "coherence_notes": "Ava is 34 years old and her salary fits well within the expected range for financial analysts in New York."
   },
   {
-    "full_name": "Mia Wilson",
-    "date_of_birth": "1997-01-09",
+    "full_name": "Mason White",
+    "date_of_birth": "1993-01-09",
     "city": "Chicago",
     "country": "USA",
-    "stated_occupation": "Social Media Manager",
-    "stated_annual_income_usd": 55000,
-    "coherence_notes": "Mia, being 26, fits the youthful demographic often found in Social Media roles, with a salary that aligns with Chicago's market."
-  },
-  {
-    "full_name": "Ethan Smith",
-    "date_of_birth": "1984-06-15",
-    "city": "Boston",
-    "country": "USA",
-    "stated_occupation": "Data Scientist",
-    "stated_annual_income_usd": 130000,
-    "coherence_notes": "At 39, Ethan\u2019s role as a Data Scientist in Boston's academic and tech landscape justifies his substantial income."
-  },
-  {
-    "full_name": "Isabella Garcia",
-    "date_of_birth": "1990-09-27",
-    "city": "Miami",
-    "country": "USA",
-    "stated_occupation": "Real Estate Agent",
+    "stated_occupation": "Civil Engineer",
     "stated_annual_income_usd": 85000,
-    "coherence_notes": "Isabella is 33 years old and her income as a Real Estate Agent reflects Miami's booming property market."
+    "coherence_notes": "At 30, Mason\u2019s income is standard for an early-career civil engineer in the Midwest."
   },
   {
-    "full_name": "Alexander Martinez",
-    "date_of_birth": "1993-12-05",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Film Editor",
+    "full_name": "Isabella Lee",
+    "date_of_birth": "1991-08-16",
+    "city": "Vancouver",
+    "country": "Canada",
+    "stated_occupation": "Nurse",
     "stated_annual_income_usd": 70000,
-    "coherence_notes": "At 30, Alexander\u2019s career choice as a Film Editor in Los Angeles aligns with his youthful age and typical salary range."
+    "coherence_notes": "Isabella, 32, earns a typical salary for a nurse in Vancouver amidst rising healthcare costs."
   },
   {
-    "full_name": "Charlotte Robinson",
-    "date_of_birth": "1987-08-14",
-    "city": "Phoenix",
-    "country": "USA",
-    "stated_occupation": "Healthcare Administrator",
-    "stated_annual_income_usd": 95000,
-    "coherence_notes": "Charlotte, age 36, is appropriately placed in a managerial role within the healthcare sector, reflecting her salary in Phoenix's market."
-  },
-  {
-    "full_name": "Michael Clark",
-    "date_of_birth": "1991-03-03",
+    "full_name": "Ethan Harris",
+    "date_of_birth": "1987-04-04",
     "city": "Denver",
     "country": "USA",
     "stated_occupation": "Construction Manager",
-    "stated_annual_income_usd": 88000,
-    "coherence_notes": "At 32 years old, Michael\u2019s income as a Construction Manager is fitting given Denver's growing real estate demands."
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "At 36, Ethan\u2019s income reflects the compensation for construction management in a rapidly growing city."
   },
   {
-    "full_name": "Olivia Perez",
-    "date_of_birth": "1986-02-10",
+    "full_name": "Charlotte Clark",
+    "date_of_birth": "1983-06-12",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "University Professor",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "At 40, Charlotte\u2019s salary is consistent with the earnings of a university professor in the education-centric Boston."
+  },
+  {
+    "full_name": "Liam Young",
+    "date_of_birth": "1994-12-20",
     "city": "Atlanta",
     "country": "USA",
-    "stated_occupation": "HR Specialist",
-    "stated_annual_income_usd": 62000,
-    "coherence_notes": "Olivia is 37 and her income as an HR Specialist aligns well with the cost of living in Atlanta."
+    "stated_occupation": "Sales Executive",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "Liam, at 29, earns a competitive salary as a sales executive in a major city like Atlanta."
   },
   {
-    "full_name": "William Green",
-    "date_of_birth": "1975-12-08",
+    "full_name": "Amelia King",
+    "date_of_birth": "1990-02-25",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "Amelia, aged 33, holds a reasonable salary for a web developer in the growing tech scene of Phoenix."
+  },
+  {
+    "full_name": "Benjamin Hall",
+    "date_of_birth": "1992-05-06",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "At 31, Benjamin\u2019s income is typical for a graphic designer in San Diego\u2019s vibrant creative economy."
+  },
+  {
+    "full_name": "Grace Allen",
+    "date_of_birth": "1986-07-19",
     "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "Lawyer",
+    "stated_annual_income_usd": 130000,
+    "coherence_notes": "Grace, 37, is well-compensated for her legal expertise in the large legal market of Dallas."
+  },
+  {
+    "full_name": "Henry Wright",
+    "date_of_birth": "1988-10-30",
+    "city": "Charlotte",
     "country": "USA",
     "stated_occupation": "IT Consultant",
     "stated_annual_income_usd": 110000,
-    "coherence_notes": "At 48, William\u2019s career as an IT Consultant meshes well with his wealth of experience and the competitive market in Dallas."
+    "coherence_notes": "At 35, Henry\u2019s earnings are appropriate for an IT consultant in the burgeoning tech scene of Charlotte."
   },
   {
-    "full_name": "Avery White",
-    "date_of_birth": "1994-11-24",
-    "city": "San Diego",
-    "country": "USA",
-    "stated_occupation": "Marine Biologist",
-    "stated_annual_income_usd": 68000,
-    "coherence_notes": "Avery, age 29, has a reasonable salary trajectory as a Marine Biologist in a city known for its marine studies."
-  },
-  {
-    "full_name": "Daniel Lewis",
-    "date_of_birth": "1989-05-05",
+    "full_name": "Ella Scott",
+    "date_of_birth": "1996-03-01",
     "city": "Philadelphia",
     "country": "USA",
-    "stated_occupation": "Elementary School Teacher",
-    "stated_annual_income_usd": 52000,
-    "coherence_notes": "At 34, Daniel's income as an Elementary School Teacher reflects typical earnings in Philadelphia."
+    "stated_occupation": "Social Media Manager",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "Ella, 27, earns a competitive salary for a social media manager in a major cultural city like Philadelphia."
   },
   {
-    "full_name": "Grace Hall",
-    "date_of_birth": "1982-08-29",
+    "full_name": "Alexander Torres",
+    "date_of_birth": "1984-09-12",
+    "city": "Houston",
+    "country": "USA",
+    "stated_occupation": "Oil & Gas Analyst",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "At 39, Alexander is well-paid in his field given Houston's prominence in the oil and gas industry."
+  },
+  {
+    "full_name": "Sofia Ramirez",
+    "date_of_birth": "1995-06-21",
     "city": "Orlando",
     "country": "USA",
     "stated_occupation": "Tourism Manager",
-    "stated_annual_income_usd": 78000,
-    "coherence_notes": "Grace, age 41, works as a Tourism Manager in Orlando, where her income is consistent with the tourism industry\u2019s pay scale."
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "Sofia, at 28, is earning a suitable income for a tourism manager in a city known for its attractions."
   },
   {
-    "full_name": "Lucas Young",
-    "date_of_birth": "1995-02-13",
-    "city": "Minneapolis",
+    "full_name": "Daniel Lopez",
+    "date_of_birth": "1993-02-14",
+    "city": "Las Vegas",
+    "country": "USA",
+    "stated_occupation": "Casino Host",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "At 30, Daniel's income is credible for a casino host in the bustling gaming industry of Las Vegas."
+  },
+  {
+    "full_name": "Emma Johnson",
+    "date_of_birth": "1988-04-15",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "At 35 years old, Emma is a realistic age for an experienced software engineer earning a competitive salary in Seattle."
+  },
+  {
+    "full_name": "Liam Smith",
+    "date_of_birth": "1990-11-22",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Data Scientist",
+    "stated_annual_income_usd": 115000,
+    "coherence_notes": "With a birth year of 1990, Liam is 32, which aligns well with the typical career timeline and salary for a data scientist in Austin."
+  },
+  {
+    "full_name": "Olivia Brown",
+    "date_of_birth": "1995-06-30",
+    "city": "Los Angeles",
     "country": "USA",
     "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "Olivia, at 28 years old, fits the profile of a graphic designer in LA, where such salaries are common for the industry."
+  },
+  {
+    "full_name": "Noah Williams",
+    "date_of_birth": "1985-03-17",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Marketing Manager",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "At age 38, Noah's salary as a marketing manager in Chicago is consistent with his experience level."
+  },
+  {
+    "full_name": "Ava Jones",
+    "date_of_birth": "1991-08-09",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Healthcare Administrator",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Ava is 32 years old, which is a typical age for someone in her career with an appropriate salary for Denver."
+  },
+  {
+    "full_name": "Ethan Garcia",
+    "date_of_birth": "1983-12-01",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 88000,
+    "coherence_notes": "At 39, Ethan's experience aligns with his income expectations as a successful real estate agent in a competitive market like Miami."
+  },
+  {
+    "full_name": "Sophia Martinez",
+    "date_of_birth": "1994-09-25",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "UX Researcher",
+    "stated_annual_income_usd": 105000,
+    "coherence_notes": "Sophia, at age 29, is fittingly placed in a high-demand role in a city known for tech innovation, justifying her income."
+  },
+  {
+    "full_name": "Lucas Hernandez",
+    "date_of_birth": "1987-02-14",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Civil Engineer",
+    "stated_annual_income_usd": 92000,
+    "coherence_notes": "At 36, Lucas has the right mix of age and experience for a civil engineer earning well in Phoenix."
+  },
+  {
+    "full_name": "Isabella Wilson",
+    "date_of_birth": "1993-05-06",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Financial Analyst",
+    "stated_annual_income_usd": 86000,
+    "coherence_notes": "Isabella is 30 years old, making her a good fit for the position of financial analyst in a city with a strong economy."
+  },
+  {
+    "full_name": "Mason Lee",
+    "date_of_birth": "1982-07-19",
+    "city": "New York",
+    "country": "USA",
+    "stated_occupation": "Business Consultant",
+    "stated_annual_income_usd": 130000,
+    "coherence_notes": "At 41 years old, Mason's income reflects his extensive experience in consulting, suitable for New York's high cost of living."
+  },
+  {
+    "full_name": "Mia Clark",
+    "date_of_birth": "1989-10-11",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Product Manager",
+    "stated_annual_income_usd": 114000,
+    "coherence_notes": "Mia, aged 34, holds a strong position as a product manager, with a salary that aligns with Seattle's tech industry."
+  },
+  {
+    "full_name": "James Lewis",
+    "date_of_birth": "1984-08-27",
+    "city": "Atlanta",
+    "country": "USA",
+    "stated_occupation": "Sales Director",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 39, James is positioned perfectly for a sales director role in a growing market like Atlanta."
+  },
+  {
+    "full_name": "Charlotte Young",
+    "date_of_birth": "1990-12-05",
+    "city": "Washington",
+    "country": "USA",
+    "stated_occupation": "Public Relations Specialist",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "At 32, Charlotte's position in PR is well-matched to her salary expectations in the nation\u2019s capital."
+  },
+  {
+    "full_name": "Benjamin Hall",
+    "date_of_birth": "1986-01-22",
+    "city": "Philadelphia",
+    "country": "USA",
+    "stated_occupation": "Social Media Manager",
+    "stated_annual_income_usd": 64000,
+    "coherence_notes": "At age 37, Benjamin's income as a social media manager is consistent with industry standards in Philadelphia."
+  },
+  {
+    "full_name": "Amelia King",
+    "date_of_birth": "1992-07-09",
+    "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "Human Resources Coordinator",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "Amelia, at 31, fits the profile of an HR coordinator with an income that aligns with Dallas's job market."
+  },
+  {
+    "full_name": "Oliver Wright",
+    "date_of_birth": "1994-03-26",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Content Creator",
+    "stated_annual_income_usd": 73000,
+    "coherence_notes": "At 29, Oliver's income as a content creator is reasonable in San Diego's vibrant media environment."
+  },
+  {
+    "full_name": "Sophia Scott",
+    "date_of_birth": "1988-04-30",
+    "city": "New Orleans",
+    "country": "USA",
+    "stated_occupation": "Event Planner",
+    "stated_annual_income_usd": 69000,
+    "coherence_notes": "Sophia, aged 35, is well-placed as an event planner in a cultural hub, earning a suitable wage."
+  },
+  {
+    "full_name": "Daniel Green",
+    "date_of_birth": "1991-09-14",
+    "city": "Portland",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "At the age of 32, Daniel's role as a web developer fits well within the tech landscape of Portland."
+  },
+  {
+    "full_name": "Ella Adams",
+    "date_of_birth": "1985-02-19",
+    "city": "Charlotte",
+    "country": "USA",
+    "stated_occupation": "Architecture Designer",
+    "stated_annual_income_usd": 92000,
+    "coherence_notes": "Ella, who is 38, aligns perfectly as an architecture designer with a salary that meets Charlotte\u2019s cost of living."
+  },
+  {
+    "full_name": "Aiden Nelson",
+    "date_of_birth": "1993-11-12",
+    "city": "Baltimore",
+    "country": "USA",
+    "stated_occupation": "IT Support Specialist",
     "stated_annual_income_usd": 62000,
-    "coherence_notes": "At 28 years old, Lucas\u2019s salary as a Graphic Designer is appropriate for the creative market in Minneapolis."
+    "coherence_notes": "At 30 years old, Aiden's income reflects the entry-level position typical for IT support roles in Baltimore."
+  },
+  {
+    "full_name": "Grace Carter",
+    "date_of_birth": "1982-06-23",
+    "city": "Minneapolis",
+    "country": "USA",
+    "stated_occupation": "Nurse Practitioner",
+    "stated_annual_income_usd": 105000,
+    "coherence_notes": "Grace, aged 41, is a seasoned professional whose high income as a nurse practitioner is justified in Minneapolis."
+  },
+  {
+    "full_name": "Henry Mitchell",
+    "date_of_birth": "1990-01-15",
+    "city": "Kansas City",
+    "country": "USA",
+    "stated_occupation": "Lawyer",
+    "stated_annual_income_usd": 150000,
+    "coherence_notes": "At 33, Henry's income as a lawyer in Kansas City is consistent with the expected earnings for his level of experience."
+  },
+  {
+    "full_name": "Jacob Thompson",
+    "date_of_birth": "1985-04-15",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 38 years old, Jacob's income as a software engineer aligns well with the living costs in Denver."
   },
   {
     "full_name": "Emily Carter",
-    "date_of_birth": "1990-06-15",
+    "date_of_birth": "1990-02-25",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Marketing Manager",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "Emily's age and income reflect her established career in marketing within Austin's vibrant job market."
+  },
+  {
+    "full_name": "Liam Johnson",
+    "date_of_birth": "1995-08-10",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 28 years old, Liam's income as a graphic designer is typical for Seattle's competitive creative industry."
+  },
+  {
+    "full_name": "Sophia Anderson",
+    "date_of_birth": "1988-11-30",
+    "city": "New York",
+    "country": "USA",
+    "stated_occupation": "Financial Analyst",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "Sophia, being 34, earns a salary that is reasonable for her position in New York's high-cost finance sector."
+  },
+  {
+    "full_name": "Mason White",
+    "date_of_birth": "1992-05-03",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Data Scientist",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "Mason's age and high income as a data scientist match the demand for tech professionals in Chicago."
+  },
+  {
+    "full_name": "Ava Davis",
+    "date_of_birth": "1995-01-15",
+    "city": "Los Angeles",
+    "country": "USA",
+    "stated_occupation": "Social Media Influencer",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "At just 28, Ava's declared income is plausible given the rising influence of social media in Los Angeles."
+  },
+  {
+    "full_name": "William Lee",
+    "date_of_birth": "1980-03-20",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "William, at 43, corresponds with an experienced real estate agent's income in the competitive Miami market."
+  },
+  {
+    "full_name": "Isabella Martinez",
+    "date_of_birth": "1993-09-05",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "UX Researcher",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Isabella's profile as a 30-year-old UX researcher makes sense in San Francisco's booming tech environment."
+  },
+  {
+    "full_name": "James Wilson",
+    "date_of_birth": "1987-06-10",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Civil Engineer",
+    "stated_annual_income_usd": 87000,
+    "coherence_notes": "At 36, James's salary is consistent with his role in Boston, a city rich in infrastructure projects."
+  },
+  {
+    "full_name": "Olivia Brown",
+    "date_of_birth": "1998-12-01",
+    "city": "Portland",
+    "country": "USA",
+    "stated_occupation": "Freelance Writer",
+    "stated_annual_income_usd": 50000,
+    "coherence_notes": "Olivia, at 25, reflects the entry-level income typical for freelance writers in Portland's artsy scene."
+  },
+  {
+    "full_name": "Ethan Harris",
+    "date_of_birth": "1989-07-29",
+    "city": "Atlanta",
+    "country": "USA",
+    "stated_occupation": "Network Administrator",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "At 34, Ethan's income as a network administrator is realistic given Atlanta's burgeoning tech industry."
+  },
+  {
+    "full_name": "Avery Thomas",
+    "date_of_birth": "1992-04-17",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Nurse",
+    "stated_annual_income_usd": 72000,
+    "coherence_notes": "Avery, 31, fits the expected salary range for registered nurses in Phoenix's healthcare sector."
+  },
+  {
+    "full_name": "Benjamin Garcia",
+    "date_of_birth": "1984-10-30",
+    "city": "Las Vegas",
+    "country": "USA",
+    "stated_occupation": "Casino Manager",
+    "stated_annual_income_usd": 98000,
+    "coherence_notes": "At 39, Benjamin's income aligns with the managerial roles often found within Las Vegas's entertainment industry."
+  },
+  {
+    "full_name": "Charlotte Young",
+    "date_of_birth": "1991-08-15",
+    "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "Supply Chain Analyst",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "Charlotte's age and salary are consistent with her analytic role in Dallas's robust business landscape."
+  },
+  {
+    "full_name": "Lucas Martin",
+    "date_of_birth": "1983-09-22",
+    "city": "Baltimore",
+    "country": "USA",
+    "stated_occupation": "Teacher",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "Lucas, aged 40, earns a typical salary for a teacher in the public school system of Baltimore."
+  },
+  {
+    "full_name": "Mia Rodriguez",
+    "date_of_birth": "1996-01-30",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Environmental Scientist",
+    "stated_annual_income_usd": 83000,
+    "coherence_notes": "Mia, age 27, has a plausible income for an environmental scientist working in eco-conscious San Diego."
+  },
+  {
+    "full_name": "Noah Lee",
+    "date_of_birth": "1986-11-11",
+    "city": "Minneapolis",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "Noah's age and salary are typical for an experienced web developer in the growing tech hub of Minneapolis."
+  },
+  {
+    "full_name": "Ella Perez",
+    "date_of_birth": "1990-03-27",
+    "city": "Jacksonville",
+    "country": "USA",
+    "stated_occupation": "Content Strategist",
+    "stated_annual_income_usd": 71000,
+    "coherence_notes": "Ella, at 33, matches the expected income levels for content strategists working in Jacksonville's media market."
+  },
+  {
+    "full_name": "Daniel Green",
+    "date_of_birth": "1982-02-12",
+    "city": "Philadelphia",
+    "country": "USA",
+    "stated_occupation": "Project Manager",
+    "stated_annual_income_usd": 96000,
+    "coherence_notes": "Daniel's age and salary align well with expectations for project managers in Philadelphia\u2019s thriving project-based sectors."
+  },
+  {
+    "full_name": "Zoe Hall",
+    "date_of_birth": "1994-07-19",
+    "city": "Columbus",
+    "country": "USA",
+    "stated_occupation": "Pharmaceutical Sales Rep",
+    "stated_annual_income_usd": 82000,
+    "coherence_notes": "Zoe, being 29, fits the income profile for pharmaceutical sales representatives in Columbus's healthcare market."
+  },
+  {
+    "full_name": "Gabriel Ward",
+    "date_of_birth": "1988-10-06",
+    "city": "Sacramento",
+    "country": "USA",
+    "stated_occupation": "Accountant",
+    "stated_annual_income_usd": 77000,
+    "coherence_notes": "At 35, Gabriel's salary as an accountant is consistent with the cost of living in Sacramento."
+  },
+  {
+    "full_name": "Chloe King",
+    "date_of_birth": "1995-12-20",
+    "city": "Cincinnati",
+    "country": "USA",
+    "stated_occupation": "Veterinary Technician",
+    "stated_annual_income_usd": 48000,
+    "coherence_notes": "Chloe, age 27, has an income that aligns with the typical earnings of veterinary technicians in Cincinnati."
+  },
+  {
+    "full_name": "Lisa Thompson",
+    "date_of_birth": "1985-03-15",
     "city": "Austin",
     "country": "USA",
     "stated_occupation": "Software Engineer",
     "stated_annual_income_usd": 95000,
-    "coherence_notes": "Emily is 33 years old, which is typical for a mid-career software engineer, and her income reflects Austin's growing tech industry."
+    "coherence_notes": "At 38 years old, Lisa's experience in tech justifies her income, which aligns with Austin's growing tech scene."
   },
   {
-    "full_name": "James Thompson",
-    "date_of_birth": "1985-02-20",
+    "full_name": "Mark Johnson",
+    "date_of_birth": "1990-07-22",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Marketing Manager",
+    "stated_annual_income_usd": 72000,
+    "coherence_notes": "Mark, at 33, has enough experience in marketing to command his salary in Denver's competitive job market."
+  },
+  {
+    "full_name": "Sara Wright",
+    "date_of_birth": "1982-11-05",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Data Analyst",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "At 41, Sara's position as a Data Analyst with a solid income matches Seattle's tech-oriented economy."
+  },
+  {
+    "full_name": "Michael Smith",
+    "date_of_birth": "1978-02-18",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "Michael is 45, well within the experience range for a high-earning real estate agent in a booming market like Miami."
+  },
+  {
+    "full_name": "Rebecca Lee",
+    "date_of_birth": "1995-04-12",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "UX Designer",
+    "stated_annual_income_usd": 100000,
+    "coherence_notes": "At 28, Rebecca is positioned well in San Francisco's high-paying design industry, making her earnings plausible."
+  },
+  {
+    "full_name": "David Brown",
+    "date_of_birth": "1980-09-30",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Financial Analyst",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "David, at 43, has had enough time to rise to a lucrative role in finance, consistent with Chicago's market realities."
+  },
+  {
+    "full_name": "Emily Garcia",
+    "date_of_birth": "1992-01-20",
+    "city": "Atlanta",
+    "country": "USA",
+    "stated_occupation": "HR Specialist",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 31, Emily's role in Human Resources reflects a reasonable income level in Atlanta's business climate."
+  },
+  {
+    "full_name": "James Wilson",
+    "date_of_birth": "1988-05-02",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Consultant",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "James is 35 and his expertise as a consultant justifies a high income in Boston's consulting market."
+  },
+  {
+    "full_name": "Jessica Martinez",
+    "date_of_birth": "1990-12-15",
+    "city": "Los Angeles",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "At 32, Jessica's work in graphic design aligns with her income expectations in the creative market of Los Angeles."
+  },
+  {
+    "full_name": "Brian Anderson",
+    "date_of_birth": "1983-03-27",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "Brian is 40 years old, fitting the profile of a seasoned web developer earning a competitive salary in San Diego."
+  },
+  {
+    "full_name": "Laura Hernandez",
+    "date_of_birth": "1994-08-11",
+    "city": "Philadelphia",
+    "country": "USA",
+    "stated_occupation": "Nurse",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "At 29, Laura's nursing salary is consistent with Philadelphia's healthcare sector norms."
+  },
+  {
+    "full_name": "Paul Taylor",
+    "date_of_birth": "1986-06-09",
+    "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "Sales Manager",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Paul, at 37, has the experience to justify his sales income in the fast-paced Dallas market."
+  },
+  {
+    "full_name": "Nancy Clark",
+    "date_of_birth": "1975-10-01",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Teacher",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "At 48, Nancy's income as a teacher fits well within Phoenix's educational salary brackets."
+  },
+  {
+    "full_name": "Eric Lewis",
+    "date_of_birth": "1984-02-14",
+    "city": "Orlando",
+    "country": "USA",
+    "stated_occupation": "Event Planner",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "Eric, age 39, aligns his salary with the expected income for event planning in the tourist-heavy Orlando."
+  },
+  {
+    "full_name": "Katie Young",
+    "date_of_birth": "1993-09-05",
+    "city": "Minneapolis",
+    "country": "USA",
+    "stated_occupation": "Social Media Manager",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 30, Katie's role in social media management is typical for her income range in Minneapolis."
+  },
+  {
+    "full_name": "Timothy Harris",
+    "date_of_birth": "1979-11-25",
+    "city": "Portland",
+    "country": "USA",
+    "stated_occupation": "Architect",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "Timothy, at 43, has the credentials to back up his architectural salary in Portland's growing economy."
+  },
+  {
+    "full_name": "Sophia King",
+    "date_of_birth": "1996-04-16",
+    "city": "Baltimore",
+    "country": "USA",
+    "stated_occupation": "Pharmacist",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "At just 27, Sophia's income reflects her position in a field with high entry salaries like pharmacy in Baltimore."
+  },
+  {
+    "full_name": "Benjamin Scott",
+    "date_of_birth": "1982-12-02",
+    "city": "Houston",
+    "country": "USA",
+    "stated_occupation": "Mechanical Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 40, Benjamin's engineering experience justifies his income level in Houston's industrial sector."
+  },
+  {
+    "full_name": "Natalie Green",
+    "date_of_birth": "1989-05-21",
+    "city": "Nashville",
+    "country": "USA",
+    "stated_occupation": "Content Writer",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 34, Natalie's salary as a content writer is reasonable in Nashville's growing media landscape."
+  },
+  {
+    "full_name": "Charles Adams",
+    "date_of_birth": "1991-03-30",
+    "city": "Cleveland",
+    "country": "USA",
+    "stated_occupation": "Operations Manager",
+    "stated_annual_income_usd": 82000,
+    "coherence_notes": "At 32, Charles has acquired enough managerial experience to justify his salary in Cleveland's business environment."
+  },
+  {
+    "full_name": "Angela Nelson",
+    "date_of_birth": "1987-07-14",
+    "city": "Salt Lake City",
+    "country": "USA",
+    "stated_occupation": "Research Scientist",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Angela, at 36, fits the profile of a highly qualified research scientist earning accordingly in Salt Lake City."
+  },
+  {
+    "full_name": "Matthew Carter",
+    "date_of_birth": "1981-10-28",
+    "city": "Tampa",
+    "country": "USA",
+    "stated_occupation": "System Analyst",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "Matthew, age 42, supports his income level with extensive experience in Tampa's tech sector."
+  },
+  {
+    "full_name": "Emily Johnson",
+    "date_of_birth": "1985-03-15",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Emily is 38 years old, which is a typical age for a software engineer earning a competitive salary in the tech hub of Austin."
+  },
+  {
+    "full_name": "Carlos Martinez",
+    "date_of_birth": "1990-06-22",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Marketing Specialist",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 33 years old, Carlos is in a prime career stage for a marketing specialist, with an income that matches Miami's living costs."
+  },
+  {
+    "full_name": "Priya Sharma",
+    "date_of_birth": "1982-11-04",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "Data Analyst",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "Priya, at 40, fits the profile of a data analyst in San Francisco with a salary that aligns with the city's high cost of living."
+  },
+  {
+    "full_name": "Liam O'Connor",
+    "date_of_birth": "1995-01-12",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Pharmaceutical Sales Representative",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "At 28 years old, Liam is an entry-level professional in pharmaceutical sales, earning a reasonable salary for the Boston market."
+  },
+  {
+    "full_name": "Chloe Wang",
+    "date_of_birth": "1992-09-30",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Project Manager",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "Chloe is 31 and her income reflects the experience typically expected for a project manager in Seattle's tech industry."
+  },
+  {
+    "full_name": "David Kim",
+    "date_of_birth": "1988-07-05",
+    "city": "Los Angeles",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 58000,
+    "coherence_notes": "At 35, David is a seasoned graphic designer earning a salary in line with Los Angeles's creative sector."
+  },
+  {
+    "full_name": "Olivia Brown",
+    "date_of_birth": "1980-02-20",
+    "city": "New York",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "At 43, Olivia's experience as a real estate agent in New York supports her high income, consistent with the city's housing market."
+  },
+  {
+    "full_name": "Ethan Smith",
+    "date_of_birth": "1989-12-10",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Financial Analyst",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "Ethan is an appropriate age at 33 for a financial analyst, with a salary that is reasonable for the Chicago financial sector."
+  },
+  {
+    "full_name": "Ava Patel",
+    "date_of_birth": "1991-05-18",
+    "city": "Houston",
+    "country": "USA",
+    "stated_occupation": "Supply Chain Manager",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "At 32 years old, Ava fits the experience level for a supply chain manager in Houston, with a salary reflecting industry standards."
+  },
+  {
+    "full_name": "James White",
+    "date_of_birth": "1987-08-25",
+    "city": "Philadelphia",
+    "country": "USA",
+    "stated_occupation": "IT Consultant",
+    "stated_annual_income_usd": 88000,
+    "coherence_notes": "James, at 36, is a suitable age for an IT consultant in Philadelphia, with an income reflecting his expertise."
+  },
+  {
+    "full_name": "Isabella Martinez",
+    "date_of_birth": "1994-04-04",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Social Media Manager",
+    "stated_annual_income_usd": 62000,
+    "coherence_notes": "At 29, Isabella is in a typical age range for a social media manager, with a salary that matches Phoenix's marketing industry."
+  },
+  {
+    "full_name": "Jacob Wilson",
+    "date_of_birth": "1993-10-30",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Civil Engineer",
+    "stated_annual_income_usd": 100000,
+    "coherence_notes": "Jacob, at 30 years old, is a fitting age for a civil engineer in San Diego, earning a salary consistent with local standards."
+  },
+  {
+    "full_name": "Mia Thompson",
+    "date_of_birth": "1986-03-09",
+    "city": "Atlanta",
+    "country": "USA",
+    "stated_occupation": "Quality Assurance Tester",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "Mia, aged 37, is well-established in her career as a QA tester, with an income that reflects Atlanta's tech scene."
+  },
+  {
+    "full_name": "Noah Lee",
+    "date_of_birth": "1984-01-19",
+    "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 82000,
+    "coherence_notes": "At 39 years old, Noah's experience aligns with that of a web developer in Dallas, earning a competitive salary."
+  },
+  {
+    "full_name": "Sophia Garcia",
+    "date_of_birth": "1996-07-15",
+    "city": "Orlando",
+    "country": "USA",
+    "stated_occupation": "Event Planner",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "Sophia, at 27 years old, is an emerging event planner in Orlando, with a salary typical for her experience level."
+  },
+  {
+    "full_name": "Jack Davis",
+    "date_of_birth": "1992-12-01",
+    "city": "Las Vegas",
+    "country": "USA",
+    "stated_occupation": "Hospitality Manager",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "At 30, Jack fits the profile of a hospitality manager in Las Vegas, where the income reflects the industry."
+  },
+  {
+    "full_name": "Charlotte Robinson",
+    "date_of_birth": "1983-09-12",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Environmental Scientist",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Charlotte, aged 40, is experienced in her field as an environmental scientist, with a salary that is justified in Denver."
+  },
+  {
+    "full_name": "William Harris",
+    "date_of_birth": "1995-11-28",
+    "city": "Minneapolis",
+    "country": "USA",
+    "stated_occupation": "UX Designer",
+    "stated_annual_income_usd": 72000,
+    "coherence_notes": "At 27, William is an early-career UX designer, earning a typical salary for Minneapolis's tech environment."
+  },
+  {
+    "full_name": "Zoe Clark",
+    "date_of_birth": "1991-08-14",
+    "city": "Salt Lake City",
+    "country": "USA",
+    "stated_occupation": "Nurse",
+    "stated_annual_income_usd": 68000,
+    "coherence_notes": "Zoe, at 32 years old, is well-matched in her role as a nurse, earning an income that aligns with Salt Lake City's medical sector."
+  },
+  {
+    "full_name": "Matthew Lewis",
+    "date_of_birth": "1988-05-05",
+    "city": "Baltimore",
+    "country": "USA",
+    "stated_occupation": "Public Relations Specialist",
+    "stated_annual_income_usd": 77000,
+    "coherence_notes": "At 35 years old, Matthew's experience in public relations is consistent with his salary in Baltimore's competitive job market."
+  },
+  {
+    "full_name": "Ella Young",
+    "date_of_birth": "1993-03-01",
+    "city": "Columbus",
+    "country": "USA",
+    "stated_occupation": "Data Scientist",
+    "stated_annual_income_usd": 89000,
+    "coherence_notes": "Ella, aged 30, is well-aligned with her role as a data scientist in Columbus, earning a salary that reflects her expertise."
+  },
+  {
+    "full_name": "Aiden Hall",
+    "date_of_birth": "1996-04-26",
+    "city": "Charlotte",
+    "country": "USA",
+    "stated_occupation": "Operations Coordinator",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "At 27, Aiden is a suitable age for an operations coordinator, with an income that is reasonable for Charlotte's market."
+  },
+  {
+    "full_name": "Emily Carter",
+    "date_of_birth": "1990-04-15",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At age 33, Emily works as a Software Engineer in Austin, where tech salaries are competitive."
+  },
+  {
+    "full_name": "Michael Thompson",
+    "date_of_birth": "1985-11-20",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "Michael is 37, a reasonable age for a Graphic Designer with a salary reflecting Seattle's cost of living."
+  },
+  {
+    "full_name": "Sophia Martinez",
+    "date_of_birth": "1988-06-10",
+    "city": "Los Angeles",
+    "country": "USA",
+    "stated_occupation": "Marketing Manager",
+    "stated_annual_income_usd": 105000,
+    "coherence_notes": "Sophia, at 35, holds a managerial position, fitting her age and the high market rate in Los Angeles."
+  },
+  {
+    "full_name": "Lucas Johnson",
+    "date_of_birth": "1995-02-28",
+    "city": "New York",
+    "country": "USA",
+    "stated_occupation": "Data Analyst",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "At 28, Lucas is a Data Analyst, an entry to mid-level position earning a competitive salary for New York."
+  },
+  {
+    "full_name": "Olivia Smith",
+    "date_of_birth": "1992-09-14",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "Project Coordinator",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "Olivia is 31, working as a Project Coordinator with a salary suitable for San Francisco's living costs."
+  },
+  {
+    "full_name": "James Lee",
+    "date_of_birth": "1980-03-22",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Legal Assistant",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "At 43, James is a Legal Assistant earning a salary that aligns well with Chicago's economic environment."
+  },
+  {
+    "full_name": "Ella Wilson",
+    "date_of_birth": "1983-12-05",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Nurse",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "Ella, 39, works as a Nurse, a profession with salaries fitting the healthcare demand in Denver."
+  },
+  {
+    "full_name": "Benjamin Brown",
+    "date_of_birth": "1998-07-30",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Social Media Manager",
+    "stated_annual_income_usd": 72000,
+    "coherence_notes": "At 25, Benjamin is a Social Media Manager, a role well-suited for his age with an income reflecting Miami's expenses."
+  },
+  {
+    "full_name": "Mia Taylor",
+    "date_of_birth": "1987-10-19",
+    "city": "Atlanta",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "Mia is 36 and earns a commission-based salary typical for an experienced Real Estate Agent in Atlanta."
+  },
+  {
+    "full_name": "Ethan Harris",
+    "date_of_birth": "1991-05-11",
+    "city": "Philadelphia",
+    "country": "USA",
+    "stated_occupation": "Financial Analyst",
+    "stated_annual_income_usd": 94000,
+    "coherence_notes": "At 32, Ethan works as a Financial Analyst, earning a competitive salary appropriate for Philadelphia's financial sector."
+  },
+  {
+    "full_name": "Ava White",
+    "date_of_birth": "1994-08-23",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Research Scientist",
+    "stated_annual_income_usd": 98000,
+    "coherence_notes": "Ava is 29, a Research Scientist earning a salary in line with Boston's educational and research landscape."
+  },
+  {
+    "full_name": "Alexander King",
+    "date_of_birth": "1982-01-13",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Construction Manager",
+    "stated_annual_income_usd": 88000,
+    "coherence_notes": "At 41, Alexander is a seasoned Construction Manager earning a fair salary for work in Phoenix."
+  },
+  {
+    "full_name": "Charlotte Scott",
+    "date_of_birth": "1989-04-04",
+    "city": "Las Vegas",
+    "country": "USA",
+    "stated_occupation": "Event Planner",
+    "stated_annual_income_usd": 82000,
+    "coherence_notes": "Charlotte is 34 and works as an Event Planner, a fitting job with an annual income aligned with Las Vegas's economy."
+  },
+  {
+    "full_name": "Daniel Young",
+    "date_of_birth": "1993-07-12",
+    "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "IT Consultant",
+    "stated_annual_income_usd": 100000,
+    "coherence_notes": "Daniel is 30, working as an IT Consultant\u2014a role that suits his age with a salary matching Dallas's tech market."
+  },
+  {
+    "full_name": "Samantha Baker",
+    "date_of_birth": "1986-03-17",
+    "city": "Houston",
+    "country": "USA",
+    "stated_occupation": "Business Analyst",
+    "stated_annual_income_usd": 76000,
+    "coherence_notes": "At 37, Samantha is a Business Analyst, earning a wage consistent with Houston's business landscape."
+  },
+  {
+    "full_name": "William Lewis",
+    "date_of_birth": "1990-09-29",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 92000,
+    "coherence_notes": "William is 33, a Web Developer making a salary in line with tech industry standards in San Diego."
+  },
+  {
+    "full_name": "Grace Adams",
+    "date_of_birth": "1996-12-08",
+    "city": "Orlando",
+    "country": "USA",
+    "stated_occupation": "Tour Guide",
+    "stated_annual_income_usd": 58000,
+    "coherence_notes": "At 27, Grace is a Tour Guide, which fits her age with a salary reflective of Orlando's tourism sector."
+  },
+  {
+    "full_name": "Logan Clark",
+    "date_of_birth": "1984-08-01",
+    "city": "Indianapolis",
+    "country": "USA",
+    "stated_occupation": "Sales Representative",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "Logan, 39, works as a Sales Representative earning a salary that corresponds with Indianapolis's market."
+  },
+  {
+    "full_name": "Zoe Lewis",
+    "date_of_birth": "1997-02-18",
+    "city": "Nashville",
+    "country": "USA",
+    "stated_occupation": "Musician",
+    "stated_annual_income_usd": 45000,
+    "coherence_notes": "At 26, Zoe is a Musician, an occupation that suits her age with a reasonable income for Nashville's music scene."
+  },
+  {
+    "full_name": "Noah Green",
+    "date_of_birth": "1981-11-26",
+    "city": "Salt Lake City",
+    "country": "USA",
+    "stated_occupation": "Sales Manager",
+    "stated_annual_income_usd": 105000,
+    "coherence_notes": "Noah, aged 41, is a Sales Manager earning a salary aligned with his experience and the local economy."
+  },
+  {
+    "full_name": "Liam Hall",
+    "date_of_birth": "1992-03-05",
+    "city": "Portland",
+    "country": "USA",
+    "stated_occupation": "Cafe Owner",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "Liam, 31, runs a Cafe, and his income reflects the vibrant food scene in Portland."
+  },
+  {
+    "full_name": "Chloe Allen",
+    "date_of_birth": "1988-12-15",
+    "city": "Baltimore",
+    "country": "USA",
+    "stated_occupation": "Health Coach",
+    "stated_annual_income_usd": 62000,
+    "coherence_notes": "At 34, Chloe is a Health Coach, a role suitable for her age with a reasonable income for Baltimore."
+  },
+  {
+    "full_name": "Jessica Green",
+    "date_of_birth": "1990-05-12",
+    "city": "Austin",
+    "country": "United States",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 33 years old, Jessica has enough experience to earn a competitive salary in the tech industry in Austin."
+  },
+  {
+    "full_name": "Michael Thompson",
+    "date_of_birth": "1985-11-05",
     "city": "Toronto",
     "country": "Canada",
-    "stated_occupation": "Marketing Manager",
+    "stated_occupation": "Project Manager",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "Michael, aged 37, is in a common profession for his age, with a reasonable income for Toronto's living costs."
+  },
+  {
+    "full_name": "Olivia Martinez",
+    "date_of_birth": "1995-03-20",
+    "city": "Madrid",
+    "country": "Spain",
+    "stated_occupation": "Marketing Specialist",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "At 28, Olivia's salary is typical for someone with several years of experience in marketing in a city like Madrid."
+  },
+  {
+    "full_name": "David Kim",
+    "date_of_birth": "1980-07-15",
+    "city": "Seoul",
+    "country": "South Korea",
+    "stated_occupation": "Financial Analyst",
+    "stated_annual_income_usd": 90000,
+    "coherence_notes": "David, who is 43, holds a senior position that justifies his income in the high-cost environment of Seoul."
+  },
+  {
+    "full_name": "Sophia Lee",
+    "date_of_birth": "1988-09-30",
+    "city": "San Francisco",
+    "country": "United States",
+    "stated_occupation": "UX Designer",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "At 35 years old, Sophia's salary reflects her expertise in a lucrative field within a high-cost city."
+  },
+  {
+    "full_name": "Ethan Brown",
+    "date_of_birth": "1992-01-14",
+    "city": "London",
+    "country": "United Kingdom",
+    "stated_occupation": "Sales Executive",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "Ethan is 31 and earns a salary that aligns with his role in London's competitive job market."
+  },
+  {
+    "full_name": "Isabella Wilson",
+    "date_of_birth": "1991-12-02",
+    "city": "Sydney",
+    "country": "Australia",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 31, Isabella's salary is appropriate for her industry in Sydney's cost structure."
+  },
+  {
+    "full_name": "James Anderson",
+    "date_of_birth": "1982-06-25",
+    "city": "Berlin",
+    "country": "Germany",
+    "stated_occupation": "IT Consultant",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "James, at 41, commands a high salary in his area of expertise in Berlin, which supports his living expenses."
+  },
+  {
+    "full_name": "Charlotte Davis",
+    "date_of_birth": "1994-02-18",
+    "city": "Paris",
+    "country": "France",
+    "stated_occupation": "Fashion Buyer",
     "stated_annual_income_usd": 85000,
-    "coherence_notes": "At 38 years old, James is at an age where a marketing manager would typically earn a salary consistent with Toronto's cost of living."
+    "coherence_notes": "At 29, Charlotte's income fits her role in the high-fashion industry of Paris, where such a salary is common."
+  },
+  {
+    "full_name": "Alexander Rodriguez",
+    "date_of_birth": "1989-08-24",
+    "city": "Buenos Aires",
+    "country": "Argentina",
+    "stated_occupation": "Civil Engineer",
+    "stated_annual_income_usd": 50000,
+    "coherence_notes": "At 34, Alexander's salary reflects a mid-level position in a growing engineering market in Buenos Aires."
+  },
+  {
+    "full_name": "Ava Lee",
+    "date_of_birth": "1996-04-30",
+    "city": "Tokyo",
+    "country": "Japan",
+    "stated_occupation": "Language Teacher",
+    "stated_annual_income_usd": 40000,
+    "coherence_notes": "At 27, Ava earns a standard salary for an entry-level position in language education in Tokyo."
+  },
+  {
+    "full_name": "William Johnson",
+    "date_of_birth": "1984-10-10",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "William, aged 39, has a income level suitable for the real estate market in the affluent city of Dubai."
+  },
+  {
+    "full_name": "Mia Smith",
+    "date_of_birth": "1993-05-16",
+    "city": "Vancouver",
+    "country": "Canada",
+    "stated_occupation": "Nurse",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "At 30, Mia's income is typical for her profession in Vancouver, where healthcare roles are in demand."
+  },
+  {
+    "full_name": "Benjamin Martinez",
+    "date_of_birth": "1987-11-11",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "stated_occupation": "IT Specialist",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "At 36, Benjamin's salary aligns well with his experience in Mexico City's tech sector."
+  },
+  {
+    "full_name": "Emma Taylor",
+    "date_of_birth": "1998-02-09",
+    "city": "Lisbon",
+    "country": "Portugal",
+    "stated_occupation": "Tour Guide",
+    "stated_annual_income_usd": 30000,
+    "coherence_notes": "At 25, Emma's income is typical for entry-level positions in tourism in a city like Lisbon."
+  },
+  {
+    "full_name": "Lucas White",
+    "date_of_birth": "1990-03-29",
+    "city": "Copenhagen",
+    "country": "Denmark",
+    "stated_occupation": "Software Developer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 33, Lucas's salary reflects his level of expertise in a robust tech market in Copenhagen."
+  },
+  {
+    "full_name": "Grace Wilson",
+    "date_of_birth": "1992-12-15",
+    "city": "Wellington",
+    "country": "New Zealand",
+    "stated_occupation": "Environmental Scientist",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "Grace is 30 years old, and her income aligns with the demand for environmental expertise in New Zealand."
+  },
+  {
+    "full_name": "Liam Johnson",
+    "date_of_birth": "1983-04-27",
+    "city": "Mumbai",
+    "country": "India",
+    "stated_occupation": "Management Consultant",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "At 40, Liam's salary reflects his experience and the competitive nature of consulting in Mumbai."
+  },
+  {
+    "full_name": "Zoe Brown",
+    "date_of_birth": "1995-07-21",
+    "city": "Dublin",
+    "country": "Ireland",
+    "stated_occupation": "Public Relations Officer",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "At 28, Zoe's income is consistent with entry-level roles in a competitive job market like Dublin."
+  },
+  {
+    "full_name": "Noah Walker",
+    "date_of_birth": "1981-09-17",
+    "city": "Nairobi",
+    "country": "Kenya",
+    "stated_occupation": "Civil Rights Lawyer",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "At 42, Noah's income reflects his expertise and the growing need for civil rights advocacy in Nairobi."
+  },
+  {
+    "full_name": "Ella Harris",
+    "date_of_birth": "1994-01-30",
+    "city": "Hong Kong",
+    "country": "China",
+    "stated_occupation": "Financial Consultant",
+    "stated_annual_income_usd": 100000,
+    "coherence_notes": "At 29, Ella's salary is standard for her role in the high-stakes finance sector in Hong Kong."
+  },
+  {
+    "full_name": "Oliver Scott",
+    "date_of_birth": "1992-11-22",
+    "city": "Seattle",
+    "country": "United States",
+    "stated_occupation": "Data Scientist",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "At 30, Oliver's salary aligns with his expertise in a data-heavy industry prevalent in Seattle."
+  },
+  {
+    "full_name": "Emily Carter",
+    "date_of_birth": "1988-05-12",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Software Developer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 35 years old, Emily's income as a Software Developer in Austin matches the local tech industry standards."
+  },
+  {
+    "full_name": "James Reynolds",
+    "date_of_birth": "1975-10-30",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Construction Manager",
+    "stated_annual_income_usd": 115000,
+    "coherence_notes": "As a 48-year-old Construction Manager, James' income aligns with the higher cost of living in Denver."
+  },
+  {
+    "full_name": "Sophia Klein",
+    "date_of_birth": "1995-03-17",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "Marketing Specialist",
+    "stated_annual_income_usd": 72000,
+    "coherence_notes": "At 28 years old, Sophia's salary is reasonable for a Marketing Specialist in the competitive San Francisco market."
+  },
+  {
+    "full_name": "Robert Martinez",
+    "date_of_birth": "1980-06-22",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "Robert, being 43, earns an expected salary for a successful Real Estate Agent in a vibrant Miami market."
+  },
+  {
+    "full_name": "Ava Thompson",
+    "date_of_birth": "1992-11-05",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Data Analyst",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "Ava's age of 31 aligns well with her position as a Data Analyst, and her income reflects Seattle's tech-driven economy."
+  },
+  {
+    "full_name": "Liam Johnson",
+    "date_of_birth": "1985-01-14",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Financial Consultant",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "At 38 years old, Liam's salary as a Financial Consultant is typical for his experience level in Chicago."
+  },
+  {
+    "full_name": "Mia Wilson",
+    "date_of_birth": "1990-09-20",
+    "city": "Los Angeles",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 67000,
+    "coherence_notes": "Mia, age 33, has a reasonable income for a Graphic Designer in the high-cost area of Los Angeles."
+  },
+  {
+    "full_name": "Noah Lee",
+    "date_of_birth": "1983-12-15",
+    "city": "New York",
+    "country": "USA",
+    "stated_occupation": "Legal Assistant",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "Noah is 39 and earns a typical salary for a Legal Assistant in a major legal market like New York."
+  },
+  {
+    "full_name": "Isabella Brown",
+    "date_of_birth": "1998-07-28",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Social Media Manager",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "At 25 years old, Isabella\u2019s income is fitting for an entry-level Social Media Manager in Phoenix."
+  },
+  {
+    "full_name": "Ethan Gonzalez",
+    "date_of_birth": "1987-02-09",
+    "city": "Atlanta",
+    "country": "USA",
+    "stated_occupation": "Sales Executive",
+    "stated_annual_income_usd": 91000,
+    "coherence_notes": "Ethan, age 36, has a competitive income as a Sales Executive in the growing Atlanta market."
+  },
+  {
+    "full_name": "Chloe Robinson",
+    "date_of_birth": "1994-04-30",
+    "city": "Houston",
+    "country": "USA",
+    "stated_occupation": "HR Coordinator",
+    "stated_annual_income_usd": 57000,
+    "coherence_notes": "Chloe, age 29, earns a standard salary for an HR Coordinator in Houston's corporate environment."
+  },
+  {
+    "full_name": "Alexander Turner",
+    "date_of_birth": "1984-08-23",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Project Manager",
+    "stated_annual_income_usd": 100000,
+    "coherence_notes": "At 39, Alexander's salary as a Project Manager in Boston is in line with the city\u2019s cost of living."
+  },
+  {
+    "full_name": "Charlotte Davis",
+    "date_of_birth": "1989-06-18",
+    "city": "San Diego",
+    "country": "USA",
+    "stated_occupation": "Veterinarian",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Charlotte's age of 34 and her salary reflect a well-established career as a Veterinarian in San Diego."
+  },
+  {
+    "full_name": "Michael Smith",
+    "date_of_birth": "1991-01-11",
+    "city": "Portland",
+    "country": "USA",
+    "stated_occupation": "Web Developer",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "Being 32 years old, Michael's income as a Web Developer is typical for the tech scene in Portland."
+  },
+  {
+    "full_name": "Avery Martinez",
+    "date_of_birth": "1996-05-20",
+    "city": "Orlando",
+    "country": "USA",
+    "stated_occupation": "Event Planner",
+    "stated_annual_income_usd": 62000,
+    "coherence_notes": "Avery's 27 years fit well with an Event Planner's expectations, and her salary is suited for Orlando's tourism industry."
+  },
+  {
+    "full_name": "Benjamin White",
+    "date_of_birth": "1982-03-15",
+    "city": "Dallas",
+    "country": "USA",
+    "stated_occupation": "IT Manager",
+    "stated_annual_income_usd": 115000,
+    "coherence_notes": "At 41, Benjamin's income as an IT Manager is appropriate for the tech industry in Dallas."
+  },
+  {
+    "full_name": "Olivia Hall",
+    "date_of_birth": "1993-10-02",
+    "city": "Philadelphia",
+    "country": "USA",
+    "stated_occupation": "Content Writer",
+    "stated_annual_income_usd": 50000,
+    "coherence_notes": "Olivia, age 30, has a salary that matches the typical compensation for a Content Writer in Philadelphia."
+  },
+  {
+    "full_name": "Lucas Martinez",
+    "date_of_birth": "1997-07-14",
+    "city": "Minneapolis",
+    "country": "USA",
+    "stated_occupation": "Fitness Trainer",
+    "stated_annual_income_usd": 42000,
+    "coherence_notes": "At 26 years old, Lucas' income is plausible for a Fitness Trainer in a health-conscious city like Minneapolis."
+  },
+  {
+    "full_name": "Grace Young",
+    "date_of_birth": "1986-12-12",
+    "city": "Nashville",
+    "country": "USA",
+    "stated_occupation": "Musician",
+    "stated_annual_income_usd": 70000,
+    "coherence_notes": "Aged 37, Grace has an income fitting for a professional musician in the heart of Nashville's music scene."
+  },
+  {
+    "full_name": "Elijah Green",
+    "date_of_birth": "1981-09-09",
+    "city": "Las Vegas",
+    "country": "USA",
+    "stated_occupation": "Casino Manager",
+    "stated_annual_income_usd": 130000,
+    "coherence_notes": "Elijah, being 42 years old, holds a senior position in Las Vegas with an income fitting a Casino Manager's role."
+  },
+  {
+    "full_name": "Emma Johnson",
+    "date_of_birth": "1985-06-15",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 38 years old, Emma's income as a Software Engineer in Austin is consistent with the tech industry's salary ranges in that city."
+  },
+  {
+    "full_name": "Carlos Rodriguez",
+    "date_of_birth": "1990-11-03",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "Carlos, being 32, has an income typical for a mid-career Graphic Designer in Miami, where creative jobs are prevalent."
+  },
+  {
+    "full_name": "Anika Patel",
+    "date_of_birth": "1978-02-20",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Marketing Director",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "At 45 years old, Anika's role as a Marketing Director in Seattle aligns with her experience and earning potential in a city known for its corporate opportunities."
   }
 ]

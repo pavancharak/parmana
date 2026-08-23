@@ -3,10 +3,10 @@
   "agent_id": "agent2_social_engineer",
   "action": "generate_social_engineering_transcripts",
   "max_operations": 175,
-  "issued_at": 1787469444.1698742,
-  "expires_at": 1787473044.1698742,
-  "record_id": "4258bd28-b553-41fe-9c29-e9bf09e6a527",
-  "signed_at": 1787469444.1699078,
+  "issued_at": 1787477618.0411832,
+  "expires_at": 1787481218.0411832,
+  "record_id": "595adf7c-e697-4414-b457-8da3a65f7783",
+  "signed_at": 1787477618.0412185,
   "signer": "authority",
-  "signature": "55f7d7d1a7cee7aaf6e2aec41ddfca922cef4ca38d620b8105c0f398ac9818f154024cd3f6e7f81d3f81298e6cad345de4a8ba192cdf71d2b6531bbd5659d504"
+  "signature": "294e13d07e0d3dc638eab6270765f944a742e8bbe63a9d542f3705323f8d64e92258d12ff4fd76baeb2887f1d149842551c3ec3ade360ab29814ac626af60f05"
 }
