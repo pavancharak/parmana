@@ -165,17 +165,30 @@ def main():
 
     attacks = json.loads((DOCS_DIR / "attacks.json").read_text()) if (DOCS_DIR / "attacks.json").exists() else []
 
+    attack_type_breakdown = {}
+    for tx in fraud:
+        key = tx.get("attack_type", "none")
+        attack_type_breakdown[key] = attack_type_breakdown.get(key, 0) + 1
+
+    missed_fraud_sample = [
+        e for e in signed_decisions
+        if e["ground_truth"]["is_fraud"] == 1 and e["decision"]["decision"] == "ALLOW"
+    ]
+    missed_fraud_sample = random.sample(missed_fraud_sample, min(5, len(missed_fraud_sample)))
+
     dashboard = {
         "attacks": attacks,
         "simulation": {
             "good_transaction_count": len(good),
             "fraud_transaction_count": len(fraud),
             "agent_summaries": agent_summaries,
+            "attack_type_breakdown": attack_type_breakdown,
         },
         "detector": {
             "metrics": metrics,
             "decision_counts": counts,
             "sample_decisions": random.sample(signed_decisions, min(30, len(signed_decisions))),
+            "missed_fraud_sample": missed_fraud_sample,
         },
         "overrides": overrides,
         "verification": verification,

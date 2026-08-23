@@ -3,10 +3,10 @@
   "agent_id": "agent3_limit_prober",
   "action": "probe_detection_thresholds",
   "max_operations": 10,
-  "issued_at": 1787457215.902207,
-  "expires_at": 1787460815.902207,
-  "record_id": "a592f72d-e380-432e-bfab-731f403e589b",
-  "signed_at": 1787457215.90223,
+  "issued_at": 1787461056.74263,
+  "expires_at": 1787464656.74263,
+  "record_id": "12a62d2c-b4e1-461e-8f4f-a66936fac2ba",
+  "signed_at": 1787461056.7426538,
   "signer": "authority",
-  "signature": "4006e19b7b7b9ab86f242654517fbe476a93aea6ebcf47af62a920386646b148cb3ad32e379d8f4959872c2ccab9c9855182be13fca3c7673b205f93b3effe0d"
+  "signature": "f7b2d9881c3495390e46e39bdb615524a3a1c5a902fb3fd594045bf0c3800a4beed3a751151d3cdcc76d85da9960e455edcf3184aba683d46d37b4149423a101"
 }

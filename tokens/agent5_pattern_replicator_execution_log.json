@@ -1,6 +1,6 @@
 {
   "agent_id": "agent5_pattern_replicator",
-  "token_record_id": "234623e7-1e2a-40b5-82ea-8ba5d03d280f",
+  "token_record_id": "25fa9178-3096-413d-9b55-9f0e41484ebb",
   "authorized_max": 1000,
   "actually_executed": 700,
   "within_bounds": true,
@@ -8,4203 +8,4203 @@
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787457211.1800709,
+      "timestamp": 1787457495.027996,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 2,
-      "timestamp": 1787457211.180086,
+      "timestamp": 1787457495.0280128,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 3,
-      "timestamp": 1787457211.180098,
+      "timestamp": 1787457495.0280218,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 4,
-      "timestamp": 1787457211.180105,
+      "timestamp": 1787457495.0281692,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 5,
-      "timestamp": 1787457211.1801105,
+      "timestamp": 1787457495.0281856,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 6,
-      "timestamp": 1787457211.180116,
+      "timestamp": 1787457495.028192,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 7,
-      "timestamp": 1787457211.180121,
+      "timestamp": 1787457495.028221,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 8,
-      "timestamp": 1787457211.180126,
+      "timestamp": 1787457495.0282288,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 9,
-      "timestamp": 1787457211.180131,
+      "timestamp": 1787457495.0282347,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 10,
-      "timestamp": 1787457211.1801364,
+      "timestamp": 1787457495.0282397,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 11,
-      "timestamp": 1787457211.180143,
+      "timestamp": 1787457495.0282445,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 12,
-      "timestamp": 1787457211.180149,
+      "timestamp": 1787457495.0282502,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 13,
-      "timestamp": 1787457211.1801536,
+      "timestamp": 1787457495.0282555,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 14,
-      "timestamp": 1787457211.1801586,
+      "timestamp": 1787457495.0282598,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 15,
-      "timestamp": 1787457211.1801636,
+      "timestamp": 1787457495.0282645,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 16,
-      "timestamp": 1787457211.1801689,
+      "timestamp": 1787457495.0282693,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 17,
-      "timestamp": 1787457211.1801734,
+      "timestamp": 1787457495.028274,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 18,
-      "timestamp": 1787457211.1801782,
+      "timestamp": 1787457495.0282786,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 19,
-      "timestamp": 1787457211.1801834,
+      "timestamp": 1787457495.028283,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 20,
-      "timestamp": 1787457211.1801884,
+      "timestamp": 1787457495.0282876,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 21,
-      "timestamp": 1787457211.180194,
+      "timestamp": 1787457495.0282924,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 22,
-      "timestamp": 1787457211.180199,
+      "timestamp": 1787457495.0282972,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 23,
-      "timestamp": 1787457211.180204,
+      "timestamp": 1787457495.0283024,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 24,
-      "timestamp": 1787457211.1802096,
+      "timestamp": 1787457495.0283077,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 25,
-      "timestamp": 1787457211.1802156,
+      "timestamp": 1787457495.028314,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 26,
-      "timestamp": 1787457211.1802208,
+      "timestamp": 1787457495.0283198,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 27,
-      "timestamp": 1787457211.1802258,
+      "timestamp": 1787457495.0283246,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 28,
-      "timestamp": 1787457211.180231,
+      "timestamp": 1787457495.0283291,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 29,
-      "timestamp": 1787457211.180236,
+      "timestamp": 1787457495.0283346,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 30,
-      "timestamp": 1787457211.1802409,
+      "timestamp": 1787457495.0283394,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 31,
-      "timestamp": 1787457211.1802466,
+      "timestamp": 1787457495.0283444,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 32,
-      "timestamp": 1787457211.1802514,
+      "timestamp": 1787457495.02835,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 33,
-      "timestamp": 1787457211.1802564,
+      "timestamp": 1787457495.0283556,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 34,
-      "timestamp": 1787457211.1802614,
+      "timestamp": 1787457495.0283601,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 35,
-      "timestamp": 1787457211.1802669,
+      "timestamp": 1787457495.0283659,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 36,
-      "timestamp": 1787457211.180272,
+      "timestamp": 1787457495.0283716,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 37,
-      "timestamp": 1787457211.1802776,
+      "timestamp": 1787457495.0283766,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 38,
-      "timestamp": 1787457211.1802826,
+      "timestamp": 1787457495.028381,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 39,
-      "timestamp": 1787457211.1802871,
+      "timestamp": 1787457495.0283868,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 40,
-      "timestamp": 1787457211.1802924,
+      "timestamp": 1787457495.0283918,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 41,
-      "timestamp": 1787457211.1802986,
+      "timestamp": 1787457495.0283973,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 42,
-      "timestamp": 1787457211.1803036,
+      "timestamp": 1787457495.0284042,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 43,
-      "timestamp": 1787457211.1803093,
+      "timestamp": 1787457495.0284085,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 44,
-      "timestamp": 1787457211.1803143,
+      "timestamp": 1787457495.028414,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 45,
-      "timestamp": 1787457211.1803188,
+      "timestamp": 1787457495.0284183,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 46,
-      "timestamp": 1787457211.1803246,
+      "timestamp": 1787457495.0284224,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 47,
-      "timestamp": 1787457211.1803293,
+      "timestamp": 1787457495.0284278,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 48,
-      "timestamp": 1787457211.1803339,
+      "timestamp": 1787457495.0284324,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 49,
-      "timestamp": 1787457211.1803381,
+      "timestamp": 1787457495.0284367,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 50,
-      "timestamp": 1787457211.1803446,
+      "timestamp": 1787457495.0284407,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 51,
-      "timestamp": 1787457211.1803505,
+      "timestamp": 1787457495.0284486,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 52,
-      "timestamp": 1787457211.1803555,
+      "timestamp": 1787457495.0284538,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 53,
-      "timestamp": 1787457211.1803608,
+      "timestamp": 1787457495.028459,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 54,
-      "timestamp": 1787457211.1803665,
+      "timestamp": 1787457495.0284636,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 55,
-      "timestamp": 1787457211.1803713,
+      "timestamp": 1787457495.0284684,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 56,
-      "timestamp": 1787457211.180376,
+      "timestamp": 1787457495.028473,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 57,
-      "timestamp": 1787457211.1803803,
+      "timestamp": 1787457495.0284774,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 58,
-      "timestamp": 1787457211.1803858,
+      "timestamp": 1787457495.0284834,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 59,
-      "timestamp": 1787457211.1803901,
+      "timestamp": 1787457495.0284882,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 60,
-      "timestamp": 1787457211.1803954,
+      "timestamp": 1787457495.0284922,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 61,
-      "timestamp": 1787457211.1804006,
+      "timestamp": 1787457495.0284972,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 62,
-      "timestamp": 1787457211.1804063,
+      "timestamp": 1787457495.0285027,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 63,
-      "timestamp": 1787457211.180411,
+      "timestamp": 1787457495.0285075,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 64,
-      "timestamp": 1787457211.1804156,
+      "timestamp": 1787457495.0285115,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 65,
-      "timestamp": 1787457211.180421,
+      "timestamp": 1787457495.0285177,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 66,
-      "timestamp": 1787457211.1804264,
+      "timestamp": 1787457495.028522,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 67,
-      "timestamp": 1787457211.180432,
+      "timestamp": 1787457495.0285263,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 68,
-      "timestamp": 1787457211.180438,
+      "timestamp": 1787457495.0285306,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 69,
-      "timestamp": 1787457211.1804426,
+      "timestamp": 1787457495.0285368,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 70,
-      "timestamp": 1787457211.1804476,
+      "timestamp": 1787457495.0285408,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 71,
-      "timestamp": 1787457211.1804528,
+      "timestamp": 1787457495.0285456,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 72,
-      "timestamp": 1787457211.180458,
+      "timestamp": 1787457495.0285506,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 73,
-      "timestamp": 1787457211.1804626,
+      "timestamp": 1787457495.0285552,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 74,
-      "timestamp": 1787457211.1804674,
+      "timestamp": 1787457495.0285597,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 75,
-      "timestamp": 1787457211.1804729,
+      "timestamp": 1787457495.0285642,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 76,
-      "timestamp": 1787457211.1804776,
+      "timestamp": 1787457495.0285683,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 77,
-      "timestamp": 1787457211.180483,
+      "timestamp": 1787457495.028575,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 78,
-      "timestamp": 1787457211.180488,
+      "timestamp": 1787457495.02858,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 79,
-      "timestamp": 1787457211.1804926,
+      "timestamp": 1787457495.0285854,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 80,
-      "timestamp": 1787457211.1804974,
+      "timestamp": 1787457495.0285895,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 81,
-      "timestamp": 1787457211.1805031,
+      "timestamp": 1787457495.028594,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 82,
-      "timestamp": 1787457211.180508,
+      "timestamp": 1787457495.028599,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 83,
-      "timestamp": 1787457211.1805127,
+      "timestamp": 1787457495.0286326,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 84,
-      "timestamp": 1787457211.180519,
+      "timestamp": 1787457495.0286396,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 85,
-      "timestamp": 1787457211.1805239,
+      "timestamp": 1787457495.028645,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 86,
-      "timestamp": 1787457211.1805289,
+      "timestamp": 1787457495.0286496,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 87,
-      "timestamp": 1787457211.1805332,
+      "timestamp": 1787457495.028654,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 88,
-      "timestamp": 1787457211.1805382,
+      "timestamp": 1787457495.0286586,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 89,
-      "timestamp": 1787457211.1805434,
+      "timestamp": 1787457495.0286634,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 90,
-      "timestamp": 1787457211.1805484,
+      "timestamp": 1787457495.0286686,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 91,
-      "timestamp": 1787457211.180554,
+      "timestamp": 1787457495.028674,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 92,
-      "timestamp": 1787457211.180559,
+      "timestamp": 1787457495.0286796,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 93,
-      "timestamp": 1787457211.1805637,
+      "timestamp": 1787457495.0286865,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 94,
-      "timestamp": 1787457211.1805694,
+      "timestamp": 1787457495.0286913,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 95,
-      "timestamp": 1787457211.1805737,
+      "timestamp": 1787457495.0286958,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 96,
-      "timestamp": 1787457211.1805782,
+      "timestamp": 1787457495.0287004,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 97,
-      "timestamp": 1787457211.1805828,
+      "timestamp": 1787457495.028705,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 98,
-      "timestamp": 1787457211.1805878,
+      "timestamp": 1787457495.0287097,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 99,
-      "timestamp": 1787457211.1805925,
+      "timestamp": 1787457495.0287144,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 100,
-      "timestamp": 1787457211.1805975,
+      "timestamp": 1787457495.0287201,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 101,
-      "timestamp": 1787457211.1806035,
+      "timestamp": 1787457495.0287254,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 102,
-      "timestamp": 1787457211.1806085,
+      "timestamp": 1787457495.0287309,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 103,
-      "timestamp": 1787457211.180614,
+      "timestamp": 1787457495.0287354,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 104,
-      "timestamp": 1787457211.1806188,
+      "timestamp": 1787457495.0287402,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 105,
-      "timestamp": 1787457211.1806245,
+      "timestamp": 1787457495.0287447,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 106,
-      "timestamp": 1787457211.1806295,
+      "timestamp": 1787457495.0287492,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 107,
-      "timestamp": 1787457211.180635,
+      "timestamp": 1787457495.0287538,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 108,
-      "timestamp": 1787457211.1806402,
+      "timestamp": 1787457495.028758,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 109,
-      "timestamp": 1787457211.1806455,
+      "timestamp": 1787457495.028764,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 110,
-      "timestamp": 1787457211.1806536,
+      "timestamp": 1787457495.028769,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 111,
-      "timestamp": 1787457211.180659,
+      "timestamp": 1787457495.0287752,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 112,
-      "timestamp": 1787457211.1806643,
+      "timestamp": 1787457495.0287814,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 113,
-      "timestamp": 1787457211.1806688,
+      "timestamp": 1787457495.0287871,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 114,
-      "timestamp": 1787457211.1806738,
+      "timestamp": 1787457495.028792,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 115,
-      "timestamp": 1787457211.1806781,
+      "timestamp": 1787457495.0287976,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 116,
-      "timestamp": 1787457211.1806836,
+      "timestamp": 1787457495.0288036,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 117,
-      "timestamp": 1787457211.1806884,
+      "timestamp": 1787457495.0288084,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 118,
-      "timestamp": 1787457211.1806931,
+      "timestamp": 1787457495.0288131,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 119,
-      "timestamp": 1787457211.180698,
+      "timestamp": 1787457495.0288177,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 120,
-      "timestamp": 1787457211.180703,
+      "timestamp": 1787457495.0288224,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 121,
-      "timestamp": 1787457211.1807086,
+      "timestamp": 1787457495.0288272,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 122,
-      "timestamp": 1787457211.180714,
+      "timestamp": 1787457495.0288343,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 123,
-      "timestamp": 1787457211.1807187,
+      "timestamp": 1787457495.0288386,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 124,
-      "timestamp": 1787457211.1807237,
+      "timestamp": 1787457495.028843,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 125,
-      "timestamp": 1787457211.1807284,
+      "timestamp": 1787457495.0288475,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 126,
-      "timestamp": 1787457211.1807356,
+      "timestamp": 1787457495.0288515,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 127,
-      "timestamp": 1787457211.18074,
+      "timestamp": 1787457495.0288556,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 128,
-      "timestamp": 1787457211.1807451,
+      "timestamp": 1787457495.0288599,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 129,
-      "timestamp": 1787457211.1807506,
+      "timestamp": 1787457495.028865,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 130,
-      "timestamp": 1787457211.1807559,
+      "timestamp": 1787457495.0288696,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 131,
-      "timestamp": 1787457211.1807628,
+      "timestamp": 1787457495.0288742,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 132,
-      "timestamp": 1787457211.1807678,
+      "timestamp": 1787457495.0288813,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 133,
-      "timestamp": 1787457211.1807723,
+      "timestamp": 1787457495.028886,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 134,
-      "timestamp": 1787457211.180777,
+      "timestamp": 1787457495.0288901,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 135,
-      "timestamp": 1787457211.1807814,
+      "timestamp": 1787457495.0288947,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 136,
-      "timestamp": 1787457211.1807861,
+      "timestamp": 1787457495.0288997,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 137,
-      "timestamp": 1787457211.180791,
+      "timestamp": 1787457495.0289516,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 138,
-      "timestamp": 1787457211.180797,
+      "timestamp": 1787457495.028956,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 139,
-      "timestamp": 1787457211.1808016,
+      "timestamp": 1787457495.0289602,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 140,
-      "timestamp": 1787457211.1808074,
+      "timestamp": 1787457495.0289645,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 141,
-      "timestamp": 1787457211.180813,
+      "timestamp": 1787457495.0289695,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 142,
-      "timestamp": 1787457211.180818,
+      "timestamp": 1787457495.0289748,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 143,
-      "timestamp": 1787457211.1808226,
+      "timestamp": 1787457495.0289814,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 144,
-      "timestamp": 1787457211.1808274,
+      "timestamp": 1787457495.0289862,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 145,
-      "timestamp": 1787457211.180832,
+      "timestamp": 1787457495.0289905,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 146,
-      "timestamp": 1787457211.1808405,
+      "timestamp": 1787457495.028996,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 147,
-      "timestamp": 1787457211.1808457,
+      "timestamp": 1787457495.0290003,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 148,
-      "timestamp": 1787457211.180851,
+      "timestamp": 1787457495.0290043,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 149,
-      "timestamp": 1787457211.1808558,
+      "timestamp": 1787457495.0290098,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 150,
-      "timestamp": 1787457211.1808615,
+      "timestamp": 1787457495.0290143,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 151,
-      "timestamp": 1787457211.1808667,
+      "timestamp": 1787457495.0290186,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 152,
-      "timestamp": 1787457211.1808727,
+      "timestamp": 1787457495.0290272,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 153,
-      "timestamp": 1787457211.1808772,
+      "timestamp": 1787457495.0290315,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 154,
-      "timestamp": 1787457211.180882,
+      "timestamp": 1787457495.029036,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 155,
-      "timestamp": 1787457211.1808867,
+      "timestamp": 1787457495.02904,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 156,
-      "timestamp": 1787457211.1808918,
+      "timestamp": 1787457495.0290442,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 157,
-      "timestamp": 1787457211.1808958,
+      "timestamp": 1787457495.02905,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 158,
-      "timestamp": 1787457211.1809003,
+      "timestamp": 1787457495.029054,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 159,
-      "timestamp": 1787457211.1809046,
+      "timestamp": 1787457495.0290582,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 160,
-      "timestamp": 1787457211.1809094,
+      "timestamp": 1787457495.0290625,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 161,
-      "timestamp": 1787457211.1809149,
+      "timestamp": 1787457495.029067,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 162,
-      "timestamp": 1787457211.1809204,
+      "timestamp": 1787457495.029073,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 163,
-      "timestamp": 1787457211.1809244,
+      "timestamp": 1787457495.0290775,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 164,
-      "timestamp": 1787457211.1809292,
+      "timestamp": 1787457495.0290833,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 165,
-      "timestamp": 1787457211.180934,
+      "timestamp": 1787457495.0290875,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 166,
-      "timestamp": 1787457211.1809385,
+      "timestamp": 1787457495.0290918,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 167,
-      "timestamp": 1787457211.1809437,
+      "timestamp": 1787457495.0291102,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 168,
-      "timestamp": 1787457211.1809485,
+      "timestamp": 1787457495.0291157,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 169,
-      "timestamp": 1787457211.1809537,
+      "timestamp": 1787457495.0291202,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 170,
-      "timestamp": 1787457211.1809595,
+      "timestamp": 1787457495.0291245,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 171,
-      "timestamp": 1787457211.1809652,
+      "timestamp": 1787457495.0291295,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 172,
-      "timestamp": 1787457211.1809704,
+      "timestamp": 1787457495.0291345,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 173,
-      "timestamp": 1787457211.180976,
+      "timestamp": 1787457495.0291405,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 174,
-      "timestamp": 1787457211.1809824,
+      "timestamp": 1787457495.0291448,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 175,
-      "timestamp": 1787457211.1809866,
+      "timestamp": 1787457495.0291502,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 176,
-      "timestamp": 1787457211.1809912,
+      "timestamp": 1787457495.0291543,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 177,
-      "timestamp": 1787457211.180996,
+      "timestamp": 1787457495.0291588,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 178,
-      "timestamp": 1787457211.1810005,
+      "timestamp": 1787457495.0291646,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 179,
-      "timestamp": 1787457211.181005,
+      "timestamp": 1787457495.0291688,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 180,
-      "timestamp": 1787457211.1810098,
+      "timestamp": 1787457495.0291731,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 181,
-      "timestamp": 1787457211.1810153,
+      "timestamp": 1787457495.0291793,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 182,
-      "timestamp": 1787457211.18102,
+      "timestamp": 1787457495.029184,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 183,
-      "timestamp": 1787457211.1810246,
+      "timestamp": 1787457495.0291886,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 184,
-      "timestamp": 1787457211.1810288,
+      "timestamp": 1787457495.0291927,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 185,
-      "timestamp": 1787457211.1810334,
+      "timestamp": 1787457495.029198,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 186,
-      "timestamp": 1787457211.181038,
+      "timestamp": 1787457495.0292015,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 187,
-      "timestamp": 1787457211.1810422,
+      "timestamp": 1787457495.0292058,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 188,
-      "timestamp": 1787457211.181047,
+      "timestamp": 1787457495.0292096,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 189,
-      "timestamp": 1787457211.1810515,
+      "timestamp": 1787457495.0292137,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 190,
-      "timestamp": 1787457211.1810567,
+      "timestamp": 1787457495.0292175,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 191,
-      "timestamp": 1787457211.1810634,
+      "timestamp": 1787457495.0292213,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 192,
-      "timestamp": 1787457211.1810687,
+      "timestamp": 1787457495.0292263,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 193,
-      "timestamp": 1787457211.1810732,
+      "timestamp": 1787457495.02923,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 194,
-      "timestamp": 1787457211.181078,
+      "timestamp": 1787457495.029234,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 195,
-      "timestamp": 1787457211.1810834,
+      "timestamp": 1787457495.0292382,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 196,
-      "timestamp": 1787457211.1810887,
+      "timestamp": 1787457495.029243,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 197,
-      "timestamp": 1787457211.181093,
+      "timestamp": 1787457495.0292473,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 198,
-      "timestamp": 1787457211.1810987,
+      "timestamp": 1787457495.029251,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 199,
-      "timestamp": 1787457211.1811025,
+      "timestamp": 1787457495.0292554,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 200,
-      "timestamp": 1787457211.1811073,
+      "timestamp": 1787457495.0292592,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 201,
-      "timestamp": 1787457211.1811132,
+      "timestamp": 1787457495.0292645,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 202,
-      "timestamp": 1787457211.181119,
+      "timestamp": 1787457495.0292962,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 203,
-      "timestamp": 1787457211.1811235,
+      "timestamp": 1787457495.0293014,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 204,
-      "timestamp": 1787457211.1811283,
+      "timestamp": 1787457495.0293062,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 205,
-      "timestamp": 1787457211.1811323,
+      "timestamp": 1787457495.0293236,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 206,
-      "timestamp": 1787457211.1811364,
+      "timestamp": 1787457495.0293279,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 207,
-      "timestamp": 1787457211.1811404,
+      "timestamp": 1787457495.0293334,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 208,
-      "timestamp": 1787457211.1811452,
+      "timestamp": 1787457495.0293376,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 209,
-      "timestamp": 1787457211.1811492,
+      "timestamp": 1787457495.029342,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 210,
-      "timestamp": 1787457211.1811538,
+      "timestamp": 1787457495.0293472,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 211,
-      "timestamp": 1787457211.18116,
+      "timestamp": 1787457495.0293515,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 212,
-      "timestamp": 1787457211.1811647,
+      "timestamp": 1787457495.0293567,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 213,
-      "timestamp": 1787457211.1811688,
+      "timestamp": 1787457495.0293617,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 214,
-      "timestamp": 1787457211.181173,
+      "timestamp": 1787457495.0293658,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 215,
-      "timestamp": 1787457211.1811771,
+      "timestamp": 1787457495.02937,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 216,
-      "timestamp": 1787457211.1811829,
+      "timestamp": 1787457495.0293741,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 217,
-      "timestamp": 1787457211.1811876,
+      "timestamp": 1787457495.0293906,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 218,
-      "timestamp": 1787457211.1811922,
+      "timestamp": 1787457495.0293975,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 219,
-      "timestamp": 1787457211.1811967,
+      "timestamp": 1787457495.0294027,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 220,
-      "timestamp": 1787457211.1812015,
+      "timestamp": 1787457495.0294075,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 221,
-      "timestamp": 1787457211.1812065,
+      "timestamp": 1787457495.029412,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 222,
-      "timestamp": 1787457211.181211,
+      "timestamp": 1787457495.0294433,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 223,
-      "timestamp": 1787457211.181215,
+      "timestamp": 1787457495.029449,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 224,
-      "timestamp": 1787457211.1812193,
+      "timestamp": 1787457495.0294533,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 225,
-      "timestamp": 1787457211.1812234,
+      "timestamp": 1787457495.0294573,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 226,
-      "timestamp": 1787457211.181228,
+      "timestamp": 1787457495.0294616,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 227,
-      "timestamp": 1787457211.1812325,
+      "timestamp": 1787457495.0294657,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 228,
-      "timestamp": 1787457211.1812367,
+      "timestamp": 1787457495.0294704,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 229,
-      "timestamp": 1787457211.1812406,
+      "timestamp": 1787457495.0294745,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 230,
-      "timestamp": 1787457211.181245,
+      "timestamp": 1787457495.029478,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 231,
-      "timestamp": 1787457211.1812506,
+      "timestamp": 1787457495.0294821,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 232,
-      "timestamp": 1787457211.1812563,
+      "timestamp": 1787457495.0294874,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 233,
-      "timestamp": 1787457211.1812613,
+      "timestamp": 1787457495.029506,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 234,
-      "timestamp": 1787457211.1812673,
+      "timestamp": 1787457495.0295174,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 235,
-      "timestamp": 1787457211.1812713,
+      "timestamp": 1787457495.0295732,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 236,
-      "timestamp": 1787457211.181276,
+      "timestamp": 1787457495.0295856,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 237,
-      "timestamp": 1787457211.1812813,
+      "timestamp": 1787457495.029593,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 238,
-      "timestamp": 1787457211.1812859,
+      "timestamp": 1787457495.029598,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 239,
-      "timestamp": 1787457211.18129,
+      "timestamp": 1787457495.029607,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 240,
-      "timestamp": 1787457211.181295,
+      "timestamp": 1787457495.0296116,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 241,
-      "timestamp": 1787457211.1813002,
+      "timestamp": 1787457495.0296168,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 242,
-      "timestamp": 1787457211.1813047,
+      "timestamp": 1787457495.0296245,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 243,
-      "timestamp": 1787457211.181309,
+      "timestamp": 1787457495.0296333,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 244,
-      "timestamp": 1787457211.1813133,
+      "timestamp": 1787457495.029637,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 245,
-      "timestamp": 1787457211.1813173,
+      "timestamp": 1787457495.0296414,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 246,
-      "timestamp": 1787457211.1813216,
+      "timestamp": 1787457495.0296452,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 247,
-      "timestamp": 1787457211.181326,
+      "timestamp": 1787457495.0296495,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 248,
-      "timestamp": 1787457211.1813304,
+      "timestamp": 1787457495.0296535,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 249,
-      "timestamp": 1787457211.1813345,
+      "timestamp": 1787457495.0296583,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 250,
-      "timestamp": 1787457211.181339,
+      "timestamp": 1787457495.0296621,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 251,
-      "timestamp": 1787457211.181344,
+      "timestamp": 1787457495.0296667,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 252,
-      "timestamp": 1787457211.1813488,
+      "timestamp": 1787457495.0296712,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 253,
-      "timestamp": 1787457211.1813529,
+      "timestamp": 1787457495.0296752,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 254,
-      "timestamp": 1787457211.181359,
+      "timestamp": 1787457495.029679,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 255,
-      "timestamp": 1787457211.181363,
+      "timestamp": 1787457495.0296838,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 256,
-      "timestamp": 1787457211.181368,
+      "timestamp": 1787457495.029688,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 257,
-      "timestamp": 1787457211.1813722,
+      "timestamp": 1787457495.0296922,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 258,
-      "timestamp": 1787457211.181377,
+      "timestamp": 1787457495.029697,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 259,
-      "timestamp": 1787457211.1813824,
+      "timestamp": 1787457495.0297015,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 260,
-      "timestamp": 1787457211.1813867,
+      "timestamp": 1787457495.0297065,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 261,
-      "timestamp": 1787457211.1813917,
+      "timestamp": 1787457495.0297105,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 262,
-      "timestamp": 1787457211.1813962,
+      "timestamp": 1787457495.0297153,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 263,
-      "timestamp": 1787457211.1814003,
+      "timestamp": 1787457495.0297194,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 264,
-      "timestamp": 1787457211.1814046,
+      "timestamp": 1787457495.0297234,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 265,
-      "timestamp": 1787457211.1814098,
+      "timestamp": 1787457495.0297275,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 266,
-      "timestamp": 1787457211.1814141,
+      "timestamp": 1787457495.0297315,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 267,
-      "timestamp": 1787457211.1814182,
+      "timestamp": 1787457495.0297356,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 268,
-      "timestamp": 1787457211.1814234,
+      "timestamp": 1787457495.0297396,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 269,
-      "timestamp": 1787457211.1814284,
+      "timestamp": 1787457495.0297456,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 270,
-      "timestamp": 1787457211.1814337,
+      "timestamp": 1787457495.0297508,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 271,
-      "timestamp": 1787457211.1814387,
+      "timestamp": 1787457495.0297554,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 272,
-      "timestamp": 1787457211.181443,
+      "timestamp": 1787457495.02976,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 273,
-      "timestamp": 1787457211.1814473,
+      "timestamp": 1787457495.029765,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 274,
-      "timestamp": 1787457211.1814518,
+      "timestamp": 1787457495.0297692,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 275,
-      "timestamp": 1787457211.1814566,
+      "timestamp": 1787457495.0297732,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 276,
-      "timestamp": 1787457211.1814616,
+      "timestamp": 1787457495.0297775,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 277,
-      "timestamp": 1787457211.1814656,
+      "timestamp": 1787457495.029783,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 278,
-      "timestamp": 1787457211.18147,
+      "timestamp": 1787457495.0297875,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 279,
-      "timestamp": 1787457211.1814752,
+      "timestamp": 1787457495.0297923,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 280,
-      "timestamp": 1787457211.1814797,
+      "timestamp": 1787457495.0297964,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 281,
-      "timestamp": 1787457211.1814847,
+      "timestamp": 1787457495.0298014,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 282,
-      "timestamp": 1787457211.18149,
+      "timestamp": 1787457495.029807,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 283,
-      "timestamp": 1787457211.181494,
+      "timestamp": 1787457495.0298114,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 284,
-      "timestamp": 1787457211.1814988,
+      "timestamp": 1787457495.029816,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 285,
-      "timestamp": 1787457211.1815033,
+      "timestamp": 1787457495.0298204,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 286,
-      "timestamp": 1787457211.1815076,
+      "timestamp": 1787457495.0298243,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 287,
-      "timestamp": 1787457211.1815116,
+      "timestamp": 1787457495.0298288,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 288,
-      "timestamp": 1787457211.1815162,
+      "timestamp": 1787457495.0298333,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 289,
-      "timestamp": 1787457211.1815205,
+      "timestamp": 1787457495.0298378,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 290,
-      "timestamp": 1787457211.181525,
+      "timestamp": 1787457495.029842,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 291,
-      "timestamp": 1787457211.18153,
+      "timestamp": 1787457495.0298467,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 292,
-      "timestamp": 1787457211.1815345,
+      "timestamp": 1787457495.0298529,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 293,
-      "timestamp": 1787457211.1815388,
+      "timestamp": 1787457495.0298574,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 294,
-      "timestamp": 1787457211.1815429,
+      "timestamp": 1787457495.0298615,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 295,
-      "timestamp": 1787457211.181547,
+      "timestamp": 1787457495.0298657,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 296,
-      "timestamp": 1787457211.1815526,
+      "timestamp": 1787457495.0298698,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 297,
-      "timestamp": 1787457211.1815584,
+      "timestamp": 1787457495.029874,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 298,
-      "timestamp": 1787457211.1815636,
+      "timestamp": 1787457495.0298798,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 299,
-      "timestamp": 1787457211.1815677,
+      "timestamp": 1787457495.0298848,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 300,
-      "timestamp": 1787457211.181573,
+      "timestamp": 1787457495.0298886,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 301,
-      "timestamp": 1787457211.181578,
+      "timestamp": 1787457495.029893,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 302,
-      "timestamp": 1787457211.1815827,
+      "timestamp": 1787457495.0298977,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 303,
-      "timestamp": 1787457211.1815867,
+      "timestamp": 1787457495.0299017,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 304,
-      "timestamp": 1787457211.181591,
+      "timestamp": 1787457495.029906,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 305,
-      "timestamp": 1787457211.1815953,
+      "timestamp": 1787457495.0299106,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 306,
-      "timestamp": 1787457211.1815999,
+      "timestamp": 1787457495.0299146,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 307,
-      "timestamp": 1787457211.181604,
+      "timestamp": 1787457495.029919,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 308,
-      "timestamp": 1787457211.1816084,
+      "timestamp": 1787457495.0299227,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 309,
-      "timestamp": 1787457211.1816132,
+      "timestamp": 1787457495.0299277,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 310,
-      "timestamp": 1787457211.1816185,
+      "timestamp": 1787457495.029932,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 311,
-      "timestamp": 1787457211.1816235,
+      "timestamp": 1787457495.0299368,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 312,
-      "timestamp": 1787457211.1816287,
+      "timestamp": 1787457495.0299418,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 313,
-      "timestamp": 1787457211.1816325,
+      "timestamp": 1787457495.029947,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 314,
-      "timestamp": 1787457211.1816373,
+      "timestamp": 1787457495.0299509,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 315,
-      "timestamp": 1787457211.1816418,
+      "timestamp": 1787457495.0299551,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 316,
-      "timestamp": 1787457211.181647,
+      "timestamp": 1787457495.0299592,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 317,
-      "timestamp": 1787457211.1816525,
+      "timestamp": 1787457495.0299642,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 318,
-      "timestamp": 1787457211.1816568,
+      "timestamp": 1787457495.029968,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 319,
-      "timestamp": 1787457211.1816611,
+      "timestamp": 1787457495.0299726,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 320,
-      "timestamp": 1787457211.1816664,
+      "timestamp": 1787457495.0299764,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 321,
-      "timestamp": 1787457211.1816716,
+      "timestamp": 1787457495.0299804,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 322,
-      "timestamp": 1787457211.1816766,
+      "timestamp": 1787457495.029985,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 323,
-      "timestamp": 1787457211.1816804,
+      "timestamp": 1787457495.029989,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 324,
-      "timestamp": 1787457211.181685,
+      "timestamp": 1787457495.0299928,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 325,
-      "timestamp": 1787457211.1816895,
+      "timestamp": 1787457495.0299969,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 326,
-      "timestamp": 1787457211.181694,
+      "timestamp": 1787457495.030001,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 327,
-      "timestamp": 1787457211.181698,
+      "timestamp": 1787457495.0300047,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 328,
-      "timestamp": 1787457211.1817026,
+      "timestamp": 1787457495.0300088,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 329,
-      "timestamp": 1787457211.1817079,
+      "timestamp": 1787457495.0300128,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 330,
-      "timestamp": 1787457211.1817124,
+      "timestamp": 1787457495.0300174,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 331,
-      "timestamp": 1787457211.1817174,
+      "timestamp": 1787457495.0300214,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 332,
-      "timestamp": 1787457211.1817224,
+      "timestamp": 1787457495.030026,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 333,
-      "timestamp": 1787457211.1817265,
+      "timestamp": 1787457495.03003,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 334,
-      "timestamp": 1787457211.1817322,
+      "timestamp": 1787457495.0300348,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 335,
-      "timestamp": 1787457211.1817462,
+      "timestamp": 1787457495.0300403,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 336,
-      "timestamp": 1787457211.1817517,
+      "timestamp": 1787457495.0300443,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 337,
-      "timestamp": 1787457211.1817563,
+      "timestamp": 1787457495.0300496,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 338,
-      "timestamp": 1787457211.1817605,
+      "timestamp": 1787457495.0300536,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 339,
-      "timestamp": 1787457211.1817658,
+      "timestamp": 1787457495.0300577,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 340,
-      "timestamp": 1787457211.181771,
+      "timestamp": 1787457495.0300622,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 341,
-      "timestamp": 1787457211.181776,
+      "timestamp": 1787457495.0300665,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 342,
-      "timestamp": 1787457211.1817815,
+      "timestamp": 1787457495.0300717,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 343,
-      "timestamp": 1787457211.1817863,
+      "timestamp": 1787457495.0300763,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 344,
-      "timestamp": 1787457211.1817908,
+      "timestamp": 1787457495.0300806,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 345,
-      "timestamp": 1787457211.1817946,
+      "timestamp": 1787457495.030085,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 346,
-      "timestamp": 1787457211.181799,
+      "timestamp": 1787457495.0300896,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 347,
-      "timestamp": 1787457211.1818032,
+      "timestamp": 1787457495.0300941,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 348,
-      "timestamp": 1787457211.1818075,
+      "timestamp": 1787457495.0300984,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 349,
-      "timestamp": 1787457211.1818116,
+      "timestamp": 1787457495.0301027,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 350,
-      "timestamp": 1787457211.1818159,
+      "timestamp": 1787457495.0301068,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 351,
-      "timestamp": 1787457211.1818204,
+      "timestamp": 1787457495.0301116,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 352,
-      "timestamp": 1787457211.1818256,
+      "timestamp": 1787457495.0301163,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 353,
-      "timestamp": 1787457211.1818304,
+      "timestamp": 1787457495.0301225,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 354,
-      "timestamp": 1787457211.1818354,
+      "timestamp": 1787457495.030127,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 355,
-      "timestamp": 1787457211.1818395,
+      "timestamp": 1787457495.0301323,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 356,
-      "timestamp": 1787457211.1818438,
+      "timestamp": 1787457495.0301363,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 357,
-      "timestamp": 1787457211.1818478,
+      "timestamp": 1787457495.0301409,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 358,
-      "timestamp": 1787457211.1818519,
+      "timestamp": 1787457495.030145,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 359,
-      "timestamp": 1787457211.1818557,
+      "timestamp": 1787457495.0301495,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 360,
-      "timestamp": 1787457211.181861,
+      "timestamp": 1787457495.0301535,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 361,
-      "timestamp": 1787457211.1818671,
+      "timestamp": 1787457495.030161,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 362,
-      "timestamp": 1787457211.1818714,
+      "timestamp": 1787457495.0301666,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 363,
-      "timestamp": 1787457211.1818752,
+      "timestamp": 1787457495.0301714,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 364,
-      "timestamp": 1787457211.1818793,
+      "timestamp": 1787457495.0301757,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 365,
-      "timestamp": 1787457211.1818833,
+      "timestamp": 1787457495.03018,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 366,
-      "timestamp": 1787457211.181888,
+      "timestamp": 1787457495.0301843,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 367,
-      "timestamp": 1787457211.1818917,
+      "timestamp": 1787457495.0301888,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 368,
-      "timestamp": 1787457211.181896,
+      "timestamp": 1787457495.0301929,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 369,
-      "timestamp": 1787457211.1818998,
+      "timestamp": 1787457495.0301983,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 370,
-      "timestamp": 1787457211.1819048,
+      "timestamp": 1787457495.0302029,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 371,
-      "timestamp": 1787457211.1819105,
+      "timestamp": 1787457495.0302072,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 372,
-      "timestamp": 1787457211.1819146,
+      "timestamp": 1787457495.0302136,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 373,
-      "timestamp": 1787457211.1819184,
+      "timestamp": 1787457495.0302198,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 374,
-      "timestamp": 1787457211.1819232,
+      "timestamp": 1787457495.0302243,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 375,
-      "timestamp": 1787457211.181927,
+      "timestamp": 1787457495.030229,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 376,
-      "timestamp": 1787457211.1819313,
+      "timestamp": 1787457495.0302331,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 377,
-      "timestamp": 1787457211.181935,
+      "timestamp": 1787457495.0302386,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 378,
-      "timestamp": 1787457211.1819394,
+      "timestamp": 1787457495.0302432,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 379,
-      "timestamp": 1787457211.1819432,
+      "timestamp": 1787457495.0302474,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 380,
-      "timestamp": 1787457211.1819477,
+      "timestamp": 1787457495.0302515,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 381,
-      "timestamp": 1787457211.181953,
+      "timestamp": 1787457495.0302558,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 382,
-      "timestamp": 1787457211.181957,
+      "timestamp": 1787457495.0302608,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 383,
-      "timestamp": 1787457211.1819618,
+      "timestamp": 1787457495.030265,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 384,
-      "timestamp": 1787457211.1819656,
+      "timestamp": 1787457495.0302696,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 385,
-      "timestamp": 1787457211.18197,
+      "timestamp": 1787457495.0302737,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 386,
-      "timestamp": 1787457211.181974,
+      "timestamp": 1787457495.0302784,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 387,
-      "timestamp": 1787457211.1819775,
+      "timestamp": 1787457495.0302827,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 388,
-      "timestamp": 1787457211.1819823,
+      "timestamp": 1787457495.0302868,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 389,
-      "timestamp": 1787457211.1819963,
+      "timestamp": 1787457495.0302913,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 390,
-      "timestamp": 1787457211.182005,
+      "timestamp": 1787457495.0302963,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 391,
-      "timestamp": 1787457211.1820147,
+      "timestamp": 1787457495.0303006,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 392,
-      "timestamp": 1787457211.1820254,
+      "timestamp": 1787457495.0303056,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 393,
-      "timestamp": 1787457211.1820333,
+      "timestamp": 1787457495.03031,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 394,
-      "timestamp": 1787457211.1820424,
+      "timestamp": 1787457495.0303142,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 395,
-      "timestamp": 1787457211.1820502,
+      "timestamp": 1787457495.0303187,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 396,
-      "timestamp": 1787457211.182059,
+      "timestamp": 1787457495.0303233,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 397,
-      "timestamp": 1787457211.182068,
+      "timestamp": 1787457495.0303273,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 398,
-      "timestamp": 1787457211.182077,
+      "timestamp": 1787457495.0303323,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 399,
-      "timestamp": 1787457211.1820853,
+      "timestamp": 1787457495.030337,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 400,
-      "timestamp": 1787457211.182094,
+      "timestamp": 1787457495.0303423,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 401,
-      "timestamp": 1787457211.1821055,
+      "timestamp": 1787457495.0303485,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 402,
-      "timestamp": 1787457211.1821175,
+      "timestamp": 1787457495.030354,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 403,
-      "timestamp": 1787457211.1821256,
+      "timestamp": 1787457495.0303586,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 404,
-      "timestamp": 1787457211.1821346,
+      "timestamp": 1787457495.0303624,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 405,
-      "timestamp": 1787457211.1821425,
+      "timestamp": 1787457495.0303664,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 406,
-      "timestamp": 1787457211.1821513,
+      "timestamp": 1787457495.0303702,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 407,
-      "timestamp": 1787457211.182161,
+      "timestamp": 1787457495.0303748,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 408,
-      "timestamp": 1787457211.1821716,
+      "timestamp": 1787457495.0303795,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 409,
-      "timestamp": 1787457211.1821804,
+      "timestamp": 1787457495.0303836,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 410,
-      "timestamp": 1787457211.182189,
+      "timestamp": 1787457495.0303876,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 411,
-      "timestamp": 1787457211.182199,
+      "timestamp": 1787457495.0303915,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 412,
-      "timestamp": 1787457211.1822085,
+      "timestamp": 1787457495.0303965,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 413,
-      "timestamp": 1787457211.1822166,
+      "timestamp": 1787457495.0304005,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 414,
-      "timestamp": 1787457211.1822255,
+      "timestamp": 1787457495.0304043,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 415,
-      "timestamp": 1787457211.182237,
+      "timestamp": 1787457495.0304084,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 416,
-      "timestamp": 1787457211.182246,
+      "timestamp": 1787457495.0304122,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 417,
-      "timestamp": 1787457211.1822538,
+      "timestamp": 1787457495.0304165,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 418,
-      "timestamp": 1787457211.1822617,
+      "timestamp": 1787457495.0304203,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 419,
-      "timestamp": 1787457211.18227,
+      "timestamp": 1787457495.030425,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 420,
-      "timestamp": 1787457211.1822784,
+      "timestamp": 1787457495.0304296,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 421,
-      "timestamp": 1787457211.1822875,
+      "timestamp": 1787457495.030434,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 422,
-      "timestamp": 1787457211.1822953,
+      "timestamp": 1787457495.0304384,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 423,
-      "timestamp": 1787457211.1823025,
+      "timestamp": 1787457495.0304425,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 424,
-      "timestamp": 1787457211.182314,
+      "timestamp": 1787457495.030446,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 425,
-      "timestamp": 1787457211.1823227,
+      "timestamp": 1787457495.03045,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 426,
-      "timestamp": 1787457211.1823308,
+      "timestamp": 1787457495.0304549,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 427,
-      "timestamp": 1787457211.1823382,
+      "timestamp": 1787457495.030459,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 428,
-      "timestamp": 1787457211.1823466,
+      "timestamp": 1787457495.0304627,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 429,
-      "timestamp": 1787457211.182354,
+      "timestamp": 1787457495.0304668,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 430,
-      "timestamp": 1787457211.182362,
+      "timestamp": 1787457495.0304704,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 431,
-      "timestamp": 1787457211.1823711,
+      "timestamp": 1787457495.0304744,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 432,
-      "timestamp": 1787457211.1823788,
+      "timestamp": 1787457495.03048,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 433,
-      "timestamp": 1787457211.1823862,
+      "timestamp": 1787457495.0304837,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 434,
-      "timestamp": 1787457211.182394,
+      "timestamp": 1787457495.0304878,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 435,
-      "timestamp": 1787457211.1824012,
+      "timestamp": 1787457495.0304918,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 436,
-      "timestamp": 1787457211.18241,
+      "timestamp": 1787457495.0304956,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 437,
-      "timestamp": 1787457211.1824172,
+      "timestamp": 1787457495.0305,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 438,
-      "timestamp": 1787457211.1824248,
+      "timestamp": 1787457495.0305037,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 439,
-      "timestamp": 1787457211.182432,
+      "timestamp": 1787457495.030508,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 440,
-      "timestamp": 1787457211.1824396,
+      "timestamp": 1787457495.0305126,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 441,
-      "timestamp": 1787457211.1824486,
+      "timestamp": 1787457495.0305166,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 442,
-      "timestamp": 1787457211.1824574,
+      "timestamp": 1787457495.0305216,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 443,
-      "timestamp": 1787457211.1824667,
+      "timestamp": 1787457495.0305257,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 444,
-      "timestamp": 1787457211.182475,
+      "timestamp": 1787457495.0305295,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 445,
-      "timestamp": 1787457211.182484,
+      "timestamp": 1787457495.030536,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 446,
-      "timestamp": 1787457211.1824923,
+      "timestamp": 1787457495.0305402,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 447,
-      "timestamp": 1787457211.1825,
+      "timestamp": 1787457495.0305448,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 448,
-      "timestamp": 1787457211.1825075,
+      "timestamp": 1787457495.030549,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 449,
-      "timestamp": 1787457211.1825154,
+      "timestamp": 1787457495.030553,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 450,
-      "timestamp": 1787457211.1825233,
+      "timestamp": 1787457495.0305574,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 451,
-      "timestamp": 1787457211.1825345,
+      "timestamp": 1787457495.0305617,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 452,
-      "timestamp": 1787457211.1825426,
+      "timestamp": 1787457495.030567,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 453,
-      "timestamp": 1787457211.18255,
+      "timestamp": 1787457495.0305715,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 454,
-      "timestamp": 1787457211.1825583,
+      "timestamp": 1787457495.0305753,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 455,
-      "timestamp": 1787457211.1825662,
+      "timestamp": 1787457495.03058,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 456,
-      "timestamp": 1787457211.1825767,
+      "timestamp": 1787457495.0305846,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 457,
-      "timestamp": 1787457211.1825852,
+      "timestamp": 1787457495.03059,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 458,
-      "timestamp": 1787457211.1825943,
+      "timestamp": 1787457495.0305946,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 459,
-      "timestamp": 1787457211.182602,
+      "timestamp": 1787457495.0305989,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 460,
-      "timestamp": 1787457211.1826105,
+      "timestamp": 1787457495.0306032,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 461,
-      "timestamp": 1787457211.1826193,
+      "timestamp": 1787457495.0306077,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 462,
-      "timestamp": 1787457211.1826289,
+      "timestamp": 1787457495.0306137,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 463,
-      "timestamp": 1787457211.1826363,
+      "timestamp": 1787457495.0306191,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 464,
-      "timestamp": 1787457211.1826444,
+      "timestamp": 1787457495.0306268,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 465,
-      "timestamp": 1787457211.1826525,
+      "timestamp": 1787457495.030631,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 466,
-      "timestamp": 1787457211.1826625,
+      "timestamp": 1787457495.030635,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 467,
-      "timestamp": 1787457211.18267,
+      "timestamp": 1787457495.0306392,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 468,
-      "timestamp": 1787457211.1826804,
+      "timestamp": 1787457495.030643,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 469,
-      "timestamp": 1787457211.1826868,
+      "timestamp": 1787457495.030647,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 470,
-      "timestamp": 1787457211.1826944,
+      "timestamp": 1787457495.0306509,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 471,
-      "timestamp": 1787457211.182703,
+      "timestamp": 1787457495.030655,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 472,
-      "timestamp": 1787457211.1827097,
+      "timestamp": 1787457495.03066,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 473,
-      "timestamp": 1787457211.1827161,
+      "timestamp": 1787457495.0306652,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 474,
-      "timestamp": 1787457211.1827242,
+      "timestamp": 1787457495.0306754,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 475,
-      "timestamp": 1787457211.1827316,
+      "timestamp": 1787457495.0306802,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 476,
-      "timestamp": 1787457211.1827388,
+      "timestamp": 1787457495.0306847,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 477,
-      "timestamp": 1787457211.1827455,
+      "timestamp": 1787457495.030689,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 478,
-      "timestamp": 1787457211.1827528,
+      "timestamp": 1787457495.030693,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 479,
-      "timestamp": 1787457211.1827593,
+      "timestamp": 1787457495.0306976,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 480,
-      "timestamp": 1787457211.1827707,
+      "timestamp": 1787457495.0307014,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 481,
-      "timestamp": 1787457211.1827786,
+      "timestamp": 1787457495.0307066,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 482,
-      "timestamp": 1787457211.1827862,
+      "timestamp": 1787457495.0307121,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 483,
-      "timestamp": 1787457211.182793,
+      "timestamp": 1787457495.0307174,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 484,
-      "timestamp": 1787457211.1828,
+      "timestamp": 1787457495.030722,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 485,
-      "timestamp": 1787457211.1828065,
+      "timestamp": 1787457495.030726,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 486,
-      "timestamp": 1787457211.1828132,
+      "timestamp": 1787457495.03073,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 487,
-      "timestamp": 1787457211.1828208,
+      "timestamp": 1787457495.0307343,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 488,
-      "timestamp": 1787457211.1828294,
+      "timestamp": 1787457495.0307405,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 489,
-      "timestamp": 1787457211.1828363,
+      "timestamp": 1787457495.0307448,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 490,
-      "timestamp": 1787457211.1828434,
+      "timestamp": 1787457495.0307488,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 491,
-      "timestamp": 1787457211.1828525,
+      "timestamp": 1787457495.0307531,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 492,
-      "timestamp": 1787457211.1828601,
+      "timestamp": 1787457495.0307584,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 493,
-      "timestamp": 1787457211.1828666,
+      "timestamp": 1787457495.0307624,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 494,
-      "timestamp": 1787457211.1828735,
+      "timestamp": 1787457495.0307662,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 495,
-      "timestamp": 1787457211.1828802,
+      "timestamp": 1787457495.0307705,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 496,
-      "timestamp": 1787457211.1828868,
+      "timestamp": 1787457495.0307753,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 497,
-      "timestamp": 1787457211.1828947,
+      "timestamp": 1787457495.0307794,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 498,
-      "timestamp": 1787457211.1829026,
+      "timestamp": 1787457495.0307832,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 499,
-      "timestamp": 1787457211.1829085,
+      "timestamp": 1787457495.030788,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 500,
-      "timestamp": 1787457211.1829157,
+      "timestamp": 1787457495.0307918,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 501,
-      "timestamp": 1787457211.182923,
+      "timestamp": 1787457495.0307958,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 502,
-      "timestamp": 1787457211.1829302,
+      "timestamp": 1787457495.0308003,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 503,
-      "timestamp": 1787457211.1829367,
+      "timestamp": 1787457495.0308044,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 504,
-      "timestamp": 1787457211.1829429,
+      "timestamp": 1787457495.0308094,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 505,
-      "timestamp": 1787457211.1829498,
+      "timestamp": 1787457495.0308132,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 506,
-      "timestamp": 1787457211.1829567,
+      "timestamp": 1787457495.0308173,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 507,
-      "timestamp": 1787457211.1829631,
+      "timestamp": 1787457495.0308213,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 508,
-      "timestamp": 1787457211.1829703,
+      "timestamp": 1787457495.0308254,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 509,
-      "timestamp": 1787457211.1829786,
+      "timestamp": 1787457495.0308301,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 510,
-      "timestamp": 1787457211.182986,
+      "timestamp": 1787457495.0308342,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 511,
-      "timestamp": 1787457211.1829934,
+      "timestamp": 1787457495.0308383,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 512,
-      "timestamp": 1787457211.1830006,
+      "timestamp": 1787457495.0308428,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 513,
-      "timestamp": 1787457211.183007,
+      "timestamp": 1787457495.030847,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 514,
-      "timestamp": 1787457211.183014,
+      "timestamp": 1787457495.0308511,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 515,
-      "timestamp": 1787457211.1830206,
+      "timestamp": 1787457495.0308554,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 516,
-      "timestamp": 1787457211.1830294,
+      "timestamp": 1787457495.0308595,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 517,
-      "timestamp": 1787457211.1830359,
+      "timestamp": 1787457495.0308642,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 518,
-      "timestamp": 1787457211.1830428,
+      "timestamp": 1787457495.030868,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 519,
-      "timestamp": 1787457211.1830504,
+      "timestamp": 1787457495.0308723,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 520,
-      "timestamp": 1787457211.1830575,
+      "timestamp": 1787457495.0308762,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 521,
-      "timestamp": 1787457211.183078,
+      "timestamp": 1787457495.030881,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 522,
-      "timestamp": 1787457211.183086,
+      "timestamp": 1787457495.030887,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 523,
-      "timestamp": 1787457211.183092,
+      "timestamp": 1787457495.030891,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 524,
-      "timestamp": 1787457211.183099,
+      "timestamp": 1787457495.0308945,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 525,
-      "timestamp": 1787457211.1831055,
+      "timestamp": 1787457495.0308995,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 526,
-      "timestamp": 1787457211.1831121,
+      "timestamp": 1787457495.0309033,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 527,
-      "timestamp": 1787457211.1831186,
+      "timestamp": 1787457495.0309079,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 528,
-      "timestamp": 1787457211.183126,
+      "timestamp": 1787457495.0309117,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 529,
-      "timestamp": 1787457211.1831324,
+      "timestamp": 1787457495.0309165,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 530,
-      "timestamp": 1787457211.1831405,
+      "timestamp": 1787457495.0309205,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 531,
-      "timestamp": 1787457211.1831484,
+      "timestamp": 1787457495.0309246,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 532,
-      "timestamp": 1787457211.1831555,
+      "timestamp": 1787457495.030929,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 533,
-      "timestamp": 1787457211.1831627,
+      "timestamp": 1787457495.0309331,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 534,
-      "timestamp": 1787457211.1831665,
+      "timestamp": 1787457495.0309372,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 535,
-      "timestamp": 1787457211.183171,
+      "timestamp": 1787457495.0309412,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 536,
-      "timestamp": 1787457211.1831753,
+      "timestamp": 1787457495.0309458,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 537,
-      "timestamp": 1787457211.1831794,
+      "timestamp": 1787457495.0309498,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 538,
-      "timestamp": 1787457211.1831837,
+      "timestamp": 1787457495.030954,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 539,
-      "timestamp": 1787457211.1831872,
+      "timestamp": 1787457495.030958,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 540,
-      "timestamp": 1787457211.1831918,
+      "timestamp": 1787457495.0309618,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 541,
-      "timestamp": 1787457211.1831968,
+      "timestamp": 1787457495.0309656,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 542,
-      "timestamp": 1787457211.183201,
+      "timestamp": 1787457495.03097,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 543,
-      "timestamp": 1787457211.1832051,
+      "timestamp": 1787457495.0309744,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 544,
-      "timestamp": 1787457211.1832092,
+      "timestamp": 1787457495.030979,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 545,
-      "timestamp": 1787457211.1832132,
+      "timestamp": 1787457495.0309832,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 546,
-      "timestamp": 1787457211.183218,
+      "timestamp": 1787457495.030987,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 547,
-      "timestamp": 1787457211.1832218,
+      "timestamp": 1787457495.0309923,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 548,
-      "timestamp": 1787457211.183226,
+      "timestamp": 1787457495.0309963,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 549,
-      "timestamp": 1787457211.1832302,
+      "timestamp": 1787457495.0310004,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 550,
-      "timestamp": 1787457211.1832342,
+      "timestamp": 1787457495.0310042,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 551,
-      "timestamp": 1787457211.1832407,
+      "timestamp": 1787457495.031008,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 552,
-      "timestamp": 1787457211.1832447,
+      "timestamp": 1787457495.0310125,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 553,
-      "timestamp": 1787457211.1832514,
+      "timestamp": 1787457495.031017,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 554,
-      "timestamp": 1787457211.183256,
+      "timestamp": 1787457495.0310218,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 555,
-      "timestamp": 1787457211.1832597,
+      "timestamp": 1787457495.031026,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 556,
-      "timestamp": 1787457211.183264,
+      "timestamp": 1787457495.0310297,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 557,
-      "timestamp": 1787457211.183268,
+      "timestamp": 1787457495.0310338,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 558,
-      "timestamp": 1787457211.1832724,
+      "timestamp": 1787457495.0310373,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 559,
-      "timestamp": 1787457211.1832767,
+      "timestamp": 1787457495.0310423,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 560,
-      "timestamp": 1787457211.1832812,
+      "timestamp": 1787457495.031046,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 561,
-      "timestamp": 1787457211.183286,
+      "timestamp": 1787457495.03105,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 562,
-      "timestamp": 1787457211.18329,
+      "timestamp": 1787457495.0310552,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 563,
-      "timestamp": 1787457211.1832945,
+      "timestamp": 1787457495.031059,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 564,
-      "timestamp": 1787457211.183299,
+      "timestamp": 1787457495.031063,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 565,
-      "timestamp": 1787457211.183303,
+      "timestamp": 1787457495.0310671,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 566,
-      "timestamp": 1787457211.1833074,
+      "timestamp": 1787457495.031071,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 567,
-      "timestamp": 1787457211.1833117,
+      "timestamp": 1787457495.031075,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 568,
-      "timestamp": 1787457211.1833162,
+      "timestamp": 1787457495.0310798,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 569,
-      "timestamp": 1787457211.1833203,
+      "timestamp": 1787457495.0310836,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 570,
-      "timestamp": 1787457211.1833246,
+      "timestamp": 1787457495.0310876,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 571,
-      "timestamp": 1787457211.1833303,
+      "timestamp": 1787457495.0310917,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 572,
-      "timestamp": 1787457211.1833384,
+      "timestamp": 1787457495.0310972,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 573,
-      "timestamp": 1787457211.1833422,
+      "timestamp": 1787457495.0311017,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 574,
-      "timestamp": 1787457211.1833467,
+      "timestamp": 1787457495.0311053,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 575,
-      "timestamp": 1787457211.183351,
+      "timestamp": 1787457495.0311093,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 576,
-      "timestamp": 1787457211.1833558,
+      "timestamp": 1787457495.0311134,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 577,
-      "timestamp": 1787457211.18336,
+      "timestamp": 1787457495.0311177,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 578,
-      "timestamp": 1787457211.1833646,
+      "timestamp": 1787457495.0311215,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 579,
-      "timestamp": 1787457211.1833687,
+      "timestamp": 1787457495.0311258,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 580,
-      "timestamp": 1787457211.1833732,
+      "timestamp": 1787457495.0311296,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 581,
-      "timestamp": 1787457211.1833782,
+      "timestamp": 1787457495.0311337,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 582,
-      "timestamp": 1787457211.1833827,
+      "timestamp": 1787457495.0311384,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 583,
-      "timestamp": 1787457211.1833878,
+      "timestamp": 1787457495.0311425,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 584,
-      "timestamp": 1787457211.183392,
+      "timestamp": 1787457495.031147,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 585,
-      "timestamp": 1787457211.1833968,
+      "timestamp": 1787457495.031151,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 586,
-      "timestamp": 1787457211.183402,
+      "timestamp": 1787457495.0311549,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 587,
-      "timestamp": 1787457211.1834064,
+      "timestamp": 1787457495.031159,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 588,
-      "timestamp": 1787457211.1834114,
+      "timestamp": 1787457495.0311632,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 589,
-      "timestamp": 1787457211.1834168,
+      "timestamp": 1787457495.031168,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 590,
-      "timestamp": 1787457211.1834216,
+      "timestamp": 1787457495.0311725,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 591,
-      "timestamp": 1787457211.1834269,
+      "timestamp": 1787457495.0311778,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 592,
-      "timestamp": 1787457211.1834311,
+      "timestamp": 1787457495.0311823,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 593,
-      "timestamp": 1787457211.1834369,
+      "timestamp": 1787457495.031188,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 594,
-      "timestamp": 1787457211.1834435,
+      "timestamp": 1787457495.031193,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 595,
-      "timestamp": 1787457211.1834478,
+      "timestamp": 1787457495.031197,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 596,
-      "timestamp": 1787457211.183454,
+      "timestamp": 1787457495.0312011,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 597,
-      "timestamp": 1787457211.1834583,
+      "timestamp": 1787457495.0312052,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 598,
-      "timestamp": 1787457211.1834626,
+      "timestamp": 1787457495.031209,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 599,
-      "timestamp": 1787457211.1834671,
+      "timestamp": 1787457495.0312128,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 600,
-      "timestamp": 1787457211.1834717,
+      "timestamp": 1787457495.0312169,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 601,
-      "timestamp": 1787457211.1834788,
+      "timestamp": 1787457495.031221,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 602,
-      "timestamp": 1787457211.1834831,
+      "timestamp": 1787457495.031226,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 603,
-      "timestamp": 1787457211.1834874,
+      "timestamp": 1787457495.0312302,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 604,
-      "timestamp": 1787457211.1834922,
+      "timestamp": 1787457495.031234,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 605,
-      "timestamp": 1787457211.1834965,
+      "timestamp": 1787457495.0312378,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 606,
-      "timestamp": 1787457211.1835017,
+      "timestamp": 1787457495.0312414,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 607,
-      "timestamp": 1787457211.1835065,
+      "timestamp": 1787457495.0312462,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 608,
-      "timestamp": 1787457211.1835105,
+      "timestamp": 1787457495.0312502,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 609,
-      "timestamp": 1787457211.1835146,
+      "timestamp": 1787457495.0312674,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 610,
-      "timestamp": 1787457211.1835186,
+      "timestamp": 1787457495.0312731,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 611,
-      "timestamp": 1787457211.1835234,
+      "timestamp": 1787457495.0312777,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 612,
-      "timestamp": 1787457211.183528,
+      "timestamp": 1787457495.0312824,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 613,
-      "timestamp": 1787457211.1835322,
+      "timestamp": 1787457495.031287,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 614,
-      "timestamp": 1787457211.183536,
+      "timestamp": 1787457495.0312912,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 615,
-      "timestamp": 1787457211.1835415,
+      "timestamp": 1787457495.0312955,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 616,
-      "timestamp": 1787457211.1835456,
+      "timestamp": 1787457495.0312994,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 617,
-      "timestamp": 1787457211.1835496,
+      "timestamp": 1787457495.031304,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 618,
-      "timestamp": 1787457211.1835537,
+      "timestamp": 1787457495.0313094,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 619,
-      "timestamp": 1787457211.183558,
+      "timestamp": 1787457495.0313132,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 620,
-      "timestamp": 1787457211.183562,
+      "timestamp": 1787457495.031317,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 621,
-      "timestamp": 1787457211.1835666,
+      "timestamp": 1787457495.031321,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 622,
-      "timestamp": 1787457211.1835706,
+      "timestamp": 1787457495.031326,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 623,
-      "timestamp": 1787457211.1835747,
+      "timestamp": 1787457495.031331,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 624,
-      "timestamp": 1787457211.1835787,
+      "timestamp": 1787457495.0313354,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 625,
-      "timestamp": 1787457211.1835825,
+      "timestamp": 1787457495.0313394,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 626,
-      "timestamp": 1787457211.1835876,
+      "timestamp": 1787457495.0313435,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 627,
-      "timestamp": 1787457211.1835914,
+      "timestamp": 1787457495.0313482,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 628,
-      "timestamp": 1787457211.1835957,
+      "timestamp": 1787457495.031352,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 629,
-      "timestamp": 1787457211.1835997,
+      "timestamp": 1787457495.031356,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 630,
-      "timestamp": 1787457211.1836038,
+      "timestamp": 1787457495.03136,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 631,
-      "timestamp": 1787457211.1836088,
+      "timestamp": 1787457495.0313642,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 632,
-      "timestamp": 1787457211.1836128,
+      "timestamp": 1787457495.0313697,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 633,
-      "timestamp": 1787457211.183617,
+      "timestamp": 1787457495.031374,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 634,
-      "timestamp": 1787457211.1836212,
+      "timestamp": 1787457495.031378,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 635,
-      "timestamp": 1787457211.1836257,
+      "timestamp": 1787457495.031382,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 636,
-      "timestamp": 1787457211.1836307,
+      "timestamp": 1787457495.0313864,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 637,
-      "timestamp": 1787457211.1836348,
+      "timestamp": 1787457495.0313904,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 638,
-      "timestamp": 1787457211.1836388,
+      "timestamp": 1787457495.0313942,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 639,
-      "timestamp": 1787457211.1836426,
+      "timestamp": 1787457495.0313983,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 640,
-      "timestamp": 1787457211.183647,
+      "timestamp": 1787457495.0314023,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 641,
-      "timestamp": 1787457211.183652,
+      "timestamp": 1787457495.0314064,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 642,
-      "timestamp": 1787457211.1836562,
+      "timestamp": 1787457495.0314112,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 643,
-      "timestamp": 1787457211.18366,
+      "timestamp": 1787457495.0314157,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 644,
-      "timestamp": 1787457211.183665,
+      "timestamp": 1787457495.0314198,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 645,
-      "timestamp": 1787457211.183669,
+      "timestamp": 1787457495.0314245,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 646,
-      "timestamp": 1787457211.1836739,
+      "timestamp": 1787457495.0314283,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 647,
-      "timestamp": 1787457211.1836777,
+      "timestamp": 1787457495.0314329,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 648,
-      "timestamp": 1787457211.1836822,
+      "timestamp": 1787457495.0314372,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 649,
-      "timestamp": 1787457211.1836863,
+      "timestamp": 1787457495.0314415,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 650,
-      "timestamp": 1787457211.1836903,
+      "timestamp": 1787457495.0314455,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 651,
-      "timestamp": 1787457211.1836953,
+      "timestamp": 1787457495.0314496,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 652,
-      "timestamp": 1787457211.1836996,
+      "timestamp": 1787457495.0314543,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 653,
-      "timestamp": 1787457211.183704,
+      "timestamp": 1787457495.0314593,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 654,
-      "timestamp": 1787457211.1837082,
+      "timestamp": 1787457495.031464,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 655,
-      "timestamp": 1787457211.183712,
+      "timestamp": 1787457495.0314684,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 656,
-      "timestamp": 1787457211.1837165,
+      "timestamp": 1787457495.0314722,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 657,
-      "timestamp": 1787457211.1837213,
+      "timestamp": 1787457495.031476,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 658,
-      "timestamp": 1787457211.1837258,
+      "timestamp": 1787457495.03148,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 659,
-      "timestamp": 1787457211.1837296,
+      "timestamp": 1787457495.0314841,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 660,
-      "timestamp": 1787457211.183734,
+      "timestamp": 1787457495.0314877,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 661,
-      "timestamp": 1787457211.1837387,
+      "timestamp": 1787457495.031492,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 662,
-      "timestamp": 1787457211.1837504,
+      "timestamp": 1787457495.0314968,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 663,
-      "timestamp": 1787457211.1837552,
+      "timestamp": 1787457495.0315018,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 664,
-      "timestamp": 1787457211.18376,
+      "timestamp": 1787457495.0315056,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 665,
-      "timestamp": 1787457211.1837637,
+      "timestamp": 1787457495.0315099,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 666,
-      "timestamp": 1787457211.1837678,
+      "timestamp": 1787457495.0315137,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 667,
-      "timestamp": 1787457211.1837716,
+      "timestamp": 1787457495.0315177,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 668,
-      "timestamp": 1787457211.1837761,
+      "timestamp": 1787457495.0315213,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 669,
-      "timestamp": 1787457211.18378,
+      "timestamp": 1787457495.0315256,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 670,
-      "timestamp": 1787457211.1837838,
+      "timestamp": 1787457495.0315294,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 671,
-      "timestamp": 1787457211.1837885,
+      "timestamp": 1787457495.0315332,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 672,
-      "timestamp": 1787457211.183793,
+      "timestamp": 1787457495.031538,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 673,
-      "timestamp": 1787457211.183798,
+      "timestamp": 1787457495.0315437,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 674,
-      "timestamp": 1787457211.1838028,
+      "timestamp": 1787457495.0315487,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 675,
-      "timestamp": 1787457211.183807,
+      "timestamp": 1787457495.031553,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     },
     {
       "seq": 676,
-      "timestamp": 1787457211.1838112,
+      "timestamp": 1787457495.031557,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_9012302a"
+      "source_customer": "cust_fd6ab533"
     },
     {
       "seq": 677,
-      "timestamp": 1787457211.1838152,
+      "timestamp": 1787457495.031561,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_565c8afb"
+      "source_customer": "cust_2b997629"
     },
     {
       "seq": 678,
-      "timestamp": 1787457211.1838202,
+      "timestamp": 1787457495.0315647,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0ca61436"
+      "source_customer": "cust_ab864019"
     },
     {
       "seq": 679,
-      "timestamp": 1787457211.1838253,
+      "timestamp": 1787457495.0315695,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_abbc3cb1"
+      "source_customer": "cust_3cd9f49a"
     },
     {
       "seq": 680,
-      "timestamp": 1787457211.18383,
+      "timestamp": 1787457495.031573,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_2abf95eb"
+      "source_customer": "cust_9dfdd379"
     },
     {
       "seq": 681,
-      "timestamp": 1787457211.1838348,
+      "timestamp": 1787457495.0315778,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0c41bdf3"
+      "source_customer": "cust_eedee4ec"
     },
     {
       "seq": 682,
-      "timestamp": 1787457211.183839,
+      "timestamp": 1787457495.031583,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_0b722595"
+      "source_customer": "cust_fa038eee"
     },
     {
       "seq": 683,
-      "timestamp": 1787457211.1838431,
+      "timestamp": 1787457495.0315871,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_3f73109f"
+      "source_customer": "cust_aff0b166"
     },
     {
       "seq": 684,
-      "timestamp": 1787457211.1838474,
+      "timestamp": 1787457495.0315912,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d3594432"
+      "source_customer": "cust_85f173d3"
     },
     {
       "seq": 685,
-      "timestamp": 1787457211.1838517,
+      "timestamp": 1787457495.0315952,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_fd61063d"
+      "source_customer": "cust_53208dec"
     },
     {
       "seq": 686,
-      "timestamp": 1787457211.1838558,
+      "timestamp": 1787457495.0315998,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_deef8ed4"
+      "source_customer": "cust_e43a1c50"
     },
     {
       "seq": 687,
-      "timestamp": 1787457211.1838598,
+      "timestamp": 1787457495.031604,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_b237f569"
+      "source_customer": "cust_25acbd91"
     },
     {
       "seq": 688,
-      "timestamp": 1787457211.1838639,
+      "timestamp": 1787457495.0316079,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_c96154ca"
+      "source_customer": "cust_dd687022"
     },
     {
       "seq": 689,
-      "timestamp": 1787457211.1838675,
+      "timestamp": 1787457495.031612,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_7d8d739f"
+      "source_customer": "cust_2128303d"
     },
     {
       "seq": 690,
-      "timestamp": 1787457211.1838715,
+      "timestamp": 1787457495.0316157,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_5dbbfee5"
+      "source_customer": "cust_9d009396"
     },
     {
       "seq": 691,
-      "timestamp": 1787457211.1838763,
+      "timestamp": 1787457495.0316198,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_ef5f5cca"
+      "source_customer": "cust_b3db2529"
     },
     {
       "seq": 692,
-      "timestamp": 1787457211.1838808,
+      "timestamp": 1787457495.0316248,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_38828f90"
+      "source_customer": "cust_e203c96a"
     },
     {
       "seq": 693,
-      "timestamp": 1787457211.1838846,
+      "timestamp": 1787457495.0316293,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_e7f31145"
+      "source_customer": "cust_c2c0a7d1"
     },
     {
       "seq": 694,
-      "timestamp": 1787457211.1838887,
+      "timestamp": 1787457495.0316331,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_000bf3ce"
+      "source_customer": "cust_03ea8cc6"
     },
     {
       "seq": 695,
-      "timestamp": 1787457211.1838927,
+      "timestamp": 1787457495.031638,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_d9ea59aa"
+      "source_customer": "cust_64734250"
     },
     {
       "seq": 696,
-      "timestamp": 1787457211.1838975,
+      "timestamp": 1787457495.0316422,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_4c24b6d9"
+      "source_customer": "cust_ebabbe54"
     },
     {
       "seq": 697,
-      "timestamp": 1787457211.1839015,
+      "timestamp": 1787457495.0316463,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_17e77dec"
+      "source_customer": "cust_3ec78d2e"
     },
     {
       "seq": 698,
-      "timestamp": 1787457211.1839068,
+      "timestamp": 1787457495.0316503,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_6941ca92"
+      "source_customer": "cust_559199d0"
     },
     {
       "seq": 699,
-      "timestamp": 1787457211.1839106,
+      "timestamp": 1787457495.0316553,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_16ca1028"
+      "source_customer": "cust_fc6fe614"
     },
     {
       "seq": 700,
-      "timestamp": 1787457211.1839159,
+      "timestamp": 1787457495.0316594,
       "event": "pattern_tx_generated",
-      "source_customer": "cust_61ab48c4"
+      "source_customer": "cust_015ac2c4"
     }
   ]
 }

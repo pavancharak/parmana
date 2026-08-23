@@ -40,19 +40,19 @@ python probe_detector.py
 cd ../web && python -m http.server 8000
 ```
 
-Then open `http://localhost:8000`. Five minutes, five tabs.
+Then open `http://localhost:8000`. Five minutes, four tabs, plain English.
 
 ## What you'll see
 
-**Tab 1: Attacks.** The seven fraud techniques, with a badge on each showing whether it was simulated (and how) or left as a known gap.
+**Tab 1: Attacks.** The seven fraud techniques in plain language, with a badge on each showing whether it was simulated and how many examples we generated, or left as a known gap.
 
-**Tab 2: Simulator.** Click "Replay agent simulation" and watch each agent request its token and generate fraud transactions. Click "Show signed authorization token" on any agent card. You'll see the actual JSON, for example `"max_operations": 10`, and the execution log next to it showing the agent generated exactly that many or fewer, never more.
+**Tab 2: Simulation.** One big number: total attack records generated. A simple breakdown by attack type underneath. Click "View Sample Data" for a readable table of real records, amount, merchant, and outcome, no JSON.
 
-**Tab 3: Detector.** Confusion matrix, the top signals the model actually relies on, and a sample of signed block decisions. Click any row to see the full signed JSON record, including the signature. Below that, the override log: three real examples of a human (or a downstream monitoring system) changing a decision, each signed by the reviewer key, with a name and a written justification.
+**Tab 3: Detection Results.** The headline catch rate, a green/red split bar for caught versus missed, and the false positive rate stated plainly. An honest paragraph on why fraud slips through. Click "View Missed Attacks" for real examples that got past the detector.
 
-**Tab 4: Red Team.** Agent 3's amount probing results (a real chart of score versus amount, with the discovered threshold if one exists) and Agent 7's evasion attempts (which GPT suggested variants actually reduced a real blocked transaction's score below the line). Both reports are signed; click through to see the raw JSON.
+**Tab 4: Proof.** Blocks, overrides, and token enforcement as simple verified stat cards, plus the two red team results (threshold found, evasions found) folded in as more of the same. Click "See Sample Signature" for one real signed record.
 
-**Tab 5: Honest Answer.** What this system can prove, what it can't, and one concrete transaction (ID, score, decision, signature) that you can verify yourself against `tokens/authority_public_key.pem`.
+The full technical detail behind all of this, the raw signed JSON, the actual GPT prompts, the Ed25519 verification code, is in `docs/how_it_works.txt` and the `src/` files for anyone who wants to go deeper. The dashboard is the front door; nothing is hidden, just not dumped on screen by default.
 
 ## Honest limitations
 

@@ -152,6 +152,9 @@ def generate_signed_decisions(model, tx_test, scores):
                 "ground_truth": {
                     "is_fraud": tx["is_fraud"],
                     "attack_type": tx.get("attack_type", "none"),
+                    "amount": tx["amount"],
+                    "merchant": tx["merchant"],
+                    "currency": tx.get("currency", "USD"),
                 },
             }
         )
