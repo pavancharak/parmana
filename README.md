@@ -40,6 +40,10 @@ python -m http.server 8000 -d ../web
 
 Open `http://localhost:8000`. `generate_docx.py` writes `Parmana.docx` in the project root, a short written walkthrough with the same real numbers.
 
+<img width="1285" height="963" alt="image" src="https://github.com/user-attachments/assets/fc8b306e-c5c4-407e-8b7f-9073929bb88c" />
+<img width="1893" height="966" alt="image" src="https://github.com/user-attachments/assets/52a552d9-a0ed-4484-9227-1724ea42ff51" />
+
+
 ## Why this matters
 
 Standard fraud detection: *"We caught 88% of fraud. Here are our logs."*
