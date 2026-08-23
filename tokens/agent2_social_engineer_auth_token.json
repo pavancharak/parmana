@@ -2,11 +2,11 @@
   "token_type": "agent_authorization",
   "agent_id": "agent2_social_engineer",
   "action": "generate_social_engineering_transcripts",
-  "max_operations": 8,
-  "issued_at": 1787465277.0361814,
-  "expires_at": 1787468877.0361814,
-  "record_id": "0766d72d-4d57-48e7-b89e-fac10e4b72e0",
-  "signed_at": 1787465277.0361915,
+  "max_operations": 175,
+  "issued_at": 1787469444.1698742,
+  "expires_at": 1787473044.1698742,
+  "record_id": "4258bd28-b553-41fe-9c29-e9bf09e6a527",
+  "signed_at": 1787469444.1699078,
   "signer": "authority",
-  "signature": "f115f65685f9cea24e6e8e89cec74f8990250fbc1fa80bb073a4dfc7513a8c4907a9eb05406bfd52f05833defa84080dc909b11fb81ee327e62e20936b9b0703"
+  "signature": "55f7d7d1a7cee7aaf6e2aec41ddfca922cef4ca38d620b8105c0f398ac9818f154024cd3f6e7f81d3f81298e6cad345de4a8ba192cdf71d2b6531bbd5659d504"
 }

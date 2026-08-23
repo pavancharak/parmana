@@ -1,59 +1,1235 @@
 {
   "agent_id": "agent2_social_engineer",
-  "token_record_id": "0766d72d-4d57-48e7-b89e-fac10e4b72e0",
-  "authorized_max": 8,
-  "actually_executed": 7,
+  "token_record_id": "4258bd28-b553-41fe-9c29-e9bf09e6a527",
+  "authorized_max": 175,
+  "actually_executed": 175,
   "within_bounds": true,
   "signature_verifies": true,
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787465288.843952,
+      "timestamp": 1787469737.4982655,
       "event": "transcript_generated",
       "tactic": "urgency",
       "outcome": "succeeded"
     },
     {
       "seq": 2,
-      "timestamp": 1787465288.8439937,
+      "timestamp": 1787469737.4983518,
       "event": "transcript_generated",
       "tactic": "impersonating IT",
       "outcome": "succeeded"
     },
     {
       "seq": 3,
-      "timestamp": 1787465288.8440056,
+      "timestamp": 1787469737.4983957,
       "event": "transcript_generated",
       "tactic": "fake charity emergency",
-      "outcome": "failed"
+      "outcome": "succeeded"
     },
     {
       "seq": 4,
-      "timestamp": 1787465288.8440063,
+      "timestamp": 1787469737.4984238,
       "event": "transcript_generated",
-      "tactic": "urgency",
+      "tactic": "emotional distress",
       "outcome": "succeeded"
     },
     {
       "seq": 5,
-      "timestamp": 1787465288.8440146,
+      "timestamp": 1787469737.4984508,
       "event": "transcript_generated",
-      "tactic": "impersonating vendor support",
+      "tactic": "friend helping friend",
       "outcome": "failed"
     },
     {
       "seq": 6,
-      "timestamp": 1787465288.8440156,
+      "timestamp": 1787469737.4984536,
+      "event": "transcript_generated",
+      "tactic": "urgent tech issue",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 7,
+      "timestamp": 1787469737.498478,
+      "event": "transcript_generated",
+      "tactic": "claiming account fraud",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 8,
+      "timestamp": 1787469737.4985023,
+      "event": "transcript_generated",
+      "tactic": "fake urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 9,
+      "timestamp": 1787469737.498524,
+      "event": "transcript_generated",
+      "tactic": "disguised identity",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 10,
+      "timestamp": 1787469737.4985504,
+      "event": "transcript_generated",
+      "tactic": "urgent financial need",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 11,
+      "timestamp": 1787469737.4985805,
+      "event": "transcript_generated",
+      "tactic": "emergency situation",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 12,
+      "timestamp": 1787469737.4986038,
+      "event": "transcript_generated",
+      "tactic": "family emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 13,
+      "timestamp": 1787469737.498624,
+      "event": "transcript_generated",
+      "tactic": "pressure for urgent help",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 14,
+      "timestamp": 1787469737.498646,
+      "event": "transcript_generated",
+      "tactic": "pretending to be a partner",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 15,
+      "timestamp": 1787469737.4986665,
+      "event": "transcript_generated",
+      "tactic": "using a familiar detail",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 16,
+      "timestamp": 1787469737.4986882,
+      "event": "transcript_generated",
+      "tactic": "direct confrontation",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 17,
+      "timestamp": 1787469737.4987087,
+      "event": "transcript_generated",
+      "tactic": "emphasizing urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 18,
+      "timestamp": 1787469737.4987316,
+      "event": "transcript_generated",
+      "tactic": "claiming technical issues",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 19,
+      "timestamp": 1787469737.4987507,
+      "event": "transcript_generated",
+      "tactic": "asserting importance",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 20,
+      "timestamp": 1787469737.4987724,
+      "event": "transcript_generated",
+      "tactic": "using a familiar name",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 21,
+      "timestamp": 1787469737.4987962,
+      "event": "transcript_generated",
+      "tactic": "pressuring the agent",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 22,
+      "timestamp": 1787469737.4988189,
+      "event": "transcript_generated",
+      "tactic": "rushing",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 23,
+      "timestamp": 1787469737.4988415,
+      "event": "transcript_generated",
+      "tactic": "overstating urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 24,
+      "timestamp": 1787469737.4988635,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 25,
+      "timestamp": 1787469737.4988828,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 26,
+      "timestamp": 1787469737.498906,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 27,
+      "timestamp": 1787469737.4989078,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 28,
+      "timestamp": 1787469737.4989269,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 29,
+      "timestamp": 1787469737.4989476,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 30,
+      "timestamp": 1787469737.4989495,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 31,
+      "timestamp": 1787469737.498969,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 32,
+      "timestamp": 1787469737.4989905,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 33,
+      "timestamp": 1787469737.498993,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 34,
+      "timestamp": 1787469737.4990165,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 35,
+      "timestamp": 1787469737.4990458,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 36,
+      "timestamp": 1787469737.499048,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 37,
+      "timestamp": 1787469737.4990673,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 38,
+      "timestamp": 1787469737.499089,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 39,
+      "timestamp": 1787469737.4991083,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 40,
+      "timestamp": 1787469737.4991298,
       "event": "transcript_generated",
       "tactic": "fake charity emergency",
       "outcome": "succeeded"
     },
     {
-      "seq": 7,
-      "timestamp": 1787465288.8440218,
+      "seq": 41,
+      "timestamp": 1787469737.4991498,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 42,
+      "timestamp": 1787469737.4991524,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 43,
+      "timestamp": 1787469737.4991539,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 44,
+      "timestamp": 1787469737.4991758,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 45,
+      "timestamp": 1787469737.4991777,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 46,
+      "timestamp": 1787469737.4991794,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 47,
+      "timestamp": 1787469737.4991987,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 48,
+      "timestamp": 1787469737.4992042,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 49,
+      "timestamp": 1787469737.4992056,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 50,
+      "timestamp": 1787469737.4992268,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 51,
+      "timestamp": 1787469737.4992287,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 52,
+      "timestamp": 1787469737.4992301,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 53,
+      "timestamp": 1787469737.499256,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 54,
+      "timestamp": 1787469737.4992611,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 55,
+      "timestamp": 1787469737.499263,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 56,
+      "timestamp": 1787469737.4992645,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 57,
+      "timestamp": 1787469737.4992661,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 58,
+      "timestamp": 1787469737.4992673,
+      "event": "transcript_generated",
+      "tactic": "urgent money transfer",
+      "outcome": "failed"
+    },
+    {
+      "seq": 59,
+      "timestamp": 1787469737.4992685,
+      "event": "transcript_generated",
+      "tactic": "impersonating a manager",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 60,
+      "timestamp": 1787469737.499292,
+      "event": "transcript_generated",
+      "tactic": "family emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 61,
+      "timestamp": 1787469737.4992933,
+      "event": "transcript_generated",
+      "tactic": "account takeover",
+      "outcome": "failed"
+    },
+    {
+      "seq": 62,
+      "timestamp": 1787469737.4992948,
+      "event": "transcript_generated",
+      "tactic": "gift card scam",
+      "outcome": "failed"
+    },
+    {
+      "seq": 63,
+      "timestamp": 1787469737.499296,
+      "event": "transcript_generated",
+      "tactic": "urgent refund request",
+      "outcome": "failed"
+    },
+    {
+      "seq": 64,
+      "timestamp": 1787469737.4992974,
+      "event": "transcript_generated",
+      "tactic": "special holiday offer",
+      "outcome": "failed"
+    },
+    {
+      "seq": 65,
+      "timestamp": 1787469737.4992988,
+      "event": "transcript_generated",
+      "tactic": "child in trouble",
+      "outcome": "failed"
+    },
+    {
+      "seq": 66,
+      "timestamp": 1787469737.4993021,
+      "event": "transcript_generated",
+      "tactic": "acting as a distressed user",
+      "outcome": "failed"
+    },
+    {
+      "seq": 67,
+      "timestamp": 1787469737.4993033,
+      "event": "transcript_generated",
+      "tactic": "fake tech support",
+      "outcome": "failed"
+    },
+    {
+      "seq": 68,
+      "timestamp": 1787469737.4993048,
+      "event": "transcript_generated",
+      "tactic": "emergency loan request",
+      "outcome": "failed"
+    },
+    {
+      "seq": 69,
+      "timestamp": 1787469737.499306,
+      "event": "transcript_generated",
+      "tactic": "urgent card issue",
+      "outcome": "failed"
+    },
+    {
+      "seq": 70,
+      "timestamp": 1787469737.4993072,
+      "event": "transcript_generated",
+      "tactic": "account access from abroad",
+      "outcome": "failed"
+    },
+    {
+      "seq": 71,
+      "timestamp": 1787469737.4993086,
+      "event": "transcript_generated",
+      "tactic": "immediate transfer request",
+      "outcome": "failed"
+    },
+    {
+      "seq": 72,
+      "timestamp": 1787469737.4993098,
+      "event": "transcript_generated",
+      "tactic": "fake bank representative",
+      "outcome": "failed"
+    },
+    {
+      "seq": 73,
+      "timestamp": 1787469737.4993112,
+      "event": "transcript_generated",
+      "tactic": "emergency wallet recovery",
+      "outcome": "failed"
+    },
+    {
+      "seq": 74,
+      "timestamp": 1787469737.4993124,
+      "event": "transcript_generated",
+      "tactic": "fake police inquiry",
+      "outcome": "failed"
+    },
+    {
+      "seq": 75,
+      "timestamp": 1787469737.4993134,
+      "event": "transcript_generated",
+      "tactic": "urgent travel emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 76,
+      "timestamp": 1787469737.4993148,
+      "event": "transcript_generated",
+      "tactic": "tax refund scam",
+      "outcome": "failed"
+    },
+    {
+      "seq": 77,
+      "timestamp": 1787469737.499316,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 78,
+      "timestamp": 1787469737.499319,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 79,
+      "timestamp": 1787469737.4993203,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 80,
+      "timestamp": 1787469737.4993253,
       "event": "transcript_generated",
       "tactic": "urgency",
       "outcome": "succeeded"
+    },
+    {
+      "seq": 81,
+      "timestamp": 1787469737.4993463,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 82,
+      "timestamp": 1787469737.4993477,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 83,
+      "timestamp": 1787469737.4993486,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 84,
+      "timestamp": 1787469737.4993503,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 85,
+      "timestamp": 1787469737.4993517,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 86,
+      "timestamp": 1787469737.499353,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 87,
+      "timestamp": 1787469737.499374,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 88,
+      "timestamp": 1787469737.499375,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 89,
+      "timestamp": 1787469737.4993763,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 90,
+      "timestamp": 1787469737.4993777,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 91,
+      "timestamp": 1787469737.499379,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 92,
+      "timestamp": 1787469737.49938,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 93,
+      "timestamp": 1787469737.4993815,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 94,
+      "timestamp": 1787469737.499384,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 95,
+      "timestamp": 1787469737.499385,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 96,
+      "timestamp": 1787469737.4994085,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 97,
+      "timestamp": 1787469737.49943,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 98,
+      "timestamp": 1787469737.4994314,
+      "event": "transcript_generated",
+      "tactic": "friend of a friend",
+      "outcome": "failed"
+    },
+    {
+      "seq": 99,
+      "timestamp": 1787469737.4994328,
+      "event": "transcript_generated",
+      "tactic": "technical failure",
+      "outcome": "failed"
+    },
+    {
+      "seq": 100,
+      "timestamp": 1787469737.4994342,
+      "event": "transcript_generated",
+      "tactic": "urgent family emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 101,
+      "timestamp": 1787469737.499454,
+      "event": "transcript_generated",
+      "tactic": "fake tech support",
+      "outcome": "failed"
+    },
+    {
+      "seq": 102,
+      "timestamp": 1787469737.4994555,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 103,
+      "timestamp": 1787469737.499457,
+      "event": "transcript_generated",
+      "tactic": "emergency situation",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 104,
+      "timestamp": 1787469737.4994814,
+      "event": "transcript_generated",
+      "tactic": "fake police report",
+      "outcome": "failed"
+    },
+    {
+      "seq": 105,
+      "timestamp": 1787469737.4994829,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 106,
+      "timestamp": 1787469737.4995015,
+      "event": "transcript_generated",
+      "tactic": "impersonating a family member",
+      "outcome": "failed"
+    },
+    {
+      "seq": 107,
+      "timestamp": 1787469737.4995031,
+      "event": "transcript_generated",
+      "tactic": "fake tech support",
+      "outcome": "failed"
+    },
+    {
+      "seq": 108,
+      "timestamp": 1787469737.499504,
+      "event": "transcript_generated",
+      "tactic": "emergency situation",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 109,
+      "timestamp": 1787469737.499527,
+      "event": "transcript_generated",
+      "tactic": "friend of a friend",
+      "outcome": "failed"
+    },
+    {
+      "seq": 110,
+      "timestamp": 1787469737.4995303,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 111,
+      "timestamp": 1787469737.4995315,
+      "event": "transcript_generated",
+      "tactic": "children's charity",
+      "outcome": "failed"
+    },
+    {
+      "seq": 112,
+      "timestamp": 1787469737.499537,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 113,
+      "timestamp": 1787469737.4995382,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 114,
+      "timestamp": 1787469737.4995625,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 115,
+      "timestamp": 1787469737.4995637,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 116,
+      "timestamp": 1787469737.4995654,
+      "event": "transcript_generated",
+      "tactic": "technical difficulty",
+      "outcome": "failed"
+    },
+    {
+      "seq": 117,
+      "timestamp": 1787469737.4995666,
+      "event": "transcript_generated",
+      "tactic": "emergency family situation",
+      "outcome": "failed"
+    },
+    {
+      "seq": 118,
+      "timestamp": 1787469737.499568,
+      "event": "transcript_generated",
+      "tactic": "urgent transaction dispute",
+      "outcome": "failed"
+    },
+    {
+      "seq": 119,
+      "timestamp": 1787469737.4995692,
+      "event": "transcript_generated",
+      "tactic": "impersonating a bank employee",
+      "outcome": "failed"
+    },
+    {
+      "seq": 120,
+      "timestamp": 1787469737.4995704,
+      "event": "transcript_generated",
+      "tactic": "fake personal crisis",
+      "outcome": "failed"
+    },
+    {
+      "seq": 121,
+      "timestamp": 1787469737.4995718,
+      "event": "transcript_generated",
+      "tactic": "fake government representative",
+      "outcome": "failed"
+    },
+    {
+      "seq": 122,
+      "timestamp": 1787469737.499573,
+      "event": "transcript_generated",
+      "tactic": "fake tech support",
+      "outcome": "failed"
+    },
+    {
+      "seq": 123,
+      "timestamp": 1787469737.4995742,
+      "event": "transcript_generated",
+      "tactic": "family member in distress",
+      "outcome": "failed"
+    },
+    {
+      "seq": 124,
+      "timestamp": 1787469737.4995754,
+      "event": "transcript_generated",
+      "tactic": "urgent bill payment",
+      "outcome": "failed"
+    },
+    {
+      "seq": 125,
+      "timestamp": 1787469737.4995766,
+      "event": "transcript_generated",
+      "tactic": "pretending to be a victim of fraud",
+      "outcome": "failed"
+    },
+    {
+      "seq": 126,
+      "timestamp": 1787469737.4995778,
+      "event": "transcript_generated",
+      "tactic": "family emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 127,
+      "timestamp": 1787469737.499579,
+      "event": "transcript_generated",
+      "tactic": "pretending to be a lawyer",
+      "outcome": "failed"
+    },
+    {
+      "seq": 128,
+      "timestamp": 1787469737.4995801,
+      "event": "transcript_generated",
+      "tactic": "urgent online purchase",
+      "outcome": "failed"
+    },
+    {
+      "seq": 129,
+      "timestamp": 1787469737.4995813,
+      "event": "transcript_generated",
+      "tactic": "claiming card was lost in travel",
+      "outcome": "failed"
+    },
+    {
+      "seq": 130,
+      "timestamp": 1787469737.499584,
+      "event": "transcript_generated",
+      "tactic": "fake business emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 131,
+      "timestamp": 1787469737.499585,
+      "event": "transcript_generated",
+      "tactic": "claiming to be a victim of fraud",
+      "outcome": "failed"
+    },
+    {
+      "seq": 132,
+      "timestamp": 1787469737.4995863,
+      "event": "transcript_generated",
+      "tactic": "urgent transaction request",
+      "outcome": "failed"
+    },
+    {
+      "seq": 133,
+      "timestamp": 1787469737.4995875,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 134,
+      "timestamp": 1787469737.4996107,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 135,
+      "timestamp": 1787469737.4996119,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 136,
+      "timestamp": 1787469737.4996133,
+      "event": "transcript_generated",
+      "tactic": "emotional distress",
+      "outcome": "failed"
+    },
+    {
+      "seq": 137,
+      "timestamp": 1787469737.4996145,
+      "event": "transcript_generated",
+      "tactic": "technical issue",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 138,
+      "timestamp": 1787469737.4996336,
+      "event": "transcript_generated",
+      "tactic": "pretending to be authorized personnel",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 139,
+      "timestamp": 1787469737.4996543,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 140,
+      "timestamp": 1787469737.4996736,
+      "event": "transcript_generated",
+      "tactic": "friend in need",
+      "outcome": "failed"
+    },
+    {
+      "seq": 141,
+      "timestamp": 1787469737.499675,
+      "event": "transcript_generated",
+      "tactic": "technical issue",
+      "outcome": "failed"
+    },
+    {
+      "seq": 142,
+      "timestamp": 1787469737.4996762,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 143,
+      "timestamp": 1787469737.4996774,
+      "event": "transcript_generated",
+      "tactic": "pretending to be authorized personnel",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 144,
+      "timestamp": 1787469737.4997025,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 145,
+      "timestamp": 1787469737.499722,
+      "event": "transcript_generated",
+      "tactic": "friend in need",
+      "outcome": "failed"
+    },
+    {
+      "seq": 146,
+      "timestamp": 1787469737.4997234,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 147,
+      "timestamp": 1787469737.4997249,
+      "event": "transcript_generated",
+      "tactic": "technical issue",
+      "outcome": "failed"
+    },
+    {
+      "seq": 148,
+      "timestamp": 1787469737.4997258,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 149,
+      "timestamp": 1787469737.4997315,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 150,
+      "timestamp": 1787469737.4997542,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 151,
+      "timestamp": 1787469737.4997737,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "failed"
+    },
+    {
+      "seq": 152,
+      "timestamp": 1787469737.499775,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "failed"
+    },
+    {
+      "seq": 153,
+      "timestamp": 1787469737.49978,
+      "event": "transcript_generated",
+      "tactic": "family emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 154,
+      "timestamp": 1787469737.4998012,
+      "event": "transcript_generated",
+      "tactic": "technical issue",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 155,
+      "timestamp": 1787469737.4998236,
+      "event": "transcript_generated",
+      "tactic": "old customer",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 156,
+      "timestamp": 1787469737.4998446,
+      "event": "transcript_generated",
+      "tactic": "urgent payment",
+      "outcome": "failed"
+    },
+    {
+      "seq": 157,
+      "timestamp": 1787469737.4998462,
+      "event": "transcript_generated",
+      "tactic": "prank call",
+      "outcome": "failed"
+    },
+    {
+      "seq": 158,
+      "timestamp": 1787469737.4998474,
+      "event": "transcript_generated",
+      "tactic": "travel emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 159,
+      "timestamp": 1787469737.4998686,
+      "event": "transcript_generated",
+      "tactic": "customer satisfaction",
+      "outcome": "failed"
+    },
+    {
+      "seq": 160,
+      "timestamp": 1787469737.49987,
+      "event": "transcript_generated",
+      "tactic": "imposter customer",
+      "outcome": "failed"
+    },
+    {
+      "seq": 161,
+      "timestamp": 1787469737.4998713,
+      "event": "transcript_generated",
+      "tactic": "urgent refund",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 162,
+      "timestamp": 1787469737.4998925,
+      "event": "transcript_generated",
+      "tactic": "technical difficulties",
+      "outcome": "failed"
+    },
+    {
+      "seq": 163,
+      "timestamp": 1787469737.4998937,
+      "event": "transcript_generated",
+      "tactic": "friend in need",
+      "outcome": "failed"
+    },
+    {
+      "seq": 164,
+      "timestamp": 1787469737.499895,
+      "event": "transcript_generated",
+      "tactic": "personal tragedy",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 165,
+      "timestamp": 1787469737.4999135,
+      "event": "transcript_generated",
+      "tactic": "last-minute booking",
+      "outcome": "failed"
+    },
+    {
+      "seq": 166,
+      "timestamp": 1787469737.4999151,
+      "event": "transcript_generated",
+      "tactic": "urgent car repair",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 167,
+      "timestamp": 1787469737.4999356,
+      "event": "transcript_generated",
+      "tactic": "identity theft",
+      "outcome": "failed"
+    },
+    {
+      "seq": 168,
+      "timestamp": 1787469737.4999373,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 169,
+      "timestamp": 1787469737.4999564,
+      "event": "transcript_generated",
+      "tactic": "impersonating IT",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 170,
+      "timestamp": 1787469737.499977,
+      "event": "transcript_generated",
+      "tactic": "fake charity emergency",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 171,
+      "timestamp": 1787469737.4999957,
+      "event": "transcript_generated",
+      "tactic": "fear of suspension",
+      "outcome": "failed"
+    },
+    {
+      "seq": 172,
+      "timestamp": 1787469737.499997,
+      "event": "transcript_generated",
+      "tactic": "pretending to be a family member",
+      "outcome": "failed"
+    },
+    {
+      "seq": 173,
+      "timestamp": 1787469737.499998,
+      "event": "transcript_generated",
+      "tactic": "using an official tone",
+      "outcome": "succeeded"
+    },
+    {
+      "seq": 174,
+      "timestamp": 1787469737.5000196,
+      "event": "transcript_generated",
+      "tactic": "authority",
+      "outcome": "failed"
+    },
+    {
+      "seq": 175,
+      "timestamp": 1787469737.5000243,
+      "event": "transcript_generated",
+      "tactic": "urgency",
+      "outcome": "failed"
     }
   ]
 }

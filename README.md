@@ -17,8 +17,8 @@ This is verifiable proof, not just a claim.
 ## What you'll see
 
 - **7 real fraud attacks.** We identified 7 ways AI can commit payment fraud. We simulated 6 of them, and honestly flag the 1 we didn't build.
-- **1,007 attack records.** Real, AI generated and pattern based examples used to test our detector, from an actual run, not a mockup.
-- **88.41% caught.** Our system caught most attacks. We admit we missed 11.59%, and explain exactly why below.
+- **797 attack records, roughly 175 per attack type.** Real, AI generated and pattern based examples used to test our detector, from an actual run, not a mockup.
+- **93.72% caught.** Our system caught nearly all attacks. We admit we missed 6.28%, and explain exactly why below.
 - **Verified blocking.** Every block decision is signed by an authority outside the detector. You can check every signature yourself.
 
 ## Run it
@@ -42,9 +42,9 @@ Open `http://localhost:8000`. `generate_docx.py` writes `Parmana.docx` in the pr
 
 ## Why this matters
 
-Standard fraud detection: *"We caught 88% of fraud. Here are our logs."*
+Standard fraud detection: *"We caught 94% of fraud. Here are our logs."*
 
-This system: *"We caught 88% of fraud. Here's the signature from an outside authority proving each block happened. Verify it yourself. And here's the honest log of the 12% we missed."*
+This system: *"We caught 94% of fraud. Here's the signature from an outside authority proving each block happened. Verify it yourself. And here's the honest log of the 6% we missed."*
 
 The difference: proof instead of trust.
 
@@ -62,9 +62,9 @@ The dashboard opens on API Activity by design, that's the proof this is real, no
 
 **Attacks:** here are the 7 attacks we tested against.
 
-**Simulation:** we generated 1,007 real examples of them.
+**Simulation:** we generated 797 real examples of them, roughly 175 per attack type.
 
-**Detection Results:** our detector caught 88.41%, missed 11.59%, here's why.
+**Detection Results:** our detector caught 93.72%, missed 6.28%, here's why.
 
 **Proof:** every block decision is signed by an authority outside the detector. You can verify it.
 
@@ -76,31 +76,32 @@ Bottom line: this isn't just a fraud detector. It's a detector with verifiable g
 
 | Metric | Value |
 |---|---|
-| Attack records generated | 1,007 |
-| Fraud caught | 88.41% |
-| False alarms (good transactions wrongly flagged) | 5.43% |
-| Fraud missed | 11.59% |
-| Signed decisions checked | 578/578 verified |
+| Attack records generated | 797 (roughly 175 per attack type) |
+| Fraud caught | 93.72% |
+| False alarms (good transactions wrongly flagged) | 8.45% |
+| Fraud missed | 6.28% |
+| Signed decisions checked | 582/582 verified |
 | Overrides checked | 3/3 verified |
 | Agent limits checked | 7/7 verified |
+| Real AI calls this run | 47, $0.0399 total, logged on the API Activity tab |
 
 All real. All from one run. No cherry picked numbers, and no rounding up.
 
-## Why did 11.59% slip through?
+## Why did 6.28% slip through?
 
 We didn't guess at reasons. We checked which attacks the detector actually missed, and how often.
 
-**1. Amount isn't the signal.** We tested amounts from $10 to $10,000 against the trained detector, holding everything else typical. No amount alone ever triggered a block. The detector scores behavior and context, not the dollar figure, so a $450 fake transaction can look identical to a $450 real one.
+**1. Amount isn't the signal.** We tested 175 amounts from $10 to $10,000 against the trained detector, holding everything else typical. No amount alone ever triggered a block. The detector scores behavior and context, not the dollar figure, so a $450 fake transaction can look identical to a $450 real one.
 
-**2. Fake identities are the hardest attack to catch.** 40% of our fake identity attacks (4 of 10 in the test set) got through. These are built specifically to copy a real spending pattern, buy from the same kind of merchants, at the same kind of times, at a similar amount. When the imitation is good, the detector has little left to go on.
+**2. Fake identities are still the hardest attack to catch.** 14.8% of our fake identity attacks (9 of 61 in the test set) got through, the highest miss rate of any category. These are built specifically to copy a real spending pattern, buy from the same kind of merchants, at the same kind of times, at a similar amount. When the imitation is good, the detector has little left to go on.
 
-**3. Fake identity documents are close behind.** In our small sample, 3 of 5 synthetic identity bundles we generated scored low enough to pass. Internally consistent fake data (a name, age, address, and income that all agree with each other) looks a lot like a real, boring customer.
+**3. Copied spending patterns are the next hardest.** 10.3% of our card testing attacks (6 of 58) got through, mostly the ones we deliberately slowed down to avoid looking like a burst of activity.
 
-**4. The biggest volume of misses comes from copied spending patterns.** 13.3% of our card testing attacks (28 of 211) got through, mostly the ones we deliberately slowed down to avoid looking like a burst of activity.
+**4. Document forgery, social engineering, and form attacks were fully caught this run.** 0 missed out of 45, 17, and 58 tested respectively. That's a real result from this run, not a guarantee it holds at every scale, small categories can swing to 0% or back up on a different run.
 
-**5. A small share of decisions are genuine judgment calls.** About 2.4% of all decisions scored close enough to the boundary that a slightly different transaction could have gone either way. That's a real, if small, source of uncertainty, not hidden from the numbers above.
+**5. A small share of decisions are genuine judgment calls.** About 3.6% of all decisions scored close enough to the boundary that a slightly different transaction could have gone either way. That's a real, if small, source of uncertainty, not hidden from the numbers above.
 
-**6. Attackers can learn and adapt.** We took transactions our own detector genuinely blocked and asked an AI system to suggest small, realistic tweaks. 6 of 15 suggested tweaks actually evaded detection. Real, and it's the kind of pressure a determined attacker would keep applying.
+**6. Attackers can learn and adapt.** We took 25 transactions our own detector genuinely blocked and asked an AI system to suggest small, realistic tweaks, 175 variants in total. 20 of them actually evaded detection. Real, and it's the kind of pressure a determined attacker would keep applying.
 
 The pattern: nothing that got through broke the detector's rules loudly. It got through by staying quiet.
 
@@ -117,7 +118,7 @@ Our approach: don't aim for a perfect detector. Instead:
 3. Make even the fraud that succeeded verifiable in the record.
 4. Use that record to improve detection next time.
 
-With that governance in place: the 11.59% that slipped through is signed and logged, not hidden. It's auditable, you can see exactly which transactions passed. It's traceable, an outside authority verified the decision was really made. It's learnable, the record is there to improve the next iteration.
+With that governance in place: the 6.28% that slipped through is signed and logged, not hidden. It's auditable, you can see exactly which transactions passed. It's traceable, an outside authority verified the decision was really made. It's learnable, the record is there to improve the next iteration.
 
 The missed attacks aren't a failure to hide. They're proof that the governance layer works even when the detector doesn't.
 
@@ -137,11 +138,11 @@ Open the Proof tab. Click "See Sample Signature" for one real signed record, or 
 **Is this real data?**
 Yes. Run it yourself with the commands above. Every number in this document comes from an actual run.
 
-**Why did 11.59% slip through?**
+**Why did 6.28% slip through?**
 See the section above. Real reasons, backed by checking which attacks were actually missed, not a hidden failure.
 
 **Can the system be tricked?**
-Yes, and we show it directly: 6 of 15 attempted tweaks evaded our own detector in the last run. That's the point of being honest about gaps, they become something you can measure and improve, not something you have to hide.
+Yes, and we show it directly: 20 of 175 attempted tweaks evaded our own detector in the last run. That's the point of being honest about gaps, they become something you can measure and improve, not something you have to hide.
 
 **Is this production ready?**
 The attack simulation is a demo. The governance architecture, signed permission limits, an authority outside the detector, verifiable decisions, is the reusable part.

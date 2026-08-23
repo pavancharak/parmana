@@ -3,10 +3,10 @@
   "agent_id": "agent5_pattern_replicator",
   "action": "copy_spending_pattern",
   "max_operations": 1000,
-  "issued_at": 1787465297.7221272,
-  "expires_at": 1787468897.7221272,
-  "record_id": "20f2ff5c-8c29-40c9-bf1e-99d9a0da91a6",
-  "signed_at": 1787465297.7221365,
+  "issued_at": 1787469880.56141,
+  "expires_at": 1787473480.56141,
+  "record_id": "b95f2e34-7082-4c0d-81e4-cfc9b00f5c49",
+  "signed_at": 1787469880.5614223,
   "signer": "authority",
-  "signature": "4df1b44e929d939290eeda94d885ae01d493a1f98264a9c476120781f27a51afaf6ba2e5950ea745ecf9c8f1dd4c58252aebab3e03e26300fd4ee04670b7dc00"
+  "signature": "b8489d65e84796a9f51bc7016a151ba42ae8b493f1d5c65f0186fc3c92bd96096ae08c42fd623e4b9cf608ef1ec6044ac6d86cd7d66183734a34cf88eac7da08"
 }

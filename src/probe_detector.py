@@ -33,7 +33,12 @@ DATA_DIR = ROOT / "data"
 DECISIONS_DIR = ROOT / "decisions"
 WEB_DATA_DIR = ROOT / "web" / "data"
 
-PROBE_AMOUNTS = [10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000]
+def _probe_amount_range(n=175, lo=10, hi=10000):
+    step = (hi - lo) / (n - 1)
+    return [round(lo + step * i, 2) for i in range(n)]
+
+
+PROBE_AMOUNTS = _probe_amount_range(175)
 
 
 def load(name):
@@ -89,16 +94,17 @@ def main():
     print(f"      -> token granted: max_operations={agent3.token['max_operations']}, signed record_id={agent3.token['record_id']}")
     probe_results = agent3.run(neutral_features, model, fd.decision_for_score)
     threshold = next((r["amount"] for r in probe_results if r["decision"] == "BLOCK"), None)
-    for r in probe_results:
-        print(f"      ${r['amount']:>6}: score={r['score']:.3f} -> {r['decision']}")
+    for r in probe_results[::25]:
+        print(f"      ${r['amount']:>9,.2f}: score={r['score']:.3f} -> {r['decision']}")
+    print(f"      ... {len(probe_results)} amounts tested in total, every 25th shown above")
     print(f"      -> detector starts blocking at ${threshold}" if threshold else "      -> no amount alone triggered BLOCK")
 
     print("\n[2/2] Agent 7 (Feedback Loop Exploit, real: GPT + OUR trained detector) requesting token...")
-    blocked_sample = build_blocked_sample(model, n=5)
-    agent7 = FeedbackLoopAgent(max_variants=15)
+    blocked_sample = build_blocked_sample(model, n=25)
+    agent7 = FeedbackLoopAgent(max_variants=175)
     print(f"      -> token granted: max_operations={agent7.token['max_operations']}, signed record_id={agent7.token['record_id']}")
     print(f"      -> sampling {len(blocked_sample)} real blocked transactions, asking GPT for evasion variants...")
-    evasion_results = agent7.run(blocked_sample, model, fd.decision_for_score, variants_per_tx=3)
+    evasion_results = agent7.run(blocked_sample, model, fd.decision_for_score, variants_per_tx=7)
     evaded_count = sum(1 for r in evasion_results if r["evaded"])
     print(f"      -> tested {len(evasion_results)} variants, {evaded_count} evaded detection")
 

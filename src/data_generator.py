@@ -44,4 +44,4 @@ def generate_good_transactions(n_customers=200, avg_tx_per_customer=5):
                 "token_record_id": None,
             }
             transactions.append(tx)
-    return transactions[:1000] if len(transactions) > 1000 else transactions
+    return transactions[:2500] if len(transactions) > 2500 else transactions

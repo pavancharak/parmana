@@ -1,89 +1,1409 @@
 {
   "agent_id": "agent3_limit_prober",
-  "token_record_id": "2ebe9b1f-d68f-4a1d-94cb-bd4a77aaef17",
-  "authorized_max": 10,
-  "actually_executed": 10,
+  "token_record_id": "537076d5-bcdc-469e-9fa7-a66efe07cf4d",
+  "authorized_max": 175,
+  "actually_executed": 175,
   "within_bounds": true,
   "signature_verifies": true,
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787465302.7418156,
+      "timestamp": 1787469892.1904233,
       "event": "probe",
-      "amount": 10,
-      "score": 0.1623,
+      "amount": 10.0,
+      "score": 0.0527,
       "decision": "ALLOW"
     },
     {
       "seq": 2,
-      "timestamp": 1787465302.744597,
+      "timestamp": 1787469892.1940188,
       "event": "probe",
-      "amount": 25,
-      "score": 0.1623,
+      "amount": 67.41,
+      "score": 0.049,
       "decision": "ALLOW"
     },
     {
       "seq": 3,
-      "timestamp": 1787465302.7478654,
+      "timestamp": 1787469892.1967716,
       "event": "probe",
-      "amount": 50,
-      "score": 0.1463,
+      "amount": 124.83,
+      "score": 0.047,
       "decision": "ALLOW"
     },
     {
       "seq": 4,
-      "timestamp": 1787465302.75075,
+      "timestamp": 1787469892.19981,
       "event": "probe",
-      "amount": 100,
-      "score": 0.1285,
+      "amount": 182.24,
+      "score": 0.0482,
       "decision": "ALLOW"
     },
     {
       "seq": 5,
-      "timestamp": 1787465302.7536774,
+      "timestamp": 1787469892.2024891,
       "event": "probe",
-      "amount": 250,
-      "score": 0.1249,
+      "amount": 239.66,
+      "score": 0.0461,
       "decision": "ALLOW"
     },
     {
       "seq": 6,
-      "timestamp": 1787465302.7564092,
+      "timestamp": 1787469892.2051215,
       "event": "probe",
-      "amount": 500,
-      "score": 0.1378,
+      "amount": 297.07,
+      "score": 0.0538,
       "decision": "ALLOW"
     },
     {
       "seq": 7,
-      "timestamp": 1787465302.7591972,
+      "timestamp": 1787469892.2077744,
       "event": "probe",
-      "amount": 1000,
-      "score": 0.1378,
+      "amount": 354.48,
+      "score": 0.0581,
       "decision": "ALLOW"
     },
     {
       "seq": 8,
-      "timestamp": 1787465302.761906,
+      "timestamp": 1787469892.2103746,
       "event": "probe",
-      "amount": 2500,
-      "score": 0.1378,
+      "amount": 411.9,
+      "score": 0.0935,
       "decision": "ALLOW"
     },
     {
       "seq": 9,
-      "timestamp": 1787465302.7645793,
+      "timestamp": 1787469892.2130327,
       "event": "probe",
-      "amount": 5000,
-      "score": 0.1378,
+      "amount": 469.31,
+      "score": 0.0935,
       "decision": "ALLOW"
     },
     {
       "seq": 10,
-      "timestamp": 1787465302.767253,
+      "timestamp": 1787469892.215861,
       "event": "probe",
-      "amount": 10000,
-      "score": 0.1378,
+      "amount": 526.72,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 11,
+      "timestamp": 1787469892.218571,
+      "event": "probe",
+      "amount": 584.14,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 12,
+      "timestamp": 1787469892.2213337,
+      "event": "probe",
+      "amount": 641.55,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 13,
+      "timestamp": 1787469892.224072,
+      "event": "probe",
+      "amount": 698.97,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 14,
+      "timestamp": 1787469892.226814,
+      "event": "probe",
+      "amount": 756.38,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 15,
+      "timestamp": 1787469892.2295494,
+      "event": "probe",
+      "amount": 813.79,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 16,
+      "timestamp": 1787469892.2322717,
+      "event": "probe",
+      "amount": 871.21,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 17,
+      "timestamp": 1787469892.2350314,
+      "event": "probe",
+      "amount": 928.62,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 18,
+      "timestamp": 1787469892.2377856,
+      "event": "probe",
+      "amount": 986.03,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 19,
+      "timestamp": 1787469892.2405787,
+      "event": "probe",
+      "amount": 1043.45,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 20,
+      "timestamp": 1787469892.243406,
+      "event": "probe",
+      "amount": 1100.86,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 21,
+      "timestamp": 1787469892.246133,
+      "event": "probe",
+      "amount": 1158.28,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 22,
+      "timestamp": 1787469892.2513006,
+      "event": "probe",
+      "amount": 1215.69,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 23,
+      "timestamp": 1787469892.2544842,
+      "event": "probe",
+      "amount": 1273.1,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 24,
+      "timestamp": 1787469892.2580442,
+      "event": "probe",
+      "amount": 1330.52,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 25,
+      "timestamp": 1787469892.2607303,
+      "event": "probe",
+      "amount": 1387.93,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 26,
+      "timestamp": 1787469892.2634273,
+      "event": "probe",
+      "amount": 1445.34,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 27,
+      "timestamp": 1787469892.2666204,
+      "event": "probe",
+      "amount": 1502.76,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 28,
+      "timestamp": 1787469892.2695675,
+      "event": "probe",
+      "amount": 1560.17,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 29,
+      "timestamp": 1787469892.2723808,
+      "event": "probe",
+      "amount": 1617.59,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 30,
+      "timestamp": 1787469892.2751458,
+      "event": "probe",
+      "amount": 1675.0,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 31,
+      "timestamp": 1787469892.2779064,
+      "event": "probe",
+      "amount": 1732.41,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 32,
+      "timestamp": 1787469892.2806597,
+      "event": "probe",
+      "amount": 1789.83,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 33,
+      "timestamp": 1787469892.2836106,
+      "event": "probe",
+      "amount": 1847.24,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 34,
+      "timestamp": 1787469892.2864425,
+      "event": "probe",
+      "amount": 1904.66,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 35,
+      "timestamp": 1787469892.28919,
+      "event": "probe",
+      "amount": 1962.07,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 36,
+      "timestamp": 1787469892.291968,
+      "event": "probe",
+      "amount": 2019.48,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 37,
+      "timestamp": 1787469892.294771,
+      "event": "probe",
+      "amount": 2076.9,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 38,
+      "timestamp": 1787469892.2975526,
+      "event": "probe",
+      "amount": 2134.31,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 39,
+      "timestamp": 1787469892.3004136,
+      "event": "probe",
+      "amount": 2191.72,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 40,
+      "timestamp": 1787469892.3032143,
+      "event": "probe",
+      "amount": 2249.14,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 41,
+      "timestamp": 1787469892.3060853,
+      "event": "probe",
+      "amount": 2306.55,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 42,
+      "timestamp": 1787469892.308853,
+      "event": "probe",
+      "amount": 2363.97,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 43,
+      "timestamp": 1787469892.3116453,
+      "event": "probe",
+      "amount": 2421.38,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 44,
+      "timestamp": 1787469892.3144252,
+      "event": "probe",
+      "amount": 2478.79,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 45,
+      "timestamp": 1787469892.3179169,
+      "event": "probe",
+      "amount": 2536.21,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 46,
+      "timestamp": 1787469892.3206575,
+      "event": "probe",
+      "amount": 2593.62,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 47,
+      "timestamp": 1787469892.323314,
+      "event": "probe",
+      "amount": 2651.03,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 48,
+      "timestamp": 1787469892.3260486,
+      "event": "probe",
+      "amount": 2708.45,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 49,
+      "timestamp": 1787469892.3286889,
+      "event": "probe",
+      "amount": 2765.86,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 50,
+      "timestamp": 1787469892.3316317,
+      "event": "probe",
+      "amount": 2823.28,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 51,
+      "timestamp": 1787469892.3343842,
+      "event": "probe",
+      "amount": 2880.69,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 52,
+      "timestamp": 1787469892.3370848,
+      "event": "probe",
+      "amount": 2938.1,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 53,
+      "timestamp": 1787469892.3397179,
+      "event": "probe",
+      "amount": 2995.52,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 54,
+      "timestamp": 1787469892.3424268,
+      "event": "probe",
+      "amount": 3052.93,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 55,
+      "timestamp": 1787469892.3451643,
+      "event": "probe",
+      "amount": 3110.34,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 56,
+      "timestamp": 1787469892.3478546,
+      "event": "probe",
+      "amount": 3167.76,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 57,
+      "timestamp": 1787469892.3505716,
+      "event": "probe",
+      "amount": 3225.17,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 58,
+      "timestamp": 1787469892.353224,
+      "event": "probe",
+      "amount": 3282.59,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 59,
+      "timestamp": 1787469892.355863,
+      "event": "probe",
+      "amount": 3340.0,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 60,
+      "timestamp": 1787469892.3585901,
+      "event": "probe",
+      "amount": 3397.41,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 61,
+      "timestamp": 1787469892.361284,
+      "event": "probe",
+      "amount": 3454.83,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 62,
+      "timestamp": 1787469892.3655708,
+      "event": "probe",
+      "amount": 3512.24,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 63,
+      "timestamp": 1787469892.368529,
+      "event": "probe",
+      "amount": 3569.66,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 64,
+      "timestamp": 1787469892.3942044,
+      "event": "probe",
+      "amount": 3627.07,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 65,
+      "timestamp": 1787469892.3994625,
+      "event": "probe",
+      "amount": 3684.48,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 66,
+      "timestamp": 1787469892.402754,
+      "event": "probe",
+      "amount": 3741.9,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 67,
+      "timestamp": 1787469892.405911,
+      "event": "probe",
+      "amount": 3799.31,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 68,
+      "timestamp": 1787469892.4089406,
+      "event": "probe",
+      "amount": 3856.72,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 69,
+      "timestamp": 1787469892.411714,
+      "event": "probe",
+      "amount": 3914.14,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 70,
+      "timestamp": 1787469892.4144444,
+      "event": "probe",
+      "amount": 3971.55,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 71,
+      "timestamp": 1787469892.4173083,
+      "event": "probe",
+      "amount": 4028.97,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 72,
+      "timestamp": 1787469892.4200487,
+      "event": "probe",
+      "amount": 4086.38,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 73,
+      "timestamp": 1787469892.422918,
+      "event": "probe",
+      "amount": 4143.79,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 74,
+      "timestamp": 1787469892.4258323,
+      "event": "probe",
+      "amount": 4201.21,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 75,
+      "timestamp": 1787469892.4286706,
+      "event": "probe",
+      "amount": 4258.62,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 76,
+      "timestamp": 1787469892.4315016,
+      "event": "probe",
+      "amount": 4316.03,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 77,
+      "timestamp": 1787469892.4343674,
+      "event": "probe",
+      "amount": 4373.45,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 78,
+      "timestamp": 1787469892.437212,
+      "event": "probe",
+      "amount": 4430.86,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 79,
+      "timestamp": 1787469892.4400177,
+      "event": "probe",
+      "amount": 4488.28,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 80,
+      "timestamp": 1787469892.4428155,
+      "event": "probe",
+      "amount": 4545.69,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 81,
+      "timestamp": 1787469892.4456055,
+      "event": "probe",
+      "amount": 4603.1,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 82,
+      "timestamp": 1787469892.4484446,
+      "event": "probe",
+      "amount": 4660.52,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 83,
+      "timestamp": 1787469892.4512498,
+      "event": "probe",
+      "amount": 4717.93,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 84,
+      "timestamp": 1787469892.4541426,
+      "event": "probe",
+      "amount": 4775.34,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 85,
+      "timestamp": 1787469892.456971,
+      "event": "probe",
+      "amount": 4832.76,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 86,
+      "timestamp": 1787469892.459927,
+      "event": "probe",
+      "amount": 4890.17,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 87,
+      "timestamp": 1787469892.4630072,
+      "event": "probe",
+      "amount": 4947.59,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 88,
+      "timestamp": 1787469892.465968,
+      "event": "probe",
+      "amount": 5005.0,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 89,
+      "timestamp": 1787469892.4688118,
+      "event": "probe",
+      "amount": 5062.41,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 90,
+      "timestamp": 1787469892.471592,
+      "event": "probe",
+      "amount": 5119.83,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 91,
+      "timestamp": 1787469892.47458,
+      "event": "probe",
+      "amount": 5177.24,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 92,
+      "timestamp": 1787469892.477486,
+      "event": "probe",
+      "amount": 5234.66,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 93,
+      "timestamp": 1787469892.4806814,
+      "event": "probe",
+      "amount": 5292.07,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 94,
+      "timestamp": 1787469892.4840238,
+      "event": "probe",
+      "amount": 5349.48,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 95,
+      "timestamp": 1787469892.4872324,
+      "event": "probe",
+      "amount": 5406.9,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 96,
+      "timestamp": 1787469892.4901645,
+      "event": "probe",
+      "amount": 5464.31,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 97,
+      "timestamp": 1787469892.4931405,
+      "event": "probe",
+      "amount": 5521.72,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 98,
+      "timestamp": 1787469892.496035,
+      "event": "probe",
+      "amount": 5579.14,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 99,
+      "timestamp": 1787469892.4992292,
+      "event": "probe",
+      "amount": 5636.55,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 100,
+      "timestamp": 1787469892.5020554,
+      "event": "probe",
+      "amount": 5693.97,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 101,
+      "timestamp": 1787469892.5047863,
+      "event": "probe",
+      "amount": 5751.38,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 102,
+      "timestamp": 1787469892.507464,
+      "event": "probe",
+      "amount": 5808.79,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 103,
+      "timestamp": 1787469892.5101697,
+      "event": "probe",
+      "amount": 5866.21,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 104,
+      "timestamp": 1787469892.512825,
+      "event": "probe",
+      "amount": 5923.62,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 105,
+      "timestamp": 1787469892.5156646,
+      "event": "probe",
+      "amount": 5981.03,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 106,
+      "timestamp": 1787469892.5183353,
+      "event": "probe",
+      "amount": 6038.45,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 107,
+      "timestamp": 1787469892.5209644,
+      "event": "probe",
+      "amount": 6095.86,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 108,
+      "timestamp": 1787469892.5236175,
+      "event": "probe",
+      "amount": 6153.28,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 109,
+      "timestamp": 1787469892.5262737,
+      "event": "probe",
+      "amount": 6210.69,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 110,
+      "timestamp": 1787469892.5289187,
+      "event": "probe",
+      "amount": 6268.1,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 111,
+      "timestamp": 1787469892.5315542,
+      "event": "probe",
+      "amount": 6325.52,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 112,
+      "timestamp": 1787469892.534452,
+      "event": "probe",
+      "amount": 6382.93,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 113,
+      "timestamp": 1787469892.5371041,
+      "event": "probe",
+      "amount": 6440.34,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 114,
+      "timestamp": 1787469892.539712,
+      "event": "probe",
+      "amount": 6497.76,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 115,
+      "timestamp": 1787469892.5424542,
+      "event": "probe",
+      "amount": 6555.17,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 116,
+      "timestamp": 1787469892.5451398,
+      "event": "probe",
+      "amount": 6612.59,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 117,
+      "timestamp": 1787469892.5477512,
+      "event": "probe",
+      "amount": 6670.0,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 118,
+      "timestamp": 1787469892.5506542,
+      "event": "probe",
+      "amount": 6727.41,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 119,
+      "timestamp": 1787469892.5539174,
+      "event": "probe",
+      "amount": 6784.83,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 120,
+      "timestamp": 1787469892.5566359,
+      "event": "probe",
+      "amount": 6842.24,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 121,
+      "timestamp": 1787469892.5593977,
+      "event": "probe",
+      "amount": 6899.66,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 122,
+      "timestamp": 1787469892.5621238,
+      "event": "probe",
+      "amount": 6957.07,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 123,
+      "timestamp": 1787469892.5649002,
+      "event": "probe",
+      "amount": 7014.48,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 124,
+      "timestamp": 1787469892.5678768,
+      "event": "probe",
+      "amount": 7071.9,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 125,
+      "timestamp": 1787469892.5706913,
+      "event": "probe",
+      "amount": 7129.31,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 126,
+      "timestamp": 1787469892.5733712,
+      "event": "probe",
+      "amount": 7186.72,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 127,
+      "timestamp": 1787469892.5760407,
+      "event": "probe",
+      "amount": 7244.14,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 128,
+      "timestamp": 1787469892.5788572,
+      "event": "probe",
+      "amount": 7301.55,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 129,
+      "timestamp": 1787469892.5822456,
+      "event": "probe",
+      "amount": 7358.97,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 130,
+      "timestamp": 1787469892.5850263,
+      "event": "probe",
+      "amount": 7416.38,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 131,
+      "timestamp": 1787469892.587831,
+      "event": "probe",
+      "amount": 7473.79,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 132,
+      "timestamp": 1787469892.5904524,
+      "event": "probe",
+      "amount": 7531.21,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 133,
+      "timestamp": 1787469892.5931623,
+      "event": "probe",
+      "amount": 7588.62,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 134,
+      "timestamp": 1787469892.5962403,
+      "event": "probe",
+      "amount": 7646.03,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 135,
+      "timestamp": 1787469892.6016567,
+      "event": "probe",
+      "amount": 7703.45,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 136,
+      "timestamp": 1787469892.6056821,
+      "event": "probe",
+      "amount": 7760.86,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 137,
+      "timestamp": 1787469892.6084504,
+      "event": "probe",
+      "amount": 7818.28,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 138,
+      "timestamp": 1787469892.6111827,
+      "event": "probe",
+      "amount": 7875.69,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 139,
+      "timestamp": 1787469892.6138182,
+      "event": "probe",
+      "amount": 7933.1,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 140,
+      "timestamp": 1787469892.6171906,
+      "event": "probe",
+      "amount": 7990.52,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 141,
+      "timestamp": 1787469892.619959,
+      "event": "probe",
+      "amount": 8047.93,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 142,
+      "timestamp": 1787469892.622647,
+      "event": "probe",
+      "amount": 8105.34,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 143,
+      "timestamp": 1787469892.6252854,
+      "event": "probe",
+      "amount": 8162.76,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 144,
+      "timestamp": 1787469892.6279402,
+      "event": "probe",
+      "amount": 8220.17,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 145,
+      "timestamp": 1787469892.6306667,
+      "event": "probe",
+      "amount": 8277.59,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 146,
+      "timestamp": 1787469892.6339855,
+      "event": "probe",
+      "amount": 8335.0,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 147,
+      "timestamp": 1787469892.6367483,
+      "event": "probe",
+      "amount": 8392.41,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 148,
+      "timestamp": 1787469892.6394718,
+      "event": "probe",
+      "amount": 8449.83,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 149,
+      "timestamp": 1787469892.6423295,
+      "event": "probe",
+      "amount": 8507.24,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 150,
+      "timestamp": 1787469892.645185,
+      "event": "probe",
+      "amount": 8564.66,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 151,
+      "timestamp": 1787469892.6482742,
+      "event": "probe",
+      "amount": 8622.07,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 152,
+      "timestamp": 1787469892.6511312,
+      "event": "probe",
+      "amount": 8679.48,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 153,
+      "timestamp": 1787469892.653868,
+      "event": "probe",
+      "amount": 8736.9,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 154,
+      "timestamp": 1787469892.6566527,
+      "event": "probe",
+      "amount": 8794.31,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 155,
+      "timestamp": 1787469892.6593847,
+      "event": "probe",
+      "amount": 8851.72,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 156,
+      "timestamp": 1787469892.6621904,
+      "event": "probe",
+      "amount": 8909.14,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 157,
+      "timestamp": 1787469892.665149,
+      "event": "probe",
+      "amount": 8966.55,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 158,
+      "timestamp": 1787469892.6680613,
+      "event": "probe",
+      "amount": 9023.97,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 159,
+      "timestamp": 1787469892.6708593,
+      "event": "probe",
+      "amount": 9081.38,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 160,
+      "timestamp": 1787469892.6735983,
+      "event": "probe",
+      "amount": 9138.79,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 161,
+      "timestamp": 1787469892.6763258,
+      "event": "probe",
+      "amount": 9196.21,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 162,
+      "timestamp": 1787469892.6790934,
+      "event": "probe",
+      "amount": 9253.62,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 163,
+      "timestamp": 1787469892.6818748,
+      "event": "probe",
+      "amount": 9311.03,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 164,
+      "timestamp": 1787469892.6849492,
+      "event": "probe",
+      "amount": 9368.45,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 165,
+      "timestamp": 1787469892.6879227,
+      "event": "probe",
+      "amount": 9425.86,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 166,
+      "timestamp": 1787469892.6906252,
+      "event": "probe",
+      "amount": 9483.28,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 167,
+      "timestamp": 1787469892.6932425,
+      "event": "probe",
+      "amount": 9540.69,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 168,
+      "timestamp": 1787469892.6958635,
+      "event": "probe",
+      "amount": 9598.1,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 169,
+      "timestamp": 1787469892.7000346,
+      "event": "probe",
+      "amount": 9655.52,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 170,
+      "timestamp": 1787469892.7028818,
+      "event": "probe",
+      "amount": 9712.93,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 171,
+      "timestamp": 1787469892.7060652,
+      "event": "probe",
+      "amount": 9770.34,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 172,
+      "timestamp": 1787469892.708744,
+      "event": "probe",
+      "amount": 9827.76,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 173,
+      "timestamp": 1787469892.7113984,
+      "event": "probe",
+      "amount": 9885.17,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 174,
+      "timestamp": 1787469892.714076,
+      "event": "probe",
+      "amount": 9942.59,
+      "score": 0.0935,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 175,
+      "timestamp": 1787469892.7175949,
+      "event": "probe",
+      "amount": 10000.0,
+      "score": 0.0935,
       "decision": "ALLOW"
     }
   ]

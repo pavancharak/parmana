@@ -2,11 +2,11 @@
   "token_type": "agent_authorization",
   "agent_id": "agent3_limit_prober",
   "action": "probe_detection_thresholds",
-  "max_operations": 10,
-  "issued_at": 1787465302.7293854,
-  "expires_at": 1787468902.7293854,
-  "record_id": "2ebe9b1f-d68f-4a1d-94cb-bd4a77aaef17",
-  "signed_at": 1787465302.729419,
+  "max_operations": 175,
+  "issued_at": 1787469892.177688,
+  "expires_at": 1787473492.177688,
+  "record_id": "537076d5-bcdc-469e-9fa7-a66efe07cf4d",
+  "signed_at": 1787469892.177713,
   "signer": "authority",
-  "signature": "dd14eeff97cf4460f3df1334d221ba146d3d8c6078ce67b516f454f9d9dc936e13f902c68581555d0e672a48094a8a97188ef058a1b007d98bfe720c873fe90d"
+  "signature": "75d6e1166ae49d91baab64c020ba5620e3194752296560142b60515ab27ee5264090d421134979215ae9d48420a37c7c718d6b6d6df72b7fc31f7eb6c8dc070e"
 }

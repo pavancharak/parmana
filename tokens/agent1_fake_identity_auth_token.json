@@ -2,11 +2,11 @@
   "token_type": "agent_authorization",
   "agent_id": "agent1_fake_identity",
   "action": "generate_fake_identities",
-  "max_operations": 10,
-  "issued_at": 1787465271.292885,
-  "expires_at": 1787468871.292885,
-  "record_id": "22e444bf-38c6-40e0-8274-f55bb01aaaf9",
-  "signed_at": 1787465271.292901,
+  "max_operations": 32,
+  "issued_at": 1787469429.489889,
+  "expires_at": 1787473029.489889,
+  "record_id": "450c1e6e-65df-46e4-9229-4cbc6de5aded",
+  "signed_at": 1787469429.4899077,
   "signer": "authority",
-  "signature": "cc40de669d0f7d87c9bf3f47aa077fb51837e10f830f9e28e6ee0661c1f408cd03964da3bad3eef6d7ed29ba9db850d79f28abe9ee36f1b326bf8791cf4b9403"
+  "signature": "dfb5cb777527280ad30eb84b8c6036f83c528d85d2c4ceb67d706861a63469b6573c10da93cafadce95f46b6092a1501775e23c16b2c8984d36dd7629c0e9303"
 }

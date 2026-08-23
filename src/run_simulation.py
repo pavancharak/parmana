@@ -81,27 +81,27 @@ def main():
     llm_client.reset_log()
 
     print("\n[1/6] Generating legitimate transaction population...")
-    good_transactions = generate_good_transactions(n_customers=200, avg_tx_per_customer=5)
+    good_transactions = generate_good_transactions(n_customers=250, avg_tx_per_customer=5)
     (DATA_DIR / "good_transactions.json").write_text(json.dumps(good_transactions, indent=2))
     print(f"      -> {len(good_transactions)} legitimate transactions written to data/good_transactions.json")
 
-    seeds = make_seed_profiles(good_transactions, n=10)
+    seeds = make_seed_profiles(good_transactions, n=40)
     histories = make_stolen_card_histories(good_transactions, n=25)
 
     print("\n[2/6] Agent 1 (Fake Identity Generator, REAL OpenAI call) requesting token...")
-    agent1 = FakeIdentityAgent(max_identities=10)
+    agent1 = FakeIdentityAgent(max_identities=32)
     print(f"      -> token granted: max_operations={agent1.token['max_operations']}, signed record_id={agent1.token['record_id']}")
     fraud_identity = agent1.run(seeds)
     print(f"      -> executed {agent1.executed}/{agent1.token['max_operations']} authorized identities, producing {len(fraud_identity)} transactions")
 
     print("\n[3/6] Agent 2 (Social Engineer, REAL OpenAI call) requesting token...")
-    agent2 = SocialEngineerAgent(max_conversations=8)
+    agent2 = SocialEngineerAgent(max_conversations=175)
     print(f"      -> token granted: max_operations={agent2.token['max_operations']}, signed record_id={agent2.token['record_id']}")
     fraud_social = agent2.run(seeds)
     print(f"      -> executed {agent2.executed}/{agent2.token['max_operations']} authorized transcripts, {len(fraud_social)} led to a follow-up transaction")
 
     print("\n[4/6] Agent 4 (KYC Forger, REAL OpenAI call) requesting token...")
-    agent4 = KYCForgerAgent(max_kyc=10)
+    agent4 = KYCForgerAgent(max_kyc=175)
     print(f"      -> token granted: max_operations={agent4.token['max_operations']}, signed record_id={agent4.token['record_id']}")
     fraud_kyc = agent4.run()
     print(f"      -> executed {agent4.executed}/{agent4.token['max_operations']} authorized bundles, producing {len(fraud_kyc)} transactions")
@@ -109,13 +109,13 @@ def main():
     print("\n[5/6] Agent 5 (Pattern Replicator, local/statistical) requesting token...")
     agent5 = PatternReplicatorAgent(max_transactions=1000)
     print(f"      -> token granted: max_operations={agent5.token['max_operations']}, signed record_id={agent5.token['record_id']}")
-    fraud_pattern = agent5.run(histories, target_count=700)
+    fraud_pattern = agent5.run(histories, target_count=175)
     print(f"      -> executed {agent5.executed}/{agent5.token['max_operations']} authorized transactions, producing {len(fraud_pattern)}")
 
     print("\n[6/6] Agent 6 (Injection Attack Generator, known public payloads) requesting token...")
     agent6 = InjectionGeneratorAgent(max_attempts=1000)
     print(f"      -> token granted: max_operations={agent6.token['max_operations']}, signed record_id={agent6.token['record_id']}")
-    fraud_form = agent6.run(FORM_FIELDS, target_count=240)
+    fraud_form = agent6.run(FORM_FIELDS, target_count=175)
     print(f"      -> executed {agent6.executed}/{agent6.token['max_operations']} authorized attempts, producing {len(fraud_form)}")
 
     fraud_transactions = fraud_identity + fraud_social + fraud_kyc + fraud_pattern + fraud_form

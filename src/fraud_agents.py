@@ -92,6 +92,22 @@ def _tx_id(prefix):
     return f"{prefix}_{uuid.uuid4().hex[:10]}"
 
 
+def _batched(total_n, batch_size, generate_batch):
+    """Call generate_batch(count) repeatedly in chunks instead of one giant
+    request. A single call asking for hundreds of items risks the model's
+    response getting cut off mid-JSON and failing to parse; batches of 25
+    stay comfortably inside the output limit regardless of how verbose
+    each item's schema is."""
+    items = []
+    while len(items) < total_n:
+        remaining = total_n - len(items)
+        batch = generate_batch(min(batch_size, remaining))
+        if not batch:
+            break
+        items.extend(batch)
+    return items[:total_n]
+
+
 # ---------------------------------------------------------------------------
 # Agent 1: Fake Identity Generator (REAL, GPT-4o-mini)
 # ---------------------------------------------------------------------------
@@ -125,7 +141,7 @@ class FakeIdentityAgent(BoundedAgent):
 
     def run(self, seed_profiles, tx_per_identity=(4, 8)):
         n = min(len(seed_profiles), self.token["max_operations"])
-        identities = self._generate_identities_via_openai(n, seed_profiles)
+        identities = _batched(n, 25, lambda k: self._generate_identities_via_openai(k, seed_profiles))
         (DATA_DIR / "fake_identities.json").write_text(json.dumps(identities, indent=2))
 
         transactions = []
@@ -200,7 +216,7 @@ class SocialEngineerAgent(BoundedAgent):
 
     def run(self, seed_profiles):
         n = min(self.token["max_operations"], self.requested_operations)
-        conversations = self._generate_conversations_via_openai(n)
+        conversations = _batched(n, 25, self._generate_conversations_via_openai)
         (DATA_DIR / "social_engineering_transcripts.json").write_text(json.dumps(conversations, indent=2))
 
         transactions = []
@@ -300,7 +316,7 @@ class KYCForgerAgent(BoundedAgent):
 
     def run(self):
         n = min(self.token["max_operations"], self.requested_operations)
-        bundles = self._generate_bundles_via_openai(n)
+        bundles = _batched(n, 25, self._generate_bundles_via_openai)
         (DATA_DIR / "kyc_bundles.json").write_text(json.dumps(bundles, indent=2))
 
         transactions = []
