@@ -472,6 +472,8 @@ function renderApiActivity(app) {
       <div class="stat-tile"><div class="value bad">${fpr}%</div><div class="label">False positive rate</div></div>
     </div>
 
+    ${_distributionSectionHTML()}
+
     <h2>Real API call log</h2>
     <p class="page-intro" style="margin-bottom:1rem">${aa.summary.total_calls} real calls, ${aa.summary.total_tokens.toLocaleString()} tokens, $${aa.summary.total_cost_usd.toFixed(4)} total, ${aa.summary.avg_latency_ms.toLocaleString()}ms average latency. Click Replay to watch this same real log fill back in.</p>
 
@@ -548,6 +550,8 @@ function renderReadme(app) {
         <li>Every signed decision independently verified, shown on the Proof tab</li>
       </ul>
     </div>
+
+    ${_distributionSectionHTML()}
 
     <h2>How to reproduce this</h2>
     <div class="card">
