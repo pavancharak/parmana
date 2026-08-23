@@ -1,0 +1,80 @@
+{
+  "agent_id": "agent1_fake_identity",
+  "token_record_id": "f5ebe92a-a4da-4ac5-8cff-8a6358909c39",
+  "authorized_max": 10,
+  "actually_executed": 10,
+  "within_bounds": true,
+  "signature_verifies": true,
+  "events": [
+    {
+      "seq": 1,
+      "timestamp": 1787453224.0332987,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_005fab23",
+      "tx_generated": 5
+    },
+    {
+      "seq": 2,
+      "timestamp": 1787453224.0333354,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_9d7e526f",
+      "tx_generated": 7
+    },
+    {
+      "seq": 3,
+      "timestamp": 1787453224.0333552,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_699691b6",
+      "tx_generated": 4
+    },
+    {
+      "seq": 4,
+      "timestamp": 1787453224.0333893,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_362660e3",
+      "tx_generated": 8
+    },
+    {
+      "seq": 5,
+      "timestamp": 1787453224.0334194,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_ddf9d140",
+      "tx_generated": 7
+    },
+    {
+      "seq": 6,
+      "timestamp": 1787453224.0334408,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_5e2ec93a",
+      "tx_generated": 5
+    },
+    {
+      "seq": 7,
+      "timestamp": 1787453224.0334716,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_f248a38a",
+      "tx_generated": 7
+    },
+    {
+      "seq": 8,
+      "timestamp": 1787453224.033505,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_455f6ce4",
+      "tx_generated": 8
+    },
+    {
+      "seq": 9,
+      "timestamp": 1787453224.0335271,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_d39d75e1",
+      "tx_generated": 5
+    },
+    {
+      "seq": 10,
+      "timestamp": 1787453224.0335603,
+      "event": "fake_identity_created",
+      "fake_customer_id": "cust_fake_18408741",
+      "tx_generated": 8
+    }
+  ]
+}

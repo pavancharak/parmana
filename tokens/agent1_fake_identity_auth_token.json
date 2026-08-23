@@ -1,0 +1,12 @@
+{
+  "token_type": "agent_authorization",
+  "agent_id": "agent1_fake_identity",
+  "action": "generate_fake_identities",
+  "max_operations": 10,
+  "issued_at": 1787453224.0324993,
+  "expires_at": 1787456824.0324993,
+  "record_id": "f5ebe92a-a4da-4ac5-8cff-8a6358909c39",
+  "signed_at": 1787453224.0325193,
+  "signer": "authority",
+  "signature": "21dba3d7b81ccb958933c34b1a2835f6eb4e90111973bb70649df810a567b85159dd5c069290fc969baa16865ffda6c32ed3f67d578666a015a093f2dfeb370c"
+}

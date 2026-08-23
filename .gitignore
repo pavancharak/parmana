@@ -1,0 +1,10 @@
+# The authority's and reviewer's private signing keys. These must never
+# be committed or shared — anyone holding them could forge signatures.
+# They are generated locally the first time src/run_simulation.py runs.
+tokens/keys/
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/

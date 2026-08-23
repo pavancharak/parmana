@@ -1,0 +1,88 @@
+HOW IT WORKS — plain language
+==============================
+
+THE PROBLEM WITH NORMAL FRAUD DETECTION
+----------------------------------------
+A fraud detector writes its own logs. If you ask "did it really block
+that transaction?", the honest answer is: "the detector says so." The
+detector could have a bug, get compromised, or simply lie, and you would
+have no independent way to tell.
+
+THE FIX: AN AUTHORITY OUTSIDE THE SYSTEM
+------------------------------------------
+This project adds a second, independent party — called "the authority" —
+that has its own private cryptographic key. Neither the fraud-simulation
+agents nor the detector ever touch that private key. They can ask the
+authority to sign something, but they cannot forge a signature
+themselves.
+
+Two separate keys are used:
+  - AUTHORITY key: issues agent permission tokens, and signs the
+    detector's block/flag/allow decisions.
+  - REVIEWER key: signs human override decisions.
+
+Because they're different keys, a signed override can never be mistaken
+for (or faked as) an official authority decision, and vice versa. Anyone
+can check which key produced a given signature using only the public key
+files in tokens/ — no access to any private key required.
+
+HOW THE AGENTS ARE BOUNDED
+-----------------------------
+Before Agent 1 (Fake Identity Maker) generates a single fake identity, it
+asks the authority for a token. The authority signs a small file saying,
+in effect: "this agent may perform at most 10 operations, expiring at
+this time." The agent's code checks its own operation count against that
+number on every single action — not because the agent promises to behave,
+but because the number came from outside the agent and the agent cannot
+edit it after the fact. The same pattern applies to Agent 2 (max 1000
+transactions) and Agent 3 (max 1000 probe attempts).
+
+tokens/*_execution_log.json shows, for each agent: the authorized
+maximum, how many operations it actually performed, and whether the
+token's signature still verifies. If an agent tried to claim it did more
+than its token allowed, that claim would directly contradict the signed
+token — the token is the ceiling, not the agent's word.
+
+HOW A BLOCKING DECISION BECOMES OFFICIAL
+-------------------------------------------
+The detector is an ordinary RandomForest classifier. On its own, its
+output is just a number — a fraud score between 0 and 1. That number is
+not a decision until it is sent to the authority, which signs a record
+containing the transaction ID, the score, the resulting decision
+(BLOCK / FLAG / ALLOW), and the reasons behind it. Only the signed record
+is written to decisions/block_decisions.json. The detector cannot alter
+that record afterward without breaking the signature.
+
+Three tiers:
+  BLOCK (score >= 0.80)  — authority signs "BLOCK"
+  FLAG  (0.50-0.80)      — authority signs "FLAG for human review"
+  ALLOW (< 0.50)         — authority signs "ALLOW with monitoring"
+
+HOW AN OVERRIDE WORKS
+------------------------
+A human reviewer (or, in one example, a downstream monitoring system)
+can override a decision — escalate a FLAG to a BLOCK, release a FLAG
+back to ALLOW, or retroactively BLOCK something that was originally
+ALLOWed. Every override is signed with the REVIEWER key, and carries the
+reviewer's name and their justification in plain text. decisions/
+override_log.json is the complete, signed record of who changed what,
+and why.
+
+VERIFYING ANY OF THIS YOURSELF
+----------------------------------
+Every signed record in this project (agent tokens, block decisions,
+overrides) can be checked with nothing but its public key file, using
+`authority_signer.verify_record(record, signer_name)` — about 15 lines of
+code around a standard Ed25519 verify() call. check_results.py runs this
+verification automatically on a sample of decisions and prints the
+result; you can also run it manually against the JSON files in tokens/
+and decisions/ at any time.
+
+WHAT THIS DOES NOT SOLVE
+----------------------------
+Signing a decision proves the decision was made and hasn't been altered.
+It does not make the underlying detector more accurate. This detector
+still misses some fraud and still false-flags some legitimate
+transactions — see Page 4 of the web dashboard ("Honest Answer") for the
+actual numbers from the most recent run. The signing layer is about
+trustworthy record-keeping, not about eliminating detection error.

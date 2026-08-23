@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parmana Fraud Defense Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">P</span>
+    <div class="brand-text">
+      <strong>Parmana Fraud Defense Lab</strong>
+      <span>Mastercard Innovation Challenge 2026</span>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="attacks">1. Attacks</button>
+    <button class="tab-btn" data-tab="simulator">2. Simulator</button>
+    <button class="tab-btn" data-tab="detector">3. Detector</button>
+    <button class="tab-btn" data-tab="honest">4. Honest Answer</button>
+  </nav>
+</header>
+
+<main id="app">
+  <div class="loading" id="loading">Loading dashboard.json&hellip;</div>
+</main>
+
+<template id="tpl-attack-card">
+  <article class="card attack-card">
+    <div class="card-head">
+      <h3 class="attack-name"></h3>
+      <span class="badge sim-badge"></span>
+    </div>
+    <div class="attack-stage"></div>
+    <dl>
+      <dt>What the attacker needs</dt><dd class="attack-needs"></dd>
+      <dt>Why it's hard to catch</dt><dd class="attack-hard"></dd>
+      <dt>Damage</dt><dd class="attack-damage"></dd>
+    </dl>
+  </article>
+</template>
+
+<script src="script.js"></script>
+</body>
+</html>

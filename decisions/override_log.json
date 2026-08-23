@@ -1,0 +1,38 @@
+[
+  {
+    "record_type": "override",
+    "transaction_id": "tx_28ccab0fad",
+    "original_decision": "FLAG",
+    "new_decision": "BLOCK",
+    "reviewer_name": "reviewer_j.alvarez",
+    "justification": "Manual review confirmed fraud pattern consistent with stolen-card testing; escalating from FLAG to BLOCK.",
+    "record_id": "e6cc3a96-ad61-43d6-817f-9bbfd2c047e3",
+    "signed_at": 1787453427.8641467,
+    "signer": "reviewer",
+    "signature": "1c6d6a1e53d3920f707f739bc1fe9d79459bedefd053309c4cfed180ca58efc7953f0d07e78ea2ecd30caa6ba62389b6e01a4995d2f814b763df09dba9272802"
+  },
+  {
+    "record_type": "override",
+    "transaction_id": "tx_67194bf350",
+    "original_decision": "FLAG",
+    "new_decision": "ALLOW",
+    "reviewer_name": "reviewer_m.osei",
+    "justification": "Customer verified by phone; recurring purchase from a new but legitimate device. Releasing transaction.",
+    "record_id": "053a73a1-0d69-4db9-a4c4-ad7068589a70",
+    "signed_at": 1787453427.8642778,
+    "signer": "reviewer",
+    "signature": "bb56e2f53b02943af1b3b6911b4160bf9a96ccad1e0184b2243bcf905e974b04aa4eedd1e52c399945dbba373c76bfceb41a2af162f5b1b605c39780ff1fcb07"
+  },
+  {
+    "record_type": "override",
+    "transaction_id": "tx_f17c5f13c5",
+    "original_decision": "ALLOW",
+    "new_decision": "BLOCK",
+    "reviewer_name": "monitoring_system_v2",
+    "justification": "Post-hoc monitoring flagged this transaction as part of a fraud ring identified after the fact; retroactively blocking related funds movement.",
+    "record_id": "af1dfb0c-0c07-4e67-b616-b7759d100033",
+    "signed_at": 1787453427.8643517,
+    "signer": "reviewer",
+    "signature": "f7e586dc14c36200564bfbd623d790f508129a36c1a5b06d663817b471950dc9e42928c7d7b70f0c99d978860226a23491804976d5696d2fc28604f6fd582406"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "token_type": "agent_authorization",
+  "agent_id": "agent3_form_breaker",
+  "action": "probe_payment_form",
+  "max_operations": 1000,
+  "issued_at": 1787453224.0393107,
+  "expires_at": 1787456824.0393107,
+  "record_id": "befabbc6-a5ec-4225-9a3e-e331a8699a6b",
+  "signed_at": 1787453224.0393198,
+  "signer": "authority",
+  "signature": "dab15fd643acd8321bf5fb42922f0094343ee2d354630e3ec3f0ed9088b9ca29c8fbb497f259d45e081da26dfb2b1e18294b018ab998f730fb20022f0836ae03"
+}

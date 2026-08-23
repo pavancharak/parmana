@@ -1,0 +1,12 @@
+{
+  "token_type": "agent_authorization",
+  "agent_id": "agent2_pattern_copier",
+  "action": "copy_spending_pattern",
+  "max_operations": 1000,
+  "issued_at": 1787453224.034097,
+  "expires_at": 1787456824.034097,
+  "record_id": "4dcab1f6-81f6-4391-a130-89cb8411ff3e",
+  "signed_at": 1787453224.034108,
+  "signer": "authority",
+  "signature": "94dbd4c76842084e8b7b6cfca36014a7f67f3194eaf2d21fc818e280c89e4dd81703bb60afa7baa905f7fc123deb51925f1f2f324374a475944965e61411df0d"
+}
