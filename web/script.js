@@ -216,6 +216,36 @@ function buildSampleDataTable() {
 /* ---------------------------------------------------------------- */
 /* Tab 3: Detection Results                                            */
 /* ---------------------------------------------------------------- */
+function _rangeBarHTML(label, s, lo, hi, color) {
+  const clamp = (v) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100));
+  const left = clamp(s.min);
+  const width = Math.max(1, clamp(s.max) - left);
+  const meanPos = clamp(s.mean);
+  return `
+    <div class="range-metric">
+      <div class="range-label"><span>${esc(label)}</span><span>${s.min}% - ${s.max}% (mean ${s.mean}%, sd ${s.std_dev}%)</span></div>
+      <div class="range-track">
+        <div class="range-fill" style="left:${left}%;width:${width}%;background:${color}"></div>
+        <div class="range-mean" style="left:${meanPos}%;background:${color}"></div>
+      </div>
+    </div>`;
+}
+
+function _distributionSectionHTML() {
+  const dist = DASH.distribution;
+  if (!dist) return "";
+  const s = dist.summary;
+  return `
+    <h2>Verified across ${dist.runs.length} independent runs</h2>
+    <div class="card">
+      <p class="attack-count" style="margin-bottom:1.25rem">A single run could be a lucky draw. We ran the full pipeline ${dist.runs.length} times, real OpenAI calls, real training, real scoring, and recorded what actually happened each time, no averaging tricks.</p>
+      ${_rangeBarHTML("Fraud caught", s.catch_rate_pct, 80, 100, "var(--success)")}
+      ${_rangeBarHTML("Fraud missed", s.miss_rate_pct, 0, 20, "var(--risk)")}
+      ${_rangeBarHTML("False positive rate", s.fp_rate_pct, 0, 20, "var(--warning)")}
+      <p class="attack-count" style="margin-top:1.25rem">The numbers move by a point or two run to run because several agents make real OpenAI calls at a high temperature, so the generated fraud is genuinely different every time. That's expected, not a bug.</p>
+    </div>`;
+}
+
 function renderDetection(app) {
   const m = DASH.detector.metrics;
   const caught = m.fraud_caught_rate * 100;
@@ -259,6 +289,8 @@ function renderDetection(app) {
         <li>Slow, spaced out attacks are harder to spot than fast, obvious ones</li>
       </ul>
     </div>
+
+    ${_distributionSectionHTML()}
 
     <button class="action" id="missed-btn">View Missed Attacks</button>
     <div class="reveal-panel" id="missed-panel" style="display:none"></div>

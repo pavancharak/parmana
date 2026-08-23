@@ -13083,5 +13083,84 @@
       "limit_probe_valid": true,
       "feedback_loop_valid": true
     }
+  },
+  "distribution": {
+    "runs": [
+      {
+        "run": 1,
+        "total_fraud_records": 758,
+        "good_records": 1143,
+        "catch_pct": 92.54,
+        "miss_pct": 7.46,
+        "fp_rate_pct": 7.29,
+        "block": 184,
+        "flag": 52,
+        "allow": 335
+      },
+      {
+        "run": 2,
+        "total_fraud_records": 789,
+        "good_records": 1143,
+        "catch_pct": 92.83,
+        "miss_pct": 7.17,
+        "fp_rate_pct": 7.0,
+        "block": 200,
+        "flag": 44,
+        "allow": 336
+      },
+      {
+        "run": 3,
+        "total_fraud_records": 775,
+        "good_records": 1143,
+        "catch_pct": 90.99,
+        "miss_pct": 9.01,
+        "fp_rate_pct": 8.16,
+        "block": 185,
+        "flag": 55,
+        "allow": 336
+      },
+      {
+        "run": 4,
+        "total_fraud_records": 767,
+        "good_records": 1143,
+        "catch_pct": 93.48,
+        "miss_pct": 6.52,
+        "fp_rate_pct": 8.75,
+        "block": 200,
+        "flag": 45,
+        "allow": 328
+      },
+      {
+        "run": 5,
+        "total_fraud_records": 793,
+        "good_records": 1143,
+        "catch_pct": 92.44,
+        "miss_pct": 7.56,
+        "fp_rate_pct": 7.87,
+        "block": 194,
+        "flag": 53,
+        "allow": 334
+      }
+    ],
+    "summary": {
+      "catch_rate_pct": {
+        "min": 90.99,
+        "max": 93.48,
+        "mean": 92.46,
+        "std_dev": 0.91
+      },
+      "miss_rate_pct": {
+        "min": 6.52,
+        "max": 9.01,
+        "mean": 7.54,
+        "std_dev": 0.91
+      },
+      "fp_rate_pct": {
+        "min": 7.0,
+        "max": 8.75,
+        "mean": 7.81,
+        "std_dev": 0.7
+      }
+    }
   }
 }

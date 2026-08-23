@@ -149,6 +149,16 @@ table.simple-table tr:last-child td { border-bottom: none; }
 .split-legend { display: flex; gap: 1.5rem; font-size: 0.85rem; color: var(--text-dim); }
 .split-legend .dot { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-right: 0.4rem; }
 
+/* Distribution range bars */
+.range-metric { margin-bottom: 1.4rem; }
+.range-metric:last-of-type { margin-bottom: 0; }
+.range-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.45rem; }
+.range-label span:first-child { font-weight: 700; color: var(--text); }
+.range-label span:last-child { color: var(--text-dim); }
+.range-track { position: relative; height: 0.6rem; background: #F3F4F6; border-radius: 999px; }
+.range-fill { position: absolute; top: 0; height: 100%; border-radius: 999px; opacity: 0.35; }
+.range-mean { position: absolute; top: -0.25rem; width: 0.16rem; height: 1.1rem; border-radius: 999px; transform: translateX(-50%); }
+
 .honest-box { background: var(--panel); border: 1px solid var(--border); border-radius: 0.9rem; padding: 1.5rem 1.6rem; box-shadow: var(--shadow); }
 .honest-box h3 { margin: 0 0 0.75rem; font-size: 1rem; font-weight: 700; }
 .honest-box ul { margin: 0; padding-left: 1.2rem; }

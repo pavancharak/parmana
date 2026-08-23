@@ -102,6 +102,8 @@ All real. All from one run. No cherry picked numbers, and no rounding up.
 
 A single run's numbers could be a lucky draw. So we ran the full pipeline 5 times in a row and recorded what the detector actually did each time, real OpenAI calls, real training, real scoring, no averaging tricks:
 
+![Distribution of fraud caught, fraud missed, and false positive rate across 5 independent runs](docs/metrics_distribution.png)
+
 | Metric | Min | Max | Mean | Std dev |
 |---|---|---|---|---|
 | Fraud caught | 90.99% | 93.48% | 92.46% | 0.91% |
@@ -109,6 +111,8 @@ A single run's numbers could be a lucky draw. So we ran the full pipeline 5 time
 | False positive rate | 7.00% | 8.75% | 7.81% | 0.70% |
 
 The numbers move by a percentage point or two run to run, not because anything is broken, but because Agents 1, 2, and 4 make real OpenAI calls at a high temperature, so the generated fraud is genuinely different every time. A seed on our own random number generator wouldn't fix that, and pretending it does would be exactly the kind of unverifiable claim this whole project argues against. What we can honestly claim, and did verify directly, is that given a fixed set of generated transactions, the detector's training step itself is deterministic, run `check_results.py` twice on the same data and it produces bit identical metrics both times.
+
+Reproduce this yourself with `python src/analyze_metrics.py` (5 real pipeline runs, about $0.15 to $0.20 in OpenAI usage) followed by `python src/plot_distribution.py` to regenerate the chart above.
 
 ## Why did 7.56% slip through?
 
