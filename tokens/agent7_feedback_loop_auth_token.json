@@ -3,10 +3,10 @@
   "agent_id": "agent7_feedback_loop",
   "action": "generate_evasion_variants",
   "max_operations": 15,
-  "issued_at": 1787461056.8390515,
-  "expires_at": 1787464656.8390515,
-  "record_id": "14051986-e8f9-44c4-bedb-7fd3777780d5",
-  "signed_at": 1787461056.8390744,
+  "issued_at": 1787461797.0275285,
+  "expires_at": 1787465397.0275285,
+  "record_id": "263921c5-0ec7-464f-a052-146a0ee93a52",
+  "signed_at": 1787461797.0275514,
   "signer": "authority",
-  "signature": "6a2bf048eb727c83c6b3694cf9cd5eab8f39d47d5d07ba6efa10dfc3b5b9db7f088218017537561c619407e136f63ae11fce176c8d3e0c8bc9cdb755005df800"
+  "signature": "66bfabd03f1c67423f5f2e14d3dd811ac184045383a5106706bc0089409e20db1731dc2d3c0e65bf6a1e8fb790de580c25439952614c08052912b7c2ed180c01"
 }

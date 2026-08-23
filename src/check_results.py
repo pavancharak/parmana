@@ -93,9 +93,11 @@ def verify_everything(agent_tokens, signed_decisions, overrides):
         ok = auth.verify_record(dict(token), "authority")
         report["agent_tokens"][token_path.stem] = ok
 
-    sample = random.sample(signed_decisions, min(50, len(signed_decisions)))
-    report["decisions_sampled"] = len(sample)
-    report["decisions_valid"] = sum(1 for e in sample if auth.verify_record(dict(e["decision"]), "authority"))
+    # Every signed decision gets checked, not a sample. Signature
+    # verification is a local Ed25519 check, cheap and fast, there's no
+    # reason to only sample it the way we sample for display purposes.
+    report["decisions_sampled"] = len(signed_decisions)
+    report["decisions_valid"] = sum(1 for e in signed_decisions if auth.verify_record(dict(e["decision"]), "authority"))
 
     report["overrides_sampled"] = len(overrides)
     report["overrides_valid"] = sum(1 for o in overrides if auth.verify_record(dict(o), "reviewer"))

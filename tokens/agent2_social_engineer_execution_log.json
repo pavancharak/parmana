@@ -1,59 +1,66 @@
 {
   "agent_id": "agent2_social_engineer",
-  "token_record_id": "3f3b6f26-be35-455a-82b1-29ea5c51f293",
+  "token_record_id": "0f5bd2b1-c5dc-47ea-8904-172963a3c0be",
   "authorized_max": 8,
-  "actually_executed": 7,
+  "actually_executed": 8,
   "within_bounds": true,
   "signature_verifies": true,
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787457487.107056,
+      "timestamp": 1787461318.0666995,
       "event": "transcript_generated",
       "tactic": "urgency",
       "outcome": "succeeded"
     },
     {
       "seq": 2,
-      "timestamp": 1787457487.107151,
+      "timestamp": 1787461318.066806,
       "event": "transcript_generated",
       "tactic": "impersonating IT",
       "outcome": "succeeded"
     },
     {
       "seq": 3,
-      "timestamp": 1787457487.107184,
+      "timestamp": 1787461318.0668514,
       "event": "transcript_generated",
       "tactic": "fake charity emergency",
       "outcome": "failed"
     },
     {
       "seq": 4,
-      "timestamp": 1787457487.1071858,
+      "timestamp": 1787461318.0668545,
       "event": "transcript_generated",
-      "tactic": "friendly rapport",
+      "tactic": "friend of a friend",
       "outcome": "succeeded"
     },
     {
       "seq": 5,
-      "timestamp": 1787457487.1072075,
+      "timestamp": 1787461318.0668888,
       "event": "transcript_generated",
-      "tactic": "urgent technical issue",
+      "tactic": "technical issue",
       "outcome": "failed"
     },
     {
       "seq": 6,
-      "timestamp": 1787457487.1072094,
+      "timestamp": 1787461318.0668917,
       "event": "transcript_generated",
-      "tactic": "implied authority",
+      "tactic": "urgent payment",
       "outcome": "failed"
     },
     {
       "seq": 7,
-      "timestamp": 1787457487.1072106,
+      "timestamp": 1787461318.0668938,
       "event": "transcript_generated",
-      "tactic": "emotional distress",
+      "tactic": "family emergency",
       "outcome": "succeeded"
+    },
+    {
+      "seq": 8,
+      "timestamp": 1787461318.0669224,
+      "event": "transcript_generated",
+      "tactic": "shipping issue",
+      "outcome": "failed"
     }
   ]
 }

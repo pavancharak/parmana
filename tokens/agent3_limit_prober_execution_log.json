@@ -1,6 +1,6 @@
 {
   "agent_id": "agent3_limit_prober",
-  "token_record_id": "12a62d2c-b4e1-461e-8f4f-a66936fac2ba",
+  "token_record_id": "68d5cb02-22b1-42ab-a8fd-9b88b6c08a44",
   "authorized_max": 10,
   "actually_executed": 10,
   "within_bounds": true,
@@ -8,82 +8,82 @@
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787461056.7550483,
+      "timestamp": 1787461796.96602,
       "event": "probe",
       "amount": 10,
-      "score": 0.0833,
+      "score": 0.0814,
       "decision": "ALLOW"
     },
     {
       "seq": 2,
-      "timestamp": 1787461056.758983,
+      "timestamp": 1787461796.9688573,
       "event": "probe",
       "amount": 25,
-      "score": 0.0868,
+      "score": 0.0865,
       "decision": "ALLOW"
     },
     {
       "seq": 3,
-      "timestamp": 1787461056.7618186,
+      "timestamp": 1787461796.9716177,
       "event": "probe",
       "amount": 50,
-      "score": 0.0902,
+      "score": 0.0924,
       "decision": "ALLOW"
     },
     {
       "seq": 4,
-      "timestamp": 1787461056.76467,
+      "timestamp": 1787461796.9743311,
       "event": "probe",
       "amount": 100,
-      "score": 0.0825,
+      "score": 0.0812,
       "decision": "ALLOW"
     },
     {
       "seq": 5,
-      "timestamp": 1787461056.7675807,
+      "timestamp": 1787461796.9771612,
       "event": "probe",
       "amount": 250,
-      "score": 0.0795,
+      "score": 0.0778,
       "decision": "ALLOW"
     },
     {
       "seq": 6,
-      "timestamp": 1787461056.7703233,
+      "timestamp": 1787461796.9798443,
       "event": "probe",
       "amount": 500,
-      "score": 0.0814,
+      "score": 0.0797,
       "decision": "ALLOW"
     },
     {
       "seq": 7,
-      "timestamp": 1787461056.7732244,
+      "timestamp": 1787461796.9825678,
       "event": "probe",
       "amount": 1000,
-      "score": 0.0814,
+      "score": 0.0797,
       "decision": "ALLOW"
     },
     {
       "seq": 8,
-      "timestamp": 1787461056.776871,
+      "timestamp": 1787461796.9852974,
       "event": "probe",
       "amount": 2500,
-      "score": 0.0814,
+      "score": 0.0797,
       "decision": "ALLOW"
     },
     {
       "seq": 9,
-      "timestamp": 1787461056.7797313,
+      "timestamp": 1787461796.9880502,
       "event": "probe",
       "amount": 5000,
-      "score": 0.0814,
+      "score": 0.0797,
       "decision": "ALLOW"
     },
     {
       "seq": 10,
-      "timestamp": 1787461056.7825327,
+      "timestamp": 1787461796.9909678,
       "event": "probe",
       "amount": 10000,
-      "score": 0.0814,
+      "score": 0.0797,
       "decision": "ALLOW"
     }
   ]

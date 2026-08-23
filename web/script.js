@@ -291,6 +291,7 @@ function renderProof(app) {
   const v = DASH.verification;
   const allTokensValid = Object.values(v.agent_tokens).every(Boolean);
   const rt = DASH.redteam;
+  const sample = DASH.detector.sample_decisions.find((x) => x.decision.decision === "BLOCK") || DASH.detector.sample_decisions[0];
 
   app.innerHTML = `
     <p class="eyebrow">Verifiable proof</p>
@@ -300,15 +301,15 @@ function renderProof(app) {
     <div class="grid cols-3">
       <div class="card">
         <div class="card-head"><h3>${counts.BLOCK.toLocaleString()} Blocks</h3><span class="badge verified">Verified</span></div>
-        <p class="attack-count">Signed by an independent authority, not the detector itself.</p>
+        <p class="attack-count">Signed by an independent authority, not the detector itself.<br>✓ ${v.decisions_valid.toLocaleString()}/${v.decisions_sampled.toLocaleString()} signed decisions checked</p>
       </div>
       <div class="card">
         <div class="card-head"><h3>${overrides.length} Overrides</h3><span class="badge verified">Verified</span></div>
-        <p class="attack-count">Signed by a human reviewer, using a different key than the authority.</p>
+        <p class="attack-count">Signed by a human reviewer, using a different key than the authority.<br>✓ ${v.overrides_valid}/${v.overrides_sampled} verified</p>
       </div>
       <div class="card">
         <div class="card-head"><h3>All Agents</h3><span class="badge ${allTokensValid ? "verified" : "gap"}">${allTokensValid ? "Enforced" : "Check failed"}</span></div>
-        <p class="attack-count">Every attack generator is bounded by a signed limit it cannot exceed.</p>
+        <p class="attack-count">Every attack generator is bounded by a signed limit it cannot exceed.<br>✓ ${Object.values(v.agent_tokens).filter(Boolean).length}/${Object.values(v.agent_tokens).length} agent tokens verified</p>
       </div>
     </div>
 
@@ -333,6 +334,16 @@ function renderProof(app) {
       <p class="explain-text" style="margin-top:0">When we block fraud, an authority outside the detector signs that decision with a private key nothing else touches. Anyone can check the signature is real. If we were just claiming it happened, without actually signing it, the signature simply wouldn't exist.</p>
     </div>
 
+    <h2>How one real decision became official</h2>
+    <div class="card">
+      <div class="flow-steps">
+        <div class="flow-step"><span class="flow-num">1</span><div><b>Detector:</b> "Transaction ${esc(sample.decision.transaction_id)} scores ${(sample.decision.fraud_score * 100).toFixed(1)}% fraud."</div></div>
+        <div class="flow-step"><span class="flow-num">2</span><div><b>Authority:</b> "Confirmed, this matches ${esc(sample.decision.decision)} criteria."</div></div>
+        <div class="flow-step"><span class="flow-num">3</span><div><b>Authority:</b> signs the decision with its own key, one it never shares.</div></div>
+        <div class="flow-step"><span class="flow-num">4</span><div><b>Record:</b> "${esc(sample.decision.transaction_id)} ${esc(sample.decision.decision)}. Signature verified: yes."</div></div>
+      </div>
+    </div>
+
     <button class="action" id="sig-btn">See Sample Signature</button>
     <div class="reveal-panel" id="sig-panel" style="display:none"></div>
   `;
@@ -346,7 +357,6 @@ function renderProof(app) {
     }
     panel.style.display = "block";
     e.target.textContent = "Hide Sample Signature";
-    const sample = DASH.detector.sample_decisions.find((x) => x.decision.decision === "BLOCK") || DASH.detector.sample_decisions[0];
     const d = sample.decision;
     panel.innerHTML = `
       <div class="sig-card">
@@ -354,7 +364,7 @@ function renderProof(app) {
         <div class="row"><span>Decision</span><span>${esc(d.decision)}</span></div>
         <div class="row"><span>Risk score</span><span>${(d.fraud_score * 100).toFixed(1)}%</span></div>
         <div class="row"><span>Signed by</span><span>${esc(d.signer)}</span></div>
-        <div class="row"><span>Signature (Ed25519)</span><span class="sig-value">${esc(d.signature.slice(0, 64))}&hellip;</span></div>
+        <div class="row"><span>Signature</span><span class="sig-value">${esc(d.signature.slice(0, 64))}&hellip;</span></div>
       </div>`;
   });
 }

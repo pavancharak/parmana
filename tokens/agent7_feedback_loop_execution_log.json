@@ -1,6 +1,6 @@
 {
   "agent_id": "agent7_feedback_loop",
-  "token_record_id": "14051986-e8f9-44c4-bedb-7fd3777780d5",
+  "token_record_id": "263921c5-0ec7-464f-a052-146a0ee93a52",
   "authorized_max": 15,
   "actually_executed": 15,
   "within_bounds": true,
@@ -8,107 +8,107 @@
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787461062.0059052,
+      "timestamp": 1787461801.2994719,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_8f904fc90f",
+      "transaction_id": "tx_d896cd9152",
       "evaded": false
     },
     {
       "seq": 2,
-      "timestamp": 1787461062.0182025,
+      "timestamp": 1787461801.3102584,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_8f904fc90f",
+      "transaction_id": "tx_d896cd9152",
       "evaded": false
     },
     {
       "seq": 3,
-      "timestamp": 1787461062.0247974,
+      "timestamp": 1787461801.3202803,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_8f904fc90f",
+      "transaction_id": "tx_d896cd9152",
       "evaded": false
     },
     {
       "seq": 4,
-      "timestamp": 1787461064.795059,
+      "timestamp": 1787461804.0913718,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_8a036dc815",
+      "transaction_id": "tx_adda9b8784",
       "evaded": false
     },
     {
       "seq": 5,
-      "timestamp": 1787461064.806375,
+      "timestamp": 1787461804.09802,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_8a036dc815",
+      "transaction_id": "tx_adda9b8784",
       "evaded": false
     },
     {
       "seq": 6,
-      "timestamp": 1787461064.8172934,
+      "timestamp": 1787461804.1061637,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_8a036dc815",
+      "transaction_id": "tx_adda9b8784",
       "evaded": false
     },
     {
       "seq": 7,
-      "timestamp": 1787461067.209378,
+      "timestamp": 1787461806.256056,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_98d516eb8e",
-      "evaded": true
+      "transaction_id": "tx_8a637339d7",
+      "evaded": false
     },
     {
       "seq": 8,
-      "timestamp": 1787461067.2278874,
+      "timestamp": 1787461806.263007,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_98d516eb8e",
+      "transaction_id": "tx_8a637339d7",
       "evaded": false
     },
     {
       "seq": 9,
-      "timestamp": 1787461067.235035,
+      "timestamp": 1787461806.271912,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_98d516eb8e",
+      "transaction_id": "tx_8a637339d7",
       "evaded": false
     },
     {
       "seq": 10,
-      "timestamp": 1787461069.095754,
+      "timestamp": 1787461808.3253164,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_d1ccd05da4",
+      "transaction_id": "tx_701002e4a8",
       "evaded": false
     },
     {
       "seq": 11,
-      "timestamp": 1787461069.1063287,
+      "timestamp": 1787461808.3392396,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_d1ccd05da4",
+      "transaction_id": "tx_701002e4a8",
       "evaded": false
     },
     {
       "seq": 12,
-      "timestamp": 1787461069.1178849,
+      "timestamp": 1787461808.3512974,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_d1ccd05da4",
-      "evaded": false
+      "transaction_id": "tx_701002e4a8",
+      "evaded": true
     },
     {
       "seq": 13,
-      "timestamp": 1787461071.5547223,
+      "timestamp": 1787461810.733305,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_6216906840",
+      "transaction_id": "tx_6e52b52434",
       "evaded": false
     },
     {
       "seq": 14,
-      "timestamp": 1787461071.565477,
+      "timestamp": 1787461810.74385,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_6216906840",
+      "transaction_id": "tx_6e52b52434",
       "evaded": false
     },
     {
       "seq": 15,
-      "timestamp": 1787461071.5776045,
+      "timestamp": 1787461810.7534108,
       "event": "evasion_variant_tested",
-      "transaction_id": "tx_6216906840",
+      "transaction_id": "tx_6e52b52434",
       "evaded": false
     }
   ]

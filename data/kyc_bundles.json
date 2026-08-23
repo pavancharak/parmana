@@ -1,92 +1,92 @@
 [
   {
     "full_name": "Emily Carter",
-    "date_of_birth": "1985-02-15",
-    "city": "Portland",
-    "country": "USA",
-    "stated_occupation": "Graphic Designer",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 38 years old, Emily's income as a graphic designer aligns well with Portland's creative job market."
-  },
-  {
-    "full_name": "Michael Johnson",
-    "date_of_birth": "1990-06-25",
-    "city": "Austin",
+    "date_of_birth": "1990-05-15",
+    "city": "Atlanta",
     "country": "USA",
     "stated_occupation": "Software Engineer",
     "stated_annual_income_usd": 95000,
-    "coherence_notes": "Michael, aged 33, earns a competitive salary for a software engineer in Austin's vibrant tech scene."
+    "coherence_notes": "At 33 years old, Emily's age aligns well with her established career as a software engineer, and her income is typical for that profession in Atlanta."
   },
   {
-    "full_name": "Ava Martinez",
-    "date_of_birth": "1978-11-03",
-    "city": "Miami",
-    "country": "USA",
-    "stated_occupation": "Real Estate Agent",
-    "stated_annual_income_usd": 120000,
-    "coherence_notes": "At 45 years old, Ava's substantial income as a real estate agent is reflective of Miami's lucrative housing market."
-  },
-  {
-    "full_name": "Liam Thompson",
-    "date_of_birth": "1995-03-10",
-    "city": "Seattle",
-    "country": "USA",
-    "stated_occupation": "Data Analyst",
-    "stated_annual_income_usd": 85000,
-    "coherence_notes": "Liam, aged 28, holds a typical salary for his role in Seattle's growing data industry."
-  },
-  {
-    "full_name": "Sophia Brown",
-    "date_of_birth": "1982-05-22",
+    "full_name": "James Wang",
+    "date_of_birth": "1985-11-22",
     "city": "San Francisco",
     "country": "USA",
+    "stated_occupation": "Data Analyst",
+    "stated_annual_income_usd": 87000,
+    "coherence_notes": "James, aged 37, works in a profession that is thriving in San Francisco, and his income aligns with local data analyst salaries."
+  },
+  {
+    "full_name": "Sofia Lopez",
+    "date_of_birth": "1992-03-10",
+    "city": "Miami",
+    "country": "USA",
     "stated_occupation": "Marketing Manager",
-    "stated_annual_income_usd": 130000,
-    "coherence_notes": "At 41, Sophia's income is consistent with her senior marketing position in an expensive city like San Francisco."
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "Sofia is 31 years old and her experience as a marketing manager is consistent with her income level, which matches Miami's cost of living."
   },
   {
-    "full_name": "Noah Wilson",
-    "date_of_birth": "1992-07-30",
-    "city": "Denver",
-    "country": "USA",
-    "stated_occupation": "Civil Engineer",
-    "stated_annual_income_usd": 90000,
-    "coherence_notes": "Noah, at 31 years old, earns a fair wage reflecting the demand for civil engineers in Denver."
-  },
-  {
-    "full_name": "Isabella Davis",
-    "date_of_birth": "1988-09-14",
-    "city": "Phoenix",
-    "country": "USA",
-    "stated_occupation": "Nurse Practitioner",
+    "full_name": "Aidan O'Reilly",
+    "date_of_birth": "1988-07-29",
+    "city": "Dublin",
+    "country": "Ireland",
+    "stated_occupation": "Financial Advisor",
     "stated_annual_income_usd": 100000,
-    "coherence_notes": "Isabella's age of 35 and her income as a nurse practitioner are well-aligned with Phoenix's healthcare needs."
+    "coherence_notes": "At 35, Aidan's age is appropriate for a financial advisor, with an income that reflects Dublin's financial sector standards."
   },
   {
-    "full_name": "James Rodriguez",
-    "date_of_birth": "1994-12-05",
-    "city": "Chicago",
-    "country": "USA",
-    "stated_occupation": "Accountant",
-    "stated_annual_income_usd": 75000,
-    "coherence_notes": "At 29, James's salary as an accountant fits well with the financial industry's standards in Chicago."
+    "full_name": "Fatima Al-Mansoori",
+    "date_of_birth": "1995-01-05",
+    "city": "Dubai",
+    "country": "UAE",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "Fatima is 28 years old, an age suitable for an emerging graphic designer, and her income is common for creative professionals in Dubai."
   },
   {
-    "full_name": "Mia Lee",
-    "date_of_birth": "1980-01-20",
-    "city": "Boston",
-    "country": "USA",
+    "full_name": "Lucas Schmidt",
+    "date_of_birth": "1982-09-17",
+    "city": "Berlin",
+    "country": "Germany",
     "stated_occupation": "Project Manager",
-    "stated_annual_income_usd": 110000,
-    "coherence_notes": "Mia's age of 43 and her income as a project manager reflect the high level of experience and responsibility expected in Boston."
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "At 41, Lucas's age corresponds well with his role as a project manager, and his salary is in line with the average for his profession in Berlin."
   },
   {
-    "full_name": "Ethan Clark",
-    "date_of_birth": "1986-04-18",
-    "city": "Los Angeles",
-    "country": "USA",
-    "stated_occupation": "Film Producer",
-    "stated_annual_income_usd": 150000,
-    "coherence_notes": "At 37 years old, Ethan's earnings as a film producer are appropriate for the entertainment industry's demands in Los Angeles."
+    "full_name": "Priya Patel",
+    "date_of_birth": "1994-04-12",
+    "city": "London",
+    "country": "UK",
+    "stated_occupation": "Data Scientist",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Priya, age 29, is well-suited to her role in data science, with a competitive salary that reflects the high demand for such skills in London."
+  },
+  {
+    "full_name": "Mohammed Khan",
+    "date_of_birth": "1980-12-30",
+    "city": "Toronto",
+    "country": "Canada",
+    "stated_occupation": "IT Consultant",
+    "stated_annual_income_usd": 110000,
+    "coherence_notes": "At 42 years old, Mohammed's age and experience as an IT consultant align with his income, which is reasonable for Toronto's tech industry."
+  },
+  {
+    "full_name": "Chloe Dupont",
+    "date_of_birth": "1989-06-08",
+    "city": "Paris",
+    "country": "France",
+    "stated_occupation": "Fashion Buyer",
+    "stated_annual_income_usd": 78000,
+    "coherence_notes": "Chloe is 34 years old, an age typical for her role in fashion buying, with a salary that fits the Paris market."
+  },
+  {
+    "full_name": "Ravi Singh",
+    "date_of_birth": "1991-10-21",
+    "city": "Mumbai",
+    "country": "India",
+    "stated_occupation": "Software Developer",
+    "stated_annual_income_usd": 60000,
+    "coherence_notes": "At 32 years old, Ravi's experience as a software developer is consistent with his income, which is competitive for Mumbai's IT landscape."
   }
 ]
