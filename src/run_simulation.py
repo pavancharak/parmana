@@ -64,7 +64,7 @@ def inject_realistic_confusion(good, fraud, fraud_camouflage_rate=0.15, legit_an
 
 def main():
     print("=" * 70)
-    print("PARMANA FRAUD DEFENSE LAB — Simulation Run")
+    print("PARMANA FRAUD DEFENSE LAB: Simulation Run")
     print("=" * 70)
 
     print("\n[1/4] Generating legitimate transaction population...")

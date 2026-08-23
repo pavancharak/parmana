@@ -1,4 +1,4 @@
-/* Parmana Fraud Defense Lab — static dashboard driven entirely by
+/* Parmana Fraud Defense Lab: static dashboard driven entirely by
    web/data/dashboard.json, produced by src/run_simulation.py and
    src/check_results.py. No server-side code runs from this page. */
 
@@ -48,14 +48,14 @@ function render(tab) {
 }
 
 /* ---------------------------------------------------------------- */
-/* Page 1 — Attacks                                                  */
+/* Page 1: Attacks                                                    */
 /* ---------------------------------------------------------------- */
 function renderAttacks(app) {
   const cards = DASH.attacks
     .map((a) => {
       const simulated = a.simulated_by && !a.simulated_by.startsWith("not simulated") && !a.simulated_by.startsWith("not directly");
       const badgeClass = simulated ? "simulated" : "gap";
-      const badgeText = simulated ? "Simulated in this lab" : "Known gap — not simulated";
+      const badgeText = simulated ? "Simulated in this lab" : "Known gap, not simulated";
       return `
       <article class="card attack-card">
         <div class="card-head">
@@ -75,20 +75,20 @@ function renderAttacks(app) {
   app.innerHTML = `
     <h1>Seven ways AI commits payment fraud</h1>
     <p class="page-intro">Three of these are actively simulated by bounded agents in this lab (Page 2). The rest
-    are documented honestly as known gaps — real attack paths this lab does not generate traffic for.</p>
+    are documented honestly as known gaps: real attack paths this lab does not generate traffic for.</p>
     <div class="grid cols-2">${cards}</div>
   `;
 }
 
 /* ---------------------------------------------------------------- */
-/* Page 2 — Simulator                                                 */
+/* Page 2: Simulator                                                  */
 /* ---------------------------------------------------------------- */
 function renderSimulator(app) {
   const sim = DASH.simulation;
   app.innerHTML = `
     <h1>Run the fraud simulator</h1>
-    <p class="page-intro">This replays the already-generated, signed simulation output with a live animation.
-    The underlying computation happened by running <code>python run_simulation.py</code> — a static page can't
+    <p class="page-intro">This replays the already generated, signed simulation output with a live animation.
+    The underlying computation happened by running <code>python run_simulation.py</code>. A static page can't
     spawn that process itself, so nothing here is faked, it's a truthful replay of real signed data.</p>
 
     <div class="sim-controls">
@@ -100,7 +100,7 @@ function renderSimulator(app) {
       <a class="primary" style="text-decoration:none;display:inline-block" href="../data/fraud_transactions.json" download>⬇ Download fraud_transactions.json</a>
     </div>
     <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
-    <div class="sim-note" id="progress-note">Idle — press Replay to animate token issuance and transaction generation.</div>
+    <div class="sim-note" id="progress-note">Idle. Press Replay to animate token issuance and transaction generation.</div>
 
     <h2>Agents &amp; their signed authorization tokens</h2>
     <div class="grid cols-3" id="agent-cards"></div>
@@ -138,7 +138,7 @@ function renderAgentCards(agentSummaries) {
         </div>
         <div class="stat-row"><span>Authorized max</span><b>${a.authorized_max}</b></div>
         <div class="stat-row"><span>Actually executed</span><b>${a.actually_executed}</b></div>
-        <div class="stat-row"><span>Within bounds</span><b>${a.within_bounds ? "yes" : "NO — violation"}</b></div>
+        <div class="stat-row"><span>Within bounds</span><b>${a.within_bounds ? "yes" : "NO, violation"}</b></div>
         <div class="progress-wrap"><div class="progress-bar" style="width:${util}%"></div></div>
         <div class="sim-note">${util}% of authorized ceiling used</div>
         <table class="tx-table">
@@ -186,7 +186,7 @@ function runSimulationAnimation(sim) {
       pct = total;
       clearInterval(progressTimer);
       clearInterval(stepTimer);
-      note.textContent = `Done — ${total} bounded, signed fraud transactions generated across 3 agents. All within authorized limits.`;
+      note.textContent = `Done. ${total} bounded, signed fraud transactions generated across 3 agents. All within authorized limits.`;
       btn.disabled = false;
     }
     bar.style.width = Math.round((pct / total) * 100) + "%";
@@ -194,7 +194,7 @@ function runSimulationAnimation(sim) {
 }
 
 /* ---------------------------------------------------------------- */
-/* Page 3 — Detector                                                  */
+/* Page 3: Detector                                                   */
 /* ---------------------------------------------------------------- */
 function renderDetector(app) {
   const m = DASH.detector.metrics;
@@ -321,7 +321,7 @@ function renderOverrides(overrides) {
       <dl>
         <dt>Reviewer</dt><dd>${esc(o.reviewer_name)}</dd>
         <dt>Justification</dt><dd>${esc(o.justification)}</dd>
-        <dt>Signed at</dt><dd>${fmtTime(o.signed_at)} — signer: <b>${esc(o.signer)}</b></dd>
+        <dt>Signed at</dt><dd>${fmtTime(o.signed_at)}, signer: <b>${esc(o.signer)}</b></dd>
       </dl>
       <button class="token-toggle" data-oidx="${idx}">Show signed override record ▾</button>
       <pre class="json-block" id="override-json-${idx}" style="display:none">${esc(JSON.stringify(o, null, 2))}</pre>
@@ -340,7 +340,7 @@ function renderOverrides(overrides) {
 }
 
 /* ---------------------------------------------------------------- */
-/* Page 4 — Honest Answer                                             */
+/* Page 4: Honest Answer                                               */
 /* ---------------------------------------------------------------- */
 function renderHonest(app) {
   const sample = DASH.detector.sample_decisions.find((e) => e.decision.decision === "BLOCK") || DASH.detector.sample_decisions[0];
@@ -364,10 +364,10 @@ function renderHonest(app) {
       <div class="card cannot-prove">
         <h3>❌ What we CAN'T prove</h3>
         <ul>
-          <li>That this fraud never happens — ${(DASH.detector.metrics.fraud_missed_rate * 100).toFixed(1)}% of fraud in this run got through</li>
-          <li>That the detector is always right — ${(DASH.detector.metrics.false_positive_rate * 100).toFixed(1)}% of legitimate transactions were false alarms</li>
-          <li>Why an attacker did this — only that they did</li>
-          <li>Coverage of every attack type — 4 of 7 documented attacks aren't simulated here (Page 1)</li>
+          <li>That this fraud never happens: ${(DASH.detector.metrics.fraud_missed_rate * 100).toFixed(1)}% of fraud in this run got through</li>
+          <li>That the detector is always right: ${(DASH.detector.metrics.false_positive_rate * 100).toFixed(1)}% of legitimate transactions were false alarms</li>
+          <li>Why an attacker did this, only that they did</li>
+          <li>Coverage of every attack type: 4 of 7 documented attacks aren't simulated here (Page 1)</li>
         </ul>
       </div>
     </div>
@@ -388,7 +388,7 @@ function renderHonest(app) {
       <div class="row"><span>Ground truth</span><b>${sample.ground_truth.is_fraud ? "was fraud" : "was legitimate"} (${esc(sample.ground_truth.attack_type)})</b></div>
     </div>
     <p class="sim-note">Verify independently: load <code>tokens/authority_public_key.pem</code> and check this
-    signature against the exact JSON body in <code>decisions/block_decisions.json</code> — see
+    signature against the exact JSON body in <code>decisions/block_decisions.json</code>, see
     <code>src/authority_signer.py::verify_record</code> for the 15-line reference implementation.</p>
   `;
 }

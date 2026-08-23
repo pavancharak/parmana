@@ -125,7 +125,7 @@ def gather_agent_summaries(fraud_transactions):
 
 def main():
     print("=" * 70)
-    print("PARMANA FRAUD DEFENSE LAB — Detection + Proof Run")
+    print("PARMANA FRAUD DEFENSE LAB: Detection + Proof Run")
     print("=" * 70)
 
     good = load("good_transactions.json")
@@ -179,7 +179,7 @@ def main():
         "verification": verification,
     }
     (WEB_DATA_DIR / "dashboard.json").write_text(json.dumps(dashboard, indent=2))
-    print("\nWrote web/data/dashboard.json — open web/index.html (via a local server) to view the results.")
+    print("\nWrote web/data/dashboard.json. Open web/index.html (via a local server) to view the results.")
 
 
 if __name__ == "__main__":
