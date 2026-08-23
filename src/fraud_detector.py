@@ -6,6 +6,7 @@ becomes an official decision.
 """
 
 import json
+import pickle
 from pathlib import Path
 
 import numpy as np
@@ -16,6 +17,7 @@ from sklearn.metrics import confusion_matrix, recall_score, precision_score
 import authority_signer as auth
 
 ROOT = Path(__file__).resolve().parent.parent
+MODEL_PATH = ROOT / "models" / "detector_model.pkl"
 
 FEATURES = [
     "amount",
@@ -54,6 +56,22 @@ def train(transactions, test_size=0.3, random_state=13):
     )
     model.fit(X_train, y_train)
     return model, X_test, y_test, tx_test
+
+
+def save_model(model):
+    """Persist the trained model so probe_detector.py (Agents 3 and 7) can
+    load it without retraining. This is a regenerable build artifact, not
+    committed to git."""
+    MODEL_PATH.parent.mkdir(exist_ok=True)
+    with open(MODEL_PATH, "wb") as f:
+        pickle.dump(model, f)
+
+
+def load_model():
+    if not MODEL_PATH.exists():
+        raise RuntimeError("No trained model found. Run check_results.py first.")
+    with open(MODEL_PATH, "rb") as f:
+        return pickle.load(f)
 
 
 def evaluate(model, X_test, y_test):
@@ -98,6 +116,14 @@ def _reasons_for(tx, model):
         key=lambda kv: -kv[1],
     )
     return [f for f, s in scored[:2] if s > 0.01] or ["no single dominant signal"]
+
+
+def median_neutral_features(good_transactions):
+    """Median feature values from the legitimate population, used by
+    Agent 3 (Limit Prober) to isolate the amount signal: every other
+    feature is held at a typical, unremarkable value."""
+    keys = ["hour_of_day", "seconds_since_prev_tx", "location_mismatch_km", "pattern_similarity", "ai_generated_signal"]
+    return {k: float(np.median([t[k] for t in good_transactions])) for k in keys}
 
 
 def decision_for_score(score: float) -> str:

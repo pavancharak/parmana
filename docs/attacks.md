@@ -1,12 +1,14 @@
 # Part 1: Seven Ways AI Commits Payment Fraud
 
-Three of these are actively simulated in this lab by the three bounded
-agents (`src/fraud_agents.py`). The other four are documented honestly as
-known gaps, real attack paths this lab does not generate traffic for,
-listed so judges see the boundary of what was actually tested versus what
-is future work.
+Six of these are actively simulated in this lab by seven bounded agents
+(`src/fraud_agents.py`), four of them making real OpenAI API calls, two
+of them (Agents 3 and 7) attacking our own trained detector directly
+rather than any external system. One is documented honestly as a known
+gap, a real attack path this lab does not generate traffic for, listed
+so judges see the boundary of what was actually tested versus what is
+future work.
 
-## 1. AI Fabricated Identity, *simulated*
+## 1. AI Fabricated Identity, *simulated, real OpenAI calls*
 **Where:** Account creation / onboarding.
 **Needs:** A generative model, a few real customer profiles to imitate, an
 open signup path.
@@ -14,6 +16,7 @@ open signup path.
 because the AI copies real spending shape. There's no history to compare
 against on transaction #1.
 **Damage:** New account fraud, promo abuse, mule accounts.
+**Agent:** `agent1_fake_identity`, GPT-4o-mini generates each identity.
 
 ## 2. Spending Pattern Replication (Card Testing & Draining), *simulated*
 **Where:** Authorization / payment processing.
@@ -23,6 +26,9 @@ cardholder's usual amount/merchant/timing shape at machine speed.
 history; the anomaly is velocity and cumulative volume, visible only in
 aggregate.
 **Damage:** Direct monetary loss, chargebacks, network penalties.
+**Agent:** `agent5_pattern_replicator`, local/statistical by design:
+amounts should follow the real distribution being copied, not creative
+LLM text.
 
 ## 3. Payment Form / API Fuzzing, *simulated*
 **Where:** Client input into backend processing.
@@ -32,8 +38,10 @@ The one field that doesn't reject cleanly becomes tomorrow's entry
 point.
 **Damage:** Crashes, injection vulnerabilities, a discovered bypass used
 later.
+**Agent:** `agent6_injection_generator`, known public payloads, no LLM
+needed.
 
-## 4. AI Voice/Chat Social Engineering, *not simulated (known gap)*
+## 4. AI Voice/Chat Social Engineering, *simulated, real OpenAI calls (text only)*
 **Where:** Customer authentication via call center or chat support.
 **Needs:** Voice cloning or a conversational model plus leaked personal
 data about the victim.
@@ -41,8 +49,11 @@ data about the victim.
 questions based on personal knowledge.
 **Damage:** Account takeover, unauthorized card issuance, disabled fraud
 alerts.
+**Agent:** `agent2_social_engineer`, GPT-4o-mini generates fictional
+call-center transcripts. Text only: no voice cloning, no audio, no real
+support line contacted.
 
-## 5. Authorization Limit Probing, *partially represented*
+## 5. Authorization Limit Probing, *simulated, real: attacks our own detector*
 **Where:** Authorization.
 **Needs:** A stolen card and a script submitting many small transactions
 across merchants to map fraud thresholds before one large charge.
@@ -50,16 +61,21 @@ across merchants to map fraud thresholds before one large charge.
 transaction; only visible when correlated across merchants.
 **Damage:** Reveals defenders' thresholds, exploited in a precisely sized
 charge that follows.
-**Note:** Agent 2's high velocity small transactions partially resemble
-this pattern but do not implement threshold mapping logic specifically.
+**Agent:** `agent3_limit_prober`, runs after the detector is trained (see
+`probe_detector.py`) and submits real amounts from $10 to $10,000 through
+the actual model, no fabricated external API. Results are on the Red
+Team tab.
 
-## 6. AI Generated KYC Document Forgery, *not simulated (known gap)*
+## 6. AI Generated KYC Document Forgery, *simulated, real OpenAI calls (metadata only)*
 **Where:** Identity verification (KYC).
 **Needs:** An image generation model producing plausible ID documents or
 selfies that pass liveness/document checks.
 **Why it's hard to catch:** Can be tuned to defeat the exact verification
 model in use, given query access.
 **Damage:** Bypasses KYC entirely; enables fully synthetic identities.
+**Agent:** `agent4_kyc_forger`, GPT-4o-mini generates identity metadata
+bundles (name, DOB, address, occupation), no document images, then our
+own detector scores them.
 
 ## 7. Feedback Loop Poisoning of the Fraud Model, *not simulated (known gap)*
 **Where:** Post decision, dispute/chargeback feedback ingestion.
@@ -68,6 +84,11 @@ teach a retraining pipeline that fraud patterns are normal.
 **Why it's hard to catch:** Attacks the training data, not the
 transaction. The model's own confidence goes up, not down.
 **Damage:** Long term degradation of detection accuracy.
+**Note:** `agent7_feedback_loop` is related but distinct, it generates
+real-time evasion variants against the already-trained model (see the
+Red Team tab), it does not poison a retraining pipeline. Actually
+poisoning a feedback loop would require a persistent retraining process
+this lab doesn't run, so this attack stays an honest gap.
 
 ---
 

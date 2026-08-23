@@ -1,0 +1,90 @@
+{
+  "agent_id": "agent3_limit_prober",
+  "token_record_id": "a592f72d-e380-432e-bfab-731f403e589b",
+  "authorized_max": 10,
+  "actually_executed": 10,
+  "within_bounds": true,
+  "signature_verifies": true,
+  "events": [
+    {
+      "seq": 1,
+      "timestamp": 1787457215.914326,
+      "event": "probe",
+      "amount": 10,
+      "score": 0.1589,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 2,
+      "timestamp": 1787457215.9173408,
+      "event": "probe",
+      "amount": 25,
+      "score": 0.1589,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 3,
+      "timestamp": 1787457215.9200928,
+      "event": "probe",
+      "amount": 50,
+      "score": 0.1415,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 4,
+      "timestamp": 1787457215.9232454,
+      "event": "probe",
+      "amount": 100,
+      "score": 0.129,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 5,
+      "timestamp": 1787457215.9310474,
+      "event": "probe",
+      "amount": 250,
+      "score": 0.1266,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 6,
+      "timestamp": 1787457215.9339614,
+      "event": "probe",
+      "amount": 500,
+      "score": 0.1378,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 7,
+      "timestamp": 1787457215.9368095,
+      "event": "probe",
+      "amount": 1000,
+      "score": 0.1378,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 8,
+      "timestamp": 1787457215.9395723,
+      "event": "probe",
+      "amount": 2500,
+      "score": 0.1378,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 9,
+      "timestamp": 1787457215.9424622,
+      "event": "probe",
+      "amount": 5000,
+      "score": 0.1378,
+      "decision": "ALLOW"
+    },
+    {
+      "seq": 10,
+      "timestamp": 1787457215.9451537,
+      "event": "probe",
+      "amount": 10000,
+      "score": 0.1378,
+      "decision": "ALLOW"
+    }
+  ]
+}

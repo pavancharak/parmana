@@ -1,0 +1,12 @@
+{
+  "token_type": "agent_authorization",
+  "agent_id": "agent7_feedback_loop",
+  "action": "generate_evasion_variants",
+  "max_operations": 15,
+  "issued_at": 1787457215.9898164,
+  "expires_at": 1787460815.9898164,
+  "record_id": "ad2bb48f-2205-4f71-add6-830df83333c8",
+  "signed_at": 1787457215.9898372,
+  "signer": "authority",
+  "signature": "5aafdef517f3a49458c60c706fac4f8d0a59bc10e18fbefa1af1a8db68b935a63896ac325dbef2c1b33d542bb33ad3765532626493815546bf8fa9e492ec1702"
+}

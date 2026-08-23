@@ -1,0 +1,12 @@
+{
+  "token_type": "agent_authorization",
+  "agent_id": "agent6_injection_generator",
+  "action": "probe_payment_form",
+  "max_operations": 1000,
+  "issued_at": 1787457211.1854663,
+  "expires_at": 1787460811.1854663,
+  "record_id": "7245125b-d351-43fd-a803-aef7ee3b0ff5",
+  "signed_at": 1787457211.1854763,
+  "signer": "authority",
+  "signature": "f2f7e218ed5ed76f9dbf520d7201d16f24c08610c2d84c402b9228a83fe8475687768849b882824dde77a87db04c9efbbba4febebc5a81db7fe04a6602af2109"
+}

@@ -1,7 +1,13 @@
 # The authority's and reviewer's private signing keys. These must never
-# be committed or shared — anyone holding them could forge signatures.
+# be committed or shared, anyone holding them could forge signatures.
 # They are generated locally the first time src/run_simulation.py runs.
 tokens/keys/
+
+# Real secrets. Never commit an API key.
+.env
+
+# Regenerable trained model artifact.
+models/
 
 __pycache__/
 *.pyc

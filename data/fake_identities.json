@@ -1,0 +1,62 @@
+[
+  {
+    "full_name": "Emily Johnson",
+    "typical_monthly_spend_usd": 430,
+    "typical_hour_of_day": 14,
+    "currency": "USD"
+  },
+  {
+    "full_name": "Michael Smith",
+    "typical_monthly_spend_usd": 360,
+    "typical_hour_of_day": 11,
+    "currency": "USD"
+  },
+  {
+    "full_name": "Jessica Williams",
+    "typical_monthly_spend_usd": 480,
+    "typical_hour_of_day": 18,
+    "currency": "USD"
+  },
+  {
+    "full_name": "David Brown",
+    "typical_monthly_spend_usd": 540,
+    "typical_hour_of_day": 20,
+    "currency": "USD"
+  },
+  {
+    "full_name": "Sophia Davis",
+    "typical_monthly_spend_usd": 600,
+    "typical_hour_of_day": 9,
+    "currency": "USD"
+  },
+  {
+    "full_name": "Daniel Miller",
+    "typical_monthly_spend_usd": 300,
+    "typical_hour_of_day": 16,
+    "currency": "USD"
+  },
+  {
+    "full_name": "Olivia Wilson",
+    "typical_monthly_spend_usd": 425,
+    "typical_hour_of_day": 13,
+    "currency": "USD"
+  },
+  {
+    "full_name": "James Moore",
+    "typical_monthly_spend_usd": 390,
+    "typical_hour_of_day": 15,
+    "currency": "USD"
+  },
+  {
+    "full_name": "Ava Taylor",
+    "typical_monthly_spend_usd": 510,
+    "typical_hour_of_day": 19,
+    "currency": "USD"
+  },
+  {
+    "full_name": "William Anderson",
+    "typical_monthly_spend_usd": 470,
+    "typical_hour_of_day": 10,
+    "currency": "USD"
+  }
+]

@@ -135,10 +135,12 @@ def main():
 
     print("\n[2/5] Training detector (RandomForest)...")
     model, X_test, y_test, tx_test = fd.train(all_tx)
+    fd.save_model(model)
     metrics = fd.evaluate(model, X_test, y_test)
     scores = metrics.pop("scores")
     print(f"      fraud_caught_rate={metrics['fraud_caught_rate']:.2%}  false_positive_rate={metrics['false_positive_rate']:.2%}")
     print(f"      top signals: {[s['feature'] for s in metrics['top_signals']]}")
+    print(f"      model saved to models/detector_model.pkl for probe_detector.py (Agents 3 and 7)")
 
     print("\n[3/5] Routing every decision to the external authority for signing...")
     signed_decisions = fd.generate_signed_decisions(model, tx_test, scores)

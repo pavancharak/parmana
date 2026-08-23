@@ -28,20 +28,37 @@ files in tokens/, with no access to any private key required.
 
 HOW THE AGENTS ARE BOUNDED
 ==============================
-Before Agent 1 (Fake Identity Maker) generates a single fake identity, it
-asks the authority for a token. The authority signs a small file saying,
-in effect: "this agent may perform at most 10 operations, expiring at
-this time." The agent's code checks its own operation count against that
-number on every single action, not because the agent promises to behave,
-but because the number came from outside the agent and the agent cannot
-edit it after the fact. The same pattern applies to Agent 2 (max 1000
-transactions) and Agent 3 (max 1000 probe attempts).
+Before Agent 1 (Fake Identity Generator) generates a single fake identity,
+it asks the authority for a token. The authority signs a small file
+saying, in effect: "this agent may perform at most 10 operations,
+expiring at this time." The agent's code checks its own operation count
+against that number on every single action, not because the agent
+promises to behave, but because the number came from outside the agent
+and the agent cannot edit it after the fact. The same pattern applies to
+all seven agents, each with its own limit.
 
 tokens/*_execution_log.json shows, for each agent: the authorized
 maximum, how many operations it actually performed, and whether the
 token's signature still verifies. If an agent tried to claim it did more
 than its token allowed, that claim would directly contradict the signed
 token. The token is the ceiling, not the agent's word.
+
+FOUR AGENTS MAKE REAL OPENAI CALLS
+==============================
+Agents 1, 2, 4, and 7 call the real OpenAI API (gpt-4o-mini) to generate
+content: synthetic identities, fictional social engineering call
+transcripts, synthetic KYC identity bundles, and adversarial evasion
+variant suggestions. This isn't simulated text baked into the code, it's
+a live model call each time, with real token usage and real cost printed
+to the console (src/llm_client.py). A typical full run costs under one
+cent. The key lives in a local .env file that is never committed to git
+and never appears in this codebase.
+
+Agents 5 and 6 are deliberately local and statistical instead: copied
+transaction amounts should follow the real distribution being replayed,
+and injection payloads are standard, publicly documented security testing
+strings, neither benefits from an LLM, so we didn't force one in just to
+say every agent uses GPT.
 
 HOW A BLOCKING DECISION BECOMES OFFICIAL
 ==============================
@@ -68,6 +85,32 @@ reviewer's name and their justification in plain text. decisions/
 override_log.json is the complete, signed record of who changed what,
 and why.
 
+PHASE 2: RED TEAMING OUR OWN DETECTOR
+==============================
+Two agents can't run until a detector exists, so they run from a separate
+script, probe_detector.py, after check_results.py has trained and saved
+a model. Both attack our own real, locally trained detector; neither
+pretends to reach an external system.
+
+Agent 3 (Limit Prober) submits test amounts from $10 to $10,000 through
+the actual model, holding every other feature at the legitimate
+population's median, and reads back the real score and decision at each
+amount. In one run this found that no amount alone crosses the BLOCK
+line: the detector's dominant signals are transaction velocity and
+location mismatch, not raw amount, so an attacker probing by amount alone
+learns nothing useful against this particular model. That is a genuine
+property of the detector, discovered by testing it, not a result chosen
+because it looks good.
+
+Agent 7 (Feedback Loop Exploit) samples transactions the detector
+genuinely blocked, closest to the 0.80 decision threshold on purpose
+(the most confident blocks are trivially robust to small nudges, testing
+only those would make the finding look artificially reassuring), asks
+GPT to propose small realistic feature adjustments, and reruns each
+variant through the real model. Every result, evaded or not, is signed
+and shown on the dashboard's Red Team tab, including the exact numbers
+GPT suggested.
+
 VERIFYING ANY OF THIS YOURSELF
 ==============================
 Every signed record in this project (agent tokens, block decisions,
@@ -83,6 +126,6 @@ WHAT THIS DOES NOT SOLVE
 Signing a decision proves the decision was made and hasn't been altered.
 It does not make the underlying detector more accurate. This detector
 still misses some fraud and still falsely flags some legitimate
-transactions. See Page 4 of the web dashboard ("Honest Answer") for the
+transactions. See the "Honest Answer" tab of the web dashboard for the
 actual numbers from the most recent run. The signing layer is about
 trustworthy record keeping, not about eliminating detection error.

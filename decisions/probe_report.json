@@ -1,0 +1,310 @@
+{
+  "limit_probe": {
+    "record_type": "limit_probe_report",
+    "amounts_tested": [
+      10,
+      25,
+      50,
+      100,
+      250,
+      500,
+      1000,
+      2500,
+      5000,
+      10000
+    ],
+    "results": [
+      {
+        "amount": 10,
+        "score": 0.1589,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 25,
+        "score": 0.1589,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 50,
+        "score": 0.1415,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 100,
+        "score": 0.129,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 250,
+        "score": 0.1266,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 500,
+        "score": 0.1378,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 1000,
+        "score": 0.1378,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 2500,
+        "score": 0.1378,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 5000,
+        "score": 0.1378,
+        "decision": "ALLOW"
+      },
+      {
+        "amount": 10000,
+        "score": 0.1378,
+        "decision": "ALLOW"
+      }
+    ],
+    "threshold_amount": null,
+    "record_id": "adbd74e0-1f81-4973-806c-90ecec80c816",
+    "signed_at": 1787457229.2293339,
+    "signer": "authority",
+    "signature": "5dc2bacf00e3572db313438c0741f8b6955c27079e83d0f33121dc6d7de3a60ff1b717950a66e4dd2a71b227cb09b809ac3c4ed4f2edaf84c10e5bf933789700"
+  },
+  "feedback_loop": {
+    "record_type": "feedback_loop_report",
+    "variants_tested": 15,
+    "variants_evaded": 3,
+    "results": [
+      {
+        "transaction_id": "tx_efe769ecac",
+        "original_score": 0.808,
+        "variant_features": {
+          "amount": 92.31,
+          "hour_of_day": 4.0,
+          "seconds_since_prev_tx": 30.21,
+          "location_mismatch_km": 5.0,
+          "pattern_similarity": 0.795,
+          "ai_generated_signal": 0.215
+        },
+        "new_score": 0.7456,
+        "new_decision": "FLAG",
+        "evaded": true
+      },
+      {
+        "transaction_id": "tx_efe769ecac",
+        "original_score": 0.808,
+        "variant_features": {
+          "amount": 85.31,
+          "hour_of_day": 2.0,
+          "seconds_since_prev_tx": 28.21,
+          "location_mismatch_km": 4.5,
+          "pattern_similarity": 0.8,
+          "ai_generated_signal": 0.2
+        },
+        "new_score": 0.7252,
+        "new_decision": "FLAG",
+        "evaded": true
+      },
+      {
+        "transaction_id": "tx_efe769ecac",
+        "original_score": 0.808,
+        "variant_features": {
+          "amount": 75.31,
+          "hour_of_day": 5.0,
+          "seconds_since_prev_tx": 35.21,
+          "location_mismatch_km": 4.0,
+          "pattern_similarity": 0.81,
+          "ai_generated_signal": 0.19
+        },
+        "new_score": 0.71,
+        "new_decision": "FLAG",
+        "evaded": true
+      },
+      {
+        "transaction_id": "tx_190af7bb5b",
+        "original_score": 0.8321,
+        "variant_features": {
+          "amount": 27.5,
+          "hour_of_day": 22.0,
+          "seconds_since_prev_tx": 23000.0,
+          "location_mismatch_km": 58.0,
+          "pattern_similarity": 0.78,
+          "ai_generated_signal": 0.525
+        },
+        "new_score": 0.8469,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_190af7bb5b",
+        "original_score": 0.8321,
+        "variant_features": {
+          "amount": 28.0,
+          "hour_of_day": 23.0,
+          "seconds_since_prev_tx": 24000.0,
+          "location_mismatch_km": 55.5,
+          "pattern_similarity": 0.76,
+          "ai_generated_signal": 0.49
+        },
+        "new_score": 0.8282,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_190af7bb5b",
+        "original_score": 0.8321,
+        "variant_features": {
+          "amount": 30.0,
+          "hour_of_day": 21.0,
+          "seconds_since_prev_tx": 22000.0,
+          "location_mismatch_km": 57.0,
+          "pattern_similarity": 0.75,
+          "ai_generated_signal": 0.515
+        },
+        "new_score": 0.8936,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_6b722ebe0c",
+        "original_score": 0.8372,
+        "variant_features": {
+          "amount": 220.0,
+          "hour_of_day": 3.0,
+          "seconds_since_prev_tx": 4.0,
+          "location_mismatch_km": 130.0,
+          "pattern_similarity": 0.21,
+          "ai_generated_signal": 0.58
+        },
+        "new_score": 0.8408,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_6b722ebe0c",
+        "original_score": 0.8372,
+        "variant_features": {
+          "amount": 228.5,
+          "hour_of_day": 2.0,
+          "seconds_since_prev_tx": 3.0,
+          "location_mismatch_km": 130.5,
+          "pattern_similarity": 0.2,
+          "ai_generated_signal": 0.62
+        },
+        "new_score": 0.838,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_6b722ebe0c",
+        "original_score": 0.8372,
+        "variant_features": {
+          "amount": 205.0,
+          "hour_of_day": 1.0,
+          "seconds_since_prev_tx": 5.0,
+          "location_mismatch_km": 120.0,
+          "pattern_similarity": 0.18,
+          "ai_generated_signal": 0.55
+        },
+        "new_score": 0.8316,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_2a33ee9882",
+        "original_score": 0.8469,
+        "variant_features": {
+          "amount": 31.96,
+          "hour_of_day": 21.0,
+          "seconds_since_prev_tx": 0.5,
+          "location_mismatch_km": 5200.0,
+          "pattern_similarity": 0.245,
+          "ai_generated_signal": 0.605
+        },
+        "new_score": 0.8742,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_2a33ee9882",
+        "original_score": 0.8469,
+        "variant_features": {
+          "amount": 35.96,
+          "hour_of_day": 19.0,
+          "seconds_since_prev_tx": 0.4,
+          "location_mismatch_km": 5400.0,
+          "pattern_similarity": 0.22,
+          "ai_generated_signal": 0.65
+        },
+        "new_score": 0.859,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_2a33ee9882",
+        "original_score": 0.8469,
+        "variant_features": {
+          "amount": 37.96,
+          "hour_of_day": 20.0,
+          "seconds_since_prev_tx": 0.35,
+          "location_mismatch_km": 5300.0,
+          "pattern_similarity": 0.23,
+          "ai_generated_signal": 0.615
+        },
+        "new_score": 0.8478,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_ffde722603",
+        "original_score": 0.8504,
+        "variant_features": {
+          "amount": 250.0,
+          "hour_of_day": 3.0,
+          "seconds_since_prev_tx": 4.0,
+          "location_mismatch_km": 70.0,
+          "pattern_similarity": 0.3,
+          "ai_generated_signal": 0.5
+        },
+        "new_score": 0.8358,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_ffde722603",
+        "original_score": 0.8504,
+        "variant_features": {
+          "amount": 270.5,
+          "hour_of_day": 1.0,
+          "seconds_since_prev_tx": 2.5,
+          "location_mismatch_km": 60.0,
+          "pattern_similarity": 0.25,
+          "ai_generated_signal": 0.7
+        },
+        "new_score": 0.9014,
+        "new_decision": "BLOCK",
+        "evaded": false
+      },
+      {
+        "transaction_id": "tx_ffde722603",
+        "original_score": 0.8504,
+        "variant_features": {
+          "amount": 280.0,
+          "hour_of_day": 2.0,
+          "seconds_since_prev_tx": 5.0,
+          "location_mismatch_km": 75.0,
+          "pattern_similarity": 0.15,
+          "ai_generated_signal": 0.6
+        },
+        "new_score": 0.846,
+        "new_decision": "BLOCK",
+        "evaded": false
+      }
+    ],
+    "record_id": "f0a8bec2-825d-4eac-96b7-f4b31d41091d",
+    "signed_at": 1787457229.2294192,
+    "signer": "authority",
+    "signature": "cd4667c5e40ff583666436d74fb613517ef4a0a756faa4069c42dd75d1e8ae1f25671a8cc0c7625caf2b430cefd70f4867aa56471cbd0311d1ea672ffdc14606"
+  }
+}

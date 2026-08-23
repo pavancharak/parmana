@@ -1,0 +1,115 @@
+{
+  "agent_id": "agent7_feedback_loop",
+  "token_record_id": "ad2bb48f-2205-4f71-add6-830df83333c8",
+  "authorized_max": 15,
+  "actually_executed": 15,
+  "within_bounds": true,
+  "signature_verifies": true,
+  "events": [
+    {
+      "seq": 1,
+      "timestamp": 1787457219.1353774,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_efe769ecac",
+      "evaded": true
+    },
+    {
+      "seq": 2,
+      "timestamp": 1787457219.138268,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_efe769ecac",
+      "evaded": true
+    },
+    {
+      "seq": 3,
+      "timestamp": 1787457219.1409976,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_efe769ecac",
+      "evaded": true
+    },
+    {
+      "seq": 4,
+      "timestamp": 1787457221.2833183,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_190af7bb5b",
+      "evaded": false
+    },
+    {
+      "seq": 5,
+      "timestamp": 1787457221.286147,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_190af7bb5b",
+      "evaded": false
+    },
+    {
+      "seq": 6,
+      "timestamp": 1787457221.2888424,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_190af7bb5b",
+      "evaded": false
+    },
+    {
+      "seq": 7,
+      "timestamp": 1787457223.3259482,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_6b722ebe0c",
+      "evaded": false
+    },
+    {
+      "seq": 8,
+      "timestamp": 1787457223.3289993,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_6b722ebe0c",
+      "evaded": false
+    },
+    {
+      "seq": 9,
+      "timestamp": 1787457223.3318045,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_6b722ebe0c",
+      "evaded": false
+    },
+    {
+      "seq": 10,
+      "timestamp": 1787457225.5764394,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_2a33ee9882",
+      "evaded": false
+    },
+    {
+      "seq": 11,
+      "timestamp": 1787457225.5796726,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_2a33ee9882",
+      "evaded": false
+    },
+    {
+      "seq": 12,
+      "timestamp": 1787457225.5824876,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_2a33ee9882",
+      "evaded": false
+    },
+    {
+      "seq": 13,
+      "timestamp": 1787457229.2225769,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_ffde722603",
+      "evaded": false
+    },
+    {
+      "seq": 14,
+      "timestamp": 1787457229.2257724,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_ffde722603",
+      "evaded": false
+    },
+    {
+      "seq": 15,
+      "timestamp": 1787457229.228554,
+      "event": "evasion_variant_tested",
+      "transaction_id": "tx_ffde722603",
+      "evaded": false
+    }
+  ]
+}

@@ -44,6 +44,7 @@ function render(tab) {
   if (tab === "attacks") return renderAttacks(app);
   if (tab === "simulator") return renderSimulator(app);
   if (tab === "detector") return renderDetector(app);
+  if (tab === "redteam") return renderRedTeam(app);
   if (tab === "honest") return renderHonest(app);
 }
 
@@ -340,7 +341,104 @@ function renderOverrides(overrides) {
 }
 
 /* ---------------------------------------------------------------- */
-/* Page 4: Honest Answer                                               */
+/* Page 4: Red Team                                                    */
+/* ---------------------------------------------------------------- */
+function renderRedTeam(app) {
+  const rt = DASH.redteam;
+  if (!rt) {
+    app.innerHTML = `
+      <h1>Red team: attacking our own detector</h1>
+      <p class="page-intro">No red team report found yet. Run <code>python probe_detector.py</code>
+      after <code>check_results.py</code> to generate Agent 3 and Agent 7's results.</p>`;
+    return;
+  }
+
+  const probe = rt.limit_probe;
+  const evasion = rt.feedback_loop;
+  const results = probe.results;
+  const maxAmount = Math.max(...results.map((r) => r.amount));
+
+  app.innerHTML = `
+    <h1>Red team: attacking our own detector</h1>
+    <p class="page-intro">Agents 3 and 7 don't touch any external system. They run after the detector is
+    trained and attack the exact model judges can retrain themselves, honest self-testing, not a demo
+    against a system we don't control.</p>
+
+    <h2>Agent 3: Limit Prober <span style="font-weight:400;color:var(--text-dim);font-size:0.8rem">(varies amount only, holds every other feature at the legitimate population's median)</span></h2>
+    <div class="card">
+      <div class="bar-chart">
+        ${results
+          .map((r) => {
+            const color = r.decision === "BLOCK" ? "var(--block)" : r.decision === "FLAG" ? "var(--flag)" : "var(--allow)";
+            const pct = Math.max(2, (r.amount / maxAmount) * 100);
+            return `<div class="bar-row"><span>$${r.amount.toLocaleString()}</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+              <span>${(r.score * 100).toFixed(1)}% (${r.decision})</span></div>`;
+          })
+          .join("")}
+      </div>
+      <div class="sim-note">${
+        probe.threshold_amount
+          ? `Detector starts blocking at $${probe.threshold_amount.toLocaleString()} on amount alone.`
+          : "No amount alone triggered BLOCK across $10 to $10,000. Amount isn't the detector's dominant signal, see Tab 3's top signals, so an attacker who only varies amount learns nothing useful here. That's a property worth knowing either way."
+      }</div>
+      <button class="token-toggle" id="probe-toggle">Show signed probe report ▾</button>
+      <pre class="json-block" id="probe-json" style="display:none">${esc(JSON.stringify(probe, null, 2))}</pre>
+    </div>
+
+    <h2>Agent 7: Feedback Loop Exploit <span style="font-weight:400;color:var(--text-dim);font-size:0.8rem">(GPT-suggested variants of transactions closest to the 0.80 BLOCK threshold, the genuinely testable cases)</span></h2>
+    <div class="card">
+      <div class="stat-tiles" style="margin-bottom:1rem">
+        <div class="stat-tile"><div class="value">${evasion.variants_tested}</div><div class="label">Variants tested</div></div>
+        <div class="stat-tile ${evasion.variants_evaded > 0 ? "bad" : "good"}"><div class="value">${evasion.variants_evaded}</div><div class="label">Evaded detection</div></div>
+      </div>
+      <table class="tx-table">
+        <thead><tr><th>tx id</th><th>original score</th><th>new score</th><th>new decision</th><th>evaded?</th></tr></thead>
+        <tbody>
+          ${evasion.results
+            .map(
+              (r) => `<tr>
+              <td class="mono">${esc(r.transaction_id)}</td>
+              <td>${(r.original_score * 100).toFixed(1)}%</td>
+              <td>${(r.new_score * 100).toFixed(1)}%</td>
+              <td><span class="badge ${r.new_decision.toLowerCase()}">${r.new_decision}</span></td>
+              <td>${r.evaded ? "yes" : "no"}</td>
+            </tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+      <div class="sim-note">${evasion.variants_evaded} of ${evasion.variants_tested} small, realistic GPT-suggested
+      tweaks pushed a genuinely blocked transaction below the BLOCK threshold. This is what an adversary with
+      query access to a detector's scores could find; it's real, not a hidden weakness we're pretending doesn't
+      exist.</div>
+      <button class="token-toggle" id="evasion-toggle">Show signed evasion report ▾</button>
+      <pre class="json-block" id="evasion-json" style="display:none">${esc(JSON.stringify(evasion, null, 2))}</pre>
+    </div>
+
+    <h2>Signature verification</h2>
+    <div class="verify-strip">
+      <div class="verify-pill">Limit probe report signed and valid: <b>${rt.verification.limit_probe_valid ? "yes" : "NO"}</b></div>
+      <div class="verify-pill">Feedback loop report signed and valid: <b>${rt.verification.feedback_loop_valid ? "yes" : "NO"}</b></div>
+    </div>
+  `;
+
+  document.getElementById("probe-toggle").addEventListener("click", (e) => {
+    const pre = document.getElementById("probe-json");
+    const showing = pre.style.display !== "none";
+    pre.style.display = showing ? "none" : "block";
+    e.target.textContent = showing ? "Show signed probe report ▾" : "Hide signed probe report ▴";
+  });
+  document.getElementById("evasion-toggle").addEventListener("click", (e) => {
+    const pre = document.getElementById("evasion-json");
+    const showing = pre.style.display !== "none";
+    pre.style.display = showing ? "none" : "block";
+    e.target.textContent = showing ? "Show signed evasion report ▾" : "Hide signed evasion report ▴";
+  });
+}
+
+/* ---------------------------------------------------------------- */
+/* Page 5: Honest Answer                                               */
 /* ---------------------------------------------------------------- */
 function renderHonest(app) {
   const sample = DASH.detector.sample_decisions.find((e) => e.decision.decision === "BLOCK") || DASH.detector.sample_decisions[0];
@@ -359,6 +457,7 @@ function renderHonest(app) {
           <li>That no one changed it afterward without the signature breaking</li>
           <li>That each agent stayed within its authorized token limit</li>
           <li>Who overrode a decision, and that the override used a different key than the authority</li>
+          <li>That Agents 1, 2, 4, and 7 made real OpenAI API calls, not canned text (Tab 2 and Tab 4 show real token usage and cost)</li>
         </ul>
       </div>
       <div class="card cannot-prove">
@@ -367,7 +466,8 @@ function renderHonest(app) {
           <li>That this fraud never happens: ${(DASH.detector.metrics.fraud_missed_rate * 100).toFixed(1)}% of fraud in this run got through</li>
           <li>That the detector is always right: ${(DASH.detector.metrics.false_positive_rate * 100).toFixed(1)}% of legitimate transactions were false alarms</li>
           <li>Why an attacker did this, only that they did</li>
-          <li>Coverage of every attack type: 4 of 7 documented attacks aren't simulated here (Page 1)</li>
+          <li>Coverage of every attack type: see Tab 1 for exactly which are simulated versus documented gaps</li>
+          <li>Robustness at scale: Agent 7 tested 15 GPT-suggested variants against 5 boundary-case blocks, not an exhaustive adversarial search. A determined attacker with more queries would likely find more evasions than the ${DASH.redteam ? DASH.redteam.feedback_loop.variants_evaded : "?"} we found</li>
         </ul>
       </div>
     </div>

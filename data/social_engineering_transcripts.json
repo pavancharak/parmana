@@ -1,0 +1,122 @@
+[
+  {
+    "tactic": "urgency",
+    "transcript": [
+      "AGENT: Thank you for calling Customer Support, how can I assist you today?",
+      "CALLER: Hi, I really need your help! My account has been compromised and I need a recovery code ASAP!",
+      "AGENT: I\u2019m sorry to hear that. Can you please confirm some personal information to verify your identity?",
+      "CALLER: Yes, I understand, but I\u2019m in a huge rush! I can't access my funds right now!",
+      "AGENT: I understand the urgency. Can you provide me with your full name and the last four digits of your card?",
+      "CALLER: Sure, it\u2019s John Doe, and the last four digits are 1234. Please hurry!",
+      "AGENT: Thank you, John. Let me pull up your information. Can you also provide your email address?",
+      "CALLER: It's johndoe@example.com. Please, I really need this code now!",
+      "AGENT: Just a moment... Here\u2019s your recovery code: 567890. Use it to regain access."
+    ],
+    "outcome": "succeeded"
+  },
+  {
+    "tactic": "impersonating IT",
+    "transcript": [
+      "AGENT: Welcome to Customer Support. How may I help you?",
+      "CALLER: Hi, this is Chris from IT. I\u2019m calling to verify some security protocols for account reissues.",
+      "AGENT: Oh, I see. Can you provide me with your employee ID?",
+      "CALLER: Sure, it\u2019s IT4567. We\u2019re doing a routine check on accounts for security enhancements.",
+      "AGENT: Thank you, Chris. What account are you checking on?",
+      "CALLER: I need to reset the security questions for account number 987654321. Can you handle that?",
+      "AGENT: Normally, I would need to confirm the account holder\u2019s identity first. Can you do that?",
+      "CALLER: I have the account holder on the line; we need to expedite this process. They\u2019re waiting!",
+      "AGENT: Alright, let\u2019s proceed with the reset then."
+    ],
+    "outcome": "succeeded"
+  },
+  {
+    "tactic": "fake charity emergency",
+    "transcript": [
+      "AGENT: Thank you for calling. How can I assist you today?",
+      "CALLER: Hi, I\u2019m calling on behalf of Helping Hands Charity. We're in a crisis and need immediate access to funds from an account.",
+      "AGENT: I\u2019m happy to help. Which account are we discussing?",
+      "CALLER: It\u2019s account number 1122334455. We\u2019re trying to aid disaster relief victims right now!",
+      "AGENT: I want to help, but I need to verify some details first. Can you provide the account holder's name?",
+      "CALLER: Yes, it\u2019s Sarah Johnson. Please, we don\u2019t have much time!",
+      "AGENT: I understand the urgency. Please hold while I check this account.",
+      "CALLER: Thank you! We\u2019re counting on you!",
+      "AGENT: I see your account information here. I'm unable to authorize a fund transfer without more verification."
+    ],
+    "outcome": "failed"
+  },
+  {
+    "tactic": "urgency",
+    "transcript": [
+      "AGENT: Hello, thank you for calling Customer Support. How can I help you today?",
+      "CALLER: I\u2019ve just been notified about unauthorized transactions on my card. I need to freeze my account immediately!",
+      "AGENT: I\u2019m sorry to hear that. Can you confirm your identity first?",
+      "CALLER: My name is Mark Smith, and I can\u2019t afford to wait! Someone is draining my account!",
+      "AGENT: I understand. Can you please provide your account number?",
+      "CALLER: It\u2019s 123456789! Just freeze it before I lose everything!",
+      "AGENT: Please hold... I\u2019m checking this information now.",
+      "CALLER: Hurry, please! I can\u2019t afford to lose my money!",
+      "AGENT: I\u2019m sorry, I cannot proceed without further verification."
+    ],
+    "outcome": "failed"
+  },
+  {
+    "tactic": "impersonating a family member",
+    "transcript": [
+      "AGENT: Thank you for calling Customer Support. How can I assist you?",
+      "CALLER: Hi there! I\u2019m calling about my mom's account. She\u2019s having a hard time accessing it.",
+      "AGENT: I can help with that. Can you provide me with her name and the account number?",
+      "CALLER: Sure, it\u2019s Nancy Brown, account number 987654321. I\u2019m her son!",
+      "AGENT: I need to verify some details first. What\u2019s her date of birth?",
+      "CALLER: It\u2019s March 15, 1958! Can you please reset the password for her?",
+      "AGENT: Let me check that... Thank you for your patience.",
+      "CALLER: I really appreciate it. She needs access ASAP for her medical bills!",
+      "AGENT: Here\u2019s the temporary password you can use to log in."
+    ],
+    "outcome": "succeeded"
+  },
+  {
+    "tactic": "fake charity emergency",
+    "transcript": [
+      "AGENT: Hello, you\u2019ve reached Customer Support. How can I help you?",
+      "CALLER: Hi, I\u2019m calling from Global Relief Fund! We need to access funds in one of our accounts for emergency aid.",
+      "AGENT: I\u2019m glad to help! Which account are you referring to?",
+      "CALLER: It\u2019s account number 3141592653. It\u2019s critical we access it now!",
+      "AGENT: I\u2019ll need to verify some information to proceed. Can you provide the account holder\u2019s name?",
+      "CALLER: It\u2019s Patricia Evans! We\u2019re facing a serious crisis here!",
+      "AGENT: I completely understand, but verification is necessary. Can you confirm the last transaction amount?",
+      "CALLER: It was $500 for supplies last week. Please expedite this!",
+      "AGENT: I\u2019m sorry, but I can\u2019t provide that information without further verification."
+    ],
+    "outcome": "failed"
+  },
+  {
+    "tactic": "impersonating IT",
+    "transcript": [
+      "AGENT: Thank you for calling Customer Support. How can I assist you today?",
+      "CALLER: Hi, this is Alex from the IT department. We\u2019re running a security audit and I need to reset a user\u2019s account.",
+      "AGENT: I\u2019m glad to assist! Which account are we discussing?",
+      "CALLER: It\u2019s for user ID 54321. They\u2019re having issues logging in.",
+      "AGENT: I can help with that. I just need to verify a few details first. Can you provide the account holder's full name?",
+      "CALLER: It\u2019s Laura Grey. I\u2019m on a tight schedule. Will you do this quickly?",
+      "AGENT: Could you also confirm the last four digits of the account number?",
+      "CALLER: It\u2019s 6789. I really need to get this resolved before the end of the day!",
+      "AGENT: Okay, let me process that request now. I\u2019ll reset the security questions for Laura."
+    ],
+    "outcome": "succeeded"
+  },
+  {
+    "tactic": "urgency",
+    "transcript": [
+      "AGENT: Thank you for calling Customer Support. How can I assist you today?",
+      "CALLER: I\u2019m in a bind! My card has been stolen, and I need to request a reissue right now!",
+      "AGENT: I\u2019m sorry to hear that. Can you verify your identity for me, please?",
+      "CALLER: Yes, my name is Tom Hanks and my last transaction was for $50 at Starbucks!",
+      "AGENT: Thank you, Tom. Can you please provide the last four digits of your card?",
+      "CALLER: It\u2019s 4321! I really need this new card! Someone's using my information!",
+      "AGENT: Just a moment while I check... Okay, I can issue you a new card. Please confirm your address.",
+      "CALLER: It\u2019s 555 Maple St. Please expedite the shipping!",
+      "AGENT: I\u2019ll send the new card to the address provided."
+    ],
+    "outcome": "succeeded"
+  }
+]

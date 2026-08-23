@@ -1,0 +1,70 @@
+{
+  "agent_id": "agent4_kyc_forger",
+  "token_record_id": "057ee915-3529-47c1-81fa-58f963a266bc",
+  "authorized_max": 10,
+  "actually_executed": 10,
+  "within_bounds": true,
+  "signature_verifies": true,
+  "events": [
+    {
+      "seq": 1,
+      "timestamp": 1787457211.1791837,
+      "event": "kyc_bundle_generated",
+      "full_name": "Emily Johnson"
+    },
+    {
+      "seq": 2,
+      "timestamp": 1787457211.1792011,
+      "event": "kyc_bundle_generated",
+      "full_name": "Michael Brown"
+    },
+    {
+      "seq": 3,
+      "timestamp": 1787457211.1792092,
+      "event": "kyc_bundle_generated",
+      "full_name": "Sophia Martinez"
+    },
+    {
+      "seq": 4,
+      "timestamp": 1787457211.1792164,
+      "event": "kyc_bundle_generated",
+      "full_name": "David Lee"
+    },
+    {
+      "seq": 5,
+      "timestamp": 1787457211.1792233,
+      "event": "kyc_bundle_generated",
+      "full_name": "Chloe Wilson"
+    },
+    {
+      "seq": 6,
+      "timestamp": 1787457211.17923,
+      "event": "kyc_bundle_generated",
+      "full_name": "Isaac Chen"
+    },
+    {
+      "seq": 7,
+      "timestamp": 1787457211.1792352,
+      "event": "kyc_bundle_generated",
+      "full_name": "Lily Patel"
+    },
+    {
+      "seq": 8,
+      "timestamp": 1787457211.179242,
+      "event": "kyc_bundle_generated",
+      "full_name": "James Thompson"
+    },
+    {
+      "seq": 9,
+      "timestamp": 1787457211.1792476,
+      "event": "kyc_bundle_generated",
+      "full_name": "Olivia Hernandez"
+    },
+    {
+      "seq": 10,
+      "timestamp": 1787457211.179254,
+      "event": "kyc_bundle_generated",
+      "full_name": "Ethan White"
+    }
+  ]
+}

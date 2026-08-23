@@ -1,0 +1,92 @@
+[
+  {
+    "full_name": "Emily Johnson",
+    "date_of_birth": "1985-03-15",
+    "city": "Seattle",
+    "country": "USA",
+    "stated_occupation": "Software Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "At 38 years old, Emily's experience aligns well with being a software engineer in Seattle, and her income is competitive for the tech industry in that region."
+  },
+  {
+    "full_name": "Michael Brown",
+    "date_of_birth": "1978-11-22",
+    "city": "Austin",
+    "country": "USA",
+    "stated_occupation": "Music Producer",
+    "stated_annual_income_usd": 80000,
+    "coherence_notes": "Michael, being 45 years old, likely has ample experience in the music industry, and his income is reasonable given Austin's vibrant music scene."
+  },
+  {
+    "full_name": "Sophia Martinez",
+    "date_of_birth": "1990-06-10",
+    "city": "Miami",
+    "country": "USA",
+    "stated_occupation": "Marketing Specialist",
+    "stated_annual_income_usd": 65000,
+    "coherence_notes": "At 33 years old, Sophia's role as a marketing specialist fits within her age group, and her income aligns with the cost of living in Miami."
+  },
+  {
+    "full_name": "David Lee",
+    "date_of_birth": "1995-01-25",
+    "city": "San Francisco",
+    "country": "USA",
+    "stated_occupation": "Data Analyst",
+    "stated_annual_income_usd": 75000,
+    "coherence_notes": "David, at 28, is at a typical career stage for a data analyst, and his salary is consistent with the demand for tech workers in San Francisco."
+  },
+  {
+    "full_name": "Chloe Wilson",
+    "date_of_birth": "1982-07-30",
+    "city": "New York",
+    "country": "USA",
+    "stated_occupation": "Financial Advisor",
+    "stated_annual_income_usd": 120000,
+    "coherence_notes": "Chloe's age of 41 suggests considerable experience in finance, making her income fitting for the high cost of living in New York City."
+  },
+  {
+    "full_name": "Isaac Chen",
+    "date_of_birth": "1998-09-02",
+    "city": "Los Angeles",
+    "country": "USA",
+    "stated_occupation": "Graphic Designer",
+    "stated_annual_income_usd": 55000,
+    "coherence_notes": "At 25 years old, Isaac is starting his career as a graphic designer, and his salary reflects entry-level expectations in the LA market."
+  },
+  {
+    "full_name": "Lily Patel",
+    "date_of_birth": "1980-12-12",
+    "city": "Chicago",
+    "country": "USA",
+    "stated_occupation": "Health Care Administrator",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Lily, aged 42, is well-placed in her role, and her income is appropriate considering Chicago's health care industry standards."
+  },
+  {
+    "full_name": "James Thompson",
+    "date_of_birth": "1992-04-05",
+    "city": "Denver",
+    "country": "USA",
+    "stated_occupation": "Environmental Scientist",
+    "stated_annual_income_usd": 72000,
+    "coherence_notes": "At 31, James fits the profile of a mid-level environmental scientist, and his income matches the cost of living in Denver."
+  },
+  {
+    "full_name": "Olivia Hernandez",
+    "date_of_birth": "1988-10-18",
+    "city": "Phoenix",
+    "country": "USA",
+    "stated_occupation": "Real Estate Agent",
+    "stated_annual_income_usd": 85000,
+    "coherence_notes": "Olivia, at 35 years old, is in a suitable age bracket for real estate, and her income corresponds with Phoenix's growing housing market."
+  },
+  {
+    "full_name": "Ethan White",
+    "date_of_birth": "1990-03-22",
+    "city": "Boston",
+    "country": "USA",
+    "stated_occupation": "Civil Engineer",
+    "stated_annual_income_usd": 95000,
+    "coherence_notes": "Ethan, aged 33, likely has the experience needed in civil engineering, and his salary is realistic for the engineering field in Boston."
+  }
+]
