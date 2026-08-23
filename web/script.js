@@ -62,7 +62,7 @@ async function boot() {
   }
   document.getElementById("loading")?.remove();
   wireTabs();
-  render("attacks");
+  render("api");
 }
 
 function wireTabs() {
@@ -79,13 +79,20 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+let _replayTimer = null;
+
 function render(tab) {
+  if (_replayTimer) {
+    clearTimeout(_replayTimer);
+    _replayTimer = null;
+  }
   const app = document.getElementById("app");
+  if (tab === "api") return renderApiActivity(app);
   if (tab === "attacks") return renderAttacks(app);
   if (tab === "simulation") return renderSimulation(app);
   if (tab === "detection") return renderDetection(app);
   if (tab === "proof") return renderProof(app);
-  if (tab === "api") return renderApiActivity(app);
+  if (tab === "readme") return renderReadme(app);
 }
 
 /* ---------------------------------------------------------------- */
@@ -371,8 +378,40 @@ function renderProof(app) {
 }
 
 /* ---------------------------------------------------------------- */
-/* Tab 5: API Activity                                                */
+/* Tab: API Activity                                                  */
 /* ---------------------------------------------------------------- */
+function _apiCallCardHTML(c, i) {
+  const time = new Date(c.timestamp).toLocaleTimeString();
+  return `
+    <div class="card api-call-card">
+      <div class="card-head">
+        <h3>${esc(c.purpose)}</h3>
+        <span class="badge verified">${esc(c.model)}</span>
+      </div>
+      <div class="api-call-meta">
+        <span>${time}</span>
+        <span>${c.prompt_tokens} in + ${c.completion_tokens} out = ${c.total_tokens} tokens</span>
+        <span>$${c.cost_usd.toFixed(5)}</span>
+        <span>${c.latency_ms.toLocaleString()}ms</span>
+      </div>
+      <button class="action secondary" id="api-toggle-${i}">Show prompt and response ▾</button>
+      <pre class="code-block" id="api-detail-${i}" style="display:none">Prompt sent:
+${esc(c.prompt_preview)}${c.prompt_preview.length >= 300 ? "…" : ""}
+
+Response received:
+${esc(c.response_preview)}${c.response_preview.length >= 300 ? "…" : ""}</pre>
+    </div>`;
+}
+
+function _wireApiToggle(i) {
+  document.getElementById(`api-toggle-${i}`).addEventListener("click", (e) => {
+    const pre = document.getElementById(`api-detail-${i}`);
+    const showing = pre.style.display !== "none";
+    pre.style.display = showing ? "none" : "block";
+    e.target.textContent = showing ? "Show prompt and response ▾" : "Hide prompt and response ▴";
+  });
+}
+
 function renderApiActivity(app) {
   const aa = DASH.api_activity;
   if (!aa || aa.calls.length === 0) {
@@ -383,58 +422,136 @@ function renderApiActivity(app) {
     return;
   }
   const s = aa.summary;
+  const chronological = aa.calls.slice();
 
   app.innerHTML = `
     <p class="eyebrow">API activity</p>
     <h1>A real log of every AI call this run made</h1>
-    <p class="page-intro">This is not a live call happening in your browser right now, and it never will be: an API key should never sit in a page anyone could open dev tools on. It's a record of what actually happened when the pipeline ran, timestamps, token counts, and cost, straight from OpenAI's own response to each call.</p>
+    <p class="page-intro">This is not a live call happening in your browser, and it never will be: an API key should never sit in a page anyone could open dev tools on. Every entry below is a record of what actually happened when the pipeline ran, timestamps, token counts, and cost, straight from OpenAI's own response to each call. Replay animates that same real log; it doesn't make new calls or spend anything.</p>
 
-    <div class="stat-tiles">
-      <div class="stat-tile"><div class="value neutral">${s.total_calls}</div><div class="label">Total calls</div></div>
-      <div class="stat-tile"><div class="value neutral">${s.total_tokens.toLocaleString()}</div><div class="label">Total tokens</div></div>
-      <div class="stat-tile"><div class="value neutral">$${s.total_cost_usd.toFixed(4)}</div><div class="label">Total cost</div></div>
-      <div class="stat-tile"><div class="value neutral">${s.avg_latency_ms.toLocaleString()}ms</div><div class="label">Average latency</div></div>
+    <button class="action" id="replay-btn">▶ Replay</button>
+    <span id="replay-status" class="attack-count" style="margin-left:0.9rem"></span>
+
+    <div class="stat-tiles" id="api-stat-tiles" style="margin-top:1.5rem">
+      <div class="stat-tile"><div class="value neutral" id="stat-calls">${s.total_calls}</div><div class="label">Total calls</div></div>
+      <div class="stat-tile"><div class="value neutral" id="stat-tokens">${s.total_tokens.toLocaleString()}</div><div class="label">Total tokens</div></div>
+      <div class="stat-tile"><div class="value neutral" id="stat-cost">$${s.total_cost_usd.toFixed(4)}</div><div class="label">Total cost</div></div>
+      <div class="stat-tile"><div class="value neutral" id="stat-latency">${s.avg_latency_ms.toLocaleString()}ms</div><div class="label">Average latency</div></div>
     </div>
 
     <h2>Call log</h2>
-    <div class="grid" style="gap:0.75rem">
+    <div class="grid" style="gap:0.75rem" id="api-call-log">
       ${aa.calls
         .slice()
         .reverse()
-        .map((c, i) => {
-          const time = new Date(c.timestamp).toLocaleTimeString();
-          return `
-        <div class="card api-call-card">
-          <div class="card-head">
-            <h3>${esc(c.purpose)}</h3>
-            <span class="badge verified">${esc(c.model)}</span>
-          </div>
-          <div class="api-call-meta">
-            <span>${time}</span>
-            <span>${c.prompt_tokens} in + ${c.completion_tokens} out = ${c.total_tokens} tokens</span>
-            <span>$${c.cost_usd.toFixed(5)}</span>
-            <span>${c.latency_ms.toLocaleString()}ms</span>
-          </div>
-          <button class="action secondary" id="api-toggle-${i}">Show prompt and response ▾</button>
-          <pre class="code-block" id="api-detail-${i}" style="display:none">Prompt sent:
-${esc(c.prompt_preview)}${c.prompt_preview.length >= 300 ? "…" : ""}
-
-Response received:
-${esc(c.response_preview)}${c.response_preview.length >= 300 ? "…" : ""}</pre>
-        </div>`;
-        })
+        .map((c, i) => _apiCallCardHTML(c, i))
         .join("")}
     </div>
   `;
 
-  aa.calls.forEach((_, i) => {
-    document.getElementById(`api-toggle-${i}`).addEventListener("click", (e) => {
-      const pre = document.getElementById(`api-detail-${i}`);
-      const showing = pre.style.display !== "none";
-      pre.style.display = showing ? "none" : "block";
-      e.target.textContent = showing ? "Show prompt and response ▾" : "Hide prompt and response ▴";
-    });
-  });
+  aa.calls.forEach((_, i) => _wireApiToggle(i));
+
+  document.getElementById("replay-btn").addEventListener("click", () => _replayApiLog(chronological));
+}
+
+function _replayApiLog(chronological) {
+  if (_replayTimer) return;
+  const logEl = document.getElementById("api-call-log");
+  const statusEl = document.getElementById("replay-status");
+  const btn = document.getElementById("replay-btn");
+  logEl.innerHTML = "";
+  btn.disabled = true;
+
+  let tokens = 0,
+    cost = 0,
+    latencySum = 0;
+
+  const step = (idx) => {
+    if (idx >= chronological.length) {
+      statusEl.textContent = `Replay complete, ${chronological.length} of ${chronological.length} calls`;
+      btn.disabled = false;
+      _replayTimer = null;
+      return;
+    }
+    const c = chronological[idx];
+    logEl.insertAdjacentHTML("afterbegin", _apiCallCardHTML(c, idx));
+    _wireApiToggle(idx);
+
+    tokens += c.total_tokens;
+    cost += c.cost_usd;
+    latencySum += c.latency_ms;
+    document.getElementById("stat-calls").textContent = idx + 1;
+    document.getElementById("stat-tokens").textContent = tokens.toLocaleString();
+    document.getElementById("stat-cost").textContent = "$" + cost.toFixed(4);
+    document.getElementById("stat-latency").textContent = Math.round(latencySum / (idx + 1)).toLocaleString() + "ms";
+    statusEl.textContent = `Replaying, call ${idx + 1} of ${chronological.length}`;
+
+    _replayTimer = setTimeout(() => step(idx + 1), 500);
+  };
+
+  document.getElementById("stat-calls").textContent = "0";
+  document.getElementById("stat-tokens").textContent = "0";
+  document.getElementById("stat-cost").textContent = "$0.0000";
+  document.getElementById("stat-latency").textContent = "0ms";
+  step(0);
+}
+
+/* ---------------------------------------------------------------- */
+/* Tab: README                                                        */
+/* ---------------------------------------------------------------- */
+function renderReadme(app) {
+  const m = DASH.detector.metrics;
+  const caught = (m.fraud_caught_rate * 100).toFixed(2);
+  const missed = (m.fraud_missed_rate * 100).toFixed(2);
+  const records = DASH.simulation.fraud_transaction_count.toLocaleString();
+  const aa = DASH.api_activity;
+
+  app.innerHTML = `
+    <p class="eyebrow">About this lab</p>
+    <h1>Mastercard AI Defense Lab</h1>
+    <p class="page-intro">Payment fraud detection where every decision, caught or missed, is signed by an authority outside the detector and can be independently verified.</p>
+
+    <h2>The problem</h2>
+    <p class="explain-text" style="margin-top:0">When a fraud detector blocks a payment, how do you know it actually happened? The detector writes its own logs. If it bugs out, gets compromised, or lies, there is no independent way to verify the decision was real.</p>
+
+    <h2>The solution</h2>
+    <p class="explain-text" style="margin-top:0">Move authority outside the system. When the detector blocks fraud, an authority outside it signs that decision with a key nothing else touches. Anyone can verify the signature is real, that's proof, not a claim.</p>
+
+    <h2>What's real here</h2>
+    <div class="honest-box">
+      <ul>
+        <li>${records} attack records generated by 7 agents, each bounded by a signed limit</li>
+        <li>${caught}% of attacks caught, ${missed}% missed, and we explain why on the Detection Results tab</li>
+        <li>${aa ? aa.summary.total_calls : 0} real AI calls made this run, logged on the API Activity tab with real cost and latency, not mocked</li>
+        <li>Every signed decision independently verified, shown on the Proof tab</li>
+      </ul>
+    </div>
+
+    <h2>How to reproduce this</h2>
+    <div class="card">
+      <pre class="code-block" style="margin-top:0">pip install -r requirements.txt
+cp .env.example .env   # add your own OPENAI_API_KEY
+
+cd src
+python run_simulation.py
+python check_results.py
+python probe_detector.py
+python generate_docx.py
+python -m http.server 8000 -d ../web</pre>
+    </div>
+
+    <h2>Where to look</h2>
+    <div class="grid cols-2">
+      <div class="card"><div class="card-head"><h3>API Activity</h3></div><p class="attack-count">Real, logged AI calls, replayable, never a live key in the page.</p></div>
+      <div class="card"><div class="card-head"><h3>Attacks</h3></div><p class="attack-count">The 7 fraud techniques, plain English, real generated counts.</p></div>
+      <div class="card"><div class="card-head"><h3>Simulation</h3></div><p class="attack-count">Total records generated, broken down by attack type, with real sample data.</p></div>
+      <div class="card"><div class="card-head"><h3>Detection Results</h3></div><p class="attack-count">Caught versus missed, and the honest, real reasons why.</p></div>
+      <div class="card"><div class="card-head"><h3>Proof</h3></div><p class="attack-count">Every signed decision, override, and agent limit, independently checked.</p></div>
+    </div>
+
+    <h2>Why this matters</h2>
+    <p class="explain-text" style="margin-top:0">You can't prevent all fraud. You can make all of it verifiable. That's the property this lab demonstrates: not a perfect detector, a governed one.</p>
+  `;
 }
 
 boot();

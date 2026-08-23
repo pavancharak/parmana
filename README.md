@@ -56,15 +56,19 @@ This demonstrates that an AI system becomes trustworthy not when the detector is
 
 ## What judges will understand
 
-**Tab 1:** Here are the 7 attacks we tested against.
+The dashboard opens on API Activity by design, that's the proof this is real, not a mockup, before anything else.
 
-**Tab 2:** We generated 1,007 real examples of them.
+**API Activity (opens first):** every AI call this run made is logged, real timestamps, real token counts, real cost. Click Replay to watch the real log fill back in.
 
-**Tab 3:** Our detector caught 88.41%, missed 11.59%, here's why.
+**Attacks:** here are the 7 attacks we tested against.
 
-**Tab 4:** Every block decision is signed by an authority outside the detector. You can verify it.
+**Simulation:** we generated 1,007 real examples of them.
 
-**Tab 5:** Every AI call this run made is logged, real timestamps, real token counts, real cost, so it's clear nothing here is mocked.
+**Detection Results:** our detector caught 88.41%, missed 11.59%, here's why.
+
+**Proof:** every block decision is signed by an authority outside the detector. You can verify it.
+
+**README (last):** the same story as this document, inside the dashboard itself.
 
 Bottom line: this isn't just a fraud detector. It's a detector with verifiable governance.
 
