@@ -119,6 +119,7 @@ class FakeIdentityAgent(BoundedAgent):
                 'near that average), "typical_hour_of_day" (0-23), and "currency" (one of USD, '
                 'EUR, GBP, INR, JPY). Respond as JSON: {"identities": [...]}.'
             ),
+            purpose="Agent 1: Fake Identity Generation",
         )
         return result.get("identities", [])[:n]
 
@@ -193,6 +194,7 @@ class SocialEngineerAgent(BoundedAgent):
                 '"succeeded", not a rate you pick to make the story convenient. Respond as JSON: '
                 '{"conversations": [...]}.'
             ),
+            purpose="Agent 2: Social Engineering Transcripts",
         )
         return result.get("conversations", [])[:n]
 
@@ -292,6 +294,7 @@ class KYCForgerAgent(BoundedAgent):
                 "the fields are internally consistent (age fits occupation, income fits the "
                 'city\'s cost of living, etc). Respond as JSON: {"bundles": [...]}.'
             ),
+            purpose="Agent 4: KYC Bundle Generation",
         )
         return result.get("bundles", [])[:n]
 
@@ -466,6 +469,7 @@ class FeedbackLoopAgent(BoundedAgent):
                 '"seconds_since_prev_tx":.., "location_mismatch_km":.., "pattern_similarity":.., '
                 '"ai_generated_signal":..}, ...]}.'
             ),
+            purpose="Agent 7: Evasion Variant Suggestion",
         )
         return result.get("variants", [])[:k]
 

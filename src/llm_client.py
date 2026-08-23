@@ -7,13 +7,23 @@ Loads OPENAI_API_KEY from a local .env file (never committed, see
 .gitignore) so the key never has to be pasted into chat, code, or any
 committed file. Every call's real token usage is printed with an
 approximate cost so nothing runs up a surprise bill.
+
+Every call is also logged to data/api_call_log.json: timestamp, purpose,
+model, real token counts, real cost, real latency, and a preview of the
+actual prompt and response. This is what the dashboard's API Activity tab
+reads. The API key itself is never written to that file or anywhere else
+outside this process's memory and the local .env it came from.
 """
 
 import json
 import os
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = ROOT / "data"
+LOG_PATH = DATA_DIR / "api_call_log.json"
 
 
 def _load_dotenv():
@@ -66,14 +76,52 @@ def session_totals():
     return {"calls": _session_calls, "estimated_cost_usd": round(_session_cost, 5)}
 
 
-def call_json(system_prompt: str, user_prompt: str, model: str = DEFAULT_MODEL, temperature: float = 0.9) -> dict:
+def reset_log():
+    """Start a fresh call log for a new pipeline run. Call this once, at
+    the top of run_simulation.py, before any agent runs. probe_detector.py
+    runs later in the same pipeline and does not reset it, so its calls
+    append to the same run's log instead of starting a new one."""
+    DATA_DIR.mkdir(exist_ok=True)
+    LOG_PATH.write_text("[]")
+
+
+def _append_to_log(record):
+    DATA_DIR.mkdir(exist_ok=True)
+    existing = json.loads(LOG_PATH.read_text()) if LOG_PATH.exists() else []
+    existing.append(record)
+    LOG_PATH.write_text(json.dumps(existing, indent=2))
+
+
+def load_log_summary():
+    """Read the accumulated call log and compute real aggregate stats for
+    the dashboard's API Activity tab."""
+    calls = json.loads(LOG_PATH.read_text()) if LOG_PATH.exists() else []
+    total_tokens = sum(c["total_tokens"] for c in calls)
+    total_cost = sum(c["cost_usd"] for c in calls)
+    latencies = [c["latency_ms"] for c in calls]
+    avg_latency = round(sum(latencies) / len(latencies)) if latencies else 0
+    return {
+        "calls": calls,
+        "summary": {
+            "total_calls": len(calls),
+            "total_tokens": total_tokens,
+            "total_cost_usd": round(total_cost, 5),
+            "avg_latency_ms": avg_latency,
+        },
+    }
+
+
+def call_json(system_prompt: str, user_prompt: str, purpose: str, model: str = DEFAULT_MODEL, temperature: float = 0.9) -> dict:
     """Call the model asking for a single JSON object response. Prints
-    real token usage and an approximate cost, and updates the running
-    session total. Raises if the model doesn't return valid JSON, we'd
-    rather fail loudly than silently fabricate empty output."""
+    real token usage and an approximate cost, updates the running session
+    total, and appends a real record (timestamp, purpose, tokens, cost,
+    latency, prompt/response previews) to data/api_call_log.json. Raises
+    if the model doesn't return valid JSON, we'd rather fail loudly than
+    silently fabricate empty output."""
     global _session_cost, _session_calls
 
     client = _get_client()
+    started_at = time.time()
     response = client.chat.completions.create(
         model=model,
         temperature=temperature,
@@ -83,6 +131,7 @@ def call_json(system_prompt: str, user_prompt: str, model: str = DEFAULT_MODEL, 
             {"role": "user", "content": user_prompt},
         ],
     )
+    latency_ms = round((time.time() - started_at) * 1000)
 
     usage = response.usage
     price = PRICING_PER_TOKEN.get(model, PRICING_PER_TOKEN[DEFAULT_MODEL])
@@ -95,6 +144,20 @@ def call_json(system_prompt: str, user_prompt: str, model: str = DEFAULT_MODEL, 
     )
 
     content = response.choices[0].message.content
+
+    _append_to_log({
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "purpose": purpose,
+        "model": model,
+        "prompt_tokens": usage.prompt_tokens,
+        "completion_tokens": usage.completion_tokens,
+        "total_tokens": usage.total_tokens,
+        "cost_usd": round(cost, 6),
+        "latency_ms": latency_ms,
+        "prompt_preview": user_prompt[:300],
+        "response_preview": content[:300],
+    })
+
     try:
         return json.loads(content)
     except json.JSONDecodeError as e:

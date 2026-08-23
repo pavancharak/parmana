@@ -1,0 +1,98 @@
+[
+  {
+    "timestamp": "2026-08-23T06:07:57.034122+00:00",
+    "purpose": "Agent 1: Fake Identity Generation",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 131,
+    "completion_tokens": 467,
+    "total_tokens": 598,
+    "cost_usd": 0.0003,
+    "latency_ms": 5034,
+    "prompt_preview": "Generate 10 coherent synthetic customer identities. Real customers at this merchant spend around $144 per transaction on average. For each identity include: \"full_name\", \"typical_monthly_spend_usd\" (a plausible number near that average), \"typical_hour_of_day\" (0-23), and \"currency\" (one of USD, EUR,",
+    "response_preview": "{\n  \"identities\": [\n    {\n      \"full_name\": \"Emily Carter\",\n      \"typical_monthly_spend_usd\": 432,\n      \"typical_hour_of_day\": 14,\n      \"currency\": \"USD\"\n    },\n    {\n      \"full_name\": \"James Thompson\",\n      \"typical_monthly_spend_usd\": 540,\n      \"typical_hour_of_day\": 18,\n      \"currency\": \""
+  },
+  {
+    "timestamp": "2026-08-23T06:08:08.831937+00:00",
+    "purpose": "Agent 2: Social Engineering Transcripts",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 246,
+    "completion_tokens": 1421,
+    "total_tokens": 1667,
+    "cost_usd": 0.000889,
+    "latency_ms": 11795,
+    "prompt_preview": "Generate 8 short call-center transcripts where a caller (the attacker) tries a social engineering tactic on a support agent to get an account recovery code, a security-question reset, or a card reissue authorized. For each include: \"tactic\" (short label, e.g. \"urgency\", \"impersonating IT\", \"fake cha",
+    "response_preview": "{\n  \"conversations\": [\n    {\n      \"tactic\": \"urgency\",\n      \"transcript\": [\n        \"AGENT: Thank you for calling our support line, how can I assist you today?\",\n        \"CALLER: Hi, I'm in a bit of a panic. I just got a notification of unusual activity on my account and need a recovery code immed"
+  },
+  {
+    "timestamp": "2026-08-23T06:08:17.709789+00:00",
+    "purpose": "Agent 4: KYC Bundle Generation",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 143,
+    "completion_tokens": 986,
+    "total_tokens": 1129,
+    "cost_usd": 0.000613,
+    "latency_ms": 8865,
+    "prompt_preview": "Generate 10 synthetic identity bundles. For each include: \"full_name\", \"date_of_birth\" (ISO date), \"city\", \"country\", \"stated_occupation\", \"stated_annual_income_usd\", and a one-sentence \"coherence_notes\" explaining why the fields are internally consistent (age fits occupation, income fits the city's",
+    "response_preview": "{\n  \"bundles\": [\n    {\n      \"full_name\": \"Emily Johnson\",\n      \"date_of_birth\": \"1990-02-15\",\n      \"city\": \"Austin\",\n      \"country\": \"USA\",\n      \"stated_occupation\": \"Software Engineer\",\n      \"stated_annual_income_usd\": 95000,\n      \"coherence_notes\": \"At 33 years old, Emily's income is typica"
+  },
+  {
+    "timestamp": "2026-08-23T06:08:26.782049+00:00",
+    "purpose": "Agent 7: Evasion Variant Suggestion",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 201,
+    "completion_tokens": 213,
+    "total_tokens": 414,
+    "cost_usd": 0.000158,
+    "latency_ms": 3310,
+    "prompt_preview": "A fraud model blocked this transaction with fraud score 0.804. Its features: amount=96.31, hour_of_day=3, seconds_since_prev_tx=32.21, location_mismatch_km=5.5, pattern_similarity=0.785, ai_generated_signal=0.211. Propose 3 variants: small, plausible adjustments to these six numeric fields (don't ch",
+    "response_preview": "{\n  \"variants\": [\n    {\n      \"amount\": 92.95,\n      \"hour_of_day\": 4,\n      \"seconds_since_prev_tx\": 30.45,\n      \"location_mismatch_km\": 4.8,\n      \"pattern_similarity\": 0.800,\n      \"ai_generated_signal\": 0.215\n    },\n    {\n      \"amount\": 95.20,\n      \"hour_of_day\": 2,\n      \"seconds_since_prev_"
+  },
+  {
+    "timestamp": "2026-08-23T06:08:29.167571+00:00",
+    "purpose": "Agent 7: Evasion Variant Suggestion",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 201,
+    "completion_tokens": 213,
+    "total_tokens": 414,
+    "cost_usd": 0.000158,
+    "latency_ms": 2376,
+    "prompt_preview": "A fraud model blocked this transaction with fraud score 0.807. Its features: amount=231.14, hour_of_day=12, seconds_since_prev_tx=18.92, location_mismatch_km=11.0, pattern_similarity=0.92, ai_generated_signal=0.203. Propose 3 variants: small, plausible adjustments to these six numeric fields (don't ",
+    "response_preview": "{\n  \"variants\": [\n    {\n      \"amount\": 220.00,\n      \"hour_of_day\": 11,\n      \"seconds_since_prev_tx\": 15.00,\n      \"location_mismatch_km\": 9.0,\n      \"pattern_similarity\": 0.94,\n      \"ai_generated_signal\": 0.190\n    },\n    {\n      \"amount\": 200.50,\n      \"hour_of_day\": 13,\n      \"seconds_since_pr"
+  },
+  {
+    "timestamp": "2026-08-23T06:08:32.273735+00:00",
+    "purpose": "Agent 7: Evasion Variant Suggestion",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 202,
+    "completion_tokens": 216,
+    "total_tokens": 418,
+    "cost_usd": 0.00016,
+    "latency_ms": 3088,
+    "prompt_preview": "A fraud model blocked this transaction with fraud score 0.829. Its features: amount=29.54, hour_of_day=23, seconds_since_prev_tx=23676.9, location_mismatch_km=59.7, pattern_similarity=0.755, ai_generated_signal=0.505. Propose 3 variants: small, plausible adjustments to these six numeric fields (don'",
+    "response_preview": "{\n  \"variants\": [\n    {\n      \"amount\": 28.54,\n      \"hour_of_day\": 22,\n      \"seconds_since_prev_tx\": 23900.0,\n      \"location_mismatch_km\": 55.0,\n      \"pattern_similarity\": 0.765,\n      \"ai_generated_signal\": 0.520\n    },\n    {\n      \"amount\": 30.00,\n      \"hour_of_day\": 0,\n      \"seconds_since_p"
+  },
+  {
+    "timestamp": "2026-08-23T06:08:34.678533+00:00",
+    "purpose": "Agent 7: Evasion Variant Suggestion",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 202,
+    "completion_tokens": 216,
+    "total_tokens": 418,
+    "cost_usd": 0.00016,
+    "latency_ms": 2372,
+    "prompt_preview": "A fraud model blocked this transaction with fraud score 0.843. Its features: amount=39.96, hour_of_day=20, seconds_since_prev_tx=0.45, location_mismatch_km=5421.9, pattern_similarity=0.234, ai_generated_signal=0.631. Propose 3 variants: small, plausible adjustments to these six numeric fields (don't",
+    "response_preview": "{\n  \"variants\": [\n    {\n      \"amount\": 31.97,\n      \"hour_of_day\": 21,\n      \"seconds_since_prev_tx\": 0.50,\n      \"location_mismatch_km\": 5000.0,\n      \"pattern_similarity\": 0.250,\n      \"ai_generated_signal\": 0.600\n    },\n    {\n      \"amount\": 35.96,\n      \"hour_of_day\": 19,\n      \"seconds_since_p"
+  },
+  {
+    "timestamp": "2026-08-23T06:08:37.018749+00:00",
+    "purpose": "Agent 7: Evasion Variant Suggestion",
+    "model": "gpt-4o-mini",
+    "prompt_tokens": 201,
+    "completion_tokens": 213,
+    "total_tokens": 414,
+    "cost_usd": 0.000158,
+    "latency_ms": 2321,
+    "prompt_preview": "A fraud model blocked this transaction with fraud score 0.846. Its features: amount=231.25, hour_of_day=2, seconds_since_prev_tx=3.64, location_mismatch_km=133.3, pattern_similarity=0.192, ai_generated_signal=0.61. Propose 3 variants: small, plausible adjustments to these six numeric fields (don't c",
+    "response_preview": "{\n  \"variants\": [\n    {\n      \"amount\": 223.50,\n      \"hour_of_day\": 3,\n      \"seconds_since_prev_tx\": 4.00,\n      \"location_mismatch_km\": 130.0,\n      \"pattern_similarity\": 0.210,\n      \"ai_generated_signal\": 0.65\n    },\n    {\n      \"amount\": 210.00,\n      \"hour_of_day\": 1,\n      \"seconds_since_pre"
+  }
+]

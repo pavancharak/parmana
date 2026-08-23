@@ -77,6 +77,9 @@ def main():
     print("PARMANA FRAUD DEFENSE LAB: Simulation Run")
     print("=" * 70)
 
+    import llm_client
+    llm_client.reset_log()
+
     print("\n[1/6] Generating legitimate transaction population...")
     good_transactions = generate_good_transactions(n_customers=200, avg_tx_per_customer=5)
     (DATA_DIR / "good_transactions.json").write_text(json.dumps(good_transactions, indent=2))

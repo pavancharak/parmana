@@ -19,6 +19,7 @@ from pathlib import Path
 
 import authority_signer as auth
 import fraud_detector as fd
+import llm_client
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -180,6 +181,7 @@ def main():
 
     dashboard = {
         "attacks": attacks,
+        "api_activity": llm_client.load_log_summary(),
         "simulation": {
             "good_transaction_count": len(good),
             "fraud_transaction_count": len(fraud),

@@ -192,6 +192,23 @@ button.action.secondary { background: var(--panel); color: var(--primary); borde
 .sig-card .row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .sig-card .row:last-child { border-bottom: none; }
 .sig-card .row span:first-child { color: #93A0BF; }
+
+.api-call-card button.action { margin-top: 0.9rem; padding: 0.5rem 1rem; font-size: 0.82rem; }
+.api-call-meta { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-size: 0.85rem; color: var(--text-dim); margin-top: 0.3rem; }
+.code-block {
+  margin-top: 0.9rem;
+  background: #0B1220;
+  color: #C9D4E8;
+  border-radius: 0.7rem;
+  padding: 1rem 1.15rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 260px;
+  overflow-y: auto;
+}
 .sig-card .sig-value { word-break: break-all; text-align: right; max-width: 65%; }
 
 footer.foot-note {

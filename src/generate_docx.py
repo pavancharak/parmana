@@ -203,7 +203,9 @@ def build():
     add_body(
         doc,
         "Then open the web dashboard for the visual walkthrough, or open decisions/block_decisions.json "
-        "and tokens/authority_public_key.pem directly to check any individual signature by hand.",
+        "and tokens/authority_public_key.pem directly to check any individual signature by hand. "
+        "data/api_call_log.json holds a real record of every AI call made during the run, timestamps, "
+        "token counts, and cost, straight from the API's own response, not a claim.",
     )
 
     add_heading(doc, "8. Closing")

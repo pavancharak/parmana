@@ -85,6 +85,7 @@ function render(tab) {
   if (tab === "simulation") return renderSimulation(app);
   if (tab === "detection") return renderDetection(app);
   if (tab === "proof") return renderProof(app);
+  if (tab === "api") return renderApiActivity(app);
 }
 
 /* ---------------------------------------------------------------- */
@@ -366,6 +367,73 @@ function renderProof(app) {
         <div class="row"><span>Signed by</span><span>${esc(d.signer)}</span></div>
         <div class="row"><span>Signature</span><span class="sig-value">${esc(d.signature.slice(0, 64))}&hellip;</span></div>
       </div>`;
+  });
+}
+
+/* ---------------------------------------------------------------- */
+/* Tab 5: API Activity                                                */
+/* ---------------------------------------------------------------- */
+function renderApiActivity(app) {
+  const aa = DASH.api_activity;
+  if (!aa || aa.calls.length === 0) {
+    app.innerHTML = `
+      <p class="eyebrow">API activity</p>
+      <h1>No API calls recorded yet</h1>
+      <p class="page-intro">Run <code>python run_simulation.py</code> with an OpenAI key set in <code>.env</code> to generate this log.</p>`;
+    return;
+  }
+  const s = aa.summary;
+
+  app.innerHTML = `
+    <p class="eyebrow">API activity</p>
+    <h1>A real log of every AI call this run made</h1>
+    <p class="page-intro">This is not a live call happening in your browser right now, and it never will be: an API key should never sit in a page anyone could open dev tools on. It's a record of what actually happened when the pipeline ran, timestamps, token counts, and cost, straight from OpenAI's own response to each call.</p>
+
+    <div class="stat-tiles">
+      <div class="stat-tile"><div class="value neutral">${s.total_calls}</div><div class="label">Total calls</div></div>
+      <div class="stat-tile"><div class="value neutral">${s.total_tokens.toLocaleString()}</div><div class="label">Total tokens</div></div>
+      <div class="stat-tile"><div class="value neutral">$${s.total_cost_usd.toFixed(4)}</div><div class="label">Total cost</div></div>
+      <div class="stat-tile"><div class="value neutral">${s.avg_latency_ms.toLocaleString()}ms</div><div class="label">Average latency</div></div>
+    </div>
+
+    <h2>Call log</h2>
+    <div class="grid" style="gap:0.75rem">
+      ${aa.calls
+        .slice()
+        .reverse()
+        .map((c, i) => {
+          const time = new Date(c.timestamp).toLocaleTimeString();
+          return `
+        <div class="card api-call-card">
+          <div class="card-head">
+            <h3>${esc(c.purpose)}</h3>
+            <span class="badge verified">${esc(c.model)}</span>
+          </div>
+          <div class="api-call-meta">
+            <span>${time}</span>
+            <span>${c.prompt_tokens} in + ${c.completion_tokens} out = ${c.total_tokens} tokens</span>
+            <span>$${c.cost_usd.toFixed(5)}</span>
+            <span>${c.latency_ms.toLocaleString()}ms</span>
+          </div>
+          <button class="action secondary" id="api-toggle-${i}">Show prompt and response ▾</button>
+          <pre class="code-block" id="api-detail-${i}" style="display:none">Prompt sent:
+${esc(c.prompt_preview)}${c.prompt_preview.length >= 300 ? "…" : ""}
+
+Response received:
+${esc(c.response_preview)}${c.response_preview.length >= 300 ? "…" : ""}</pre>
+        </div>`;
+        })
+        .join("")}
+    </div>
+  `;
+
+  aa.calls.forEach((_, i) => {
+    document.getElementById(`api-toggle-${i}`).addEventListener("click", (e) => {
+      const pre = document.getElementById(`api-detail-${i}`);
+      const showing = pre.style.display !== "none";
+      pre.style.display = showing ? "none" : "block";
+      e.target.textContent = showing ? "Show prompt and response ▾" : "Hide prompt and response ▴";
+    });
   });
 }
 

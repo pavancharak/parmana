@@ -25,6 +25,7 @@ from pathlib import Path
 
 import authority_signer as auth
 import fraud_detector as fd
+import llm_client
 from fraud_agents import LimitProberAgent, FeedbackLoopAgent
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -129,9 +130,11 @@ def main():
         "feedback_loop": signed_evasion,
         "verification": {"limit_probe_valid": probe_valid, "feedback_loop_valid": evasion_valid},
     }
+    # Refresh the API activity log now that Agent 7's calls are in it too,
+    # not just the ones check_results.py saw before this script ran.
+    dashboard["api_activity"] = llm_client.load_log_summary()
     dashboard_path.write_text(json.dumps(dashboard, indent=2))
 
-    import llm_client
     totals = llm_client.session_totals()
     print(f"\nOpenAI usage this run: {totals['calls']} calls, ~${totals['estimated_cost_usd']:.4f} estimated")
     print("Wrote decisions/probe_report.json and merged results into web/data/dashboard.json (redteam).")

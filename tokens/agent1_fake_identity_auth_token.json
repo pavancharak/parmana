@@ -3,10 +3,10 @@
   "agent_id": "agent1_fake_identity",
   "action": "generate_fake_identities",
   "max_operations": 10,
-  "issued_at": 1787461296.9355404,
-  "expires_at": 1787464896.9355404,
-  "record_id": "92b8709d-b9b9-4e5e-bbbd-2cb2f7fd22c7",
-  "signed_at": 1787461296.935555,
+  "issued_at": 1787465271.292885,
+  "expires_at": 1787468871.292885,
+  "record_id": "22e444bf-38c6-40e0-8274-f55bb01aaaf9",
+  "signed_at": 1787465271.292901,
   "signer": "authority",
-  "signature": "bc184a9ceba510634f210885dd5bb403051ff910b131676736b02bd13c670ff48afff3cab09a9b2e90df33299fe958f0c1c38f21b1b566282414583dbc9c780e"
+  "signature": "cc40de669d0f7d87c9bf3f47aa077fb51837e10f830f9e28e6ee0661c1f408cd03964da3bad3eef6d7ed29ba9db850d79f28abe9ee36f1b326bf8791cf4b9403"
 }

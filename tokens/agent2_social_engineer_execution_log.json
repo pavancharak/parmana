@@ -1,66 +1,59 @@
 {
   "agent_id": "agent2_social_engineer",
-  "token_record_id": "0f5bd2b1-c5dc-47ea-8904-172963a3c0be",
+  "token_record_id": "0766d72d-4d57-48e7-b89e-fac10e4b72e0",
   "authorized_max": 8,
-  "actually_executed": 8,
+  "actually_executed": 7,
   "within_bounds": true,
   "signature_verifies": true,
   "events": [
     {
       "seq": 1,
-      "timestamp": 1787461318.0666995,
+      "timestamp": 1787465288.843952,
       "event": "transcript_generated",
       "tactic": "urgency",
       "outcome": "succeeded"
     },
     {
       "seq": 2,
-      "timestamp": 1787461318.066806,
+      "timestamp": 1787465288.8439937,
       "event": "transcript_generated",
       "tactic": "impersonating IT",
       "outcome": "succeeded"
     },
     {
       "seq": 3,
-      "timestamp": 1787461318.0668514,
+      "timestamp": 1787465288.8440056,
       "event": "transcript_generated",
       "tactic": "fake charity emergency",
       "outcome": "failed"
     },
     {
       "seq": 4,
-      "timestamp": 1787461318.0668545,
+      "timestamp": 1787465288.8440063,
       "event": "transcript_generated",
-      "tactic": "friend of a friend",
+      "tactic": "urgency",
       "outcome": "succeeded"
     },
     {
       "seq": 5,
-      "timestamp": 1787461318.0668888,
+      "timestamp": 1787465288.8440146,
       "event": "transcript_generated",
-      "tactic": "technical issue",
+      "tactic": "impersonating vendor support",
       "outcome": "failed"
     },
     {
       "seq": 6,
-      "timestamp": 1787461318.0668917,
+      "timestamp": 1787465288.8440156,
       "event": "transcript_generated",
-      "tactic": "urgent payment",
-      "outcome": "failed"
-    },
-    {
-      "seq": 7,
-      "timestamp": 1787461318.0668938,
-      "event": "transcript_generated",
-      "tactic": "family emergency",
+      "tactic": "fake charity emergency",
       "outcome": "succeeded"
     },
     {
-      "seq": 8,
-      "timestamp": 1787461318.0669224,
+      "seq": 7,
+      "timestamp": 1787465288.8440218,
       "event": "transcript_generated",
-      "tactic": "shipping issue",
-      "outcome": "failed"
+      "tactic": "urgency",
+      "outcome": "succeeded"
     }
   ]
 }

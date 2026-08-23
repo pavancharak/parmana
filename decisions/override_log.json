@@ -1,38 +1,38 @@
 [
   {
     "record_type": "override",
-    "transaction_id": "tx_72dca40bad",
+    "transaction_id": "tx_60072a5637",
     "original_decision": "FLAG",
     "new_decision": "BLOCK",
     "reviewer_name": "reviewer_j.alvarez",
     "justification": "Manual review confirmed fraud pattern consistent with stolen-card testing; escalating from FLAG to BLOCK.",
-    "record_id": "91fb0dbc-03e9-4e4b-8266-80aa898146f8",
-    "signed_at": 1787461794.6340384,
+    "record_id": "2af4ec8f-d356-4d4b-8e20-9c9eef4177d3",
+    "signed_at": 1787465300.9208798,
     "signer": "reviewer",
-    "signature": "8ee1a97f1a0c853adf6c307e83f8a6ee3abc3fc9dc4f126d8cbdd4caca27275a16ed8e861ba282ee2f7269ca06fd347b22d0ceb27d5a53e378c8e2969622100c"
+    "signature": "f63971abbae01ee8d88de3296aa4e3bcb154795aca827a803b4e4de284b4aa3bcab8566db01d8d5f9aabd374d3771924f3d83eeb7bdcbe11056431d4c8ee7708"
   },
   {
     "record_type": "override",
-    "transaction_id": "tx_9251289056",
+    "transaction_id": "tx_e72d21b645",
     "original_decision": "FLAG",
     "new_decision": "ALLOW",
     "reviewer_name": "reviewer_m.osei",
     "justification": "Customer verified by phone; recurring purchase from a new but legitimate device. Releasing transaction.",
-    "record_id": "76eace92-7277-4a60-b9be-354e8b0c0352",
-    "signed_at": 1787461794.6341753,
+    "record_id": "d268df4c-e4d6-45e4-b7ee-bb3d4977ef57",
+    "signed_at": 1787465300.9209504,
     "signer": "reviewer",
-    "signature": "416db1e75553c0b446e0086caa734c4a0a2455105db30b376251586537c2f413e887981e891c4139a117afcb0d1a7315a25d61ef75794813db57bcf1f59b060c"
+    "signature": "e5042f72c8122f8a589e9407de07f40461f13afe5353cc0c6588a89de1d7aeca3a356bfed5581baaaaf89a13ec9ca29002c38839dcba7deea4cdc6ee6491620c"
   },
   {
     "record_type": "override",
-    "transaction_id": "tx_b912711edf",
+    "transaction_id": "tx_e887da7375",
     "original_decision": "ALLOW",
     "new_decision": "BLOCK",
     "reviewer_name": "monitoring_system_v2",
     "justification": "Post-hoc monitoring flagged this transaction as part of a fraud ring identified after the fact; retroactively blocking related funds movement.",
-    "record_id": "7440b829-bd1a-433a-bb9d-316dfe351e85",
-    "signed_at": 1787461794.634255,
+    "record_id": "5d9f1fb6-c0f1-4568-9293-87705e586e70",
+    "signed_at": 1787465300.9209967,
     "signer": "reviewer",
-    "signature": "eb09245fff02d8fb5568e4e7de1fa191df47fb245f483b9ef2c91895a1a6bed9763ca4394f78d747a367155b55fbf5c123b319d39f6909e78ffe7f02ea923e09"
+    "signature": "a5265196c2e5a3ff23017886cf8696c8707f52b2904410f16d2c8eebf089470293ef936f27fc2eee0935dc338e07369579886a255f81089fee937e9e4577870d"
   }
 ]
