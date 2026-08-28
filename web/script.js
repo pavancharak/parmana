@@ -1,362 +1,429 @@
-/* Parmana Fraud Defense: static dashboard driven entirely by
-   web/data/dashboard.json, produced by src/run_simulation.py,
-   check_results.py, and probe_detector.py. No server side code runs
-   from this page. All numbers shown are real results from the last run. */
+const SERIES = ["--series-1", "--series-2", "--series-3", "--series-4", "--series-5", "--series-6", "--series-7"];
+const STATUS = { BLOCK: "--status-critical", FLAG: "--status-warning", ALLOW: "--status-good" };
 
-let DASH = null;
-
-/* Plain English framing of each attack, keyed by the actual attack_type
-   tag on each transaction record (not docs/attacks.json's doc style ids),
-   so counts join correctly against DASH.simulation.attack_type_breakdown.
-   limit_probing and model_poisoning have no transaction shaped output,
-   they're handled as special cases wherever this map is used. */
-const ATTACK_COPY = {
-  fake_identity: {
-    name: "Fake Identity Fraud",
-    desc: "Someone creates a fake person with a spending history that matches a real customer, so new accounts pass unnoticed.",
-    agent: "agent1_fake_identity",
-  },
-  pattern_copy: {
-    name: "Card Testing & Draining",
-    desc: "A stolen card is used to copy someone's normal spending pattern, so each individual purchase looks routine.",
-    agent: "agent5_pattern_replicator",
-  },
-  form_break: {
-    name: "Payment Form Attacks",
-    desc: "Broken or malicious data is thrown at payment forms to find weak spots before a real attack.",
-    agent: "agent6_injection_generator",
-  },
-  social_engineering: {
-    name: "Social Engineering",
-    desc: "An attacker talks a support agent into resetting account security or reissuing a card.",
-    agent: "agent2_social_engineer",
-  },
-  limit_probing: {
-    name: "Detection Probing",
-    desc: "An attacker tests transaction amounts to learn what triggers a block.",
-    agent: "agent3_limit_prober",
-  },
-  kyc_synthetic: {
-    name: "Document Forgery",
-    desc: "Fake identity documents are created to pass verification checks.",
-    agent: "agent4_kyc_forger",
-  },
-  model_poisoning: {
-    name: "Feedback Manipulation",
-    desc: "Fake dispute signals are used to trick the system into learning bad patterns over time.",
-    agent: null,
-  },
-};
-
-async function boot() {
-  try {
-    const res = await fetch("data/dashboard.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    DASH = await res.json();
-  } catch (err) {
-    document.getElementById("app").innerHTML =
-      `<div class="loading">Could not load results (${err.message}).<br>
-       Run the pipeline in src/ first, then serve this folder with
-       <code>python -m http.server</code> from inside web/.</div>`;
-    return;
-  }
-  document.getElementById("loading")?.remove();
-  wireTabs();
-  render("api");
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-function wireTabs() {
-  document.querySelectorAll(".tab-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      render(btn.dataset.tab);
-    });
-  });
+function fmtPct(x) {
+  return `${(x * 100).toFixed(1)}%`;
+}
+
+function fmtMoney(x) {
+  return `$${Number(x).toFixed(2)}`;
+}
+
+function fmtCost(x) {
+  const n = Number(x);
+  return n > 0 && n < 0.01 ? `$${n.toFixed(4)}` : `$${n.toFixed(2)}`;
 }
 
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const div = document.createElement("div");
+  div.textContent = String(s);
+  return div.innerHTML;
 }
 
-let _replayTimer = null;
-
-function render(tab) {
-  if (_replayTimer) {
-    clearTimeout(_replayTimer);
-    _replayTimer = null;
-  }
-  const app = document.getElementById("app");
-  if (tab === "api") return renderApiActivity(app);
-  if (tab === "attacks") return renderAttacks(app);
-  if (tab === "simulation") return renderSimulation(app);
-  if (tab === "detection") return renderDetection(app);
-  if (tab === "walkthrough") return renderWalkthrough(app);
-  if (tab === "governance") return renderGovernance(app);
-  if (tab === "proof") return renderProof(app);
-  if (tab === "faq") return renderFAQ(app);
-  if (tab === "readme") return renderReadme(app);
+function statTile(label, value, cls = "", tooltip = "") {
+  return `<div class="stat-tile"${tooltip ? ` title="${esc(tooltip)}"` : ""}>
+    <div class="stat-label">${esc(label)}</div>
+    <div class="stat-value ${cls}">${value}</div>
+  </div>`;
 }
 
-/* ---------------------------------------------------------------- */
-/* Tab 1: Attacks                                                     */
-/* ---------------------------------------------------------------- */
-function renderAttacks(app) {
-  const breakdown = DASH.simulation.attack_type_breakdown || {};
-  const agentByType = {};
-  for (const a of DASH.simulation.agent_summaries) agentByType[a.agent_id] = a;
+/** rows: [{ name, value, max, colorVar }] */
+function barChart(rows, { valueFmt = (v) => v } = {}) {
+  const max = Math.max(...rows.map((r) => r.max ?? r.value), 1);
+  const bars = rows
+    .map((r) => {
+      const pct = Math.max((r.value / max) * 100, r.value > 0 ? 1.5 : 0);
+      const color = cssVar(r.colorVar);
+      return `<div class="bar-row">
+        <div class="bar-name">${esc(r.name)}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:${color}"></div></div>
+        <div class="bar-value">${valueFmt(r.value)}</div>
+      </div>`;
+    })
+    .join("");
+  return `<div class="bar-chart">${bars}</div>`;
+}
 
-  const cards = Object.entries(ATTACK_COPY)
-    .map(([id, info]) => {
-      const simulated = !!info.agent;
-      let countLine = "Not tested in this demo";
-      if (simulated) {
-        if (id === "limit_probing" && DASH.redteam) {
-          countLine = `We tested: <b>${DASH.redteam.limit_probe.results.length} transaction amounts</b>`;
-        } else if (breakdown[id] !== undefined) {
-          countLine = `We generated: <b>${breakdown[id].toLocaleString()} examples</b>`;
+function legend(items) {
+  return `<div class="legend">${items
+    .map((it) => `<span class="legend-item"><span class="swatch" style="background:${cssVar(it.colorVar)}"></span>${esc(it.label)}</span>`)
+    .join("")}</div>`;
+}
+
+function badge(decision) {
+  const cls = decision.toLowerCase();
+  return `<span class="badge ${cls}">${esc(decision)}</span>`;
+}
+
+function renderOverview(data) {
+  const sim = data.simulation;
+  const detect = data.detect.metrics;
+  const pipeline = data.pipeline;
+  const verification = data.verification;
+  const api = data.api_activity.summary;
+
+  const totalTx = sim.good_transaction_count + sim.fraud_transaction_count;
+
+  const decisionRows = ["BLOCK", "FLAG", "ALLOW"].map((d) => ({
+    name: d,
+    value: pipeline.decision_counts[d] || 0,
+    max: pipeline.total,
+    colorVar: STATUS[d],
+  }));
+
+  return `
+    <div class="section">
+      <h1>Parmana Authority Gate</h1>
+      <p>Two layer fraud defense: a transaction is only allowed through when the <strong>detect</strong> layer scores it as low risk <em>and</em> the <strong>mandate</strong> layer confirms it's actually authorized against the customer's own history. Every final decision is signed by an external authority before it counts.</p>
+    </div>
+
+    <div class="section">
+      <h2>This run</h2>
+      <div class="stat-row">
+        ${statTile("Transactions processed", totalTx.toLocaleString())}
+        ${statTile("Fraud caught", fmtPct(detect.fraud_caught_rate), "good")}
+        ${statTile("False positive rate", fmtPct(detect.false_positive_rate))}
+        ${statTile("Decisions signed", pipeline.total.toLocaleString())}
+        ${statTile(
+          "Signatures verified",
+          `${verification.verified}/${verification.total}`,
+          verification.all_verified ? "good" : "critical"
+        )}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <h3>Final decisions</h3>
+        ${barChart(decisionRows)}
+        ${legend(decisionRows.map((r) => ({ label: r.name, colorVar: r.colorVar })))}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <h3>Generation layer, OpenAI API activity</h3>
+        ${
+          api.total_calls > 0
+            ? `<div class="stat-row">
+                ${statTile("Calls", api.total_calls.toLocaleString())}
+                ${statTile("Tokens", api.total_tokens.toLocaleString())}
+                ${statTile("Cost", fmtCost(api.total_cost_usd))}
+                ${statTile("Avg latency", `${api.avg_latency_ms}ms`)}
+              </div>`
+            : `<p>No API calls recorded yet. Agents 1, 2, 4, and 7 call the real OpenAI API. Set <code>OPENAI_API_KEY</code> in a repo root <code>.env</code> and run the generate layer to populate this.</p>`
         }
-      }
-      return `
-      <article class="card">
-        <div class="card-head">
-          <h3>${esc(info.name)}</h3>
-          <span class="badge ${simulated ? "simulated" : "gap"}">${simulated ? "Simulated" : "Not simulated"}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderAttacks(data) {
+  const attacks = data.attacks;
+  const breakdown = data.simulation.attack_type_breakdown;
+  const idToColor = {};
+  attacks.forEach((a, i) => (idToColor[a.id] = SERIES[i % SERIES.length]));
+
+  const breakdownRows = attacks
+    .filter((a) => breakdown[a.id] !== undefined)
+    .map((a) => ({ name: a.name, value: breakdown[a.id] || 0, colorVar: idToColor[a.id] }));
+
+  const cards = attacks
+    .map((a, i) => {
+      const color = cssVar(SERIES[i % SERIES.length]);
+      return `<div class="card attack-card">
+        <div class="attack-stripe" style="background:${color}"></div>
+        <div>
+          <h2>${esc(a.name)}</h2>
+          <p><strong>Where:</strong> ${esc(a.stage)}</p>
+          <p><strong>Why it's hard to catch:</strong> ${esc(a.why_hard_to_catch)}</p>
+          <p><strong>Damage:</strong> ${esc(a.damage)}</p>
+          <div class="attack-meta">
+            <span class="pill">${esc(a.simulated_by)}</span>
+            ${a.real_llm_calls ? '<span class="pill">real OpenAI calls</span>' : '<span class="pill">local / no LLM</span>'}
+          </div>
         </div>
-        <p class="attack-desc">${esc(info.desc)}</p>
-        <div class="attack-count">${countLine}</div>
-      </article>`;
+      </div>`;
     })
     .join("");
 
-  app.innerHTML = `
-    <p class="eyebrow">Fraud coverage</p>
-    <h1>7 types of payment fraud we tested against</h1>
-    <p class="page-intro">Six were actively simulated. One is an honest gap we didn't build, listed plainly rather than skipped.</p>
-    <div class="grid cols-2">${cards}</div>
-  `;
-}
-
-/* ---------------------------------------------------------------- */
-/* Tab 2: Simulation                                                   */
-/* ---------------------------------------------------------------- */
-function renderSimulation(app) {
-  const sim = DASH.simulation;
-  const breakdown = sim.attack_type_breakdown || {};
-
-  const rows = Object.entries(ATTACK_COPY)
-    .filter(([id]) => breakdown[id] !== undefined)
-    .map(([id, info]) => `<tr><td>${esc(info.name)}</td><td class="num">${breakdown[id].toLocaleString()}</td></tr>`)
-    .join("");
-
-  app.innerHTML = `
-    <p class="eyebrow">Attack simulation</p>
-    <h1>Here's how many attacks we generated</h1>
-    <p class="page-intro">Every record below came from an actual run, not a mockup.</p>
-
-    <div class="card hero-metric">
-      <div class="value neutral">${sim.fraud_transaction_count.toLocaleString()}</div>
-      <div class="label">Attack records successfully generated</div>
+  return `
+    <div class="section">
+      <h1>Attack taxonomy</h1>
+      <p>Seven ways AI commits payment fraud. Six are actively simulated by bounded agents in <code>generate/src/fraud_agents.py</code>; one (feedback loop poisoning) is an honest, documented gap.</p>
     </div>
 
-    <h2>Breakdown by attack type</h2>
-    <div class="card">
-      <table class="simple-table">
-        <thead><tr><th>Attack type</th><th style="text-align:right">Records</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-
-    <button class="action" id="sample-data-btn">View Sample Data</button>
-    <div class="reveal-panel" id="sample-data-panel" style="display:none"></div>
-  `;
-
-  document.getElementById("sample-data-btn").addEventListener("click", (e) => {
-    const panel = document.getElementById("sample-data-panel");
-    if (panel.style.display !== "none") {
-      panel.style.display = "none";
-      e.target.textContent = "View Sample Data";
-      return;
+    ${
+      breakdownRows.length
+        ? `<div class="section"><div class="card"><h3>Generated fraud transactions by attack type</h3>${barChart(breakdownRows)}</div></div>`
+        : ""
     }
-    panel.style.display = "block";
-    e.target.textContent = "Hide Sample Data";
-    panel.innerHTML = buildSampleDataTable();
-  });
+
+    <div class="section">${cards}</div>
+  `;
 }
 
-function buildSampleDataTable() {
-  const fraudSamples = DASH.detector.sample_decisions.filter((e) => e.ground_truth.is_fraud === 1);
-  const picks = [];
-  const seen = new Set();
-  for (const e of fraudSamples) {
-    if (seen.has(e.ground_truth.attack_type)) continue;
-    seen.add(e.ground_truth.attack_type);
-    picks.push(e);
-    if (picks.length >= 5) break;
-  }
-  const rows = picks
+function renderDetect(data) {
+  const m = data.detect.metrics;
+  const cm = m.confusion_matrix;
+
+  const signalRows = m.top_signals.map((s) => ({
+    name: s.feature.replace(/_/g, " "),
+    value: s.importance,
+    max: m.top_signals[0].importance,
+    colorVar: "--series-1",
+  }));
+
+  const totalFraud = cm.true_positive + cm.false_negative;
+  const totalLegit = cm.true_negative + cm.false_positive;
+  const totalFlagged = cm.true_positive + cm.false_positive;
+
+  return `
+    <div class="section">
+      <h1>Detection layer</h1>
+      <p>A RandomForest classifier trained on six transaction features, proposing BLOCK / FLAG / ALLOW by fraud score. This layer only proposes. Nothing here is final until the mandate and sign layers run too.</p>
+    </div>
+
+    <div class="section">
+      <div class="stat-row">
+        ${statTile(
+          "Fraud caught",
+          fmtPct(m.fraud_caught_rate),
+          "good",
+          `Catches ${cm.true_positive} of ${totalFraud} fraud cases in the test set`
+        )}
+        ${statTile(
+          "False positive rate",
+          fmtPct(m.false_positive_rate),
+          "",
+          `Flags ${cm.false_positive} of ${totalLegit} legitimate transactions`
+        )}
+        ${statTile(
+          "Precision",
+          fmtPct(m.precision),
+          "",
+          `Of ${totalFlagged} transactions flagged, ${cm.true_positive} are real fraud. The detect layer's job is recall, not precision; see note below`
+        )}
+      </div>
+    </div>
+
+    <div class="grid-2 section">
+      <div class="card">
+        <h3>Confusion matrix (test set)</h3>
+        <div class="confusion-grid">
+          <div class="confusion-cell"><div class="n">${cm.true_negative}</div><div class="label">True negative</div></div>
+          <div class="confusion-cell"><div class="n">${cm.false_positive}</div><div class="label">False positive</div></div>
+          <div class="confusion-cell"><div class="n">${cm.false_negative}</div><div class="label">False negative</div></div>
+          <div class="confusion-cell"><div class="n">${cm.true_positive}</div><div class="label">True positive</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Top signals (feature importance)</h3>
+        ${barChart(signalRows, { valueFmt: (v) => v.toFixed(3) })}
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <h3>Why precision looks low</h3>
+        <p>
+          Fraud is rare here (${totalFraud} cases out of ${(totalFraud + totalLegit).toLocaleString()} transactions,
+          about 2%). Tuning a classifier to catch ${fmtPct(m.fraud_caught_rate)} of that rare an event means it has
+          to flag aggressively, which produces false positives. It is the same tradeoff airport security makes to catch
+          most weapons at the cost of flagging some harmless bags.
+        </p>
+        <p>
+          Precision (${fmtPct(m.precision)}) measures the <em>detect layer alone</em>, in isolation, on this
+          held out test set. It is not the system's real world false accusation rate: nothing here is auto executed
+          off a detect layer flag. A flag still has to clear the <strong>mandate</strong> layer's independent,
+          rule based check before anything is blocked, and every final decision, ALLOW or BLOCK, is signed and
+          auditable. See <code>docs/JUDGES_GUIDE.md</code> for the full breakdown.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function renderMandate(data) {
+  const md = data.mandate;
+  const attrRows = [
+    { name: "Detect caught it", value: md.block_attribution.detect_only, colorVar: "--series-1" },
+    { name: "Mandate caught it", value: md.block_attribution.mandate_only, colorVar: "--series-2" },
+    { name: "Both caught it", value: md.block_attribution.both, colorVar: "--series-3" },
+  ];
+  const maxAttr = Math.max(...attrRows.map((r) => r.value), 1);
+  attrRows.forEach((r) => (r.max = maxAttr));
+
+  const ruleLabels = {
+    spending_limit: "Spending limit",
+    merchant_whitelist: "Merchant whitelist",
+    time_restriction: "Time of day window",
+    velocity: "Daily velocity",
+  };
+  const ruleRows = Object.entries(md.rule_violation_counts).map(([rule, count]) => ({
+    name: ruleLabels[rule] || rule,
+    value: count,
+    colorVar: "--series-1",
+  }));
+
+  const sampleRows = md.sample_mandate_only_blocks
     .map((e) => {
-      const g = e.ground_truth;
       const d = e.decision;
-      const label = ATTACK_COPY[g.attack_type]?.name || g.attack_type;
+      const violated = d.violated_mandate_rules.map((r) => ruleLabels[r] || r).join(", ");
       return `<tr>
-        <td>${esc(label)}</td>
-        <td class="num">$${g.amount}</td>
-        <td>${esc(g.merchant)}</td>
-        <td><span class="badge ${d.decision.toLowerCase()}">${d.decision === "BLOCK" ? "Blocked" : d.decision === "FLAG" ? "Flagged" : "Allowed"}</span></td>
+        <td class="mono">${esc(d.transaction_id)}</td>
+        <td>${fmtMoney(e.ground_truth.amount)}</td>
+        <td>${esc(e.ground_truth.merchant)}</td>
+        <td>${esc(violated)}</td>
+        <td>${esc(e.ground_truth.attack_type)}</td>
       </tr>`;
     })
     .join("");
+
   return `
-    <div class="card">
-      <table class="simple-table">
-        <thead><tr><th>Attack type</th><th style="text-align:right">Amount</th><th>Merchant</th><th>Status</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
-}
-
-/* ---------------------------------------------------------------- */
-/* Tab 3: Detection Results                                            */
-/* ---------------------------------------------------------------- */
-function _rangeBarHTML(label, s, lo, hi, color) {
-  const clamp = (v) => Math.max(0, Math.min(100, ((v - lo) / (hi - lo)) * 100));
-  const left = clamp(s.min);
-  const width = Math.max(1, clamp(s.max) - left);
-  const meanPos = clamp(s.mean);
-  return `
-    <div class="range-metric">
-      <div class="range-label"><span>${esc(label)}</span><span>${s.min}% - ${s.max}% (mean ${s.mean}%, sd ${s.std_dev}%)</span></div>
-      <div class="range-track">
-        <div class="range-fill" style="left:${left}%;width:${width}%;background:${color}"></div>
-        <div class="range-mean" style="left:${meanPos}%;background:${color}"></div>
-      </div>
-    </div>`;
-}
-
-function _distributionSectionHTML() {
-  const dist = DASH.distribution;
-  if (!dist) return "";
-  const s = dist.summary;
-  return `
-    <h2>Verified across ${dist.runs.length} independent runs</h2>
-    <div class="card">
-      <p class="attack-count" style="margin-bottom:1.25rem">A single run could be a lucky draw. We ran the full pipeline ${dist.runs.length} times, real OpenAI calls, real training, real scoring, and recorded what actually happened each time, no averaging tricks.</p>
-      ${_rangeBarHTML("Fraud caught", s.catch_rate_pct, 80, 100, "var(--success)")}
-      ${_rangeBarHTML("Fraud missed", s.miss_rate_pct, 0, 20, "var(--risk)")}
-      ${_rangeBarHTML("False positive rate", s.fp_rate_pct, 0, 20, "var(--warning)")}
-      <p class="attack-count" style="margin-top:1.25rem">The numbers move by a point or two run to run because several agents make real OpenAI calls at a high temperature, so the generated fraud is genuinely different every time. That's expected, not a bug.</p>
-    </div>`;
-}
-
-function renderDetection(app) {
-  const m = DASH.detector.metrics;
-  const caught = m.fraud_caught_rate * 100;
-  const missed = m.fraud_missed_rate * 100;
-  const allowedGood = 100 - m.false_positive_rate * 100;
-  const flaggedGood = m.false_positive_rate * 100;
-
-  app.innerHTML = `
-    <p class="eyebrow">Detection results</p>
-    <h1>Our system caught ${caught.toFixed(1)}% of attacks</h1>
-    <p class="page-intro">Tested against every attack we generated, on data the model never saw during training.</p>
-
-    <div class="card hero-metric">
-      <div class="value good">${caught.toFixed(1)}%</div>
-      <div class="label">of attacks caught</div>
+    <div class="section">
+      <h1>Mandate layer</h1>
+      <p>Deterministic authorization rules, independent of the fraud score. Each customer's mandate, spending limit, allowed merchants, allowed hours, daily transaction count, is derived from their own known good transaction history, not hand authored.</p>
     </div>
 
-    <div class="stat-tiles" style="margin-top:1.5rem">
-      <div class="stat-tile"><div class="value good">${allowedGood.toFixed(1)}%</div><div class="label">Good transactions correctly allowed</div></div>
-      <div class="stat-tile"><div class="value bad">${flaggedGood.toFixed(1)}%</div><div class="label">Good transactions wrongly flagged</div></div>
-    </div>
-
-    <h2>Caught vs. missed</h2>
-    <div class="card">
-      <div class="split-bar">
-        <div class="seg" style="width:${caught}%;background:var(--success)">${caught.toFixed(1)}%</div>
-        <div class="seg" style="width:${missed}%;background:var(--risk)">${missed.toFixed(1)}%</div>
-      </div>
-      <div class="split-legend">
-        <span><span class="dot" style="background:var(--success)"></span>Caught</span>
-        <span><span class="dot" style="background:var(--risk)"></span>Missed</span>
+    <div class="section">
+      <div class="stat-row">
+        ${statTile("Customer mandates derived", md.mandates_derived.toLocaleString())}
+        ${statTile("Blocks from mandate alone", md.block_attribution.mandate_only.toLocaleString(), "good")}
       </div>
     </div>
 
-    <div class="honest-box" style="margin-top:1.75rem">
-      <h3>We caught most attacks, but not all</h3>
-      <p style="margin:0 0 0.75rem;color:var(--text-dim)">${missed.toFixed(1)}% slipped through. Here's why, honestly:</p>
-      <ul>
-        <li>Amount alone doesn't reliably trigger a block, a $10 charge and a $10,000 charge can score the same if nothing else looks off</li>
-        <li>Some fake activity is built to look statistically like normal spending</li>
-        <li>Slow, spaced out attacks are harder to spot than fast, obvious ones</li>
-      </ul>
-    </div>
-
-    ${_distributionSectionHTML()}
-
-    <button class="action" id="missed-btn">View Missed Attacks</button>
-    <div class="reveal-panel" id="missed-panel" style="display:none"></div>
-  `;
-
-  document.getElementById("missed-btn").addEventListener("click", (e) => {
-    const panel = document.getElementById("missed-panel");
-    if (panel.style.display !== "none") {
-      panel.style.display = "none";
-      e.target.textContent = "View Missed Attacks";
-      return;
-    }
-    panel.style.display = "block";
-    e.target.textContent = "Hide Missed Attacks";
-    const rows = DASH.detector.missed_fraud_sample
-      .map((e) => {
-        const g = e.ground_truth;
-        const label = ATTACK_COPY[g.attack_type]?.name || g.attack_type;
-        return `<tr><td>${esc(label)}</td><td class="num">$${g.amount}</td><td>${esc(g.merchant)}</td><td>${(e.decision.fraud_score * 100).toFixed(1)}%</td></tr>`;
-      })
-      .join("");
-    panel.innerHTML = `
+    <div class="grid-2 section">
       <div class="card">
-        <table class="simple-table">
-          <thead><tr><th>Attack type</th><th style="text-align:right">Amount</th><th>Merchant</th><th>Risk score</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>`;
-  });
-}
-function renderWalkthrough(app) {
-  const scenarios = DASH.attack_scenarios;
-
-  if (!scenarios || !scenarios.length) {
-    app.innerHTML = `
-      <div class="section">
-        <h1>Attack walkthrough</h1>
-        <p class="error-inline">Couldn't load attack scenario data.</p>
+        <h3>Who caught each block</h3>
+        ${barChart(attrRows)}
+        ${legend(attrRows.map((r) => ({ label: r.name, colorVar: r.colorVar })))}
       </div>
-    `;
-    return;
+      <div class="card">
+        <h3>Mandate rule violations</h3>
+        ${ruleRows.some((r) => r.value > 0) ? barChart(ruleRows) : `<p>No mandate violations in this run.</p>`}
+      </div>
+    </div>
+
+    ${
+      sampleRows
+        ? `<div class="section">
+            <div class="card">
+              <h3>Fraud the detector missed, mandate caught</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Transaction</th><th>Amount</th><th>Merchant</th><th>Violated rule</th><th>Attack type</th></tr></thead>
+                  <tbody>${sampleRows}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>`
+        : ""
+    }
+  `;
+}
+
+/** Shared render for a full pipeline outcome, used by both the Attack
+ * Walkthrough (precomputed, real, already signed decisions) and the
+ * Live Test Harness (a decision computed live, right now, by this
+ * request). txSummaryRows: [{label, value}]. */
+function renderDecisionCard(txSummaryRows, decision, mandateChecks, verified) {
+  const ruleLabels = {
+    spending_limit: "Spending limit",
+    merchant_whitelist: "Merchant whitelist",
+    time_restriction: "Time of day window",
+    velocity: "Daily velocity",
+  };
+
+  const txRows = txSummaryRows
+    .map((r) => `<div class="kv-row"><span class="kv-key">${esc(r.label)}</span><span class="kv-value">${esc(r.value)}</span></div>`)
+    .join("");
+
+  const mandateRows = mandateChecks
+    .map(
+      (c) => `<tr>
+        <td>${ruleLabels[c.rule] || c.rule}</td>
+        <td>${c.passed ? '<span class="dot good"></span> pass' : '<span class="dot critical"></span> fail'}</td>
+        <td>${esc(c.reason)}</td>
+      </tr>`
+    )
+    .join("");
+
+  return `
+    <div class="pipeline-steps">
+      <div class="card pipeline-step">
+        <h3>Step 1 &middot; Detection</h3>
+        <div class="stat-row">
+          ${statTile("Fraud score", decision.fraud_score.toFixed(4))}
+          ${statTile("Detect layer proposes", badge(decision.detect_decision))}
+        </div>
+        <p>${(decision.reasons || []).filter((r) => r.startsWith("detect:")).map((r) => esc(r.replace("detect: ", ""))).join(", ") || "no single dominant signal"}</p>
+      </div>
+
+      <div class="card pipeline-step">
+        <h3>Step 2 &middot; Mandate</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rule</th><th>Result</th><th>Reason</th></tr></thead>
+            <tbody>${mandateRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card pipeline-step">
+        <h3>Step 3 &middot; Signing</h3>
+        <div class="sig-line">
+          <span class="dot ${verified ? "good" : "critical"}"></span>
+          <strong>${verified ? "Signature verifies" : "Signature does NOT verify"}</strong>
+        </div>
+        <div class="kv-block"><span class="kv-key">Ed25519 signature</span><span class="kv-value mono">${esc(decision.signature.slice(0, 32))}&hellip;</span></div>
+        <div class="kv-block"><span class="kv-key">Signed by</span><span class="kv-value">${esc(decision.signer)}</span></div>
+      </div>
+
+      <div class="card pipeline-step">
+        <h3>Step 4 &middot; Authority (final decision)</h3>
+        <div class="sig-line" style="margin-bottom:12px">${badge(decision.final_decision)}</div>
+        <p>${
+          decision.final_decision === "BLOCK"
+            ? (!decision.mandate_allowed
+                ? `Mandate layer rejected it (${decision.violated_mandate_rules.map((r) => ruleLabels[r] || r).join(", ")}), blocked regardless of the detect score.`
+                : `Detect layer scored it high risk (${decision.fraud_score.toFixed(2)}), blocked even though the mandate layer had no objection.`)
+            : decision.final_decision === "FLAG"
+            ? `Detect layer is unsure (${decision.fraud_score.toFixed(2)}) and the mandate layer has no objection, flagged for review, not auto blocked.`
+            : `Low risk (${decision.fraud_score.toFixed(2)}) and every mandate rule passed, allowed.`
+        }</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Transaction</h3>
+      <div class="kv-grid">${txRows}</div>
+    </div>
+  `;
+}
+
+function renderWalkthrough(data, scenarios) {
+  if (!scenarios || !scenarios.length) {
+    return `<div class="section"><h1>Attack walkthrough</h1><p class="error-inline">Couldn't load data/attack_scenarios.json.</p></div>`;
   }
 
   const buttons = scenarios
     .map(
-      (s, i) => `
-        <button class="scenario-btn" data-scenario-id="${esc(s.id)}" data-index="${i}">
-          <span class="scenario-name">${esc(s.name)}</span>
-          ${badge(s.example.decision.final_decision)}
-        </button>
-      `
+      (s, i) => `<button class="scenario-btn" data-scenario-id="${esc(s.id)}" data-index="${i}">
+        <span class="scenario-name">${esc(s.name)}</span>
+        ${badge(s.example.decision.final_decision)}
+      </button>`
     )
     .join("");
 
-  app.innerHTML = `
+  return `
     <div class="section">
       <h1>Attack walkthrough</h1>
-      <p>
-        Pick a real attack type below to see one actual, already signed
-        decision from this repo's own pipeline run: the detect score,
-        the mandate rules it hit, the signature, and why the final
-        decision came out the way it did.
-      </p>
+      <p>Pick a real attack type below to see one actual, already signed decision from this repo's own pipeline run: the detect score, the mandate rules it hit, the signature, and why the final decision came out the way it did.</p>
     </div>
 
     <div class="section">
@@ -365,59 +432,221 @@ function renderWalkthrough(app) {
 
     <div class="section" id="walkthrough-detail"></div>
   `;
+}
 
-  const detail = document.getElementById("walkthrough-detail");
+function renderScenarioDetail(scenario) {
+  const ex = scenario.example;
+  const gt = ex.ground_truth;
+  return `
+    <div class="card" style="margin-bottom:14px">
+      <h3>${esc(scenario.name)}</h3>
+      <p><strong>Where:</strong> ${esc(scenario.stage)}</p>
+      <p><strong>Why it's hard to catch:</strong> ${esc(scenario.why_hard_to_catch)}</p>
+    </div>
+    ${renderDecisionCard(
+      [
+        { label: "Amount", value: fmtMoney(gt.amount) },
+        { label: "Merchant", value: gt.merchant },
+        { label: "Currency", value: gt.currency },
+        { label: "Ground truth", value: gt.is_fraud ? "Actually fraud" : "Actually legitimate" },
+      ],
+      ex.decision,
+      ex.mandate_checks,
+      ex.verified
+    )}
+  `;
+}
 
-  function showScenario(index) {
-    const scenario = scenarios[index];
-    if (!scenario) return;
+function renderLiveTest(data, customersData) {
+  const customers = (customersData && customersData.customers) || [];
+  const merchants = (customersData && customersData.merchants) || [];
 
-    const decision = scenario.example.decision || {};
-    const detection = scenario.example.detection || {};
-    const mandate = scenario.example.mandate || {};
-
-    detail.innerHTML = `
-      <div class="card">
-        <div class="card-head">
-          <h2>${esc(scenario.name)}</h2>
-          ${badge(decision.final_decision)}
-        </div>
-
-        <p>${esc(scenario.description || "")}</p>
-
-        <h3>Detection</h3>
-        <div class="kv-grid">
-          <div><strong>Decision</strong><span>${esc(detection.decision || "—")}</span></div>
-          <div><strong>Risk score</strong><span>${detection.risk_score ?? "—"}</span></div>
-        </div>
-
-        <h3>Mandate</h3>
-        <div class="kv-grid">
-          <div><strong>Decision</strong><span>${esc(mandate.decision || "—")}</span></div>
-          <div><strong>Reason</strong><span>${esc(mandate.reason || "—")}</span></div>
-        </div>
-
-        <h3>Signed decision</h3>
-        <div class="kv-grid">
-          <div><strong>Final decision</strong><span>${esc(decision.final_decision || "—")}</span></div>
-          <div><strong>Signature</strong><span class="mono">${esc(decision.signature || "—")}</span></div>
-        </div>
-      </div>
-    `;
-
-    document.querySelectorAll(".scenario-btn").forEach((button, i) => {
-      button.classList.toggle("active", i === index);
-    });
+  if (!customers.length) {
+    return `<div class="section"><h1>Live test harness</h1><p class="error-inline">Couldn't load data/demo_customers.json.</p></div>`;
   }
 
-  document.querySelectorAll(".scenario-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      showScenario(Number(button.dataset.index));
-    });
+  const customerOptions = customers
+    .map((c) => `<option value="${esc(c.customer_id)}">${esc(c.customer_name)} (${esc(c.customer_id)})</option>`)
+    .join("");
+  const merchantOptions = merchants.map((m) => `<option value="${esc(m)}">${esc(m)}</option>`).join("");
+
+  return `
+    <div class="section">
+      <h1>Live test harness</h1>
+      <p>Submit a transaction and it runs through the real pipeline right now: the actual trained detector, the actual mandate rules derived from that customer's history, and a real Ed25519 signature from this deployment's own authority key.</p>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <form id="live-test-form" class="live-form">
+          <label>Customer
+            <select name="customer_id" required>${customerOptions}</select>
+          </label>
+          <label>Amount (USD)
+            <input type="number" name="amount" min="0.01" max="1000000" step="0.01" value="50.00" required>
+          </label>
+          <label>Merchant
+            <input list="merchant-list" name="merchant" value="${esc(merchants[0] || "")}" required>
+            <datalist id="merchant-list">${merchantOptions}</datalist>
+          </label>
+          <label>Hour of day (0 to 23)
+            <input type="number" name="hour_of_day" min="0" max="23" value="12" required>
+          </label>
+          <label>AI generated signal (0 to 1)
+            <input type="number" name="ai_generated_signal" min="0" max="1" step="0.01" value="0.1" required>
+          </label>
+          <button type="submit" class="submit-btn">Run transaction</button>
+        </form>
+        <p class="form-hint">Each customer's mandate (spending limit, allowed merchants, allowed hours) was derived from their own real transaction history. Try an unlisted merchant or an odd hour to see the mandate layer object on its own.</p>
+      </div>
+    </div>
+
+    <div class="section" id="live-test-result"></div>
+  `;
+}
+
+function renderProof(data) {
+  const v = data.verification;
+  const sample = data.pipeline.sample_decisions.find((e) => e.decision.final_decision === "BLOCK") || data.pipeline.sample_decisions[0];
+
+  const rows = data.pipeline.sample_decisions
+    .slice(0, 12)
+    .map((e) => {
+      const d = e.decision;
+      return `<tr>
+        <td class="mono">${esc(d.transaction_id)}</td>
+        <td>${d.fraud_score}</td>
+        <td>${badge(d.final_decision)}</td>
+        <td class="mono">${esc(d.signature.slice(0, 24))}&hellip;</td>
+      </tr>`;
+    })
+    .join("");
+
+  return `
+    <div class="section">
+      <h1>Proof</h1>
+      <p>Every final decision is signed with Ed25519 by an external authority. Neither the detector nor the mandate checker holds a private key. Anyone can verify a signature independently using only the public key on disk, with no access to any private key.</p>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <div class="sig-line">
+          <span class="dot ${v.all_verified ? "good" : "critical"}"></span>
+          <strong>${v.verified}/${v.total}</strong>&nbsp;signed decisions verify independently
+        </div>
+        <p>Verification uses only <code>sign/tokens/authority_public_key.pem</code>. A script that can verify a signature cannot forge one.</p>
+      </div>
+    </div>
+
+    ${
+      sample
+        ? `<div class="section">
+            <div class="card">
+              <h3>Example signed envelope</h3>
+              <pre class="envelope">${esc(JSON.stringify(sample.decision, null, 2))}</pre>
+            </div>
+          </div>`
+        : ""
+    }
+
+    <div class="section">
+      <div class="card">
+        <h3>Sample signed decisions</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Transaction</th><th>Fraud score</th><th>Decision</th><th>Signature</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function fetchJsonSafe(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.warn(`Couldn't load ${url}: ${err.message}`);
+    return null;
+  }
+}
+
+function wireWalkthrough(scenarios) {
+  const picker = document.querySelector('.panel[data-panel="walkthrough"] .scenario-picker');
+  const detail = document.getElementById("walkthrough-detail");
+  if (!picker || !detail || !scenarios) return;
+
+  picker.addEventListener("click", (e) => {
+    const btn = e.target.closest(".scenario-btn");
+    if (!btn) return;
+    picker.querySelectorAll(".scenario-btn").forEach((b) => b.classList.toggle("active", b === btn));
+    const scenario = scenarios[Number(btn.dataset.index)];
+    detail.innerHTML = renderScenarioDetail(scenario);
   });
 
-  showScenario(0);
+  // Show the first scenario by default.
+  const firstBtn = picker.querySelector(".scenario-btn");
+  if (firstBtn) {
+    firstBtn.classList.add("active");
+    detail.innerHTML = renderScenarioDetail(scenarios[0]);
+  }
 }
+
+function wireLiveTest() {
+  const form = document.getElementById("live-test-form");
+  const result = document.getElementById("live-test-result");
+  if (!form || !result) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const submitBtn = form.querySelector(".submit-btn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Running…";
+    result.innerHTML = `<div class="loading">Running the live pipeline&hellip;</div>`;
+
+    const fd = new FormData(form);
+    const body = {
+      customer_id: fd.get("customer_id"),
+      amount: Number(fd.get("amount")),
+      merchant: fd.get("merchant"),
+      hour_of_day: Number(fd.get("hour_of_day")),
+      ai_generated_signal: Number(fd.get("ai_generated_signal")),
+    };
+
+    try {
+      const res = await fetch("api/demo/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || `HTTP ${res.status}`);
+
+      const tx = payload.transaction;
+      result.innerHTML = renderDecisionCard(
+        [
+          { label: "Customer", value: `${tx.customer_name} (${tx.customer_id})` },
+          { label: "Amount", value: fmtMoney(tx.amount) },
+          { label: "Merchant", value: tx.merchant },
+          { label: "Hour of day", value: tx.hour_of_day },
+          { label: "AI generated signal", value: tx.ai_generated_signal },
+        ],
+        payload.decision,
+        payload.mandate_checks,
+        payload.verified
+      );
+    } catch (err) {
+      result.innerHTML = `<div class="error-inline">Couldn't run the live pipeline: ${esc(err.message)}.<br>The Live Test Harness needs the Flask server (<code>python web/server.py</code>). It isn't available under <code>python -m http.server</code>.</div>`;
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Run transaction";
+    }
+  });
+}
+
 const FAQ_ITEMS = [
   {
     q: "What makes this different from a typical fraud detection system?",
@@ -433,7 +662,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Could an AI agent fake or skip this check?",
-    a: "Not the signature. Nothing calling this pipeline, agent or otherwise, has access to the private signing key, so it cannot produce a valid signed ALLOW on its own. It could still choose not to call the pipeline at all, which is why this belongs at the point where a transaction actually executes, not as an optional step an agent can decide to skip.",
+    a: "Not the signature. Nothing calling this pipeline, agent or otherwise, has access to the private signing key, so it cannot produce a valid signed ALLOW on its own. It could still choose not to call the pipeline at all, which is why this belongs at the point where a transaction actually executes, not as an optional step an agent can decide to skip. Wiring it into that execution point is not done in this repo yet, see the enforcement question below.",
   },
   {
     q: "Does this replace a human reviewer?",
@@ -445,7 +674,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Does a low precision flag mean legitimate transactions get blocked?",
-    a: "No. A detect layer flag alone does not block anything. The mandate layer also has to object before a transaction is BLOCKed.",
+    a: "No. A detect layer flag alone does not block anything. The mandate layer also has to object before a transaction is BLOCKed. Try it yourself on the Live Test tab: a low risk transaction at an unfamiliar merchant still gets BLOCKed by the mandate layer alone.",
   },
   {
     q: "Are the numbers on this dashboard real?",
@@ -454,6 +683,10 @@ const FAQ_ITEMS = [
   {
     q: "What is the difference between Attack Walkthrough and Live Test?",
     a: "Attack Walkthrough shows five real, already signed decisions pulled from an actual past pipeline run, one per attack type. Live Test runs a brand new transaction through the real model and rule engine right now, using whatever you type in.",
+  },
+  {
+    q: "Is the Live Test result actually computed live, or just looked up?",
+    a: "Computed live. The trained model scores it, the mandate rules check it against that customer's real history, and the result gets a fresh Ed25519 signature that is verified in the same request.",
   },
   {
     q: "Does this system actually stop a transaction from going through?",
@@ -472,402 +705,78 @@ const FAQ_ITEMS = [
     a: "One fixed spending limit would be too loose for small spenders and too tight for big ones. Deriving each customer's limit, merchants, hours, and daily count from their own past good transactions makes the check specific to them.",
   },
   {
-    q: "What happens if I try a merchant or hour outside a customer's normal pattern?",
-    a: "The mandate layer objects on that rule even when the detection score is low. That is the point: the two layers check different things, and either one objecting is enough to block the transaction."
-  }
+    q: "What happens if I try a merchant or hour outside a customer's normal pattern on Live Test?",
+    a: "The mandate layer objects on that rule even when the detection score is low. That is the point: the two layers check different things, and either one objecting is enough to block the transaction.",
+  },
 ];
 
-function renderFAQ(app) {
+function renderFAQ(data) {
   const items = FAQ_ITEMS.map(
-    (item) => `
-      <div class="card faq-item">
-        <h3>${esc(item.q)}</h3>
-        <p>${esc(item.a)}</p>
-      </div>
-    `
+    (item) => `<div class="card faq-item">
+      <h3>${esc(item.q)}</h3>
+      <p>${esc(item.a)}</p>
+    </div>`
   ).join("");
 
-  app.innerHTML = `
+  return `
     <div class="section">
       <h1>FAQ</h1>
       <p>The questions judges and users ask most often about this project.</p>
     </div>
-
-    <div class="section">
-      ${items}
-    </div>
+    <div class="section">${items}</div>
   `;
 }
-/* ---------------------------------------------------------------- */
-/* Tab: Governance                                                     */
-/* ---------------------------------------------------------------- */
-const FINAL_BADGE_CLASS = { EXECUTE: "allow", BLOCK: "block", NO_EXECUTION: "flag" };
-const FINAL_LABEL = { EXECUTE: "Executed", BLOCK: "Blocked", NO_EXECUTION: "Held for review" };
-const MANDATE_BADGE_CLASS = { ALLOW: "allow", BLOCK: "block", REQUIRES_APPROVAL: "flag" };
 
-function renderGovernance(app) {
-  const gov = DASH.governance;
-  if (!gov) {
-    app.innerHTML = `
-      <p class="eyebrow">Governance & execution</p>
-      <h1>No governance data yet</h1>
-      <p class="page-intro">Run <code>python check_results.py</code> to generate decisions/mandate_decisions.json and this section.</p>`;
+const RENDERERS = {
+  overview: renderOverview,
+  attacks: renderAttacks,
+  detect: renderDetect,
+  mandate: renderMandate,
+  proof: renderProof,
+  faq: renderFAQ,
+};
+
+async function main() {
+  const app = document.getElementById("app");
+  let data;
+  try {
+    const res = await fetch("data/dashboard.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  } catch (err) {
+    app.innerHTML = `<div class="error">Couldn't load data/dashboard.json (${esc(err.message)}).<br>Run the pipeline layer first: <code>cd pipeline/src && python run_pipeline.py</code></div>`;
     return;
   }
-  const counts = gov.final_decision_counts;
-  const total = counts.EXECUTE + counts.BLOCK + counts.NO_EXECUTION;
-  const pct = (n) => (total ? (n / total) * 100 : 0);
-  const policy = gov.policy;
 
-  app.innerHTML = `
-    <p class="eyebrow">Governance & execution</p>
-    <h1>The detector doesn't get the last word</h1>
-    <p class="page-intro">A second, independent, deterministic layer, the Mandate Engine, evaluates every transaction against business policy with no ML and no randomness. Only Detection ALLOW + Mandate ALLOW, backed by a verified authority signature, can execute.</p>
+  const [scenarios, customersData] = await Promise.all([
+    fetchJsonSafe("data/attack_scenarios.json"),
+    fetchJsonSafe("data/demo_customers.json"),
+  ]);
 
-    <div class="stat-tiles">
-      <div class="stat-tile"><div class="value good">${counts.EXECUTE.toLocaleString()}</div><div class="label">Executed</div></div>
-      <div class="stat-tile"><div class="value bad">${counts.BLOCK.toLocaleString()}</div><div class="label">Blocked</div></div>
-      <div class="stat-tile"><div class="value neutral">${counts.NO_EXECUTION.toLocaleString()}</div><div class="label">Held for human review</div></div>
-    </div>
-
-    <h2>Final verdicts</h2>
-    <div class="card">
-      <div class="split-bar">
-        <div class="seg" style="width:${pct(counts.EXECUTE)}%;background:var(--success)">${counts.EXECUTE}</div>
-        <div class="seg" style="width:${pct(counts.BLOCK)}%;background:var(--risk)">${counts.BLOCK}</div>
-        <div class="seg" style="width:${pct(counts.NO_EXECUTION)}%;background:var(--warning)">${counts.NO_EXECUTION}</div>
-      </div>
-      <div class="split-legend">
-        <span><span class="dot" style="background:var(--success)"></span>Executed</span>
-        <span><span class="dot" style="background:var(--risk)"></span>Blocked</span>
-        <span><span class="dot" style="background:var(--warning)"></span>Held for review</span>
-      </div>
-    </div>
-
-    <h2>The policy behind every decision</h2>
-    <div class="card">
-      <table class="simple-table">
-        <tbody>
-          <tr><td>Policy</td><td class="num">${esc(policy.policy_id)} v${esc(policy.policy_version)}</td></tr>
-          <tr><td>Max transaction amount</td><td class="num">$${policy.max_transaction_amount.toLocaleString()}</td></tr>
-          <tr><td>Allowed currencies</td><td class="num">${policy.allowed_currencies.join(", ")}</td></tr>
-          <tr><td>Blocked merchants</td><td class="num">${policy.blocked_merchants.length ? policy.blocked_merchants.join(", ") : "none"}</td></tr>
-          <tr><td>Requires human approval above</td><td class="num">$${policy.require_approval_above.toLocaleString()}</td></tr>
-        </tbody>
-      </table>
-      <p class="attack-count" style="margin-top:0.9rem">Policy hash: <span class="sig-value">${esc(gov.policy_hash)}</span></p>
-    </div>
-
-    <h2>How a transaction earns execution</h2>
-    <div class="card">
-      <div class="flow-steps">
-        <div class="flow-step"><span class="flow-num">1</span><div><b>Detector:</b> proposes ALLOW, FLAG, or BLOCK based on fraud risk.</div></div>
-        <div class="flow-step"><span class="flow-num">2</span><div><b>Mandate Engine:</b> independently evaluates the same transaction against business policy, no shared code with the detector, no randomness, same input always gives the same output.</div></div>
-        <div class="flow-step"><span class="flow-num">3</span><div><b>Authority:</b> signs the mandate decision and the combined verdict, each with its own Ed25519 signature.</div></div>
-        <div class="flow-step"><span class="flow-num">4</span><div><b>Execution gate:</b> only sets execution_performed = true if final_decision is EXECUTE *and* the authority signature on that exact record verifies. Anything else, including a forged claim, is refused.</div></div>
-      </div>
-    </div>
-
-    <div class="honest-box" style="margin-top:1.75rem">
-      <h3>Honest note on this run</h3>
-      <p style="margin:0;color:var(--text-dim)">The transactions the mandate blocked were already caught by the detector in this run, currency isn't even a signal the detector's model sees, but the injection-style attacks that produced invalid currency values here were loud enough on other signals to get caught anyway. That's a property of this dataset, not a guarantee. The critical-invariant test in <code>tests/test_critical_invariant.py</code> proves the disagreement case directly: detector ALLOW, mandate BLOCK, execution refused.</p>
-    </div>
-
-    <button class="action" id="mandate-btn">View Sample Mandate Records</button>
-    <div class="reveal-panel" id="mandate-panel" style="display:none"></div>
-  `;
-
-  document.getElementById("mandate-btn").addEventListener("click", (e) => {
-    const panel = document.getElementById("mandate-panel");
-    if (panel.style.display !== "none") {
-      panel.style.display = "none";
-      e.target.textContent = "View Sample Mandate Records";
-      return;
-    }
-    panel.style.display = "block";
-    e.target.textContent = "Hide Sample Mandate Records";
-    const rows = gov.sample_mandate_records
-      .slice(0, 10)
-      .map((r) => {
-        const md = r.mandate_decision;
-        const cd = r.combined_decision;
-        const ev = r.execution_evidence;
-        return `<tr>
-          <td>${esc(r.transaction_id)}</td>
-          <td><span class="badge ${MANDATE_BADGE_CLASS[md.decision] || "gap"}">${esc(md.decision)}</span></td>
-          <td>${esc(md.reason_codes.join(", ") || "-")}</td>
-          <td><span class="badge ${FINAL_BADGE_CLASS[cd.final_decision] || "gap"}">${esc(FINAL_LABEL[cd.final_decision] || cd.final_decision)}</span></td>
-          <td>${ev.execution_performed ? "yes" : "no"}</td>
-        </tr>`;
-      })
-      .join("");
-    panel.innerHTML = `
-      <div class="card">
-        <table class="simple-table">
-          <thead><tr><th>Transaction</th><th>Mandate</th><th>Reason codes</th><th>Final</th><th>Executed</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>`;
-  });
-}
-
-/* ---------------------------------------------------------------- */
-/* Tab 4: Proof                                                        */
-/* ---------------------------------------------------------------- */
-function renderProof(app) {
-  const counts = DASH.detector.decision_counts;
-  const overrides = DASH.overrides;
-  const v = DASH.verification;
-  const allTokensValid = Object.values(v.agent_tokens).every(Boolean);
-  const rt = DASH.redteam;
-  const sample = DASH.detector.sample_decisions.find((x) => x.decision.decision === "BLOCK") || DASH.detector.sample_decisions[0];
-
-  app.innerHTML = `
-    <p class="eyebrow">Verifiable proof</p>
-    <h1>These decisions are verifiable</h1>
-    <p class="page-intro">Not "trust our logs." Every block, override, and agent limit below is backed by a cryptographic signature you can check yourself.</p>
-
-    <div class="grid cols-3">
-      <div class="card">
-        <div class="card-head"><h3>${counts.BLOCK.toLocaleString()} Blocks</h3><span class="badge verified">Verified</span></div>
-        <p class="attack-count">Signed by an independent authority, not the detector itself.<br>✓ ${v.decisions_valid.toLocaleString()}/${v.decisions_sampled.toLocaleString()} signed decisions checked</p>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3>${overrides.length} Overrides</h3><span class="badge verified">Verified</span></div>
-        <p class="attack-count">Signed by a human reviewer, using a different key than the authority.<br>✓ ${v.overrides_valid}/${v.overrides_sampled} verified</p>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3>All Agents</h3><span class="badge ${allTokensValid ? "verified" : "gap"}">${allTokensValid ? "Enforced" : "Check failed"}</span></div>
-        <p class="attack-count">Every attack generator is bounded by a signed limit it cannot exceed.<br>✓ ${Object.values(v.agent_tokens).filter(Boolean).length}/${Object.values(v.agent_tokens).length} agent tokens verified</p>
-      </div>
-    </div>
-
-    ${
-      rt
-        ? `<h2>We also tested our own detector</h2>
-    <div class="grid cols-2">
-      <div class="card">
-        <div class="card-head"><h3>${rt.limit_probe.results.length} Thresholds Tested</h3><span class="badge verified">Signed</span></div>
-        <p class="attack-count">${rt.limit_probe.threshold_amount ? `Blocking starts at $${rt.limit_probe.threshold_amount.toLocaleString()}.` : "No single amount alone triggered a block."}</p>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3>${rt.feedback_loop.variants_tested} Evasion Attempts</h3><span class="badge verified">Signed</span></div>
-        <p class="attack-count">${rt.feedback_loop.variants_evaded} of them got past the detector. We're showing that number, not hiding it.</p>
-      </div>
-    </div>`
-        : ""
-    }
-
-    <h2>Why this matters</h2>
-    <div class="honest-box">
-      <p class="explain-text" style="margin-top:0">When we block fraud, an authority outside the detector signs that decision with a private key nothing else touches. Anyone can check the signature is real. If we were just claiming it happened, without actually signing it, the signature simply wouldn't exist.</p>
-    </div>
-
-    <h2>How one real decision became official</h2>
-    <div class="card">
-      <div class="flow-steps">
-        <div class="flow-step"><span class="flow-num">1</span><div><b>Detector:</b> "Transaction ${esc(sample.decision.transaction_id)} scores ${(sample.decision.fraud_score * 100).toFixed(1)}% fraud."</div></div>
-        <div class="flow-step"><span class="flow-num">2</span><div><b>Authority:</b> "Confirmed, this matches ${esc(sample.decision.decision)} criteria."</div></div>
-        <div class="flow-step"><span class="flow-num">3</span><div><b>Authority:</b> signs the decision with its own key, one it never shares.</div></div>
-        <div class="flow-step"><span class="flow-num">4</span><div><b>Record:</b> "${esc(sample.decision.transaction_id)} ${esc(sample.decision.decision)}. Signature verified: yes."</div></div>
-      </div>
-    </div>
-
-    <button class="action" id="sig-btn">See Sample Signature</button>
-    <div class="reveal-panel" id="sig-panel" style="display:none"></div>
-  `;
-
-  document.getElementById("sig-btn").addEventListener("click", (e) => {
-    const panel = document.getElementById("sig-panel");
-    if (panel.style.display !== "none") {
-      panel.style.display = "none";
-      e.target.textContent = "See Sample Signature";
-      return;
-    }
-    panel.style.display = "block";
-    e.target.textContent = "Hide Sample Signature";
-    const d = sample.decision;
-    panel.innerHTML = `
-      <div class="sig-card">
-        <div class="row"><span>Transaction</span><span>${esc(d.transaction_id)}</span></div>
-        <div class="row"><span>Decision</span><span>${esc(d.decision)}</span></div>
-        <div class="row"><span>Risk score</span><span>${(d.fraud_score * 100).toFixed(1)}%</span></div>
-        <div class="row"><span>Signed by</span><span>${esc(d.signer)}</span></div>
-        <div class="row"><span>Signature</span><span class="sig-value">${esc(d.signature.slice(0, 64))}&hellip;</span></div>
-      </div>`;
-  });
-}
-
-/* ---------------------------------------------------------------- */
-/* Tab: API Activity                                                  */
-/* ---------------------------------------------------------------- */
-function _apiCallCardHTML(c, i) {
-  const time = new Date(c.timestamp).toLocaleTimeString();
-  return `
-    <div class="card api-call-card">
-      <div class="card-head">
-        <h3>${esc(c.purpose)}</h3>
-        <span class="badge verified">${esc(c.model)}</span>
-      </div>
-      <div class="api-call-meta">
-        <span>${time}</span>
-        <span>${c.prompt_tokens} in + ${c.completion_tokens} out = ${c.total_tokens} tokens</span>
-        <span>$${c.cost_usd.toFixed(5)}</span>
-        <span>${c.latency_ms.toLocaleString()}ms</span>
-      </div>
-      <button class="action secondary" id="api-toggle-${i}">Show prompt and response ▾</button>
-      <pre class="code-block" id="api-detail-${i}" style="display:none">Prompt sent:
-${esc(c.prompt_preview)}${c.prompt_preview.length >= 300 ? "…" : ""}
-
-Response received:
-${esc(c.response_preview)}${c.response_preview.length >= 300 ? "…" : ""}</pre>
-    </div>`;
-}
-
-function _wireApiToggle(i) {
-  document.getElementById(`api-toggle-${i}`).addEventListener("click", (e) => {
-    const pre = document.getElementById(`api-detail-${i}`);
-    const showing = pre.style.display !== "none";
-    pre.style.display = showing ? "none" : "block";
-    e.target.textContent = showing ? "Show prompt and response ▾" : "Hide prompt and response ▴";
-  });
-}
-
-function renderApiActivity(app) {
-  const aa = DASH.api_activity;
-  if (!aa || aa.calls.length === 0) {
-    app.innerHTML = `
-      <p class="eyebrow">API activity</p>
-      <h1>No API calls recorded yet</h1>
-      <p class="page-intro">Run <code>python run_simulation.py</code> with an OpenAI key set in <code>.env</code> to generate this log.</p>`;
-    return;
+  const panels = {};
+  for (const name of Object.keys(RENDERERS)) {
+    panels[name] = RENDERERS[name](data);
   }
-  const chronological = aa.calls.slice();
-  const m = DASH.detector.metrics;
-  const totalAttacks = DASH.simulation.fraud_transaction_count;
-  const caught = (m.fraud_caught_rate * 100).toFixed(2);
-  const missed = (m.fraud_missed_rate * 100).toFixed(2);
-  const fpr = (m.false_positive_rate * 100).toFixed(2);
+  panels.walkthrough = renderWalkthrough(data, scenarios);
+  panels["live-test"] = renderLiveTest(data, customersData);
 
-  app.innerHTML = `
-    <p class="eyebrow">API activity</p>
-    <h1>Real attacks, caught by a real detector</h1>
-    <p class="page-intro">These numbers are from an actual run, not a mockup. Below them is the evidence: a real log of every AI call the pipeline made to generate this data, not a live call happening in your browser (an API key should never sit in a page anyone could open dev tools on), a record of what actually happened, timestamps, token counts, and cost, straight from OpenAI's own response to each call.</p>
+  const order = ["overview", "attacks", "walkthrough", "detect", "mandate", "live-test", "proof", "faq"];
+  const DEFAULT_TAB = "live-test";
+  app.innerHTML = order
+    .map((name) => `<div class="panel${name === DEFAULT_TAB ? " active" : ""}" data-panel="${name}">${panels[name]}</div>`)
+    .join("");
 
-    <div class="stat-tiles">
-      <div class="stat-tile"><div class="value neutral">${totalAttacks.toLocaleString()}</div><div class="label">Total attacks</div></div>
-      <div class="stat-tile"><div class="value good">${caught}%</div><div class="label">Fraud caught</div></div>
-      <div class="stat-tile"><div class="value bad">${missed}%</div><div class="label">Fraud missed</div></div>
-      <div class="stat-tile"><div class="value bad">${fpr}%</div><div class="label">False positive rate</div></div>
-    </div>
+  wireWalkthrough(scenarios);
+  wireLiveTest();
 
-    ${_distributionSectionHTML()}
-
-    <h2>Real API call log</h2>
-    <p class="page-intro" style="margin-bottom:1rem">${aa.summary.total_calls} real calls, ${aa.summary.total_tokens.toLocaleString()} tokens, $${aa.summary.total_cost_usd.toFixed(4)} total, ${aa.summary.avg_latency_ms.toLocaleString()}ms average latency. Click Replay to watch this same real log fill back in.</p>
-
-    <button class="action" id="replay-btn">▶ Replay</button>
-    <span id="replay-status" class="attack-count" style="margin-left:0.9rem"></span>
-
-    <div class="grid" style="gap:0.75rem; margin-top:1.25rem" id="api-call-log">
-      ${aa.calls
-        .slice()
-        .reverse()
-        .map((c, i) => _apiCallCardHTML(c, i))
-        .join("")}
-    </div>
-  `;
-
-  aa.calls.forEach((_, i) => _wireApiToggle(i));
-
-  document.getElementById("replay-btn").addEventListener("click", () => _replayApiLog(chronological));
+  document.getElementById("tabs").addEventListener("click", (e) => {
+    const btn = e.target.closest(".tab-btn");
+    if (!btn) return;
+    const tab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b === btn));
+    document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.dataset.panel === tab));
+    window.scrollTo({ top: 0, behavior: "instant" });
+  });
 }
 
-function _replayApiLog(chronological) {
-  if (_replayTimer) return;
-  const logEl = document.getElementById("api-call-log");
-  const statusEl = document.getElementById("replay-status");
-  const btn = document.getElementById("replay-btn");
-  logEl.innerHTML = "";
-  btn.disabled = true;
-
-  const step = (idx) => {
-    if (idx >= chronological.length) {
-      statusEl.textContent = `Replay complete, ${chronological.length} of ${chronological.length} calls`;
-      btn.disabled = false;
-      _replayTimer = null;
-      return;
-    }
-    const c = chronological[idx];
-    logEl.insertAdjacentHTML("afterbegin", _apiCallCardHTML(c, idx));
-    _wireApiToggle(idx);
-    statusEl.textContent = `Replaying, call ${idx + 1} of ${chronological.length}`;
-
-    _replayTimer = setTimeout(() => step(idx + 1), 500);
-  };
-
-  step(0);
-}
-
-/* ---------------------------------------------------------------- */
-/* Tab: README                                                        */
-/* ---------------------------------------------------------------- */
-function renderReadme(app) {
-  const m = DASH.detector.metrics;
-  const caught = (m.fraud_caught_rate * 100).toFixed(2);
-  const missed = (m.fraud_missed_rate * 100).toFixed(2);
-  const records = DASH.simulation.fraud_transaction_count.toLocaleString();
-  const aa = DASH.api_activity;
-
-  app.innerHTML = `
-    <p class="eyebrow">About this lab</p>
-    <h1>Mastercard AI Defense Lab</h1>
-    <p class="page-intro">Payment fraud detection where every decision, caught or missed, is signed by an authority outside the detector and can be independently verified.</p>
-
-    <h2>The problem</h2>
-    <p class="explain-text" style="margin-top:0">When a fraud detector blocks a payment, how do you know it actually happened? The detector writes its own logs. If it bugs out, gets compromised, or lies, there is no independent way to verify the decision was real.</p>
-
-    <h2>The solution</h2>
-    <p class="explain-text" style="margin-top:0">Move authority outside the system. When the detector blocks fraud, an authority outside it signs that decision with a key nothing else touches. Anyone can verify the signature is real, that's proof, not a claim.</p>
-
-    <h2>What's real here</h2>
-    <div class="honest-box">
-      <ul>
-        <li>${records} attack records generated by 7 agents, each bounded by a signed limit</li>
-        <li>${caught}% of attacks caught, ${missed}% missed, and we explain why on the Detection Results tab</li>
-        <li>${aa ? aa.summary.total_calls : 0} real AI calls made this run, logged on the API Activity tab with real cost and latency, not mocked</li>
-        <li>Every signed decision independently verified, shown on the Proof tab</li>
-      </ul>
-    </div>
-
-    ${_distributionSectionHTML()}
-
-    <h2>How to reproduce this</h2>
-    <div class="card">
-      <pre class="code-block" style="margin-top:0">pip install -r requirements.txt
-cp .env.example .env   # add your own OPENAI_API_KEY
-
-cd src
-python run_simulation.py
-python check_results.py
-python probe_detector.py
-python generate_docx.py
-python -m http.server 8000 -d ../web</pre>
-    </div>
-
-    <h2>Where to look</h2>
-    <div class="grid cols-2">
-      <div class="card"><div class="card-head"><h3>API Activity</h3></div><p class="attack-count">Real, logged AI calls, replayable, never a live key in the page.</p></div>
-      <div class="card"><div class="card-head"><h3>Attacks</h3></div><p class="attack-count">The 7 fraud techniques, plain English, real generated counts.</p></div>
-      <div class="card"><div class="card-head"><h3>Simulation</h3></div><p class="attack-count">Total records generated, broken down by attack type, with real sample data.</p></div>
-      <div class="card"><div class="card-head"><h3>Detection Results</h3></div><p class="attack-count">Caught versus missed, and the honest, real reasons why.</p></div>
-      <div class="card"><div class="card-head"><h3>Governance</h3></div><p class="attack-count">The deterministic Mandate Engine, the decision matrix, and why only ALLOW + ALLOW executes.</p></div>
-      <div class="card"><div class="card-head"><h3>Proof</h3></div><p class="attack-count">Every signed decision, override, and agent limit, independently checked.</p></div>
-    </div>
-
-    <h2>Why this matters</h2>
-    <p class="explain-text" style="margin-top:0">You can't prevent all fraud. You can make all of it verifiable. That's the property this lab demonstrates: not a perfect detector, a governed one.</p>
-  `;
-}
-
-boot();
+main();
