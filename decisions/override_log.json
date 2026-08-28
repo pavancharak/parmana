@@ -6,10 +6,10 @@
     "new_decision": "BLOCK",
     "reviewer_name": "reviewer_j.alvarez",
     "justification": "Manual review confirmed fraud pattern consistent with stolen-card testing; escalating from FLAG to BLOCK.",
-    "record_id": "75d30c91-2dd7-4161-9506-21715ec6374a",
-    "signed_at": 1787478124.679212,
+    "record_id": "419b9205-6161-4ffa-be50-b16f83c73b96",
+    "signed_at": 1787935279.846568,
     "signer": "reviewer",
-    "signature": "d2da48c6f52857b094fbf91a2fab270d4f3e852a4a40847bb2e8376093c1f52e3de813d7faf8a913e41bebdbe5e0358623114525d303dc2dceee8d3f54da9200"
+    "signature": "776e5723cb9df8554271a4e906eb1896587d887e69687557a28c2f44b8daeb053287a573bc306e95a3ea132e7ab5a8d1ea7777a011e3c2548135f68175275109"
   },
   {
     "record_type": "override",
@@ -18,10 +18,10 @@
     "new_decision": "ALLOW",
     "reviewer_name": "reviewer_m.osei",
     "justification": "Customer verified by phone; recurring purchase from a new but legitimate device. Releasing transaction.",
-    "record_id": "c1d4a798-7d51-45da-8182-bde45b2875cb",
-    "signed_at": 1787478124.6793694,
+    "record_id": "b798c2f7-42d2-4add-ac83-9e7e445f70b8",
+    "signed_at": 1787935279.8466322,
     "signer": "reviewer",
-    "signature": "f219e5d43b895be0ecbe5bad1e0f8b4ac6589d4d3984752f36d494efd7eaf90f8c4705c06bd515655a4d298606d61726a0fcbc95c4701dc1bbcecbf9b4a04e0c"
+    "signature": "6b6f40b49e1dd1b15bb831ccbccdb2fd4745a10b50a7496381d690e21cae131a03aea4565710b90f2bdf09a46bd28a4bd28c71ec5fe78c4a4e03f1cc988b8602"
   },
   {
     "record_type": "override",
@@ -30,9 +30,9 @@
     "new_decision": "BLOCK",
     "reviewer_name": "monitoring_system_v2",
     "justification": "Post-hoc monitoring flagged this transaction as part of a fraud ring identified after the fact; retroactively blocking related funds movement.",
-    "record_id": "6b2ef5a5-9f94-42fa-a63d-4d5225d79a7a",
-    "signed_at": 1787478124.679477,
+    "record_id": "854e524e-02da-4e61-8a34-947058d81d80",
+    "signed_at": 1787935279.8466842,
     "signer": "reviewer",
-    "signature": "fedea102749dbcf3a1946677c8a524f37d3318ee2fbbefd88636e89e77504df28ff7b0a5702f626b11c15d3f07366213b07ffd40060e6c931065de50ef04da05"
+    "signature": "3890e46a0e18603f12d23bba272fc9bbb3b0d541b46c60d4a9862b0cea4e796261381fdd5ec525177d4d5642241dc5d568d46c3b6a88f3b329381a6033e55c09"
   }
 ]

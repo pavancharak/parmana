@@ -42,6 +42,12 @@ python generate_docx.py
 python -m http.server 8000 -d ../web
 ```
 
+To run the Mandate Engine / governance test suite (from the repo root, not `src/`):
+
+```
+python -m pytest tests/ -v
+```
+
 Open `http://localhost:8000`. `generate_docx.py` writes `Parmana.docx` in the project root, a short written walkthrough with the same real numbers.
 
 Snapshots:
@@ -76,6 +82,8 @@ The dashboard opens on API Activity by design, that's the proof this is real, no
 **Simulation:** we generated 793 real examples of them, roughly 175 per attack type.
 
 **Detection Results:** our detector caught 92.44%, missed 7.56%, here's why.
+
+**Governance:** the detector's ALLOW isn't the last word, a second, independent, deterministic layer has to agree, and an authority signature has to verify, before anything executes.
 
 **Proof:** every block decision is signed by an authority outside the detector. You can verify it.
 
@@ -147,6 +155,49 @@ With that governance in place: the 7.56% that slipped through is signed and logg
 
 The missed attacks aren't a failure to hide. They're proof that the governance layer works even when the detector doesn't.
 
+## Governance Architecture: the detector alone doesn't get to execute
+
+**AI can assess risk, but execution requires independent deterministic mandate approval + authority authorization.**
+
+Everything above is the detector: a RandomForest that scores behavior and gets signed for what it decided. That's necessary but not sufficient, a detector is still one opinion, trained on one dataset, that could be wrong, retrained badly, or compromised. So a second, independent layer sits between "the detector thinks this is fine" and "money moves":
+
+- **Detection layer** (`src/fraud_detector.py`): the RandomForest, scored ALLOW / FLAG / BLOCK based on fraud risk, as described above.
+- **Mandate layer** (`src/policy_engine.py`): a deterministic policy engine, evaluated completely independently of the detector. No ML, no network calls, no randomness, and it doesn't use any signal the detector uses either, it checks business policy (transaction amount ceiling, allowed currencies, merchant blocklist, an approval threshold), not fraud behavior. Same transaction, same policy snapshot, in ten runs: bit-identical decision every time. Its output is `ALLOW`, `BLOCK`, or `REQUIRES_APPROVAL`, each tagged with the exact policy version and a SHA-256 hash of the policy snapshot that produced it.
+- **Decision Combiner** (`src/decision_combiner.py`): merges the two into one verdict. Fail-closed: the more restrictive input always wins.
+  ```
+  Detection ALLOW + Mandate ALLOW              -> EXECUTE
+  Detection FLAG or Mandate REQUIRES_APPROVAL  -> NO_EXECUTION (held for human review)
+  Detection BLOCK or Mandate BLOCK             -> BLOCK
+  ```
+  Only ALLOW + ALLOW executes. Anything else holds or blocks.
+- **Authority signature**: the combined verdict, and the mandate decision behind it, are each signed by the same outside AUTHORITY key that signs detection decisions (`authority_signer.sign_mandate_decision`, `authority_signer.sign_combined_decision`). Nothing downstream trusts an unsigned label.
+- **Execution Gate** (`src/execution_gate.py`): the only place in this codebase allowed to set `execution_performed = True`. It requires both `final_decision == EXECUTE` *and* a verifying authority signature on that exact signed record. A tampered record claiming EXECUTE without a matching signature is refused, `tests/test_critical_invariant.py` proves this directly by forging one and checking the gate still holds.
+
+Run `python check_results.py` and this is step 4 of 6, it writes `decisions/mandate_decisions.json` (every mandate decision, combined verdict, and execution evidence, all signed) and folds a `governance` section into `web/data/dashboard.json`.
+
+**From the run these numbers come from:** 581 signed detector decisions -> mandate engine independently evaluated all 581 -> 548 ALLOW, 21 BLOCK, 12 REQUIRES_APPROVAL -> final verdicts: 334 EXECUTE, 194 BLOCK, 53 NO_EXECUTION. Every mandate decision (581/581) and every combined verdict (581/581) verified against the authority's public key. `execution_gate_fail_closed` held on all 581: `execution_performed` was `True` if and only if `final_decision == EXECUTE`, no exceptions.
+
+**Honest note on this run's overlap:** the 21 transactions the mandate blocked were all already detector BLOCKs in this run, currency isn't even a feature the RandomForest sees (see the `FEATURES` list in `fraud_detector.py`), but the injection-style attacks that produced non-standard currency values in this dataset were loud enough on other signals (amount, pattern similarity) that the detector caught them too. We're not going to manufacture a policy that artificially disagrees with the detector just to make a more dramatic chart. `tests/test_critical_invariant.py` demonstrates the disagreement case directly and unambiguously with a constructed transaction (detector ALLOW, mandate BLOCK on an amount that exceeds policy), because that's the case that matters for the invariant, and real data won't always hand you one.
+
+### Agent authorization vs. transaction mandate
+
+Two different things are governed here, and they're kept separate on purpose:
+
+- **Agent authorization** (`tokens/*_auth_token.json`, issued by `authority_signer.issue_agent_token`): what an *attack-simulation agent* is permitted to do, bounded by a signed operation ceiling it cannot exceed.
+- **Transaction mandate** (`decisions/mandate_decisions.json`, issued by `policy_engine.evaluate` + `authority_signer.sign_mandate_decision`): what a *transaction* is permitted to do under deterministic business policy, independent of who or what generated it.
+
+An agent being authorized to act doesn't mean a transaction it produces gets to execute, that's a separate, independent gate.
+
+Re-verify every mandate and combined-decision signature independently, any time, with:
+
+```
+python src/verify_decisions.py decisions/mandate_decisions.json
+```
+
+### Test suite
+
+`tests/` (`pip install -r requirements.txt`, then `python -m pytest tests/ -v` from the repo root) covers the mandate engine's decision rules and fail-closed behavior, the combiner's full decision matrix, and the critical invariant end to end through real Ed25519 signatures: detector ALLOW + mandate BLOCK -> execution not performed, and a forged EXECUTE claim without a valid signature is refused.
+
 ## For the judges
 
 This demonstrates a solution to a real problem: how do you govern AI driven fraud detection?
@@ -182,20 +233,26 @@ requirements.txt
 
 src/
   run_simulation.py     Phase 1: runs Agents 1, 2, 4, 5, 6
-  check_results.py      Phase 2: trains the detector, signs decisions
+  check_results.py      Phase 2: trains the detector, signs decisions, runs the mandate pipeline
   probe_detector.py     Phase 3: runs Agents 3 and 7 against the trained model
   generate_docx.py      builds Parmana.docx from the same real data
   fraud_agents.py       all 7 agent classes
   fraud_detector.py     the RandomForest classifier and scoring logic
   authority_signer.py   Ed25519 signing and verification
+  policy_engine.py      deterministic Mandate Engine, independent of the detector
+  decision_combiner.py  merges detection + mandate into one fail-closed verdict
+  execution_gate.py     the only place execution_performed can become True
+  verify_decisions.py   standalone CLI: re-verify every mandate/combined signature
   llm_client.py         OpenAI wrapper, real cost and call logging
   data_generator.py     the legitimate transaction population
 
+policy/                 the mandate policy snapshot (mandate_policy.json)
 data/                   generated transactions and agent outputs (tracked, regenerable)
-decisions/              signed block decisions, overrides, and the red team report
+decisions/              signed block decisions, mandate decisions, overrides, and the red team report
 tokens/                 signed authorization tokens, execution logs, and public keys
 docs/                   the deeper technical writeup (attacks.md, how_it_works.txt)
 web/                    the dashboard (index.html, script.js, style.css, data/dashboard.json)
+tests/                  pytest suite for the Mandate Engine, combiner, and the critical invariant
 ```
 
 Not tracked in git: `.env` (your API key), `models/` (the trained model file, regenerated by `check_results.py`), and `tokens/keys/` (the authority's and reviewer's private signing keys, regenerated on first run).

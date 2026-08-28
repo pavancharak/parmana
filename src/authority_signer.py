@@ -155,6 +155,30 @@ def sign_block_decision(transaction_id: str, score: float, decision: str, reason
     )
 
 
+def sign_mandate_decision(mandate_result: dict) -> dict:
+    """AUTHORITY signs the Mandate Engine's deterministic policy decision.
+    Same pattern as sign_block_decision: the policy engine proposes, only
+    the authority's signature makes it official."""
+    return AUTHORITY.sign_record(dict(mandate_result))
+
+
+def sign_combined_decision(transaction_id: str, final_decision: str, detection_decision: str, mandate_decision: str, reason: str) -> dict:
+    """AUTHORITY signs the final EXECUTE/BLOCK/NO_EXECUTION verdict. This
+    is the 'authority signature' half of the governance invariant:
+    execution_gate refuses to execute anything without this exact signed
+    record verifying."""
+    return AUTHORITY.sign_record(
+        {
+            "record_type": "combined_decision",
+            "transaction_id": transaction_id,
+            "final_decision": final_decision,
+            "detection_decision": detection_decision,
+            "mandate_decision": mandate_decision,
+            "reason": reason,
+        }
+    )
+
+
 def sign_override(transaction_id: str, original_decision: str, new_decision: str, reviewer_name: str, justification: str) -> dict:
     """REVIEWER (a human, not the detector) signs an override. Uses a
     DIFFERENT key than AUTHORITY, so an override can never be confused

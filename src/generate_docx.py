@@ -82,6 +82,7 @@ def build():
     m = det["metrics"]
     v = dashboard["verification"]
     rt = dashboard.get("redteam")
+    gov = dashboard.get("governance")
 
     caught = m["fraud_caught_rate"] * 100
     missed = m["fraud_missed_rate"] * 100
@@ -160,7 +161,56 @@ def build():
     doc.add_paragraph().paragraph_format.space_after = Pt(6)
     add_body(doc, "All numbers above are from one real run. Nothing is rounded up or selectively reported.", italic=True, color=DIM, size=10)
 
-    add_heading(doc, "5. The Parmana Innovation")
+    if gov:
+        add_heading(doc, "5. The Governance Layer: The Detector Doesn't Get the Last Word")
+        add_body(
+            doc,
+            "AI can assess transaction risk, but execution requires independent, deterministic mandate "
+            "approval and cryptographic authority authorization. Detection alone is one opinion, trained "
+            "on one dataset, that could be wrong, retrained badly, or compromised. So a second layer sits "
+            "between “the detector thinks this is fine” and “money moves”.",
+        )
+        add_bullet(doc, "Mandate Engine (src/policy_engine.py): deterministic policy evaluation, no ML, no network calls, no randomness. Same transaction and policy snapshot produce the same decision every time.")
+        add_bullet(doc, "Decision Combiner (src/decision_combiner.py): fail-closed, only Detection ALLOW + Mandate ALLOW can execute. Any BLOCK from either side blocks; a FLAG or REQUIRES_APPROVAL holds for human review.")
+        add_bullet(doc, "Authority signature: the mandate decision and the combined verdict are each signed by the same outside authority key that signs detector decisions.")
+        add_bullet(doc, "Execution Gate (src/execution_gate.py): the only place execution_performed can become true, and only if the final decision is EXECUTE and the authority signature on that exact record verifies. A forged claim without a matching signature is refused.")
+
+        counts = gov["final_decision_counts"]
+        total_gov = counts["EXECUTE"] + counts["BLOCK"] + counts["NO_EXECUTION"]
+        add_body(doc, f"From this run: {total_gov:,} signed detector decisions were independently evaluated by the mandate engine.")
+        gtable = doc.add_table(rows=1, cols=2)
+        gtable.style = "Light Grid Accent 1"
+        ghdr = gtable.rows[0].cells
+        ghdr[0].text = "Final verdict"
+        ghdr[1].text = "Count"
+        for label, value in [
+            ("Executed (Detection ALLOW + Mandate ALLOW)", f"{counts['EXECUTE']:,}"),
+            ("Blocked (Detection or Mandate BLOCK)", f"{counts['BLOCK']:,}"),
+            ("Held for human review (FLAG or REQUIRES_APPROVAL)", f"{counts['NO_EXECUTION']:,}"),
+        ]:
+            row = gtable.add_row().cells
+            row[0].text = label
+            row[1].text = value
+        doc.add_paragraph().paragraph_format.space_after = Pt(6)
+        add_body(
+            doc,
+            "Every mandate decision and every combined verdict from this run verified against the "
+            "authority's public key, and the execution gate never set execution_performed to true except "
+            "when the final decision was EXECUTE, checked directly against the run's own output, not "
+            "asserted.",
+            italic=True, color=DIM, size=10,
+        )
+        add_body(
+            doc,
+            "Honest note: the transactions the mandate blocked in this run were already caught by the "
+            "detector too. Currency is not a signal the detector's model sees at all, but the "
+            "injection-style attacks that produced invalid currency values in this dataset were loud "
+            "enough on other signals to get caught regardless. That is a property of this run's data, not "
+            "a guarantee; tests/test_critical_invariant.py proves the disagreement case directly with a "
+            "constructed transaction where the detector allows and the mandate blocks.",
+        )
+
+    add_heading(doc, "6. The Parmana Innovation")
     add_body(
         doc,
         "Standard fraud detection tries to make the detector perfect, and loses ground every time an "
@@ -177,7 +227,7 @@ def build():
         "are signed and logged, the same as every blocked transaction.",
     )
 
-    add_heading(doc, "6. Why This Matters")
+    add_heading(doc, "7. Why This Matters")
     add_body(
         doc,
         "For a payments network, the question is never whether a detector will miss something, it will. "
@@ -192,7 +242,7 @@ def build():
         "governance property, not just a detection accuracy number.",
     )
 
-    add_heading(doc, "7. How to Verify")
+    add_heading(doc, "8. How to Verify")
     add_body(doc, "Three commands reproduce everything in this document from scratch:")
     mono = doc.add_paragraph()
     mono.paragraph_format.left_indent = Inches(0.3)
@@ -202,13 +252,15 @@ def build():
         r.font.size = Pt(10)
     add_body(
         doc,
-        "Then open the web dashboard for the visual walkthrough, or open decisions/block_decisions.json "
-        "and tokens/authority_public_key.pem directly to check any individual signature by hand. "
-        "data/api_call_log.json holds a real record of every AI call made during the run, timestamps, "
-        "token counts, and cost, straight from the API's own response, not a claim.",
+        "Then open the web dashboard for the visual walkthrough, or open decisions/block_decisions.json, "
+        "decisions/mandate_decisions.json, and tokens/authority_public_key.pem directly to check any "
+        "individual signature by hand, or run python verify_decisions.py to check every mandate and "
+        "combined-decision signature in one pass. data/api_call_log.json holds a real record of every AI "
+        "call made during the run, timestamps, token counts, and cost, straight from the API's own "
+        "response, not a claim.",
     )
 
-    add_heading(doc, "8. Closing")
+    add_heading(doc, "9. Closing")
     add_body(
         doc,
         "This is not a claim that fraud can be eliminated. It is a working system where every claim, "

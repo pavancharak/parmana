@@ -1,0 +1,8 @@
+{
+  "policy_id": "parmana-mandate-v1",
+  "policy_version": "1",
+  "max_transaction_amount": 5000,
+  "allowed_currencies": ["USD", "EUR", "GBP", "INR", "JPY"],
+  "blocked_merchants": [],
+  "require_approval_above": 500
+}

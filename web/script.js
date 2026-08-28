@@ -91,6 +91,7 @@ function render(tab) {
   if (tab === "attacks") return renderAttacks(app);
   if (tab === "simulation") return renderSimulation(app);
   if (tab === "detection") return renderDetection(app);
+  if (tab === "governance") return renderGovernance(app);
   if (tab === "proof") return renderProof(app);
   if (tab === "readme") return renderReadme(app);
 }
@@ -316,6 +317,119 @@ function renderDetection(app) {
       <div class="card">
         <table class="simple-table">
           <thead><tr><th>Attack type</th><th style="text-align:right">Amount</th><th>Merchant</th><th>Risk score</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  });
+}
+
+/* ---------------------------------------------------------------- */
+/* Tab: Governance                                                     */
+/* ---------------------------------------------------------------- */
+const FINAL_BADGE_CLASS = { EXECUTE: "allow", BLOCK: "block", NO_EXECUTION: "flag" };
+const FINAL_LABEL = { EXECUTE: "Executed", BLOCK: "Blocked", NO_EXECUTION: "Held for review" };
+const MANDATE_BADGE_CLASS = { ALLOW: "allow", BLOCK: "block", REQUIRES_APPROVAL: "flag" };
+
+function renderGovernance(app) {
+  const gov = DASH.governance;
+  if (!gov) {
+    app.innerHTML = `
+      <p class="eyebrow">Governance & execution</p>
+      <h1>No governance data yet</h1>
+      <p class="page-intro">Run <code>python check_results.py</code> to generate decisions/mandate_decisions.json and this section.</p>`;
+    return;
+  }
+  const counts = gov.final_decision_counts;
+  const total = counts.EXECUTE + counts.BLOCK + counts.NO_EXECUTION;
+  const pct = (n) => (total ? (n / total) * 100 : 0);
+  const policy = gov.policy;
+
+  app.innerHTML = `
+    <p class="eyebrow">Governance & execution</p>
+    <h1>The detector doesn't get the last word</h1>
+    <p class="page-intro">A second, independent, deterministic layer, the Mandate Engine, evaluates every transaction against business policy with no ML and no randomness. Only Detection ALLOW + Mandate ALLOW, backed by a verified authority signature, can execute.</p>
+
+    <div class="stat-tiles">
+      <div class="stat-tile"><div class="value good">${counts.EXECUTE.toLocaleString()}</div><div class="label">Executed</div></div>
+      <div class="stat-tile"><div class="value bad">${counts.BLOCK.toLocaleString()}</div><div class="label">Blocked</div></div>
+      <div class="stat-tile"><div class="value neutral">${counts.NO_EXECUTION.toLocaleString()}</div><div class="label">Held for human review</div></div>
+    </div>
+
+    <h2>Final verdicts</h2>
+    <div class="card">
+      <div class="split-bar">
+        <div class="seg" style="width:${pct(counts.EXECUTE)}%;background:var(--success)">${counts.EXECUTE}</div>
+        <div class="seg" style="width:${pct(counts.BLOCK)}%;background:var(--risk)">${counts.BLOCK}</div>
+        <div class="seg" style="width:${pct(counts.NO_EXECUTION)}%;background:var(--warning)">${counts.NO_EXECUTION}</div>
+      </div>
+      <div class="split-legend">
+        <span><span class="dot" style="background:var(--success)"></span>Executed</span>
+        <span><span class="dot" style="background:var(--risk)"></span>Blocked</span>
+        <span><span class="dot" style="background:var(--warning)"></span>Held for review</span>
+      </div>
+    </div>
+
+    <h2>The policy behind every decision</h2>
+    <div class="card">
+      <table class="simple-table">
+        <tbody>
+          <tr><td>Policy</td><td class="num">${esc(policy.policy_id)} v${esc(policy.policy_version)}</td></tr>
+          <tr><td>Max transaction amount</td><td class="num">$${policy.max_transaction_amount.toLocaleString()}</td></tr>
+          <tr><td>Allowed currencies</td><td class="num">${policy.allowed_currencies.join(", ")}</td></tr>
+          <tr><td>Blocked merchants</td><td class="num">${policy.blocked_merchants.length ? policy.blocked_merchants.join(", ") : "none"}</td></tr>
+          <tr><td>Requires human approval above</td><td class="num">$${policy.require_approval_above.toLocaleString()}</td></tr>
+        </tbody>
+      </table>
+      <p class="attack-count" style="margin-top:0.9rem">Policy hash: <span class="sig-value">${esc(gov.policy_hash)}</span></p>
+    </div>
+
+    <h2>How a transaction earns execution</h2>
+    <div class="card">
+      <div class="flow-steps">
+        <div class="flow-step"><span class="flow-num">1</span><div><b>Detector:</b> proposes ALLOW, FLAG, or BLOCK based on fraud risk.</div></div>
+        <div class="flow-step"><span class="flow-num">2</span><div><b>Mandate Engine:</b> independently evaluates the same transaction against business policy, no shared code with the detector, no randomness, same input always gives the same output.</div></div>
+        <div class="flow-step"><span class="flow-num">3</span><div><b>Authority:</b> signs the mandate decision and the combined verdict, each with its own Ed25519 signature.</div></div>
+        <div class="flow-step"><span class="flow-num">4</span><div><b>Execution gate:</b> only sets execution_performed = true if final_decision is EXECUTE *and* the authority signature on that exact record verifies. Anything else, including a forged claim, is refused.</div></div>
+      </div>
+    </div>
+
+    <div class="honest-box" style="margin-top:1.75rem">
+      <h3>Honest note on this run</h3>
+      <p style="margin:0;color:var(--text-dim)">The transactions the mandate blocked were already caught by the detector in this run, currency isn't even a signal the detector's model sees, but the injection-style attacks that produced invalid currency values here were loud enough on other signals to get caught anyway. That's a property of this dataset, not a guarantee. The critical-invariant test in <code>tests/test_critical_invariant.py</code> proves the disagreement case directly: detector ALLOW, mandate BLOCK, execution refused.</p>
+    </div>
+
+    <button class="action" id="mandate-btn">View Sample Mandate Records</button>
+    <div class="reveal-panel" id="mandate-panel" style="display:none"></div>
+  `;
+
+  document.getElementById("mandate-btn").addEventListener("click", (e) => {
+    const panel = document.getElementById("mandate-panel");
+    if (panel.style.display !== "none") {
+      panel.style.display = "none";
+      e.target.textContent = "View Sample Mandate Records";
+      return;
+    }
+    panel.style.display = "block";
+    e.target.textContent = "Hide Sample Mandate Records";
+    const rows = gov.sample_mandate_records
+      .slice(0, 10)
+      .map((r) => {
+        const md = r.mandate_decision;
+        const cd = r.combined_decision;
+        const ev = r.execution_evidence;
+        return `<tr>
+          <td>${esc(r.transaction_id)}</td>
+          <td><span class="badge ${MANDATE_BADGE_CLASS[md.decision] || "gap"}">${esc(md.decision)}</span></td>
+          <td>${esc(md.reason_codes.join(", ") || "-")}</td>
+          <td><span class="badge ${FINAL_BADGE_CLASS[cd.final_decision] || "gap"}">${esc(FINAL_LABEL[cd.final_decision] || cd.final_decision)}</span></td>
+          <td>${ev.execution_performed ? "yes" : "no"}</td>
+        </tr>`;
+      })
+      .join("");
+    panel.innerHTML = `
+      <div class="card">
+        <table class="simple-table">
+          <thead><tr><th>Transaction</th><th>Mandate</th><th>Reason codes</th><th>Final</th><th>Executed</th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
       </div>`;
@@ -572,6 +686,7 @@ python -m http.server 8000 -d ../web</pre>
       <div class="card"><div class="card-head"><h3>Attacks</h3></div><p class="attack-count">The 7 fraud techniques, plain English, real generated counts.</p></div>
       <div class="card"><div class="card-head"><h3>Simulation</h3></div><p class="attack-count">Total records generated, broken down by attack type, with real sample data.</p></div>
       <div class="card"><div class="card-head"><h3>Detection Results</h3></div><p class="attack-count">Caught versus missed, and the honest, real reasons why.</p></div>
+      <div class="card"><div class="card-head"><h3>Governance</h3></div><p class="attack-count">The deterministic Mandate Engine, the decision matrix, and why only ALLOW + ALLOW executes.</p></div>
       <div class="card"><div class="card-head"><h3>Proof</h3></div><p class="attack-count">Every signed decision, override, and agent limit, independently checked.</p></div>
     </div>
 

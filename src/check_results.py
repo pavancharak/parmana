@@ -18,8 +18,11 @@ import random
 from pathlib import Path
 
 import authority_signer as auth
+import decision_combiner
+import execution_gate
 import fraud_detector as fd
 import llm_client
+import policy_engine
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
@@ -86,7 +89,52 @@ def build_override_log(signed_decisions):
     return overrides
 
 
-def verify_everything(agent_tokens, signed_decisions, overrides):
+def run_mandate_pipeline(signed_decisions, policy):
+    """For every already-signed detection decision, independently
+    evaluate the Mandate Engine, combine the two into one final verdict,
+    have the authority sign that verdict, and run it through the
+    execution gate. Nothing here reads the detector's model or score,
+    only its ALLOW/FLAG/BLOCK output, keeping the mandate check genuinely
+    independent of fraud_detector.py."""
+    records = []
+    for entry in signed_decisions:
+        transaction = {
+            "transaction_id": entry["decision"]["transaction_id"],
+            "amount": entry["ground_truth"]["amount"],
+            "currency": entry["ground_truth"]["currency"],
+            "merchant": entry["ground_truth"]["merchant"],
+        }
+        detection_decision = entry["decision"]["decision"]
+
+        mandate_result = policy_engine.evaluate(transaction, policy)
+        signed_mandate = auth.sign_mandate_decision(mandate_result)
+
+        combined = decision_combiner.combine(detection_decision, mandate_result["decision"])
+        signed_combined = auth.sign_combined_decision(
+            transaction["transaction_id"],
+            combined["final_decision"],
+            combined["detection_decision"],
+            combined["mandate_decision"],
+            combined["reason"],
+        )
+
+        evidence = execution_gate.execute_if_approved(signed_combined)
+
+        records.append(
+            {
+                "transaction_id": transaction["transaction_id"],
+                "mandate_decision": signed_mandate,
+                "combined_decision": signed_combined,
+                "execution_evidence": evidence,
+            }
+        )
+
+    path = DECISIONS_DIR / "mandate_decisions.json"
+    path.write_text(json.dumps(records, indent=2))
+    return records
+
+
+def verify_everything(agent_tokens, signed_decisions, overrides, mandate_records=None):
     report = {"agent_tokens": {}, "decisions_sampled": 0, "decisions_valid": 0, "overrides_sampled": 0, "overrides_valid": 0}
 
     for token_path in TOKENS_DIR.glob("*_auth_token.json"):
@@ -109,6 +157,22 @@ def verify_everything(agent_tokens, signed_decisions, overrides):
         report["override_does_not_verify_as_authority"] = not auth.verify_record(dict(overrides[0]), "authority")
     if signed_decisions:
         report["decision_does_not_verify_as_reviewer"] = not auth.verify_record(dict(signed_decisions[0]["decision"]), "reviewer")
+
+    if mandate_records:
+        report["mandate_decisions_sampled"] = len(mandate_records)
+        report["mandate_decisions_valid"] = sum(
+            1 for r in mandate_records if auth.verify_record(dict(r["mandate_decision"]), "authority")
+        )
+        report["combined_decisions_sampled"] = len(mandate_records)
+        report["combined_decisions_valid"] = sum(
+            1 for r in mandate_records if auth.verify_record(dict(r["combined_decision"]), "authority")
+        )
+        # Prove the execution gate never sets execution_performed=True
+        # without final_decision == EXECUTE, on the actual run output.
+        report["execution_gate_fail_closed"] = all(
+            r["execution_evidence"]["execution_performed"] == (r["combined_decision"]["final_decision"] == "EXECUTE")
+            for r in mandate_records
+        )
 
     return report
 
@@ -134,9 +198,9 @@ def main():
     good = load("good_transactions.json")
     fraud = load("fraud_transactions.json")
     all_tx = good + fraud
-    print(f"\n[1/5] Loaded {len(good)} legitimate + {len(fraud)} fraudulent transactions ({len(all_tx)} total)")
+    print(f"\n[1/6] Loaded {len(good)} legitimate + {len(fraud)} fraudulent transactions ({len(all_tx)} total)")
 
-    print("\n[2/5] Training detector (RandomForest)...")
+    print("\n[2/6] Training detector (RandomForest)...")
     model, X_test, y_test, tx_test = fd.train(all_tx)
     fd.save_model(model)
     metrics = fd.evaluate(model, X_test, y_test)
@@ -145,22 +209,35 @@ def main():
     print(f"      top signals: {[s['feature'] for s in metrics['top_signals']]}")
     print(f"      model saved to models/detector_model.pkl for probe_detector.py (Agents 3 and 7)")
 
-    print("\n[3/5] Routing every decision to the external authority for signing...")
+    print("\n[3/6] Routing every decision to the external authority for signing...")
     signed_decisions = fd.generate_signed_decisions(model, tx_test, scores)
     counts = {"BLOCK": 0, "FLAG": 0, "ALLOW": 0}
     for e in signed_decisions:
         counts[e["decision"]["decision"]] += 1
     print(f"      -> {len(signed_decisions)} signed decisions: {counts}")
 
-    print("\n[4/5] Generating human override examples (signed by REVIEWER, not AUTHORITY)...")
+    print("\n[4/6] Independently evaluating the Mandate Engine (deterministic, no ML) against every decision...")
+    policy = policy_engine.load_policy()
+    mandate_records = run_mandate_pipeline(signed_decisions, policy)
+    final_counts = {"EXECUTE": 0, "BLOCK": 0, "NO_EXECUTION": 0}
+    for r in mandate_records:
+        final_counts[r["combined_decision"]["final_decision"]] += 1
+    executed = sum(1 for r in mandate_records if r["execution_evidence"]["execution_performed"])
+    print(f"      -> policy {policy['policy_id']} v{policy['policy_version']} ({policy_engine.policy_hash(policy)})")
+    print(f"      -> final verdicts: {final_counts}  (execution_performed=True for {executed})")
+
+    print("\n[5/6] Generating human override examples (signed by REVIEWER, not AUTHORITY)...")
     overrides = build_override_log(signed_decisions)
     print(f"      -> {len(overrides)} overrides written to decisions/override_log.json")
 
-    print("\n[5/5] Verifying every signature independently (public-key check only)...")
-    verification = verify_everything(None, signed_decisions, overrides)
+    print("\n[6/6] Verifying every signature independently (public-key check only)...")
+    verification = verify_everything(None, signed_decisions, overrides, mandate_records)
     print(f"      agent tokens valid: {verification['agent_tokens']}")
     print(f"      decisions valid: {verification['decisions_valid']}/{verification['decisions_sampled']}")
     print(f"      overrides valid: {verification['overrides_valid']}/{verification['overrides_sampled']}")
+    print(f"      mandate decisions valid: {verification['mandate_decisions_valid']}/{verification['mandate_decisions_sampled']}")
+    print(f"      combined decisions valid: {verification['combined_decisions_valid']}/{verification['combined_decisions_sampled']}")
+    print(f"      execution gate fail-closed on this run: {verification['execution_gate_fail_closed']}")
     print(f"      key separation holds: override_does_not_verify_as_authority={verification.get('override_does_not_verify_as_authority')}, "
           f"decision_does_not_verify_as_reviewer={verification.get('decision_does_not_verify_as_reviewer')}")
 
@@ -196,6 +273,13 @@ def main():
         },
         "overrides": overrides,
         "verification": verification,
+        "governance": {
+            "policy": policy,
+            "policy_hash": policy_engine.policy_hash(policy),
+            "final_decision_counts": final_counts,
+            "executed_count": executed,
+            "sample_mandate_records": random.sample(mandate_records, min(30, len(mandate_records))),
+        },
     }
     (WEB_DATA_DIR / "dashboard.json").write_text(json.dumps(dashboard, indent=2))
     print("\nWrote web/data/dashboard.json. Open web/index.html (via a local server) to view the results.")
