@@ -91,8 +91,10 @@ function render(tab) {
   if (tab === "attacks") return renderAttacks(app);
   if (tab === "simulation") return renderSimulation(app);
   if (tab === "detection") return renderDetection(app);
+  if (tab === "walkthrough") return renderWalkthrough(app);
   if (tab === "governance") return renderGovernance(app);
   if (tab === "proof") return renderProof(app);
+  if (tab === "faq") return renderFAQ(app);
   if (tab === "readme") return renderReadme(app);
 }
 
@@ -322,7 +324,180 @@ function renderDetection(app) {
       </div>`;
   });
 }
+function renderWalkthrough(app) {
+  const scenarios = DASH.attack_scenarios;
 
+  if (!scenarios || !scenarios.length) {
+    app.innerHTML = `
+      <div class="section">
+        <h1>Attack walkthrough</h1>
+        <p class="error-inline">Couldn't load attack scenario data.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const buttons = scenarios
+    .map(
+      (s, i) => `
+        <button class="scenario-btn" data-scenario-id="${esc(s.id)}" data-index="${i}">
+          <span class="scenario-name">${esc(s.name)}</span>
+          ${badge(s.example.decision.final_decision)}
+        </button>
+      `
+    )
+    .join("");
+
+  app.innerHTML = `
+    <div class="section">
+      <h1>Attack walkthrough</h1>
+      <p>
+        Pick a real attack type below to see one actual, already signed
+        decision from this repo's own pipeline run: the detect score,
+        the mandate rules it hit, the signature, and why the final
+        decision came out the way it did.
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="scenario-picker">${buttons}</div>
+    </div>
+
+    <div class="section" id="walkthrough-detail"></div>
+  `;
+
+  const detail = document.getElementById("walkthrough-detail");
+
+  function showScenario(index) {
+    const scenario = scenarios[index];
+    if (!scenario) return;
+
+    const decision = scenario.example.decision || {};
+    const detection = scenario.example.detection || {};
+    const mandate = scenario.example.mandate || {};
+
+    detail.innerHTML = `
+      <div class="card">
+        <div class="card-head">
+          <h2>${esc(scenario.name)}</h2>
+          ${badge(decision.final_decision)}
+        </div>
+
+        <p>${esc(scenario.description || "")}</p>
+
+        <h3>Detection</h3>
+        <div class="kv-grid">
+          <div><strong>Decision</strong><span>${esc(detection.decision || "—")}</span></div>
+          <div><strong>Risk score</strong><span>${detection.risk_score ?? "—"}</span></div>
+        </div>
+
+        <h3>Mandate</h3>
+        <div class="kv-grid">
+          <div><strong>Decision</strong><span>${esc(mandate.decision || "—")}</span></div>
+          <div><strong>Reason</strong><span>${esc(mandate.reason || "—")}</span></div>
+        </div>
+
+        <h3>Signed decision</h3>
+        <div class="kv-grid">
+          <div><strong>Final decision</strong><span>${esc(decision.final_decision || "—")}</span></div>
+          <div><strong>Signature</strong><span class="mono">${esc(decision.signature || "—")}</span></div>
+        </div>
+      </div>
+    `;
+
+    document.querySelectorAll(".scenario-btn").forEach((button, i) => {
+      button.classList.toggle("active", i === index);
+    });
+  }
+
+  document.querySelectorAll(".scenario-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      showScenario(Number(button.dataset.index));
+    });
+  });
+
+  showScenario(0);
+}
+const FAQ_ITEMS = [
+  {
+    q: "What makes this different from a typical fraud detection system?",
+    a: "Most fraud tools stop at a risk score. This project adds a second, independent layer that checks the transaction against that specific customer's own history instead of a model's guess, and neither layer is treated as final until a separate authority signs the combined result. A model being confident is not the same as a transaction being authorized, and this project keeps those two ideas apart on purpose.",
+  },
+  {
+    q: "What does this system actually allow that a fraud score alone does not?",
+    a: "It lets anyone, a judge, an auditor, another system, check afterward that a specific decision was really made, by which layers, and was not silently changed. A score alone cannot prove any of that. The signature and the mandate check are what turn a model's opinion into something you can point to later.",
+  },
+  {
+    q: "Why does this fit naturally into agentic commerce?",
+    a: "When an AI agent is the one deciding whether to complete a payment, the question stops being only whether a transaction looks like fraud and becomes whether that agent was actually authorized to do it. A risk score cannot answer the second question, because it is about permission, not detection. The mandate layer checks permission against the customer's real history, and the signature makes that permission check something the agent itself cannot forge or quietly skip, since it never holds the signing key.",
+  },
+  {
+    q: "Could an AI agent fake or skip this check?",
+    a: "Not the signature. Nothing calling this pipeline, agent or otherwise, has access to the private signing key, so it cannot produce a valid signed ALLOW on its own. It could still choose not to call the pipeline at all, which is why this belongs at the point where a transaction actually executes, not as an optional step an agent can decide to skip.",
+  },
+  {
+    q: "Does this replace a human reviewer?",
+    a: "No, and it is not trying to. FLAG decisions exist for exactly the cases where neither layer is confident enough to decide alone. What this project replaces is blind trust in a single model's score, not human judgment.",
+  },
+  {
+    q: "Why is precision only 21.1%?",
+    a: "Fraud is rare, about 2% of transactions in this dataset. Catching 89.1% of a rare event requires flagging aggressively, and that lowers precision. See the Detection tab for the full breakdown.",
+  },
+  {
+    q: "Does a low precision flag mean legitimate transactions get blocked?",
+    a: "No. A detect layer flag alone does not block anything. The mandate layer also has to object before a transaction is BLOCKed.",
+  },
+  {
+    q: "Are the numbers on this dashboard real?",
+    a: "Yes. The transactions, the fraud rate, the detection metrics, and the signatures all come from this repo's own generation and pipeline code, including real OpenAI calls for several agents. Nothing here is hand authored sample data.",
+  },
+  {
+    q: "What is the difference between Attack Walkthrough and Live Test?",
+    a: "Attack Walkthrough shows five real, already signed decisions pulled from an actual past pipeline run, one per attack type. Live Test runs a brand new transaction through the real model and rule engine right now, using whatever you type in.",
+  },
+  {
+    q: "Does this system actually stop a transaction from going through?",
+    a: "No, and this project is upfront about that. It produces a signed decision, ALLOW, FLAG, or BLOCK. It does not call a payment processor or move money. Wiring a signed decision to real enforcement is a separate integration this repo does not include yet.",
+  },
+  {
+    q: "Are signed decisions stored permanently?",
+    a: "Not yet, in a durable way. Right now decisions are written to a single local file that gets overwritten on the next pipeline run. Turning that into an append only or externally stored log is a known gap, not a finished feature.",
+  },
+  {
+    q: "Who is allowed to trigger a decision or call the API?",
+    a: "There is currently no caller authentication on the pipeline or its API. Every decision is signed by the same authority identity regardless of who asked for it. This is a working prototype, not a production access control system.",
+  },
+  {
+    q: "Why does the mandate layer use a customer's own history instead of one fixed rule for everyone?",
+    a: "One fixed spending limit would be too loose for small spenders and too tight for big ones. Deriving each customer's limit, merchants, hours, and daily count from their own past good transactions makes the check specific to them.",
+  },
+  {
+    q: "What happens if I try a merchant or hour outside a customer's normal pattern?",
+    a: "The mandate layer objects on that rule even when the detection score is low. That is the point: the two layers check different things, and either one objecting is enough to block the transaction."
+  }
+];
+
+function renderFAQ(app) {
+  const items = FAQ_ITEMS.map(
+    (item) => `
+      <div class="card faq-item">
+        <h3>${esc(item.q)}</h3>
+        <p>${esc(item.a)}</p>
+      </div>
+    `
+  ).join("");
+
+  app.innerHTML = `
+    <div class="section">
+      <h1>FAQ</h1>
+      <p>The questions judges and users ask most often about this project.</p>
+    </div>
+
+    <div class="section">
+      ${items}
+    </div>
+  `;
+}
 /* ---------------------------------------------------------------- */
 /* Tab: Governance                                                     */
 /* ---------------------------------------------------------------- */
