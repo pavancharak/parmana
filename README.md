@@ -162,6 +162,10 @@ We're looking for a small number of design partners to run Parmana
 against a real integration under real constraints. If that's you, or
 you're evaluating Parmana for a role, reach out: **founder@parmanasystems.com**.
 
+Evaluating Parmana as an investor? [INVESTORS.md](INVESTORS.md) is the
+evidence-cited overview: problem, market, proof of what's actually been
+demonstrated, IP posture, and current stage.
+
 ## Support
 
 - Email: [founder@parmanasystems.com](mailto:founder@parmanasystems.com)
