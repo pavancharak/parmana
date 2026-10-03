@@ -722,13 +722,13 @@
     "links": [
       {
         "label": "GitHub",
-        "href": "https://github.com/pavancharak/AgentLabsBuildathon"
+        "href": "https://github.com/pavancharak/parmana"
       }
     ]
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/pavancharak/AgentLabsBuildathon"
+      "github": "https://github.com/pavancharak/parmana"
     }
   }
 }

@@ -2,7 +2,7 @@
 title: "Interface: Configuration"
 ---
 
-Defined in: [typescript/src/config/Configuration.ts:28](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L28)
+Defined in: [typescript/src/config/Configuration.ts:28](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L28)
 
 Immutable SDK configuration.
 
@@ -17,7 +17,7 @@ GET /openapi.yaml, and GET /documentation behind a caller bearer key
 
 > `readonly` **endpoint**: `string`
 
-Defined in: [typescript/src/config/Configuration.ts:35](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L35)
+Defined in: [typescript/src/config/Configuration.ts:35](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L35)
 
 Parmana Runtime endpoint.
 
@@ -30,7 +30,7 @@ https://runtime.example.com
 
 > `readonly` `optional` **apiKey?**: `string`
 
-Defined in: [typescript/src/config/Configuration.ts:46](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L46)
+Defined in: [typescript/src/config/Configuration.ts:46](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L46)
 
 Caller bearer key, minted by scripts/generate-api-key.ts.
 
@@ -46,7 +46,7 @@ constructed.
 
 > `readonly` `optional` **timeout?**: `number`
 
-Defined in: [typescript/src/config/Configuration.ts:54](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L54)
+Defined in: [typescript/src/config/Configuration.ts:54](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L54)
 
 Request timeout (milliseconds).
 
@@ -59,7 +59,7 @@ Default:
 
 > `readonly` `optional` **retryPolicy?**: [`RetryPolicy`](/sdks/reference/typescript/interfaces/RetryPolicy)
 
-Defined in: [typescript/src/config/Configuration.ts:59](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L59)
+Defined in: [typescript/src/config/Configuration.ts:59](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L59)
 
 Retry configuration.
 
@@ -69,7 +69,7 @@ Retry configuration.
 
 > `readonly` `optional` **transport?**: [`Transport`](/sdks/reference/typescript/interfaces/Transport)
 
-Defined in: [typescript/src/config/Configuration.ts:66](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L66)
+Defined in: [typescript/src/config/Configuration.ts:66](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L66)
 
 Transport implementation.
 
@@ -81,6 +81,6 @@ If omitted, the client builds an HttpTransport from this same configuration, so 
 
 > `readonly` `optional` **userAgent?**: `string`
 
-Defined in: [typescript/src/config/Configuration.ts:71](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/config/Configuration.ts#L71)
+Defined in: [typescript/src/config/Configuration.ts:71](https://github.com/pavancharak/parmana/blob/main/typescript/src/config/Configuration.ts#L71)
 
 Optional SDK user agent.

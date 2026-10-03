@@ -79,12 +79,12 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/pavancharak/AgentLabsBuildathon"
+Homepage = "https://github.com/pavancharak/parmana"
 Website = "https://parmanasystems.com/"
 Documentation = "https://docs.parmanasystems.com"
-Repository = "https://github.com/pavancharak/AgentLabsBuildathon"
-Issues = "https://github.com/pavancharak/AgentLabsBuildathon/issues"
-Releases = "https://github.com/pavancharak/AgentLabsBuildathon/releases"
+Repository = "https://github.com/pavancharak/parmana"
+Issues = "https://github.com/pavancharak/parmana/issues"
+Releases = "https://github.com/pavancharak/parmana/releases"
 
 [tool.setuptools]
 include-package-data = true

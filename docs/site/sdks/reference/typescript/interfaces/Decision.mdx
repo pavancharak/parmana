@@ -2,7 +2,7 @@
 title: "Interface: Decision"
 ---
 
-Defined in: [typescript/src/models/execution.ts:5](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L5)
+Defined in: [typescript/src/models/execution.ts:5](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L5)
 
 ## Properties
 
@@ -10,7 +10,7 @@ Defined in: [typescript/src/models/execution.ts:5](https://github.com/pavanchara
 
 > `readonly` **decisionId**: `string`
 
-Defined in: [typescript/src/models/execution.ts:6](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L6)
+Defined in: [typescript/src/models/execution.ts:6](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L6)
 
 ---
 
@@ -18,7 +18,7 @@ Defined in: [typescript/src/models/execution.ts:6](https://github.com/pavanchara
 
 > `readonly` **intentId**: `string`
 
-Defined in: [typescript/src/models/execution.ts:7](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L7)
+Defined in: [typescript/src/models/execution.ts:7](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L7)
 
 ---
 
@@ -26,7 +26,7 @@ Defined in: [typescript/src/models/execution.ts:7](https://github.com/pavanchara
 
 > `readonly` **policy**: [`PolicyReference`](/sdks/reference/typescript/interfaces/PolicyReference)
 
-Defined in: [typescript/src/models/execution.ts:8](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L8)
+Defined in: [typescript/src/models/execution.ts:8](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L8)
 
 ---
 
@@ -34,7 +34,7 @@ Defined in: [typescript/src/models/execution.ts:8](https://github.com/pavanchara
 
 > `readonly` **signals**: `Record`\<`string`, `unknown`\>
 
-Defined in: [typescript/src/models/execution.ts:9](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L9)
+Defined in: [typescript/src/models/execution.ts:9](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L9)
 
 ---
 
@@ -42,7 +42,7 @@ Defined in: [typescript/src/models/execution.ts:9](https://github.com/pavanchara
 
 > `readonly` **outcome**: [`DecisionOutcome`](/sdks/reference/typescript/type-aliases/DecisionOutcome)
 
-Defined in: [typescript/src/models/execution.ts:10](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L10)
+Defined in: [typescript/src/models/execution.ts:10](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L10)
 
 ---
 
@@ -50,7 +50,7 @@ Defined in: [typescript/src/models/execution.ts:10](https://github.com/pavanchar
 
 > `readonly` `optional` **reason?**: `string`
 
-Defined in: [typescript/src/models/execution.ts:11](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L11)
+Defined in: [typescript/src/models/execution.ts:11](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L11)
 
 ---
 
@@ -58,7 +58,7 @@ Defined in: [typescript/src/models/execution.ts:11](https://github.com/pavanchar
 
 > `readonly` `optional` **matchedRuleId?**: `string`
 
-Defined in: [typescript/src/models/execution.ts:13](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L13)
+Defined in: [typescript/src/models/execution.ts:13](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L13)
 
 Identifier of the Policy rule that matched, or "none". Absent on a Decision built before this field existed.
 
@@ -68,7 +68,7 @@ Identifier of the Policy rule that matched, or "none". Absent on a Decision buil
 
 > `readonly` `optional` **evaluatedRules?**: `number`
 
-Defined in: [typescript/src/models/execution.ts:15](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L15)
+Defined in: [typescript/src/models/execution.ts:15](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L15)
 
 Number of rules evaluated before reaching a match (or exhausting the rule list).
 
@@ -78,7 +78,7 @@ Number of rules evaluated before reaching a match (or exhausting the rule list).
 
 > `readonly` `optional` **matchedPath?**: readonly `string`[]
 
-Defined in: [typescript/src/models/execution.ts:17](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L17)
+Defined in: [typescript/src/models/execution.ts:17](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L17)
 
 Ordered rule-id trace evaluation walked to reach matchedRuleId.
 
@@ -88,4 +88,4 @@ Ordered rule-id trace evaluation walked to reach matchedRuleId.
 
 > `readonly` **evaluatedAt**: `Date`
 
-Defined in: [typescript/src/models/execution.ts:18](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/models/execution.ts#L18)
+Defined in: [typescript/src/models/execution.ts:18](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/execution.ts#L18)

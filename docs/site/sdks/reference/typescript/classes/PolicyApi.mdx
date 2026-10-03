@@ -2,7 +2,7 @@
 title: "Class: PolicyApi"
 ---
 
-Defined in: [typescript/src/client/PolicyApi.ts:52](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L52)
+Defined in: [typescript/src/client/PolicyApi.ts:52](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L52)
 
 Policy API.
 
@@ -12,7 +12,7 @@ Policy API.
 
 > **new PolicyApi**(`transport`): `PolicyApi`
 
-Defined in: [typescript/src/client/PolicyApi.ts:53](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L53)
+Defined in: [typescript/src/client/PolicyApi.ts:53](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L53)
 
 #### Parameters
 
@@ -30,7 +30,7 @@ Defined in: [typescript/src/client/PolicyApi.ts:53](https://github.com/pavanchar
 
 > **inEffect**(`capability`): `Promise`\<[`PolicyInEffect`](/sdks/reference/typescript/interfaces/PolicyInEffect)\>
 
-Defined in: [typescript/src/client/PolicyApi.ts:69](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L69)
+Defined in: [typescript/src/client/PolicyApi.ts:69](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L69)
 
 The policy a request for `capability` must declare right now, and what
 the request must carry: every fact the rules read, their types, the
@@ -61,7 +61,7 @@ now. Do not send a request in any of those cases.
 
 > **validate**(`policyId`, `policyVersion`): `Promise`\<[`PolicyValidationResult`](/sdks/reference/typescript/interfaces/PolicyValidationResult)\>
 
-Defined in: [typescript/src/client/PolicyApi.ts:95](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L95)
+Defined in: [typescript/src/client/PolicyApi.ts:95](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L95)
 
 Confirms that a policy (name + version) is loadable by the Runtime.
 
@@ -99,7 +99,7 @@ envelope, identically to every other route. See
 
 > **proposeChange**(`name`, `version`, `input`): `Promise`\<[`ProposedPolicyChange`](/sdks/reference/typescript/interfaces/ProposedPolicyChange)\>
 
-Defined in: [typescript/src/client/PolicyApi.ts:122](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L122)
+Defined in: [typescript/src/client/PolicyApi.ts:122](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L122)
 
 Proposes a policy change. Maps to POST
 /policies/{name}/{version}/pending-changes. The API key must belong to
@@ -131,7 +131,7 @@ allowed; a second one fails with ConflictError.
 
 > **listChanges**(`status?`): `Promise`\<[`PolicyChangeForReview`](/sdks/reference/typescript/interfaces/PolicyChangeForReview)[]\>
 
-Defined in: [typescript/src/client/PolicyApi.ts:143](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L143)
+Defined in: [typescript/src/client/PolicyApi.ts:143](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L143)
 
 Lists policy changes for review, with the content in effect now next to
 the proposed content. Maps to GET /policies/pending-changes. The API key
@@ -155,7 +155,7 @@ Only changes in this state. Omit for all.
 
 > **approveChange**(`pendingPolicyChangeId`, `stepUpAuthorization`): `Promise`\<[`PendingPolicyChange`](/sdks/reference/typescript/interfaces/PendingPolicyChange)\>
 
-Defined in: [typescript/src/client/PolicyApi.ts:166](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L166)
+Defined in: [typescript/src/client/PolicyApi.ts:166](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L166)
 
 Approves a policy change, which then takes effect. Maps to POST
 /policies/pending-changes/{id}/approve. The API key must belong to a
@@ -183,7 +183,7 @@ Make `stepUpAuthorization` with `signPolicyChangeStepUp()` and action
 
 > **rejectChange**(`pendingPolicyChangeId`, `rejectionReason`, `stepUpAuthorization`): `Promise`\<[`PendingPolicyChange`](/sdks/reference/typescript/interfaces/PendingPolicyChange)\>
 
-Defined in: [typescript/src/client/PolicyApi.ts:184](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/client/PolicyApi.ts#L184)
+Defined in: [typescript/src/client/PolicyApi.ts:184](https://github.com/pavancharak/parmana/blob/main/typescript/src/client/PolicyApi.ts#L184)
 
 Rejects a policy change. Maps to POST
 /policies/pending-changes/{id}/reject. Same caller rules as

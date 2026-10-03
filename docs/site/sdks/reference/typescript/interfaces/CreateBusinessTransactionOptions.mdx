@@ -2,7 +2,7 @@
 title: "Interface: CreateBusinessTransactionOptions"
 ---
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:29](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L29)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:29](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L29)
 
 Constructs a fully-formed, internally-consistent BusinessTransaction
 from the fields a caller actually decides, deriving every field the
@@ -34,7 +34,7 @@ idempotency key (see docs/site/guides/end-to-end-paytm-flow.mdx,
 
 > `readonly` `optional` **businessTransactionId?**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:31](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L31)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:31](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L31)
 
 Defaults to a fresh crypto.randomUUID() if omitted.
 
@@ -44,7 +44,7 @@ Defaults to a fresh crypto.randomUUID() if omitted.
 
 > `readonly` `optional` **authorityType?**: `"USER"` \| `"ROLE"` \| `"SERVICE"` \| `"ORGANIZATION"`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:34](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L34)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:34](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L34)
 
 Defaults to "SERVICE", the correct value for an autonomous agent. Never "AGENT"; that value does not exist server-side.
 
@@ -54,7 +54,7 @@ Defaults to "SERVICE", the correct value for an autonomous agent. Never "AGENT";
 
 > `readonly` **principalId**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:41](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L41)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:41](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L41)
 
 The identity this transaction is submitted as. Must match one of
 the caller API key's own allowedPrincipalIds server-side, or the
@@ -66,7 +66,7 @@ request is rejected before policy ever runs. See GET /callers/me.
 
 > `readonly` `optional` **displayName?**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:43](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L43)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:43](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L43)
 
 ---
 
@@ -74,7 +74,7 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:43](https://gi
 
 > `readonly` **purpose**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:46](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L46)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:46](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L46)
 
 Human-readable reason for authorization.purpose.
 
@@ -84,7 +84,7 @@ Human-readable reason for authorization.purpose.
 
 > `readonly` **action**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:49](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L49)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:49](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L49)
 
 The capability being invoked, e.g. "paytm:refund".
 
@@ -94,7 +94,7 @@ The capability being invoked, e.g. "paytm:refund".
 
 > `readonly` **target**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:51](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L51)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:51](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L51)
 
 ---
 
@@ -102,7 +102,7 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:51](https://gi
 
 > `readonly` **parameters**: `Record`\<`string`, `unknown`\>
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:53](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L53)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:53](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L53)
 
 ---
 
@@ -110,7 +110,7 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:53](https://gi
 
 > `readonly` **policy**: [`PolicyReference`](/sdks/reference/typescript/interfaces/PolicyReference)
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:55](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L55)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:55](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L55)
 
 ---
 
@@ -118,7 +118,7 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:55](https://gi
 
 > `readonly` **signals**: `Record`\<`string`, `unknown`\>
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:65](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L65)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:65](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L65)
 
 Facts the named policy evaluates. Every fact a policy rule
 references must appear here, and every boundSignals entry the
@@ -133,7 +133,7 @@ silently ignored.
 
 > `readonly` `optional` **correlationId?**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:67](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L67)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:67](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L67)
 
 ---
 
@@ -141,7 +141,7 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:67](https://gi
 
 > `readonly` `optional` **tenantId?**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:68](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L68)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:68](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L68)
 
 ---
 
@@ -149,7 +149,7 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:68](https://gi
 
 > `readonly` `optional` **sourceSystem?**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:69](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L69)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:69](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L69)
 
 ---
 
@@ -157,4 +157,4 @@ Defined in: [typescript/src/builders/createBusinessTransaction.ts:69](https://gi
 
 > `readonly` `optional` **submittedBy?**: `string`
 
-Defined in: [typescript/src/builders/createBusinessTransaction.ts:70](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/builders/createBusinessTransaction.ts#L70)
+Defined in: [typescript/src/builders/createBusinessTransaction.ts:70](https://github.com/pavancharak/parmana/blob/main/typescript/src/builders/createBusinessTransaction.ts#L70)

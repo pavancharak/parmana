@@ -4267,7 +4267,7 @@ If you are an AI agent, follow [Integrate Parmana: specification for AI agents](
 ## Views of the same spec
 
 Every route, request/response shape, and status code ultimately comes from one file,
-[`openapi/openapi.yaml`](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/openapi/openapi.yaml),
+[`openapi/openapi.yaml`](https://github.com/pavancharak/parmana/blob/main/openapi/openapi.yaml),
 version-controlled alongside the code that implements it. That one spec drives three
 surfaces, so none of them can drift from what the server actually does:
 
@@ -4297,7 +4297,7 @@ surfaces, so none of them can drift from what the server actually does:
 
 ### Postman
 
-[`postman/parmana.postman_collection.json`](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/postman/parmana.postman_collection.json)
+[`postman/parmana.postman_collection.json`](https://github.com/pavancharak/parmana/blob/main/postman/parmana.postman_collection.json)
 has one request for every endpoint, in one folder per area, with the example bodies from the
 spec. It is generated from the same OpenAPI file (`npm run generate:postman`), and a test fails
 if it falls behind.
@@ -6831,9 +6831,8 @@ Source: https://docs.parmanasystems.com/guides/python-sdk-quickstart
   with more explanation at each step and a focus on the SDK's own ergonomics. If
   you just want the fastest path to a working local server, use
   [Quickstart](/quickstart) instead. This page assumes you're already inside a
-  local clone of [the Parmana
-  repo](https://github.com/pavancharak/AgentLabsBuildathon) with a server you
-  can point at.
+  local clone of [the Parmana repo](https://github.com/pavancharak/parmana) with
+  a server you can point at.
 </Note>
 
 <Tip>
@@ -8037,7 +8036,7 @@ is the value multiplied by the number of instances, and the server logs `rate_li
 
 ## Browser access and the public sandbox
 
-[ADR-0014](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/docs/adr/ADR-0014-Public-Sandbox-And-Docs-Playground.md).
+[ADR-0014](https://github.com/pavancharak/parmana/blob/main/docs/adr/ADR-0014-Public-Sandbox-And-Docs-Playground.md).
 Production sets none of these except, if it wants a browser console, `PARMANA_CORS_ORIGINS`.
 
 | Variable                               | Required                    | Default              | Values or format                                                                  | What it does                                                                                                                                                                                                                                                                                                                                             |

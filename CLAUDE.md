@@ -49,7 +49,7 @@
 
 ## Project-Specific Context
 
-- Repository: github.com/pavancharak/AgentLabsBuildathon (PUBLIC - no secrets)
+- Repository: github.com/pavancharak/parmana (PUBLIC - no secrets)
 - AWS Account: 013659367671 (parmana profile)
 - AWS Region: ap-south-1 (Mumbai)
 - Primary Language: TypeScript/Node.js

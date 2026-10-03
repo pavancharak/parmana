@@ -30,13 +30,13 @@ reads production (`ProductionNames`) lists variable names only, never values.
 
 ## The stages
 
-Run every command from `D:\last\AgentLabsBuildathon`, in Windows PowerShell, one at a time. Each stage prints what it
+Run every command from `D:\last\parmana`, in Windows PowerShell, one at a time. Each stage prints what it
 did; stop at the first one that does not print what the table says.
 
 ### 1. Make the keys
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File D:\last\AgentLabsBuildathon\deploy\sandbox\setup-sandbox.ps1 -Stage Keys
+powershell -ExecutionPolicy Bypass -File D:\last\parmana\deploy\sandbox\setup-sandbox.ps1 -Stage Keys
 ```
 
 Expect: `Wrote 8 files to D:\key\parmana-sandbox`, listing them, and `No key was printed.`
@@ -58,7 +58,7 @@ connects.
 ### 3. Create the Vercel project (in the browser)
 
 In the Vercel dashboard, team `pavan-dev-singh-charaks-projects`: **Add New**, **Project**, import
-`pavancharak/AgentLabsBuildathon`, name it **`parmana-sandbox`**. Vercel offers **Services** and a suggested
+`pavancharak/parmana`, name it **`parmana-sandbox`**. Vercel offers **Services** and a suggested
 `vercel.json` because it sees several folders: do not use them. Set **Application Preset** to **Other** (the repository's
 own `vercel.json` defines the build, as for production), accept the "Possible configuration mismatch" warning, keep
 every other setting, **Deploy**. Check that the project's **Domains** shows `parmana-sandbox.vercel.app`.
@@ -73,7 +73,7 @@ From now on Vercel deploys the sandbox on every merge to `main`, as it does prod
 ### 4 to 16
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File D:\last\AgentLabsBuildathon\deploy\sandbox\setup-sandbox.ps1 -Stage Migrate
+powershell -ExecutionPolicy Bypass -File D:\last\parmana\deploy\sandbox\setup-sandbox.ps1 -Stage Migrate
 ```
 
 Then the same command with each stage below, in this order.

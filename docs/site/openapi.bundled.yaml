@@ -91,7 +91,7 @@ info:
     email: founder@parmanasystems.com
   license:
     name: Proprietary, source-available for evaluation only, see LICENSE
-    url: https://github.com/pavancharak/AgentLabsBuildathon/blob/main/LICENSE
+    url: https://github.com/pavancharak/parmana/blob/main/LICENSE
 servers:
   - url: https://parmana-sandbox.vercel.app
     description: Public sandbox (the docs playground). Same code as production, demo
