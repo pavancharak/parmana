@@ -13,8 +13,14 @@ Source: https://docs.parmanasystems.com
 Parmana sits between an AI agent (or a script, or a person) and the systems that carry out its
 actions. Before anything executes, Parmana checks it against a policy you write and issues a
 signed, single-use authorization. After it executes, you have an independently verifiable
-signed record of exactly what happened. Integrate in minutes with the [Quickstart](/quickstart),
-not months.
+signed record of exactly what happened. The [Quickstart](/quickstart) runs a local server step
+by step.
+
+<Info>
+  **Proprietary software, evaluation only.** You may read, build and run Parmana
+  to assess it; any other use needs a written agreement. See [License and
+  evaluation](/license).
+</Info>
 
 <Tip>
   **Try it now, with nothing to install.** The [Playground](/playground) is a
@@ -874,6 +880,9 @@ on below to run the same thing on your own machine, where you play the approver 
   approvers](/guides/manage-approvers).
 </Warning>
 
+Running Parmana locally to evaluate it is permitted; any other use needs a written agreement, see
+[License and evaluation](/license).
+
 <Steps>
   <Step title="Install and build">
     ```bash
@@ -1239,7 +1248,7 @@ Download it as one PDF: [build-with-parmana.pdf](/build-with-parmana.pdf).
 ## The chapters
 
 1. [How Parmana works](/build-book/01-how-parmana-works): one request, from an agent to a signed record.
-2. [Your first governed action](/build-book/02-your-first-governed-action): run it on your machine in minutes.
+2. [Your first governed action](/build-book/02-your-first-governed-action): run it on your machine, step by step.
 3. [Connect an agent](/build-book/03-connect-an-agent): the request, the policy in effect, approvals, in both SDKs.
 4. [Policies](/build-book/04-policies): write one, get it approved, change it, roll it back.
 5. [Human approvals](/build-book/05-human-approvals): approvers, signing, and what an approval covers.
@@ -5052,6 +5061,8 @@ Source: https://docs.parmanasystems.com/sdks/typescript
 npm install @parmana/sdk
 ```
 
+From the next release the SDK is proprietary, evaluation only, like the rest of Parmana; 1.4.0 and earlier are Apache License 2.0. See [License and evaluation](/license).
+
 Real registry install. `npm view @parmana/sdk version` returns the current published
 version directly from npm, confirmed while fixing this page's own stale claim otherwise.
 
@@ -6142,6 +6153,8 @@ Source: https://docs.parmanasystems.com/sdks/python
 ```bash
 pip install parmana
 ```
+
+From the next release the SDK is proprietary, evaluation only, like the rest of Parmana; 1.4.0 and earlier are Apache License 2.0. See [License and evaluation](/license).
 
 To use the standalone offline Trust Record verifier (`parmana.crypto`), install the optional
 `verify` extra, which adds the `cryptography` package it needs for Ed25519:

@@ -22,6 +22,7 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [Choose your path](https://docs.parmanasystems.com/choose-your-path): One table that tells you exactly where to start, whether you are a developer, an operator, an auditor or an AI agent.
 * [Quickstart](https://docs.parmanasystems.com/quickstart): Your first authorized execution: in one minute against the live sandbox with nothing installed, then in under 10 minutes on your own local server.
 * [How Parmana thinks](https://docs.parmanasystems.com/how-parmana-thinks): The six ideas behind every request Parmana handles: deterministic policy, fail-closed defaults, signed authorization, gateway verification, credential isolation, and trust records.
+* [License and evaluation](https://docs.parmanasystems.com/license): Parmana is proprietary software, source-available for evaluation only.
 ## Get started: For AI agents
 
 * [Integrate Parmana: specification for AI agents](https://docs.parmanasystems.com/agents/integrate): An exact, ordered procedure to send an action to Parmana and act on the answer. Every step says what to do, what you should see, and what to do if you do not.
