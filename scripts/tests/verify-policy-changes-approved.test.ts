@@ -43,7 +43,8 @@ function fixtureRecord(
 ): PolicyChangeApprovalRecord {
   return {
     policyChangeApprovalRecordId: `pcar-${Math.random()}`,
-    pendingPolicyChangeId: "ppc-1",
+    // One approval record per pending change, as the repositories enforce.
+    pendingPolicyChangeId: `ppc-${Math.random()}`,
     policyName: "vendor-payment",
     policyVersion: "1.0.0",
     proposedBy: "human-maker",

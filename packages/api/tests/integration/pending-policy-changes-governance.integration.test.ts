@@ -766,6 +766,31 @@ describe("Policy Governance: isHumanCaller, maker != checker, step-up (HTTP boun
       ).resolves.toEqual([]);
     });
 
+    it("lets exactly one of two concurrent approvals through, with one approval record", async () => {
+      const { app, scratchPolicyDir, policyChangeApprovalRecordRepository } =
+        buildApp();
+      const name = "governance-concurrent-approvals";
+      const id = await proposeChange(app, name);
+
+      const [first, second] = await Promise.all(
+        [0, 1].map(async () =>
+          request(app)
+            .post(`/policies/pending-changes/${id}/approve`)
+            .set("Authorization", `Bearer ${HUMAN_CHECKER_KEY}`)
+            .send({ stepUpAuthorization: await signStepUp(id, "approve") }),
+        ),
+      );
+
+      expect([first.status, second.status].sort()).toEqual([200, 409]);
+      expect(
+        existsSync(path.join(scratchPolicyDir, name, "1.0.0", "policy.json")),
+      ).toBe(true);
+
+      const records = await policyChangeApprovalRecordRepository.list();
+      expect(records).toHaveLength(1);
+      expect(records[0].pendingPolicyChangeId).toBe(id);
+    });
+
     it("denies a replayed (reused) step-up envelope on a second approval attempt", async () => {
       const { app } = buildApp();
       const id = await proposeChange(app, "governance-approve-replay");
