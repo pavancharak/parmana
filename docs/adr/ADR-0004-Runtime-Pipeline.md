@@ -1,14 +1,14 @@
-\# ADR-0004 — Runtime Pipeline
+# ADR-0004 — Runtime Pipeline
 
-\*\*Status:\*\* Accepted
+**Status:** Accepted
 
-\*\*Date:\*\* 2026-06-25
+**Date:** 2026-06-25
 
-\*\*Decision Makers:\*\* Parmana Architecture Team
+**Decision Makers:** Parmana Architecture Team
 
-\---
+---
 
-\# Context
+# Context
 
 The Runtime is responsible for orchestrating execution.
 
@@ -16,31 +16,23 @@ A design decision was required regarding how execution logic should be organized
 
 Several alternatives were considered:
 
-\* A single monolithic Runtime class.
-
-\* Event-driven orchestration.
-
-\* Workflow graphs.
-
-\* Sequential execution pipeline.
+- A single monolithic Runtime class.
+- Event-driven orchestration.
+- Workflow graphs.
+- Sequential execution pipeline.
 
 The architecture needed to satisfy the following requirements:
 
-\* Deterministic execution.
+- Deterministic execution.
+- Simple reasoning.
+- Independent execution stages.
+- Extensibility.
+- Replay compatibility.
+- Testability.
 
-\* Simple reasoning.
+---
 
-\* Independent execution stages.
-
-\* Extensibility.
-
-\* Replay compatibility.
-
-\* Testability.
-
-\---
-
-\# Decision
+# Decision
 
 The Runtime SHALL be implemented as a deterministic execution pipeline.
 
@@ -50,283 +42,215 @@ Each component receives an immutable `ExecutionTransaction` and returns a new im
 
 The Runtime itself SHALL coordinate the pipeline but SHALL NOT contain business logic.
 
-\---
+---
 
-\# Pipeline Architecture
+# Pipeline Architecture
 
 ```text
-
 Application
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ▼
 Runtime
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ▼
 RuntimePipeline
-
-&#x20;     │
-
-&#x20;     ├── AuthorityStage
-
-&#x20;     ├── IntentStage
-
-&#x20;     ├── AuthorizationStage
-
-&#x20;     ├── ExecutionStage
-
-&#x20;     └── EvidenceStage
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ├── AuthorityStage
+      ├── IntentStage
+      ├── AuthorizationStage
+      ├── ExecutionStage
+      └── EvidenceStage
+      │
+      ▼
 Completed ExecutionTransaction
-
 ```
 
 Each stage has a single responsibility.
 
-\---
+---
 
-\# Runtime Component Contract
+# Runtime Component Contract
 
 Every stage SHALL implement a common contract.
 
 ```typescript
-
 interface RuntimeComponent {
-
-&#x20; execute(
-
-&#x20;   transaction: ExecutionTransaction
-
-&#x20; ): ExecutionTransaction;
-
+  execute(transaction: ExecutionTransaction): ExecutionTransaction;
 }
-
 ```
 
 This enables composition while keeping stages independent.
 
-\---
+---
 
-\# Stage Responsibilities
+# Stage Responsibilities
 
-\## AuthorityStage
+## AuthorityStage
 
 Records or validates the authority responsible for initiating execution.
 
 Produces:
 
-\* Authority
+- Authority
 
-\---
+---
 
-\## IntentStage
+## IntentStage
 
 Captures the intended action.
 
 Produces:
 
-\* Intent
+- Intent
 
-\---
+---
 
-\## AuthorizationStage
+## AuthorizationStage
 
 Evaluates whether execution is permitted.
 
 Produces:
 
-\* Authorization
+- Authorization
 
 This stage does not perform execution.
 
-\---
+---
 
-\## ExecutionStage
+## ExecutionStage
 
 Coordinates execution.
 
 Produces:
 
-\* Execution
+- Execution
 
 Execution records factual outcomes only.
 
-\---
+---
 
-\## EvidenceStage
+## EvidenceStage
 
 Generates immutable execution evidence.
 
 Produces:
 
-\* Evidence
+- Evidence
 
 Evidence becomes the input to the Verification Engine.
 
-\---
+---
 
-\# Design Principles
+# Design Principles
 
 Every Runtime Component SHALL be:
 
-\* Deterministic
-
-\* Stateless where practical
-
-\* Independently testable
-
-\* Composable
-
-\* Side-effect aware
+- Deterministic
+- Stateless where practical
+- Independently testable
+- Composable
+- Side-effect aware
 
 Components SHALL avoid hidden dependencies on other stages.
 
-\---
+---
 
-\# Execution Flow
+# Execution Flow
 
 ```text
-
 ExecutionTransaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 AuthorityStage
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 IntentStage
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 AuthorizationStage
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 ExecutionStage
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 EvidenceStage
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Completed ExecutionTransaction
-
 ```
 
 Each stage transforms the transaction without mutating the previous instance.
 
-\---
+---
 
-\# Consequences
+# Consequences
 
-\## Positive
+## Positive
 
-\* Clear separation of concerns.
+- Clear separation of concerns.
+- Simple execution model.
+- High testability.
+- Easy extension.
+- Predictable execution order.
+- Deterministic replay.
+- Reusable pipeline components.
 
-\* Simple execution model.
+---
 
-\* High testability.
+## Negative
 
-\* Easy extension.
-
-\* Predictable execution order.
-
-\* Deterministic replay.
-
-\* Reusable pipeline components.
-
-\---
-
-\## Negative
-
-\* More classes than a monolithic Runtime.
-
-\* Additional object allocation.
-
-\* Pipeline ordering must be managed explicitly.
+- More classes than a monolithic Runtime.
+- Additional object allocation.
+- Pipeline ordering must be managed explicitly.
 
 These trade-offs are acceptable because they improve maintainability and preserve deterministic behavior.
 
-\---
+---
 
-\# Rejected Alternatives
+# Rejected Alternatives
 
-\## Monolithic Runtime
+## Monolithic Runtime
 
 Rejected because execution logic would become tightly coupled, difficult to test, and harder to extend.
 
-\---
+---
 
-\## Event-Driven Runtime
+## Event-Driven Runtime
 
 Rejected because asynchronous event ordering can complicate deterministic replay and increase implementation complexity.
 
-\---
+---
 
-\## Workflow Graph
+## Workflow Graph
 
 Rejected because graph-based execution introduces unnecessary flexibility for the canonical execution lifecycle and makes deterministic reasoning more difficult.
 
-\---
+---
 
-\# Relationship to Verification
+# Relationship to Verification
 
 The Runtime Pipeline is responsible only for producing a complete immutable `ExecutionTransaction`.
 
 Verification is intentionally excluded from the pipeline.
 
 ```text
-
 Runtime Pipeline
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 ExecutionTransaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Verification Engine
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Verification Report
-
 ```
 
 This preserves the architectural separation between execution and trust evaluation.
 
-\---
+---
 
-\# Impact
+# Impact
 
 This decision establishes the Runtime as a lightweight orchestration layer composed of deterministic execution stages.
 

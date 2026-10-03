@@ -1,109 +1,83 @@
-\# Tutorial 09 — REST API
+# Tutorial 09 — REST API
 
-\## Overview
+## Overview
 
 This tutorial demonstrates how to interact with Parmana through its REST API.
 
 Instead of calling the Runtime directly, a client submits a Business Transaction over HTTP. The API executes the transaction and returns the resulting Execution Trust Record.
 
-\---
+---
 
-\## Learning Objectives
+## Learning Objectives
 
 After completing this tutorial you will understand:
 
-\- Parmana REST API
+- Parmana REST API
+- HTTP Requests
+- Business Transaction Submission
+- Execution Trust Record Response
 
-\- HTTP Requests
+---
 
-\- Business Transaction Submission
+## Files
 
-\- Execution Trust Record Response
-
-\---
-
-\## Files
-
-| File | Purpose |
-
-|------|---------|
-
+| File           | Purpose                                   |
+| -------------- | ----------------------------------------- |
 | `request.json` | Business Transaction submitted to the API |
+| `run.ts`       | Sends an HTTP request to the Parmana API  |
 
-| `run.ts` | Sends an HTTP request to the Parmana API |
+---
 
-\---
-
-\## Architecture
+## Architecture
 
 ```
-
 Client
-
-&#x20;  │
-
-&#x20;  ▼
-
+   │
+   ▼
 REST API
-
-&#x20;  │
-
-&#x20;  ▼
-
+   │
+   ▼
 Runtime
-
-&#x20;  │
-
-&#x20;  ▼
-
+   │
+   ▼
 Policy Engine
-
-&#x20;  │
-
-&#x20;  ▼
-
+   │
+   ▼
 Execution Trust Record
-
 ```
 
-\---
+---
 
-\## Prerequisites
+## Prerequisites
 
-The server enforces caller authentication on every route except `/health`. Either start it with `PARMANA_AUTH_DISABLED=true` (local development only, never in a real deployment), or set `PARMANA_API_KEY` to a raw key generated via `npm run generate:api-key` before running this tutorial. See \[Authentication]\(/api-reference/authentication).
+The server enforces caller authentication on every route except `/health`. Either start it with `PARMANA_AUTH_DISABLED=true` (local development only, never in a real deployment), or set `PARMANA_API_KEY` to a raw key generated via `npm run generate:api-key` before running this tutorial. See [Authentication](/api-reference/authentication).
 
-\---
+---
 
-\## Run
+## Run
 
 ```bash
-
 npm run example -- 09-rest-api
-
 ```
 
 or
 
 ```bash
-
 tsx run.ts
-
 ```
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 The tutorial prints:
 
-\- HTTP Request
+- HTTP Request
+- HTTP Response
+- Execution Trust Record
 
-\- HTTP Response
+---
 
-\- Execution Trust Record
+## Next Tutorial
 
-\---
-
-\## Next Tutorial
-
-Continue to \*\*Tutorial 10 – End-to-End\*\*.
+Continue to **Tutorial 10 – End-to-End**.

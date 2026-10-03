@@ -1,169 +1,85 @@
-# \# Tutorial 08 — Human Approval
+# Tutorial 08 — Human Approval
 
-#
+## Overview
 
-# \## Overview
+This tutorial demonstrates how Parmana enforces Human Authority before executing a Business Transaction.
 
-#
+Before a transaction can be evaluated against policy, it must contain valid Authority, Authorization, and Intent information. These records establish who authorized the action, why it was authorized, and what action is permitted.
 
-# This tutorial demonstrates how Parmana enforces Human Authority before executing a Business Transaction.
+This tutorial focuses on the authorization chain rather than policy evaluation.
 
-#
+---
 
-# Before a transaction can be evaluated against policy, it must contain valid Authority, Authorization, and Intent information. These records establish who authorized the action, why it was authorized, and what action is permitted.
+## Learning Objectives
 
-#
+After completing this tutorial you will understand:
 
-# This tutorial focuses on the authorization chain rather than policy evaluation.
+- Authority
+- Authorization
+- Intent
+- Human Authority
+- Execution Preconditions
 
-#
+---
 
-# \---
+## Files
 
-#
+| File               | Purpose                                                       |
+| ------------------ | ------------------------------------------------------------- |
+| `transaction.json` | Business Transaction with Authority, Authorization and Intent |
+| `run.ts`           | Validates and displays the authorization chain                |
 
-# \## Learning Objectives
+---
 
-#
+## Architecture
 
-# After completing this tutorial you will understand:
+```
+Authority
+  │
+  ▼
+Authorization
+  │
+  ▼
+Intent
+  │
+  ▼
+Business Transaction
+  │
+  ▼
+Ready for Runtime Execution
+```
 
-#
+---
 
-# \- Authority
+## Run
 
-# \- Authorization
+```bash
+npm run example -- 08-human-approval
+```
 
-# \- Intent
+or
 
-# \- Human Authority
+```bash
+tsx run.ts
+```
 
-# \- Execution Preconditions
+---
 
-#
+## Expected Output
 
-# \---
+The tutorial prints:
 
-#
+- Authority
+- Authorization
+- Intent
+- Business Transaction
 
-# \## Files
+No policy evaluation occurs.
 
-#
+No Runtime execution occurs.
 
-# | File | Purpose |
+---
 
-# |------|---------|
+## Next Tutorial
 
-# | `transaction.json` | Business Transaction with Authority, Authorization and Intent |
-
-# | `run.ts` | Validates and displays the authorization chain |
-
-#
-
-# \---
-
-#
-
-# \## Architecture
-
-#
-
-# ```
-
-# Authority
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Authorization
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Intent
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Business Transaction
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Ready for Runtime Execution
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Run
-
-#
-
-# ```bash
-
-# npm run example -- 08-human-approval
-
-# ```
-
-#
-
-# or
-
-#
-
-# ```bash
-
-# tsx run.ts
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Expected Output
-
-#
-
-# The tutorial prints:
-
-#
-
-# \- Authority
-
-# \- Authorization
-
-# \- Intent
-
-# \- Business Transaction
-
-#
-
-# No policy evaluation occurs.
-
-#
-
-# No Runtime execution occurs.
-
-#
-
-# \---
-
-#
-
-# \## Next Tutorial
-
-#
-
-# Continue to \*\*Tutorial 09 – REST API\*\*.
+Continue to **Tutorial 09 – REST API**.

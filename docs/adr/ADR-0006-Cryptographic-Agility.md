@@ -1,14 +1,14 @@
-\# ADR-0006 — Cryptographic Agility
+# ADR-0006 — Cryptographic Agility
 
-\*\*Status:\*\* Accepted
+**Status:** Accepted
 
-\*\*Date:\*\* 2026-06-25
+**Date:** 2026-06-25
 
-\*\*Decision Makers:\*\* Parmana Architecture Team
+**Decision Makers:** Parmana Architecture Team
 
-\---
+---
 
-\# Context
+# Context
 
 Parmana establishes execution trust through cryptographic integrity.
 
@@ -18,9 +18,9 @@ A design decision was required:
 
 Should cryptographic algorithms be embedded into the Core domain model, or should they remain replaceable?
 
-\---
+---
 
-\# Decision
+# Decision
 
 Parmana SHALL adopt Cryptographic Agility.
 
@@ -30,43 +30,43 @@ Hash algorithms, digital signature algorithms, key providers, and integrity mech
 
 Cryptography is an implementation concern, not a domain concern.
 
-\---
+---
 
-\# Rationale
+# Rationale
 
-\## Long-Term Viability
+## Long-Term Viability
 
 The expected lifetime of execution records exceeds the expected lifetime of many cryptographic algorithms.
 
 The platform must be capable of adopting stronger algorithms without redesigning the domain model.
 
-\---
+---
 
-\## Algorithm Independence
+## Algorithm Independence
 
 Execution trust depends on cryptographic integrity, not on a specific algorithm.
 
 The platform should support multiple approved algorithms throughout its lifetime.
 
-\---
+---
 
-\## Quantum Readiness
+## Quantum Readiness
 
 Future advances in quantum computing may require migration to post-quantum cryptographic algorithms.
 
 By isolating cryptography behind provider interfaces, Parmana can adopt new standards while preserving the Core architecture.
 
-\---
+---
 
-\## Regulatory Evolution
+## Regulatory Evolution
 
 Governments and industry standards periodically revise approved cryptographic algorithms.
 
 Cryptographic agility enables implementations to remain compliant without changing business logic.
 
-\---
+---
 
-\# Architectural Principle
+# Architectural Principle
 
 The Core domain records cryptographic metadata.
 
@@ -74,131 +74,100 @@ The Cryptography package performs cryptographic operations.
 
 The Core never computes hashes or signatures directly.
 
-\---
+---
 
-\# Package Relationship
+# Package Relationship
 
 ```text
-
 Core
-
-&#x20;  │
-
-&#x20;  ▼
-
+   │
+   ▼
 Cryptography Interfaces
-
-&#x20;  │
-
-&#x20;  ▼
-
+   │
+   ▼
 Provider Implementations
-
-&#x20;  │
-
-&#x20;  ├── SHA-256
-
-&#x20;  ├── SHA-3
-
-&#x20;  ├── BLAKE3
-
-&#x20;  ├── Ed25519
-
-&#x20;  ├── ECDSA
-
-&#x20;  ├── ML-DSA (Post-Quantum)
-
-&#x20;  └── Future Algorithms
-
+   │
+   ├── SHA-256
+   ├── SHA-3
+   ├── BLAKE3
+   ├── Ed25519
+   ├── ECDSA
+   ├── ML-DSA (Post-Quantum)
+   └── Future Algorithms
 ```
 
 The Runtime and Verification Engine depend only on cryptographic interfaces.
 
-\---
+---
 
-\# Cryptographic Metadata
+# Cryptographic Metadata
 
 Execution records MAY contain metadata describing:
 
-\* Hash algorithm
-
-\* Signature algorithm
-
-\* Key identifier
-
-\* Provider identifier
-
-\* Algorithm version
+- Hash algorithm
+- Signature algorithm
+- Key identifier
+- Provider identifier
+- Algorithm version
 
 This metadata enables future verification using the appropriate implementation.
 
-\---
+---
 
-\# Provider Model
+# Provider Model
 
 Cryptographic operations SHALL be delegated to providers.
 
 Example responsibilities include:
 
-\* Hash generation
-
-\* Signature generation
-
-\* Signature verification
-
-\* Key management integration
-
-\* Integrity validation
+- Hash generation
+- Signature generation
+- Signature verification
+- Key management integration
+- Integrity validation
 
 Providers SHALL expose stable interfaces independent of specific algorithms.
 
-\---
+---
 
-\# Consequences
+# Consequences
 
-\## Positive
+## Positive
 
-\* Long-term maintainability.
+- Long-term maintainability.
+- Easier algorithm migration.
+- Support for multiple cryptographic standards.
+- Improved regulatory flexibility.
+- Readiness for post-quantum migration.
+- Clear separation between domain and implementation.
 
-\* Easier algorithm migration.
+---
 
-\* Support for multiple cryptographic standards.
+## Negative
 
-\* Improved regulatory flexibility.
-
-\* Readiness for post-quantum migration.
-
-\* Clear separation between domain and implementation.
-
-\---
-
-\## Negative
-
-\* Additional abstraction layer.
-
-\* Provider management complexity.
-
-\* Algorithm compatibility testing becomes necessary.
+- Additional abstraction layer.
+- Provider management complexity.
+- Algorithm compatibility testing becomes necessary.
 
 These trade-offs are acceptable because they preserve the long-term integrity of the platform.
 
-\---
+---
 
-\# Rejected Alternatives
+# Rejected Alternatives
 
-\## Hard-Coded Algorithms
+## Hard-Coded Algorithms
 
 Embedding a specific algorithm (for example, SHA-256 or Ed25519) into the Core was rejected because it would tightly couple the domain model to implementation details and complicate future migrations.
 
-\---
+---
 
-\## Runtime-Specific Cryptography
+## Runtime-Specific Cryptography
 
 Allowing each Runtime implementation to define its own cryptographic behavior without a common interface was rejected because it would reduce interoperability and make verification inconsistent across implementations.
 
-\---
+---
 
-\# Relationship to Verification
+# Relationship to Verification
 
 The Verification Engine SHALL validate cryptographic artifacts through provider interfaces.
 
@@ -206,33 +175,30 @@ Verification SHALL remain independent of the concrete algorithm implementation.
 
 A compliant Verification Engine may support multiple algorithms simultaneously.
 
-\---
+---
 
-\# Relationship to Storage
+# Relationship to Storage
 
 Storage preserves cryptographic artifacts and associated metadata.
 
 Storage SHALL NOT reinterpret or regenerate cryptographic values.
 
-\---
+---
 
-\# Migration Strategy
+# Migration Strategy
 
 When stronger algorithms become available:
 
-1\. Existing execution records remain valid.
-
-2\. Existing cryptographic metadata remains preserved.
-
-3\. New executions MAY use newer providers.
-
-4\. Verification implementations MAY support multiple generations of algorithms concurrently.
+1. Existing execution records remain valid.
+2. Existing cryptographic metadata remains preserved.
+3. New executions MAY use newer providers.
+4. Verification implementations MAY support multiple generations of algorithms concurrently.
 
 This strategy allows gradual migration without invalidating historical execution records.
 
-\---
+---
 
-\# Impact
+# Impact
 
 Cryptographic Agility is a foundational architectural principle of Parmana.
 
