@@ -201,6 +201,25 @@ def test_403_capability_not_allowed_raises_authorization_error_with_server_code(
 
 
 @responses.activate
+def test_403_tenant_not_allowed_preserves_server_code():
+    responses.add(
+        responses.POST,
+        f"{ENDPOINT}/execute",
+        json={
+            "error": "Caller is not permitted to act for this tenantId.",
+            "code": "TENANT_NOT_ALLOWED",
+        },
+        status=403,
+    )
+
+    with pytest.raises(AuthorizationError) as excinfo:
+        _transport().send(method="POST", path="/execute", body={})
+
+    assert excinfo.value.status_code == 403
+    assert excinfo.value.server_code == "TENANT_NOT_ALLOWED"
+
+
+@responses.activate
 def test_429_raises_rate_limit_error():
     """
     POST /execute is per-caller-identity rate limited (packages/api's

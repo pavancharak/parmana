@@ -36,8 +36,6 @@ export async function runExecuteExample(
 
       correlationId: "corr-001",
 
-      tenantId: "tenant-001",
-
       sourceSystem: "typescript-sdk-example",
 
       submittedBy: "demo-user",

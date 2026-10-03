@@ -18,6 +18,7 @@ declare global {
       callerId?: string;
       callerAllowedPrincipalIds?: readonly string[];
       callerAllowedCapabilities?: readonly string[];
+      callerAllowedTenantIds?: readonly string[];
       callerCredentialHolderType?: AuthorityType;
       callerStepUpPublicKey?: string;
     }
@@ -93,6 +94,10 @@ export function createCallerAuthMiddleware(
 
     if (identity.allowedCapabilities !== undefined) {
       req.callerAllowedCapabilities = identity.allowedCapabilities;
+    }
+
+    if (identity.allowedTenantIds !== undefined) {
+      req.callerAllowedTenantIds = identity.allowedTenantIds;
     }
 
     if (identity.credentialHolderType !== undefined) {

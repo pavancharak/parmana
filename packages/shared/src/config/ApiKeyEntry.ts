@@ -71,6 +71,18 @@ export interface ApiKeyEntry {
   readonly allowedCapabilities?: readonly string[];
 
   /**
+   * The tenant ids a Business Transaction authenticated with this key
+   * may name in metadata.tenantId. The tenant id selects the signing
+   * key (`tenant.<tenantId>`, TenantKeyResolver), so it must come from
+   * the key, not from whatever the caller writes in the request.
+   *
+   * Fail closed: unset or empty, a request that carries a tenantId is
+   * refused with 403 TENANT_NOT_ALLOWED. A request with no tenantId is
+   * unaffected and signs under the shared default key.
+   */
+  readonly allowedTenantIds?: readonly string[];
+
+  /**
    * PEM-encoded (SPKI) Ed25519 public key for step-up authorization on
    * the Policy Governance approve/reject endpoints (isHumanCaller.ts's
    * call sites only) -- see PolicyChangeStepUpAuthorization. Generated

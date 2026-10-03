@@ -55,14 +55,15 @@ Follow [Production deployment](/deployment/production) for the full procedure.
 
 A JSON array. Each entry is an object:
 
-| Field                  | Required | Meaning                                                                                                                                                                              |
-| ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `callerId`             | Yes      | A non empty string that names the caller.                                                                                                                                            |
-| `keyHash`              | Yes      | The SHA 256 hash of the raw key, as 64 lowercase hexadecimal characters. Only the hash is ever stored.                                                                               |
-| `allowedCapabilities`  | No       | The actions (`intent.action`) this key may invoke, for example `["paytm:refund"]`. If unset or empty the key may invoke **nothing**. The single value `"*"` allows every capability. |
-| `allowedPrincipalIds`  | No       | The `authority.principalId` values this key may assert. If unset the key may only assert its own `callerId`.                                                                         |
-| `credentialHolderType` | No       | `USER`, `ROLE`, `SERVICE` or `ORGANIZATION`. Only `USER` keys may use the policy governance endpoints. If unset the key is treated as not human.                                     |
-| `stepUpPublicKey`      | No       | A PEM encoded Ed25519 public key (SPKI). Required for a `USER` key that approves or rejects policy changes.                                                                          |
+| Field                  | Required | Meaning                                                                                                                                                                                                                                                                |
+| ---------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `callerId`             | Yes      | A non empty string that names the caller.                                                                                                                                                                                                                              |
+| `keyHash`              | Yes      | The SHA 256 hash of the raw key, as 64 lowercase hexadecimal characters. Only the hash is ever stored.                                                                                                                                                                 |
+| `allowedCapabilities`  | No       | The actions (`intent.action`) this key may invoke, for example `["paytm:refund"]`. If unset or empty the key may invoke **nothing**. The single value `"*"` allows every capability.                                                                                   |
+| `allowedPrincipalIds`  | No       | The `authority.principalId` values this key may assert. If unset the key may only assert its own `callerId`.                                                                                                                                                           |
+| `allowedTenantIds`     | No       | The `metadata.tenantId` values this key may send. The tenant id picks the signing key `tenant.<tenantId>`, so it must come from the key. If unset or empty, a request with a `tenantId` is refused with `403 TENANT_NOT_ALLOWED`; a request without one is unaffected. |
+| `credentialHolderType` | No       | `USER`, `ROLE`, `SERVICE` or `ORGANIZATION`. Only `USER` keys may use the policy governance endpoints. If unset the key is treated as not human.                                                                                                                       |
+| `stepUpPublicKey`      | No       | A PEM encoded Ed25519 public key (SPKI). Required for a `USER` key that approves or rejects policy changes.                                                                                                                                                            |
 
 Generate an entry and its raw key with:
 

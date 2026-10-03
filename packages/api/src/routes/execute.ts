@@ -160,6 +160,25 @@ export function createExecuteRouter(
           }
 
           //
+          // metadata.tenantId selects the signing key (tenant.<tenantId>,
+          // TenantKeyResolver), so a caller may only name a tenant its own
+          // key lists. Otherwise any caller could have its authorization
+          // signed with another tenant's key.
+          //
+          const tenantId = transaction.metadata?.tenantId;
+
+          if (
+            tenantId !== undefined &&
+            !(req.callerAllowedTenantIds ?? []).includes(tenantId)
+          ) {
+            res.status(403).json({
+              error: "Caller is not permitted to act for this tenantId.",
+              code: "TENANT_NOT_ALLOWED",
+            });
+            return;
+          }
+
+          //
           // Mirrors the "caller.capability_denied" audit write above:
           // records which capability was actually granted, not just
           // which ones were refused, so the caller-audit trail alone

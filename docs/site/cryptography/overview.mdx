@@ -65,7 +65,11 @@ needs to exist — no verifier-side configuration change.
   `generate-keypair` run per tenant. An unprovisioned or malformed `tenantId`
   falls back to the shared `default` key rather than failing closed, deliberate,
   so adoption is incremental, but worth knowing before relying on it for
-  isolation.
+  isolation. Over HTTP, a caller may only send a `tenantId` its API key lists in
+  `allowedTenantIds`; any other is refused with `403 TENANT_NOT_ALLOWED`, so one
+  tenant's caller cannot have its authorization signed with another tenant's
+  key. Under AWS KMS, per tenant keys do not work: the alias `alias/tenant.<id>`
+  cannot be created, because KMS alias names cannot contain a dot.
 </Note>
 
 <Warning>
