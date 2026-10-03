@@ -2,7 +2,7 @@
 title: "Class: AuthorizationError"
 ---
 
-Defined in: [typescript/src/errors/AuthorizationError.ts:18](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/AuthorizationError.ts#L18)
+Defined in: [typescript/src/errors/AuthorizationError.ts:18](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/AuthorizationError.ts#L18)
 
 Raised when the Runtime returns HTTP 403 for a caller that is
 authenticated but not permitted to do the specific thing it asked
@@ -29,7 +29,7 @@ known; you can't do this" shape — distinguish them via `serverCode`/
 
 > **new AuthorizationError**(`message`, `options?`): `AuthorizationError`
 
-Defined in: [typescript/src/errors/AuthorizationError.ts:27](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/AuthorizationError.ts#L27)
+Defined in: [typescript/src/errors/AuthorizationError.ts:27](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/AuthorizationError.ts#L27)
 
 #### Parameters
 
@@ -65,7 +65,7 @@ Defined in: [typescript/src/errors/AuthorizationError.ts:27](https://github.com/
 
 > `readonly` `optional` **serverCode?**: `string`
 
-Defined in: [typescript/src/errors/AuthorizationError.ts:25](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/AuthorizationError.ts#L25)
+Defined in: [typescript/src/errors/AuthorizationError.ts:25](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/AuthorizationError.ts#L25)
 
 The Runtime's own `code` field, when the 403 carried one (currently
 only the capability-denied case: "CAPABILITY_NOT_ALLOWED"). Undefined
@@ -78,7 +78,7 @@ for the principal-mismatch case, which the Runtime sends with no
 
 > `readonly` **code**: [`ErrorCode`](/sdks/reference/typescript/enumerations/ErrorCode)
 
-Defined in: [typescript/src/errors/ParmanaError.ts:61](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L61)
+Defined in: [typescript/src/errors/ParmanaError.ts:61](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L61)
 
 Stable machine-readable error code.
 
@@ -92,7 +92,7 @@ Stable machine-readable error code.
 
 > `readonly` `optional` **requestId?**: `string`
 
-Defined in: [typescript/src/errors/ParmanaError.ts:66](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L66)
+Defined in: [typescript/src/errors/ParmanaError.ts:66](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L66)
 
 Optional request identifier.
 
@@ -106,7 +106,7 @@ Optional request identifier.
 
 > `readonly` `optional` **cause?**: `unknown`
 
-Defined in: [typescript/src/errors/ParmanaError.ts:71](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L71)
+Defined in: [typescript/src/errors/ParmanaError.ts:71](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L71)
 
 Optional underlying cause.
 
@@ -120,7 +120,7 @@ Optional underlying cause.
 
 > `readonly` `optional` **statusCode?**: `number`
 
-Defined in: [typescript/src/errors/ParmanaError.ts:79](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L79)
+Defined in: [typescript/src/errors/ParmanaError.ts:79](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L79)
 
 The HTTP status of the response this error was made from, for example
 403 or 503. Absent when no response was received (a network error or

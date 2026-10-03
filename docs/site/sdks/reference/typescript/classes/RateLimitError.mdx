@@ -2,7 +2,7 @@
 title: "Class: RateLimitError"
 ---
 
-Defined in: [typescript/src/errors/RateLimitError.ts:13](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/RateLimitError.ts#L13)
+Defined in: [typescript/src/errors/RateLimitError.ts:13](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/RateLimitError.ts#L13)
 
 Raised when the Runtime returns HTTP 429: the caller has exceeded the
 per-identity rate limit on POST /execute, or the IP-keyed limit on
@@ -23,7 +23,7 @@ to honor the Runtime's own hint rather than guess a delay.
 
 > **new RateLimitError**(`message`, `options?`): `RateLimitError`
 
-Defined in: [typescript/src/errors/RateLimitError.ts:20](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/RateLimitError.ts#L20)
+Defined in: [typescript/src/errors/RateLimitError.ts:20](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/RateLimitError.ts#L20)
 
 #### Parameters
 
@@ -59,7 +59,7 @@ Defined in: [typescript/src/errors/RateLimitError.ts:20](https://github.com/pava
 
 > `readonly` **code**: [`ErrorCode`](/sdks/reference/typescript/enumerations/ErrorCode)
 
-Defined in: [typescript/src/errors/ParmanaError.ts:61](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L61)
+Defined in: [typescript/src/errors/ParmanaError.ts:61](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L61)
 
 Stable machine-readable error code.
 
@@ -73,7 +73,7 @@ Stable machine-readable error code.
 
 > `readonly` `optional` **requestId?**: `string`
 
-Defined in: [typescript/src/errors/ParmanaError.ts:66](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L66)
+Defined in: [typescript/src/errors/ParmanaError.ts:66](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L66)
 
 Optional request identifier.
 
@@ -87,7 +87,7 @@ Optional request identifier.
 
 > `readonly` `optional` **cause?**: `unknown`
 
-Defined in: [typescript/src/errors/ParmanaError.ts:71](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L71)
+Defined in: [typescript/src/errors/ParmanaError.ts:71](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L71)
 
 Optional underlying cause.
 
@@ -101,7 +101,7 @@ Optional underlying cause.
 
 > `readonly` `optional` **statusCode?**: `number`
 
-Defined in: [typescript/src/errors/ParmanaError.ts:79](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/ParmanaError.ts#L79)
+Defined in: [typescript/src/errors/ParmanaError.ts:79](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/ParmanaError.ts#L79)
 
 The HTTP status of the response this error was made from, for example
 403 or 503. Absent when no response was received (a network error or
@@ -118,7 +118,7 @@ equivalent is `status_code`.
 
 > `readonly` `optional` **retryAfterSeconds?**: `number`
 
-Defined in: [typescript/src/errors/RateLimitError.ts:18](https://github.com/pavancharak/AgentLabsBuildathon/blob/main/typescript/src/errors/RateLimitError.ts#L18)
+Defined in: [typescript/src/errors/RateLimitError.ts:18](https://github.com/pavancharak/parmana/blob/main/typescript/src/errors/RateLimitError.ts#L18)
 
 Seconds to wait before retrying, taken from the response's
 `Retry-After` header. Undefined when the Runtime didn't send one.
