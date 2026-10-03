@@ -1,3 +1,5 @@
+import { createServer, type Socket } from "node:net";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -185,25 +187,44 @@ describe("GatewayGitHubAdapter", () => {
   it("fails closed on a timeout, never returning a partial success", async () => {
     seedPr();
     // MockGitHubServer has no configurable delay hook (unlike MockHubSpotServer);
-    // exercise timeout by pointing at an address that never responds instead.
-    const unroutable = new GatewayGitHubAdapter({
+    // exercise timeout with a local server that accepts the connection and
+    // never responds. An unroutable address is not reliable: some networks
+    // reject it at once, which fails the request instead of timing it out.
+    const sockets = new Set<Socket>();
+    const silent = createServer((socket) => {
+      sockets.add(socket);
+    });
+    await new Promise<void>((resolve) =>
+      silent.listen(0, "127.0.0.1", resolve),
+    );
+    const address = silent.address();
+    if (address === null || typeof address === "string") {
+      throw new Error("silent server has no TCP address");
+    }
+
+    const unresponsive = new GatewayGitHubAdapter({
       connectorId: "github",
       capabilities: connectorCapabilities([GITHUB_PR_FETCH_CAPABILITY]),
-      baseUrl: "http://10.255.255.1",
+      baseUrl: `http://127.0.0.1:${address.port}`,
     });
 
-    await expect(
-      unroutable.execute(
-        {
-          capability: GITHUB_PR_FETCH_CAPABILITY,
-          businessTransactionId: "txn-timeout",
-          action: GITHUB_PR_FETCH_CAPABILITY,
-          target: "acme/widgets#42",
-          parameters: {},
-        },
-        context({ timeoutMs: 50 }),
-      ),
-    ).rejects.toThrow(/timed out after 50ms/);
+    try {
+      await expect(
+        unresponsive.execute(
+          {
+            capability: GITHUB_PR_FETCH_CAPABILITY,
+            businessTransactionId: "txn-timeout",
+            action: GITHUB_PR_FETCH_CAPABILITY,
+            target: "acme/widgets#42",
+            parameters: {},
+          },
+          context({ timeoutMs: 50 }),
+        ),
+      ).rejects.toThrow(/timed out after 50ms/);
+    } finally {
+      for (const socket of sockets) socket.destroy();
+      await new Promise<void>((resolve) => silent.close(() => resolve()));
+    }
   }, 10_000);
 
   it("rejects a credential that is not a resolved GitHub installation token", async () => {

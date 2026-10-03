@@ -1,4 +1,9 @@
+import "dotenv/config";
+
 import { spawn } from "node:child_process";
+import { generateKeyPairSync } from "node:crypto";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -139,6 +144,58 @@ const examples = [
   "examples/scenarios/purchase-order/run.ts",
 ];
 
+//
+// A fresh clone has no .env and no keys/, and most examples refuse to
+// start without a policy directory, a storage mode and signing keys.
+// So the runner fills in local, offline defaults for anything that is
+// not already set. Values from the environment or from .env (loaded
+// above, before these defaults) always win, so an existing setup runs
+// exactly as before.
+//
+const LOCAL_DEFAULTS: Record<string, string> = {
+  PARMANA_POLICY_DIR: "./policies",
+  PARMANA_STORAGE: "memory",
+  KEY_PROVIDER: "local",
+  PRIMARY_SIGNATURE_PROVIDER: "ed25519",
+};
+
+const appliedDefaults: string[] = [];
+
+for (const [name, value] of Object.entries(LOCAL_DEFAULTS)) {
+  if (!process.env[name]) {
+    process.env[name] = value;
+    appliedDefaults.push(`${name}=${value}`);
+  }
+}
+
+//
+// Without PARMANA_KEY_DIR, sign with throwaway Ed25519 keys in a temp
+// directory that is deleted afterwards. Never writes into ./keys.
+//
+let throwawayKeyDir: string | undefined;
+
+if (!process.env.PARMANA_KEY_DIR) {
+  throwawayKeyDir = mkdtempSync(path.join(tmpdir(), "parmana-example-keys-"));
+
+  for (const keyId of ["default", "gateway"]) {
+    const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+
+    writeFileSync(
+      path.join(throwawayKeyDir, `${keyId}.private.pem`),
+      privateKey.export({ format: "pem", type: "pkcs8" }),
+    );
+    writeFileSync(
+      path.join(throwawayKeyDir, `${keyId}.public.pem`),
+      publicKey.export({ format: "pem", type: "spki" }),
+    );
+  }
+
+  process.env.PARMANA_KEY_DIR = throwawayKeyDir;
+  appliedDefaults.push(
+    `PARMANA_KEY_DIR=<throwaway keys in ${throwawayKeyDir}>`,
+  );
+}
+
 async function run(example: string): Promise<void> {
   console.log();
   console.log("============================================================");
@@ -175,6 +232,12 @@ async function main(): Promise<void> {
   console.log("Parmana Example Runner");
   console.log("============================================================");
 
+  if (appliedDefaults.length > 0) {
+    console.log();
+    console.log("Not set in the environment or .env, so using local defaults:");
+    for (const entry of appliedDefaults) console.log(`  ${entry}`);
+  }
+
   for (const example of examples) {
     await run(example);
   }
@@ -185,8 +248,14 @@ async function main(): Promise<void> {
   console.log("============================================================");
 }
 
-main().catch((error) => {
-  console.error();
-  console.error(error);
-  process.exit(1);
-});
+main()
+  .catch((error) => {
+    console.error();
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(() => {
+    if (throwawayKeyDir) {
+      rmSync(throwawayKeyDir, { recursive: true, force: true });
+    }
+  });

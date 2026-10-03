@@ -66,6 +66,22 @@ dotenv.config({
 });
 
 /**
+ * Local defaults, so `npm test` works on a fresh clone with no .env.
+ * They match the job level env in .github/workflows/ci.yml and apply
+ * only when a variable is not already set by the shell or .env.
+ */
+const LOCAL_TEST_DEFAULTS: Record<string, string> = {
+  PARMANA_POLICY_DIR: "./policies",
+  PARMANA_STORAGE: "memory",
+  KEY_PROVIDER: "local",
+  PRIMARY_SIGNATURE_PROVIDER: "ed25519",
+};
+
+for (const [name, value] of Object.entries(LOCAL_TEST_DEFAULTS)) {
+  process.env[name] ??= value;
+}
+
+/**
  * Global hermetic key material.
  *
  * Every test file gets its own temporary Ed25519 keypair.

@@ -1,5 +1,15 @@
 # Contributing to Parmana
 
+## External contributions
+
+This repository is proprietary and source-available for evaluation only (see
+[LICENSE](LICENSE)). Pull requests from outside Parmana Systems are not accepted without a
+prior written contributor agreement, and will be closed. Questions, feedback and bug reports
+are welcome by email at [founder@parmanasystems.com](mailto:founder@parmanasystems.com) or as
+a GitHub issue. Report security issues privately, as described in [SECURITY.md](SECURITY.md).
+
+The rest of this file is the process for people working on Parmana under such an agreement.
+
 Parmana authorizes and evidences what automated systems do, so correctness, determinism and
 verifiable evidence come before convenience.
 

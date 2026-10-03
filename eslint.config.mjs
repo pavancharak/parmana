@@ -11,9 +11,6 @@ export default [
 
       // Legacy/generated JS examples
       "typescript/**",
-
-      // Local scratch files
-      "test.mjs",
     ],
   },
 
