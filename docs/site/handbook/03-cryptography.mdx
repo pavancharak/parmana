@@ -126,8 +126,11 @@ _logical_ keyId, `"default"`, or a tenant-scoped `"tenant.acme"`, never a raw AW
 AWS KMS's `KeyId` parameter requires a real key ID (UUID), a full ARN, or an alias name/ARN
 (which must carry the `alias/` prefix); a bare `"default"` matches none of those and AWS
 rejects it outright. `resolveKmsKeyId()` maps a bare logical keyId to `alias/<keyId>`
-(mirroring `FileKeyProvider`'s own `<keyId>.private.pem` filename convention), and passes an
-already-qualified alias, ARN, or raw UUID straight through unchanged. This was a real bug,
+(mirroring `FileKeyProvider`'s own `<keyId>.private.pem` filename convention) and passes an
+explicit `alias/` name through unchanged. It refuses a full key ARN: a keyId often comes from
+the record being verified, and an ARN can name a key in another AWS account whose public key
+anyone may read (audit, 2026-10-03). A UUID shaped keyId is treated as an alias name, never as a
+raw key ID. This was a real bug,
 found by code review before any production traffic hit it: the very first version of this
 class passed the logical keyId straight through, which meant `KmsSigner.sign("default", data)`
 would have called AWS with `{ KeyId: "default" }` and failed immediately on every real

@@ -7823,7 +7823,8 @@ The gateway key is still read from `PARMANA_KEY_DIR`. A connector that verifies 
 - Do not store a static AWS access key on Vercel for runtime signing. The OIDC role in step 2 exists so that no such key is needed.
 - The code resolves the logical key id `default` to `alias/default`. A descriptive alias on the same key does not replace it.
 - Keep `PARMANA_KEY_MATERIAL_JSON` (or the key files) after moving to KMS: it still carries the gateway key.
-- A tenant key `tenant.<id>` resolves to `alias/tenant.<id>`. Nothing creates these aliases for you; create each one by hand with `aws kms create-alias`.
+- Per tenant keys do not work under KMS today. A tenant key `tenant.<id>` resolves to `alias/tenant.<id>`, and AWS KMS alias names cannot contain a dot, so the alias cannot be created and every tenant's authorizations are signed with `default`.
+- A keyId is always a logical name such as `default`, or an `alias/` name. A full key ARN is refused, including one named by a record being verified.
 - Keep `CRYPTO_MODE=single` (the default). Hybrid signing (Ed25519 and ML-DSA-65) uses local key files for both signatures, so the server refuses to start with `CRYPTO_MODE=hybrid` and `KEY_PROVIDER=aws-kms`.
 - After the key exists, narrow the administrator's own policy. `kms:CreateKey` with no resource limit is more than day to day work needs.
 

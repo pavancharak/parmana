@@ -204,16 +204,32 @@ describe("KmsSigner", () => {
       );
     });
 
-    it("passes a full key ARN through unchanged", async () => {
-      const arn =
-        "arn:aws:kms:ap-south-1:013659367671:key/2787acce-db19-4cd6-88ed-ce2c1319096b";
-      expect(await keyIdSentToKms(arn)).toBe(arn);
+    it("refuses a full key ARN, which can name a key in another AWS account", async () => {
+      const { resolveKmsKeyId } =
+        await import("../../src/providers/signer/KmsSigner.js");
+      expect(() =>
+        resolveKmsKeyId(
+          "arn:aws:kms:ap-south-1:999999999999:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+        ),
+      ).toThrow(/key ARN is not accepted/);
     });
 
-    it("passes a raw KMS key UUID through unchanged", async () => {
+    it("treats a UUID shaped keyId as an alias name in this account, never as a raw key ID", async () => {
       expect(await keyIdSentToKms("2787acce-db19-4cd6-88ed-ce2c1319096b")).toBe(
-        "2787acce-db19-4cd6-88ed-ce2c1319096b",
+        "alias/2787acce-db19-4cd6-88ed-ce2c1319096b",
       );
+    });
+
+    it("hasKey() answers false for an ARN without calling KMS", async () => {
+      const KmsSigner = await freshKmsSigner();
+      const signer = await KmsSigner.create();
+
+      await expect(
+        signer.hasKey(
+          "arn:aws:kms:ap-south-1:999999999999:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+        ),
+      ).resolves.toBe(false);
+      expect(sendMock).not.toHaveBeenCalled();
     });
   });
 
