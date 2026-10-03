@@ -2,7 +2,13 @@ import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { KeyProviders, loadConfig } from "@parmana/shared";
-import { DEFAULT_KEY_ID, SignerBootstrap } from "@parmana/crypto";
+import {
+  DEFAULT_KEY_ID,
+  DEFAULT_SECONDARY_KEY_ID,
+  SignerBootstrap,
+  currentVerificationKeyId,
+  currentVerificationSecondaryKeyId,
+} from "@parmana/crypto";
 
 /**
  * Materializes signing key material from a mounted-secret env var if the
@@ -51,6 +57,10 @@ export function assertSigningKeyMaterialConfigured(): void {
   }
 
   materializeFromEnvIfConfigured(keyDirectory);
+
+  if (config.crypto.mode === "hybrid") {
+    assertHybridKeyMaterialConfigured(config.keys.provider, keyDirectory);
+  }
 
   // ADR-0009: KEY_PROVIDER=aws-kms moves only the "default" signing
   // key's custody to KMS -- it never touched the separate "gateway"
@@ -110,6 +120,54 @@ export async function assertKmsSigningKeyReachable(): Promise<void> {
   }
 
   await signer.getMetadata(DEFAULT_KEY_ID);
+}
+
+/**
+ * CRYPTO_MODE=hybrid signs both entries of the hybrid `signatures`
+ * array with local key files (HybridSignatureProvider over
+ * FileKeyProvider, in VerificationCrypto and ReceiptCrypto), including
+ * the Ed25519 entry. Under KEY_PROVIDER=aws-kms that entry's key lives
+ * in KMS and has no local file, so every Trust Record would fail to
+ * sign after its action had already been released; if a local file
+ * did exist, the hybrid Ed25519 entry would be signed by a different
+ * key than the KMS one under the same keyId. Refused at startup
+ * instead. Under KEY_PROVIDER=local, every key the hybrid path reads
+ * must be present now, not discovered missing on the first release.
+ */
+function assertHybridKeyMaterialConfigured(
+  provider: string,
+  keyDirectory: string,
+): void {
+  if (provider === KeyProviders.AWS_KMS) {
+    throw new Error(
+      "CRYPTO_MODE=hybrid is not supported with KEY_PROVIDER=aws-kms: the hybrid " +
+        "signatures are made with local key files, and the Ed25519 key is in KMS. " +
+        "Refusing to start. Use CRYPTO_MODE=single with KMS, or KEY_PROVIDER=local " +
+        "for hybrid signing.",
+    );
+  }
+
+  const keyIds = new Set([
+    DEFAULT_KEY_ID,
+    currentVerificationKeyId(),
+    DEFAULT_SECONDARY_KEY_ID,
+    currentVerificationSecondaryKeyId(),
+  ]);
+
+  const missing = [...keyIds].filter(
+    (keyId) =>
+      !existsSync(join(keyDirectory, `${keyId}.private.pem`)) ||
+      !existsSync(join(keyDirectory, `${keyId}.public.pem`)),
+  );
+
+  if (missing.length > 0) {
+    throw new Error(
+      `CRYPTO_MODE=hybrid needs key pairs for ${missing.map((keyId) => `"${keyId}"`).join(", ")} ` +
+        `in "${keyDirectory}". Refusing to start rather than fail to sign the first ` +
+        "Trust Record after its action is released. Generate the secondary key with " +
+        "npm run generate:hybrid-secondary-key.",
+    );
+  }
 }
 
 function materializeFromEnvIfConfigured(keyDirectory: string): void {
