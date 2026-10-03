@@ -199,6 +199,12 @@ see their own READMEs):
 npm run examples
 ```
 
+No `.env` or `keys/` is needed. For anything not set in your environment or `.env`, the runner
+uses local, offline defaults (`PARMANA_POLICY_DIR=./policies`, `PARMANA_STORAGE=memory`,
+`KEY_PROVIDER=local`, `PRIMARY_SIGNATURE_PROVIDER=ed25519`) and signs with throwaway Ed25519 keys
+in a temporary directory that it deletes afterwards. It prints which defaults it used. Values you
+set yourself always take precedence.
+
 Run one tutorial directly:
 
 ```bash

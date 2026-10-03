@@ -121,13 +121,16 @@ console.log();
 //
 const tempKeyDir = mkdtempSync(join(tmpdir(), "parmana-key-expiry-"));
 
+// The same key directory every other example signs with.
+const sourceKeyDir = process.env.PARMANA_KEY_DIR ?? "keys";
+
 try {
   copyFileSync(
-    "keys/default.private.pem",
+    join(sourceKeyDir, "default.private.pem"),
     join(tempKeyDir, "default.private.pem"),
   );
   copyFileSync(
-    "keys/default.public.pem",
+    join(sourceKeyDir, "default.public.pem"),
     join(tempKeyDir, "default.public.pem"),
   );
 

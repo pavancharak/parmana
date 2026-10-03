@@ -106,9 +106,15 @@ signing.
 
 ## Getting started
 
+Evaluating Parmana? [EVALUATION.md](EVALUATION.md) is the step by step guide: requirements,
+what to run, and what to expect. The short version, on Node.js 24.6 or later with no `.env`
+or credentials:
+
 ```bash
-npm install
+npm ci
+npm run build
 npm test
+npm run examples
 ```
 
 To see the full chain run against a local mock connector, no network
@@ -177,6 +183,10 @@ Source-available for evaluation only. See [LICENSE](./LICENSE). No
 license is granted to use, copy, modify, distribute, or create
 derivative works from this repository except as expressly permitted in a
 separate written agreement with Parmana Systems.
+
+The client SDKs in [typescript/](typescript/) and [python/](python/) carry
+their own Apache License 2.0, under which they are published as
+`@parmana/sdk` and `parmana`.
 
 ## More documentation
 
