@@ -1,11 +1,12 @@
 # Parmana
 
-**Institutional Authority Infrastructure: protecting who has the authority
-to decide what becomes real-world execution.**
+**The authorization layer for AI agents: every action is checked against
+policy and a signed human approval before it runs, and every action that
+runs leaves a signed record anyone can verify.**
 
 [![CI](https://github.com/pavancharak/parmana/actions/workflows/ci.yml/badge.svg)](https://github.com/pavancharak/parmana/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-proprietary-lightgrey)](./LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](package.json)
+[![Node](https://img.shields.io/badge/node-%3E%3D24.6-brightgreen)](package.json)
 
 > **Proprietary software evaluation only.** This repository is source-available
 > for evaluation purposes. No license is granted to use, copy, modify, or
@@ -13,7 +14,7 @@ to decide what becomes real-world execution.**
 > agreement with Parmana Systems. See [LICENSE](./LICENSE).
 
 As organizations connect AI agents to real systems, the open question is
-no longer whether the agent can act, it's what it's actually allowed to
+no longer whether the agent can act. It is what the agent is allowed to
 do, and whether what it did can be proven afterward rather than assumed.
 Parmana sits between an AI agent and the systems it calls: every
 requested action is checked against an explicit policy before it runs, so
@@ -23,16 +24,14 @@ included, is authorized without a signed approval from a trusted person
 also produces a signed, tamper-evident record, so what happened can be
 proven afterward, not just trusted. Parmana does not decide what the
 agent should do. It decides, and proves, whether the agent was allowed to
-do it the authorization layer beneath that guarantee, not a
-replacement for it.
+do it.
 
-## Proven, not promised
+## What the evidence shows
 
-Parmana's own documentation discipline is the differentiator: [docs/CLAIMS.md](docs/CLAIMS.md)
-states every technical claim at the scope its evidence actually supports,
-cites the specific code and test backing it, and keeps a running list of
-what is explicitly not yet true. Nothing below is asserted without a
-section number you can go check.
+[docs/CLAIMS.md](docs/CLAIMS.md) states every technical claim at the scope
+its evidence supports, cites the code and tests behind it, and keeps a list
+of what is not yet true. Each point below has a section there you can
+check.
 
 The chain: **authorize -> verify -> execute -> confirm**. A Business
 Transaction carries an explicit authority, authorization, and intent. A
@@ -42,20 +41,31 @@ real credentials directly. The result is signed into an append-only
 Execution Trust Record, independently verifiable without trusting
 Parmana's own runtime or database.
 
-What's actually been demonstrated, not just built:
+What has been demonstrated:
 
 - **The full test suite runs on every commit and pull request** (typecheck, lint, format,
   every test, build and the runnable examples; the pre commit hook and CI both run it). Suites
   that need live credentials or a database skip cleanly when none are configured.
-- A live, reproducible execution-authorization bypass was found and fixed the same session:
-  policy-evaluation signals are now bound to the executed Intent before any rule evaluates
+- A live, reproducible execution authorization bypass was found and fixed the same day:
+  policy evaluation signals are now bound to the executed Intent before any rule evaluates
   (`Policy.boundSignals` + `SignalIntentBinder`), closing the gap where a caller could declare
-  a small, fully-verified action while `intent` executed something else entirely. See
+  a small, fully verified action while `intent` executed something else. See
   [docs/VERIFICATION-GAPS.md](docs/VERIFICATION-GAPS.md) G-24 for the full incident, including
-  the live proof-of-concept figures, and what's deliberately still open.
-- **A real external system, not a mock**: HubSpot deal-stage/amount updates, authorized by policy, executed through the signed gateway pipeline, proven against HubSpot's actual production API, including a real, non-destructive read-nudge-revert mutation on a real account ([CLAIMS.md 3.10](docs/CLAIMS.md)).
-- Assessed at **Technology Readiness Level 6**, system/subsystem model or prototype demonstration in a relevant environment, on the strength of the point above ([CLAIMS.md, Maturity Assessment](docs/CLAIMS.md)). A prior deployment briefly reached TRL 7 on Razorpay evidence before that connector was deliberately removed 2026-08-12 — see CLAIMS.md's Maturity Assessment for the full history.
-- **Independently source-code-validated**, not merely documented: a from-scratch audit checked whether an action can become real-world execution without satisfying institutional authorization, for every capability this system exposes and regardless of what kind of system requests it (AI agent, human, or otherwise) — tracing the actual execution path rather than trusting function names or comments. Verdict: **directly validated**, for the capabilities currently registered in production, with precisely scoped caveats stated alongside the result, not smoothed over ([CLAIMS.md 2.25](docs/CLAIMS.md)).
+  the proof of concept figures, and what is still open.
+- **A real external system**: HubSpot deal stage and amount updates, authorized by policy and
+  executed through the signed gateway pipeline against HubSpot's production API, including a
+  non-destructive read, change and revert on a real account
+  ([CLAIMS.md 3.10](docs/CLAIMS.md)).
+- Assessed at **Technology Readiness Level 6** (prototype demonstrated in a relevant
+  environment) on the strength of the point above
+  ([CLAIMS.md, Maturity Assessment](docs/CLAIMS.md)). An earlier deployment briefly reached
+  TRL 7 on Razorpay evidence before that connector was removed on 2026-08-12; the Maturity
+  Assessment has the history.
+- **A source code audit of the authorization path**: four passes traced the execution path
+  for every capability, whatever kind of caller requests it (AI agent, person or other
+  system), to check whether any action can run without authorization. The fourth pass found
+  none for the capabilities registered in production, with the caveats stated alongside the
+  result ([CLAIMS.md 2.25](docs/CLAIMS.md)).
 
 ## Architecture
 
@@ -82,20 +92,24 @@ Authority --> Authorization --> Intent --> Business Transaction
                                 Verification  <-->  Settlement Confirmation
 ```
 
-| Package                      | Role                                                                                                           |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `@parmana/api`               | REST API: `/execute`, `/verification`, webhooks, caller authentication                                         |
-| `@parmana/runtime`           | Orchestrates a Business Transaction through policy, execution, and evidence                                    |
-| `@parmana/policy`            | Deterministic policy evaluation, sequential rules, first-match semantics                                       |
-| `@parmana/execution-gateway` | The sole boundary that releases an approved request to a connector                                             |
-| `@parmana/execution-control` | Credential-isolating, single-use execution release                                                             |
-| `@parmana/connector-sdk`     | Connector authoring contract: capability definitions, schemas, and the Connector/CredentialProvider interfaces |
-| `@parmana/envelope-verifier` | Verifies a Parmana authorization independently, no trust in Parmana's runtime or database required             |
-| `@parmana/crypto`            | Signing and verification, Ed25519 by default, ML-DSA-65 (post-quantum) configurable                            |
-| `@parmana/receipt`           | Signed, portable proof of execution                                                                            |
-| `@parmana/replay`            | Deterministic reconstruction of a past policy decision                                                         |
-| `@parmana/storage`           | Append-only persistence, in-memory or Supabase-backed                                                          |
-| `@parmana/shared`            | Domain model and configuration shared across every package                                                     |
+| Package                        | Role                                                                                                           |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `@parmana/api`                 | REST API: `/execute`, `/verification`, webhooks, caller authentication                                         |
+| `@parmana/runtime`             | Orchestrates a Business Transaction through policy, execution, and evidence                                    |
+| `@parmana/policy`              | Deterministic policy evaluation, sequential rules, first-match semantics                                       |
+| `@parmana/execution-gateway`   | The sole boundary that releases an approved request to a connector                                             |
+| `@parmana/execution-control`   | Credential-isolating, single-use execution release                                                             |
+| `@parmana/connector-sdk`       | Connector authoring contract: capability definitions, schemas, and the Connector/CredentialProvider interfaces |
+| `@parmana/envelope-verifier`   | Verifies a Parmana authorization independently, no trust in Parmana's runtime or database required             |
+| `@parmana/crypto`              | Signing and verification, Ed25519 by default, ML-DSA-65 (post-quantum) configurable                            |
+| `@parmana/approval`            | Verifies signed approvals issued by a business authority, independent of the caller and of Parmana's runtime   |
+| `@parmana/capability-registry` | Binds each capability to the policy that governs it and refuses a request that names another                   |
+| `@parmana/execution-system`    | The interface Parmana forwards approved requests through, with an HTTP implementation                          |
+| `@parmana/connector-*`         | Connectors: HubSpot, GitHub, Slack and Paytm                                                                   |
+| `@parmana/governance-ui`       | Internal UI to propose and review policy changes; approval stays on the approver's machine                     |
+| `@parmana/replay`              | Deterministic reconstruction of a past policy decision                                                         |
+| `@parmana/storage`             | Append-only persistence, in-memory or Supabase-backed                                                          |
+| `@parmana/shared`              | Domain model and configuration shared across every package                                                     |
 
 Key properties: fail-closed configuration (a misconfigured process refuses
 to start rather than degrade silently), credential isolation (a connector
@@ -147,10 +161,10 @@ gates): `ALLOW_LIVE_HUBSPOT`, `TEST_HUBSPOT_PRIVATE_APP_TOKEN`,
 `TEST_HUBSPOT_DEAL_ID`, and separately `ALLOW_LIVE_SUPABASE` for the
 Supabase-gated storage suite.
 
-To measure request throughput/latency for `POST /execute` (real policy
-evaluation, Ed25519 signing, and connector execution, run at
-configurable concurrency against an in-memory, caller-auth-disabled
-instance (see the script's own header comment for exact scope):
+To measure throughput and latency for `POST /execute` (real policy
+evaluation, Ed25519 signing and connector execution, at configurable
+concurrency against an in memory instance with caller authentication
+disabled; the script's header comment has the exact scope):
 
 ```bash
 npm run loadtest -- --connections 20 --duration 15
@@ -163,7 +177,7 @@ Explicitly not claimed: sustained volume, load-bearing traffic, high
 availability, or multi-tenant production operation. The claims file also
 tracks what has no implementation yet, every connector beyond HubSpot,
 GitHub, and Paytm among them. Adding a new connector is a bootstrap source change
-today, not a runtime configuration option — see
+today, not a runtime configuration option. See
 [docs/connectors/BUILDING_A_CONNECTOR.md](docs/connectors/BUILDING_A_CONNECTOR.md).
 
 We're looking for a small number of design partners to run Parmana
@@ -190,7 +204,7 @@ This includes the client SDKs in [typescript/](typescript/) and
 ## More documentation
 
 **New here? Start with [The Parmana Handbook](https://docs.parmanasystems.com/handbook/overview)**:
-every capability this codebase has, explained by reading the actual source, in 23 chapters
+every capability this codebase has, explained from the source, in 23 chapters
 (source: `docs/site/handbook/`, also as a
 [downloadable PDF](https://docs.parmanasystems.com/handbook/download)).
 
@@ -204,6 +218,6 @@ cited to source).
 
 Adding a connector? Start with
 [docs/architecture/CONNECTOR_ISOLATION.md](docs/architecture/CONNECTOR_ISOLATION.md)
-(how credential isolation actually works) and
+(how credential isolation works) and
 [docs/connectors/BUILDING_A_CONNECTOR.md](docs/connectors/BUILDING_A_CONNECTOR.md)
 (the concrete steps, using the real HubSpot/GitHub connectors as reference).
