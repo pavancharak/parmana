@@ -1,3 +1,4 @@
+import { escapeHtml } from "./escapeHtml.js";
 import { renderLayout } from "./layout.js";
 import { escapeHtml, escapedJson } from "./escapeHtml.js";
 import type { PendingPolicyChangeWithDiff } from "../types.js";
@@ -5,7 +6,9 @@ import type { PendingPolicyChangeWithDiff } from "../types.js";
 function formatDate(iso: string): string {
   const parsed = new Date(iso);
 
-  return Number.isNaN(parsed.getTime()) ? iso : parsed.toLocaleString();
+  return escapeHtml(
+    Number.isNaN(parsed.getTime()) ? iso : parsed.toLocaleString(),
+  );
 }
 
 function metaRow(label: string, value: string): string {
