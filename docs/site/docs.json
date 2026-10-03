@@ -34,7 +34,15 @@
               "playground",
               "choose-your-path",
               "quickstart",
-              "how-parmana-thinks",
+              "how-parmana-thinks"
+            ]
+          },
+          {
+            "group": "Evaluate and audit",
+            "pages": [
+              "evaluation/overview",
+              "evaluation/audit-guide",
+              "evaluation/claims-and-evidence",
               "license"
             ]
           },
@@ -743,6 +751,10 @@
             "href": "/license"
           },
           {
+            "label": "Audit guide",
+            "href": "/evaluation/audit-guide"
+          },
+          {
             "label": "Security",
             "href": "https://github.com/pavancharak/parmana/blob/main/SECURITY.md"
           }
@@ -751,7 +763,7 @@
     ]
   },
   "banner": {
-    "content": "Proprietary software, source-available for evaluation only. No license is granted to use, copy, modify, or distribute it without a written agreement with Parmana Systems. [License and evaluation](/license)",
+    "content": "Proprietary software, source-available for evaluation only. No license is granted to use, copy, modify, or distribute it without a written agreement with Parmana Systems. [License](/license) · [Evaluation and audit guide](/evaluation/overview)",
     "dismissible": false
   }
 }
