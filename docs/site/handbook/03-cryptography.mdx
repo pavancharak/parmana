@@ -123,14 +123,16 @@ configuration. If `AWS_ROLE_ARN` is set, `KmsSigner` dynamically imports the opt
 OIDC token for short-lived STS credentials; otherwise it falls back to the AWS SDK's own
 default credential provider chain.
 
-**`resolveKmsKeyId()`** is a small, standalone, exported function (`KmsSigner.ts:46-56`) that
+**`resolveKmsKeyId()`** is a small, standalone, exported function (`KmsSigner.ts`) that
 matters more than its size suggests. Every real signing call site in this codebase passes a
 _logical_ keyId, `"default"`, or a tenant-scoped `"tenant.acme"`, never a raw AWS identifier.
 AWS KMS's `KeyId` parameter requires a real key ID (UUID), a full ARN, or an alias name/ARN
 (which must carry the `alias/` prefix); a bare `"default"` matches none of those and AWS
 rejects it outright. `resolveKmsKeyId()` maps a bare logical keyId to `alias/<keyId>`
-(mirroring `FileKeyProvider`'s own `<keyId>.private.pem` filename convention) and passes an
-explicit `alias/` name through unchanged. It refuses a full key ARN: a keyId often comes from
+(mirroring `FileKeyProvider`'s own `<keyId>.private.pem` filename convention), with each `.`
+replaced by `/` because KMS alias names cannot contain a dot, so `"tenant.acme"` is
+`alias/tenant/acme`. It passes an explicit `alias/` name through unchanged, and refuses AWS's
+reserved `alias/aws/` prefix. It refuses a full key ARN: a keyId often comes from
 the record being verified, and an ARN can name a key in another AWS account whose public key
 anyone may read (audit, 2026-10-03). A UUID shaped keyId is treated as an alias name, never as a
 raw key ID. This was a real bug,
@@ -218,8 +220,8 @@ those two, not `KMS_REGION`/`KMS_KEY_ALIAS`, the latter pair currently does noth
 ## How it enables things, with a concrete example
 
 - `examples/tutorials/113-kms-key-id-resolution` exercises `resolveKmsKeyId()` directly against
-  five real input shapes (bare logical id, tenant-scoped id, already-qualified alias, full ARN,
-  raw UUID), no AWS credentials needed since it's a pure string-mapping function.
+  six real input shapes (bare logical id, tenant-scoped id, already-qualified alias, full ARN,
+  reserved `alias/aws/` name, raw UUID), no AWS credentials needed since it's a pure string-mapping function.
 - `examples/tutorials/114-signing-verification-key-agreement` exercises the
   `SignerKeyProviderAdapter` fix, proving signing and verification now resolve through the
   same key source.

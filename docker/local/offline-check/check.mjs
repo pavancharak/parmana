@@ -147,7 +147,7 @@ async function refund({ amount, managerApproved }) {
               keyId: manager.keyId,
               capability: "paytm:refund",
               resourceId: orderId,
-              scope: { field: "amount", comparator: "lte", value: amount },
+              scope: { field: "value", comparator: "lte", value: amount },
               ttlSeconds: 900,
             },
             manager.keys.privateKey,

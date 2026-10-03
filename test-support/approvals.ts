@@ -86,7 +86,7 @@ export function signTestApproval(options: {
       resourceId: options.resourceId,
       scope:
         options.value !== undefined
-          ? { field: "amount", comparator: "lte", value: options.value }
+          ? { field: "value", comparator: "lte", value: options.value }
           : {
               field: "resourceId",
               comparator: "eq",

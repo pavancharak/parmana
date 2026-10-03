@@ -262,6 +262,10 @@ Rules for a declaration, checked when the policy loads:
 - `resourceId` is `"target"` (the Intent's target, such as `acme/api#42` for a pull request) or a
   path into the Intent's `parameters`, such as `parameters.orderId`. A number is compared as its
   decimal string. `value` is a path into `parameters` to a number.
+- The approval's `scope.field` must be `value` when the declaration gives a `value`, and
+  `resourceId` when it does not. The SDKs' `signApproval` and `scripts/sign-approval.ts` write
+  these names. An approval scoped to any other field is refused, even when its bound would
+  compare true.
 - The key must be read by a rule, and must not also be in `boundSignals`.
 - With more than one approval signal, give each its own `artifact`, the signal that carries its
   approval. The default is `approvalArtifact`.

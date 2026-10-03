@@ -287,7 +287,7 @@ describe("ExecutionGateway signal-freshness check (G-31)", () => {
     expect(result.checks.signalsStillCurrent).toBeUndefined();
   });
 
-  it("skips the check (not fails) when the request carries no signals", async () => {
+  it("fails with a named hash mismatch when the authorization was signed over signals and the request omits them", async () => {
     const { privateKey, publicKey } = generateKeyPair();
     const originalHash = await signalsHasher.hash(ORIGINAL_SIGNALS);
     const signed = await signAuthorization(privateKey, originalHash);
@@ -297,14 +297,52 @@ describe("ExecutionGateway signal-freshness check (G-31)", () => {
       allowUnverifiedPolicy: true,
       publicKey,
       nonceStore: new MemoryNonceStore(),
-      signalStateVerifier: new FixedSignalStateVerifier([DRIFT_VIOLATION]),
+      signalStateVerifier: new FixedSignalStateVerifier([]),
       connector: new RecordingConnector(),
     });
 
     const { result } = await gateway.verify(buildRequest(signed));
 
-    expect(result.valid).toBe(true);
-    expect(result.checks.signalsStillCurrent).toBeUndefined();
+    expect(result.valid).toBe(false);
+    expect(result.checks.signalsStillCurrent).toBe(false);
+    expect(result.signalsHashMismatch?.expected).toBe(originalHash);
+    expect(result.signalsHashMismatch?.actual).toBe(
+      await signalsHasher.hash({}),
+    );
+  });
+
+  it("checks a request without signals as {} when the authorization was signed over no signals", async () => {
+    const { privateKey, publicKey } = generateKeyPair();
+    const emptyHash = await signalsHasher.hash({});
+    const signed = await signAuthorization(privateKey, emptyHash);
+
+    const passing = new ExecutionGateway({
+      // Legacy fixture: predates fail-closed policy binding.
+      allowUnverifiedPolicy: true,
+      publicKey,
+      nonceStore: new MemoryNonceStore(),
+      signalStateVerifier: new FixedSignalStateVerifier([]),
+      connector: new RecordingConnector(),
+    });
+
+    const { result: passed } = await passing.verify(buildRequest(signed));
+
+    expect(passed.valid).toBe(true);
+    expect(passed.checks.signalsStillCurrent).toBe(true);
+
+    const drifting = new ExecutionGateway({
+      // Legacy fixture: predates fail-closed policy binding.
+      allowUnverifiedPolicy: true,
+      publicKey,
+      nonceStore: new MemoryNonceStore(),
+      signalStateVerifier: new FixedSignalStateVerifier([DRIFT_VIOLATION]),
+      connector: new RecordingConnector(),
+    });
+
+    const { result: failed } = await drifting.verify(buildRequest(signed));
+
+    expect(failed.valid).toBe(false);
+    expect(failed.checks.signalsStillCurrent).toBe(false);
   });
 
   it("a nonce-replay-only failure is still correctly classified when signalsStillCurrent was skipped", async () => {

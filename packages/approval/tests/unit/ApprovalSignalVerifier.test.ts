@@ -132,7 +132,7 @@ describe("ApprovalSignalVerifier", () => {
         await verifier.findViolations(refundRequest(), {
           managerApproved: true,
           approvalArtifact: await sign("paytm:refund", "order-1", {
-            field: "amount",
+            field: "value",
             comparator: "lte",
             value: 75_000,
           }),
@@ -149,7 +149,7 @@ describe("ApprovalSignalVerifier", () => {
           refundAmount: 20_000,
           amount: 20_000,
           approvalArtifact: await sign("paytm:refund", "order-1", {
-            field: "amount",
+            field: "value",
             comparator: "lte",
             value: 20_000,
           }),
@@ -167,13 +167,31 @@ describe("ApprovalSignalVerifier", () => {
         await verifier.findViolations(refundRequest(), {
           managerApproved: true,
           approvalArtifact: await sign(capability, resourceId, {
-            field: "amount",
+            field: "value",
             comparator: "lte",
             value: 75_000,
           }),
         }),
       ).toEqual([REFUSED("managerApproved")]);
     });
+
+    it.each(["amount", "resourceId", "amountDeltaAbs"])(
+      'refuses an approval whose scope names "%s" instead of "value"',
+      async (field) => {
+        const { verifier } = setup();
+
+        expect(
+          await verifier.findViolations(refundRequest(), {
+            managerApproved: true,
+            approvalArtifact: await sign("paytm:refund", "order-1", {
+              field,
+              comparator: "lte",
+              value: 75_000,
+            }),
+          }),
+        ).toEqual([REFUSED("managerApproved")]);
+      },
+    );
 
     it("refuses when the signal is true and there is no approval", async () => {
       const { verifier } = setup();
@@ -200,7 +218,7 @@ describe("ApprovalSignalVerifier", () => {
           {
             managerApproved: true,
             approvalArtifact: await sign("paytm:refund", "order-1", {
-              field: "amount",
+              field: "value",
               comparator: "lte",
               value: 75_000,
             }),
@@ -300,6 +318,21 @@ describe("ApprovalSignalVerifier", () => {
         }),
       ).toEqual([REFUSED("releaseManagerApproved")]);
     });
+
+    it('refuses an approval whose scope names "pullRequest" instead of "resourceId"', async () => {
+      const { verifier } = setup();
+
+      expect(
+        await verifier.findViolations(mergeRequest(), {
+          releaseManagerApproved: true,
+          approvalArtifact: await sign("github:pr-merge", "acme/api#42", {
+            field: "pullRequest",
+            comparator: "eq",
+            value: "acme/api#42",
+          }),
+        }),
+      ).toEqual([REFUSED("releaseManagerApproved")]);
+    });
   });
 
   describe("nothing to verify", () => {
@@ -321,7 +354,7 @@ describe("ApprovalSignalVerifier", () => {
       expect(
         await verifier.findViolations(refundRequest({ policy: policy() }), {
           approvalArtifact: await sign("paytm:refund", "order-1", {
-            field: "amount",
+            field: "value",
             comparator: "lte",
             value: 1,
           }),
@@ -339,7 +372,7 @@ describe("ApprovalSignalVerifier", () => {
         {
           managerApproved: true,
           approvalArtifact: await sign("paytm:refund", "order-1", {
-            field: "amount",
+            field: "value",
             comparator: "lte",
             value: 75_000,
           }),
@@ -367,7 +400,7 @@ describe("ApprovalSignalVerifier", () => {
       const signals = {
         managerApproved: true,
         approvalArtifact: await sign("paytm:refund", "order-1", {
-          field: "amount",
+          field: "value",
           comparator: "lte",
           value: 75_000,
         }),
@@ -395,7 +428,7 @@ describe("ApprovalSignalVerifier", () => {
       const signals = {
         managerApproved: true,
         approvalArtifact: await sign("paytm:refund", "order-1", {
-          field: "amount",
+          field: "value",
           comparator: "lte",
           value: 75_000,
         }),
@@ -423,7 +456,7 @@ describe("ApprovalSignalVerifier", () => {
           {
             managerApproved: true,
             approvalArtifact: await sign("paytm:refund", "order-1", {
-              field: "amount",
+              field: "value",
               comparator: "lte",
               value: 75_000,
             }),
@@ -450,7 +483,7 @@ describe("ApprovalSignalVerifier", () => {
     it("accepts when each signal has its own valid approval", async () => {
       const { verifier } = setup();
       const scope = {
-        field: "amount",
+        field: "value",
         comparator: "lte" as const,
         value: 75_000,
       };
@@ -468,7 +501,7 @@ describe("ApprovalSignalVerifier", () => {
     it("uses neither approval when one of them is invalid, so the valid one can still be used", async () => {
       const { verifier } = setup();
       const scope = {
-        field: "amount",
+        field: "value",
         comparator: "lte" as const,
         value: 75_000,
       };
@@ -511,7 +544,7 @@ describe("ApprovalSignalVerifier", () => {
         {
           managerApproved: true,
           approvalArtifact: await sign("paytm:refund", "order-1", {
-            field: "amount",
+            field: "value",
             comparator: "lte",
             value: 500,
           }),

@@ -14,6 +14,16 @@ import type {
 } from "./ApprovalVerifier.js";
 import { isSignedApprovalShape } from "./SignedApprovalGuard.js";
 
+/**
+ * The scope.field an approval must carry: "value" when the policy
+ * declaration gives a `value` path (the scope bounds that number),
+ * otherwise "resourceId" (the scope names the resource). These are
+ * the names the TypeScript and Python SDKs' signApproval and
+ * scripts/sign-approval.ts already write.
+ */
+export const APPROVAL_SCOPE_FIELD_VALUE = "value";
+export const APPROVAL_SCOPE_FIELD_RESOURCE_ID = "resourceId";
+
 interface PendingApproval {
   readonly signalKey: string;
   readonly artifact: SignedApproval;
@@ -32,8 +42,9 @@ type Resolved<T> =
  * the declaration's `artifact` (default "approvalArtifact") must hold a
  * SignedApproval that ApprovalVerifier accepts for this action, for the
  * resource at `resourceId` in the Intent's parameters, with a scope
- * covering the number at `value` when the policy gives one, or naming
- * exactly this resource when it does not. Resource and value come from
+ * covering the number at `value` when the policy gives one (scope.field
+ * "value"), or naming exactly this resource when it does not
+ * (scope.field "resourceId"). Resource and value come from
  * the Intent, never from the caller's signals.
  *
  * Runs at both checks. Every approval is first checked without being
@@ -143,8 +154,10 @@ export class ApprovalSignalVerifier implements SignalStateVerifier {
     }
 
     let requestedValue: unknown = resourceId.value;
+    let scopeField = APPROVAL_SCOPE_FIELD_RESOURCE_ID;
 
     if (declaration.value !== undefined) {
+      scopeField = APPROVAL_SCOPE_FIELD_VALUE;
       const value = resolveNumber(request, declaration.value);
 
       if (!value.ok) {
@@ -169,6 +182,7 @@ export class ApprovalSignalVerifier implements SignalStateVerifier {
           action: request.action,
           resourceId: resourceId.value,
           requestedValue,
+          scopeField,
         },
       },
     };

@@ -3205,7 +3205,7 @@ paths:
                             capability: test:fixture-execute
                             resourceId: vendor://payments
                             scope:
-                              field: amount
+                              field: value
                               comparator: lte
                               value: 1000
                             nonce: a5b7a9f3-a679-4052-9aa4-391e0e6b298c
@@ -3738,7 +3738,7 @@ paths:
                               capability: test:fixture-execute
                               resourceId: vendor://payments
                               scope:
-                                field: amount
+                                field: value
                                 comparator: lte
                                 value: 1000
                               nonce: d95d37c2-5214-4f05-b25b-b6b9cfccc3f1
@@ -3800,7 +3800,7 @@ paths:
                                   capability: test:fixture-execute
                                   resourceId: vendor://payments
                                   scope:
-                                    field: amount
+                                    field: value
                                     comparator: lte
                                     value: 1000
                                   nonce: d95d37c2-5214-4f05-b25b-b6b9cfccc3f1
@@ -3932,7 +3932,7 @@ paths:
                               capability: test:fixture-execute
                               resourceId: vendor://payments
                               scope:
-                                field: amount
+                                field: value
                                 comparator: lte
                                 value: 1000
                               nonce: d95d37c2-5214-4f05-b25b-b6b9cfccc3f1
@@ -3994,7 +3994,7 @@ paths:
                                   capability: test:fixture-execute
                                   resourceId: vendor://payments
                                   scope:
-                                    field: amount
+                                    field: value
                                     comparator: lte
                                     value: 1000
                                   nonce: d95d37c2-5214-4f05-b25b-b6b9cfccc3f1
@@ -4865,7 +4865,7 @@ paths:
                               capability: test:fixture-execute
                               resourceId: vendor://payments
                               scope:
-                                field: amount
+                                field: value
                                 comparator: lte
                                 value: 1000
                               nonce: 162faeee-644b-4a94-8abe-a5515149296f
@@ -4927,7 +4927,7 @@ paths:
                                   capability: test:fixture-execute
                                   resourceId: vendor://payments
                                   scope:
-                                    field: amount
+                                    field: value
                                     comparator: lte
                                     value: 1000
                                   nonce: 162faeee-644b-4a94-8abe-a5515149296f

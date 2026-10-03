@@ -368,7 +368,7 @@ describe("GitHub caller-to-capability scoping (HTTP boundary, caller-auth enable
         capability: "github:pr-merge",
         resourceId: "acme/widgets#45",
         scope: {
-          field: "pullRequest",
+          field: "resourceId",
           comparator: "eq",
           value: "acme/widgets#45",
         },
