@@ -1,4 +1,3 @@
-import { escapeHtml } from "./escapeHtml.js";
 import { renderLayout } from "./layout.js";
 import { escapeHtml, escapedJson } from "./escapeHtml.js";
 import type { PendingPolicyChangeWithDiff } from "../types.js";
