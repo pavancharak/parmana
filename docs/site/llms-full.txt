@@ -7571,10 +7571,11 @@ This page takes you from no key to a verified deployment. Do the steps in order.
 
 ## What KMS signs, and what stays a file
 
-| Signed with                                                                                             | Where the key lives                                                                           |
-| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Execution authorizations, Execution Trust Records, receipts, Refusal Records and audit event signatures | The KMS key with the alias `default` (the `PARMANA_VERIFICATION_KEY_ID` key)                  |
-| The gateway attestation                                                                                 | Still a file, `gateway.private.pem`, in `PARMANA_KEY_DIR` or from `PARMANA_KEY_MATERIAL_JSON` |
+| Signed with                                                                                | Where the key lives                                                                           |
+| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Execution Trust Records, Execution Intents, Refusal Records and audit event signatures     | The KMS key named by `PARMANA_VERIFICATION_KEY_ID`, alias `default` unless you set it         |
+| Execution authorizations, receipts, policy change approval records and the execution chain | Always the KMS key with the alias `default`                                                   |
+| The gateway attestation                                                                    | Still a file, `gateway.private.pem`, in `PARMANA_KEY_DIR` or from `PARMANA_KEY_MATERIAL_JSON` |
 
 So a KMS deployment still needs the gateway key file. Only the `default` key moves to KMS. See the [Environment variable reference](/deployment/environment-variables#signing-keys-and-gateway-identity).
 
