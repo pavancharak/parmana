@@ -4,7 +4,7 @@ import { PolicyNotFoundError } from "@parmana/policy";
 import type { Policy, PolicyRepository } from "@parmana/policy";
 import { PolicyChangeCrypto } from "@parmana/crypto";
 import type { PendingPolicyChange } from "@parmana/shared";
-import { PendingPolicyChangeStatus } from "@parmana/shared";
+import { ConflictError, PendingPolicyChangeStatus } from "@parmana/shared";
 import { MemoryPolicyChangeApprovalRecordRepository } from "@parmana/storage";
 
 import { PolicyChangeApprovalService } from "../../src/governance/PolicyChangeApprovalService.js";
@@ -109,6 +109,12 @@ describe("PolicyChangeApprovalService ordering: record persisted before the live
       async findMostRecentFor() {
         return null;
       },
+      async findMostRecentForName() {
+        return null;
+      },
+      async findByPendingPolicyChangeId() {
+        return null;
+      },
     };
 
     const service = new PolicyChangeApprovalService({
@@ -126,5 +132,81 @@ describe("PolicyChangeApprovalService ordering: record persisted before the live
     // that would be the exact "file changed, no evidence it was
     // approved" gap the ordering is designed to prevent.
     expect(saveCalled).toBe(false);
+  });
+});
+
+describe("PolicyChangeApprovalService retry after a partial failure", () => {
+  function setup() {
+    let failSave = true;
+    const saved: string[] = [];
+
+    const policyRepository: PolicyRepository = {
+      async load(): Promise<Policy> {
+        throw new PolicyNotFoundError("vendor-payment", "1.0.0");
+      },
+      async save(name: string, version: string): Promise<void> {
+        if (failSave) {
+          throw new Error("simulated disk failure writing policy.json");
+        }
+
+        saved.push(`${name}@${version}`);
+      },
+    };
+
+    const policyChangeApprovalRecordRepository =
+      new MemoryPolicyChangeApprovalRecordRepository();
+
+    const service = new PolicyChangeApprovalService({
+      policyRepository,
+      policyChangeCrypto: new PolicyChangeCrypto(),
+      policyChangeApprovalRecordRepository,
+    });
+
+    return {
+      service,
+      policyChangeApprovalRecordRepository,
+      saved,
+      recover: () => {
+        failSave = false;
+      },
+    };
+  }
+
+  it("lets the same approver finish, reusing the record the first attempt wrote", async () => {
+    const { service, policyChangeApprovalRecordRepository, saved, recover } =
+      setup();
+    const change = pendingChange();
+
+    await expect(service.approve(change, "human-checker")).rejects.toThrow(
+      /simulated disk failure/,
+    );
+    const [first] = await policyChangeApprovalRecordRepository.list();
+
+    recover();
+    const second = await service.approve(change, "human-checker");
+
+    expect(second).toEqual(first);
+    expect(await policyChangeApprovalRecordRepository.list()).toHaveLength(1);
+    expect(saved).toEqual(["vendor-payment@1.0.0"]);
+  });
+
+  it("refuses a different approver with 409 and writes nothing", async () => {
+    const { service, policyChangeApprovalRecordRepository, saved, recover } =
+      setup();
+    const change = pendingChange();
+
+    await expect(service.approve(change, "human-checker")).rejects.toThrow(
+      /simulated disk failure/,
+    );
+
+    recover();
+    const error = await service
+      .approve(change, "another-checker")
+      .catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(ConflictError);
+    expect((error as ConflictError).status).toBe(409);
+    expect(await policyChangeApprovalRecordRepository.list()).toHaveLength(1);
+    expect(saved).toEqual([]);
   });
 });

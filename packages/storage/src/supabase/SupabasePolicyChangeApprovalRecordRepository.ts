@@ -22,7 +22,8 @@ export class SupabasePolicyChangeApprovalRecordRepository implements PolicyChang
 
   /**
    * The unique index on pending_policy_change_id
-   * (20261003120000_unique_policy_change_approval_per_pending_change.sql)
+   * (20261003120000_unique_policy_change_approval_per_pending_change.sql,
+   * covering records approved from 2026-10-03 18:18:37 UTC)
    * makes a second record for the same pending change fail atomically
    * at the database. Mapped to ConflictError (409), the same error the
    * in-memory repository throws, so a concurrent second approval stops
@@ -66,6 +67,18 @@ export class SupabasePolicyChangeApprovalRecordRepository implements PolicyChang
   ): Promise<PolicyChangeApprovalRecord | null> {
     const { rows } = await this.pool.query(SELECT_BY_ID_SQL, [
       policyChangeApprovalRecordId,
+    ]);
+
+    const row = rows[0] as PolicyChangeApprovalRecordRow | undefined;
+
+    return row ? toPolicyChangeApprovalRecord(row) : null;
+  }
+
+  async findByPendingPolicyChangeId(
+    pendingPolicyChangeId: string,
+  ): Promise<PolicyChangeApprovalRecord | null> {
+    const { rows } = await this.pool.query(SELECT_BY_PENDING_CHANGE_SQL, [
+      pendingPolicyChangeId,
     ]);
 
     const row = rows[0] as PolicyChangeApprovalRecordRow | undefined;
@@ -136,6 +149,13 @@ const INSERT_APPROVAL_RECORD_SQL = `
 
 const SELECT_BY_ID_SQL = `
   SELECT * FROM policy_change_approval_records WHERE policy_change_approval_record_id = $1
+`;
+
+const SELECT_BY_PENDING_CHANGE_SQL = `
+  SELECT * FROM policy_change_approval_records
+  WHERE pending_policy_change_id = $1
+  ORDER BY approved_at DESC, policy_change_approval_record_id DESC
+  LIMIT 1
 `;
 
 const SELECT_ALL_SQL = `

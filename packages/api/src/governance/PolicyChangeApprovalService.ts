@@ -3,10 +3,11 @@ import crypto from "node:crypto";
 import type { Policy, PolicyRepository } from "@parmana/policy";
 import { PolicyNotFoundError } from "@parmana/policy";
 import type { PolicyChangeCrypto } from "@parmana/crypto";
-import type {
-  PendingPolicyChange,
-  PolicyChangeApprovalRecord,
-  PolicyChangeApprovalRecordRepository,
+import {
+  ConflictError,
+  type PendingPolicyChange,
+  type PolicyChangeApprovalRecord,
+  type PolicyChangeApprovalRecordRepository,
 } from "@parmana/shared";
 
 export interface PolicyChangeApprovalServiceOptions {
@@ -35,6 +36,14 @@ export interface PolicyChangeApprovalServiceOptions {
  * PendingPolicyChange's own `policyVersion` ("the version being
  * replaced") -- see PendingPolicyChange's own doc comment for why
  * those can legitimately differ.
+ *
+ * At most one record per pending change. A retry by the same approver
+ * after a partial failure (record written, then the file write or the
+ * route's resolve failed, leaving the change PENDING_APPROVAL) reuses
+ * the record the first attempt wrote and finishes the file write,
+ * instead of signing a second record. Any other approver gets a
+ * ConflictError (409); so does a second approval that races the first
+ * past this check, at the repository's unique constraint.
  */
 export class PolicyChangeApprovalService {
   private readonly policyRepository: PolicyRepository;
@@ -57,6 +66,35 @@ export class PolicyChangeApprovalService {
     const proposedContent = change.proposedContent as unknown as Policy;
     const writeVersion = proposedContent.policyVersion;
 
+    const contentHashAfter =
+      await this.policyChangeCrypto.hashPolicyContent(proposedContent);
+
+    const alreadyRecorded =
+      await this.policyChangeApprovalRecordRepository.findByPendingPolicyChangeId(
+        change.pendingPolicyChangeId,
+      );
+
+    if (alreadyRecorded !== null) {
+      if (
+        alreadyRecorded.approvedBy !== approvedBy ||
+        alreadyRecorded.contentHashAfter !== contentHashAfter
+      ) {
+        throw new ConflictError(
+          `Pending Policy Change '${change.pendingPolicyChangeId}' already ` +
+            `has an approval record by '${alreadyRecorded.approvedBy}'. Only ` +
+            "that approver can complete it.",
+        );
+      }
+
+      await this.policyRepository.save(
+        change.policyName,
+        writeVersion,
+        proposedContent,
+      );
+
+      return alreadyRecorded;
+    }
+
     const before = await this.policyRepository
       .load(change.policyName, writeVersion)
       .catch((error: unknown) => {
@@ -66,9 +104,6 @@ export class PolicyChangeApprovalService {
 
         throw error;
       });
-
-    const contentHashAfter =
-      await this.policyChangeCrypto.hashPolicyContent(proposedContent);
 
     const contentHashBefore =
       before === null
