@@ -128,7 +128,7 @@ export class GatewayGitHubAdapter implements Connector {
     const { owner, repo, pullNumber } = parseTarget(request.target);
 
     const body = (await this.githubGet(
-      `/repos/${owner}/${repo}/pulls/${pullNumber}`,
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${pullNumber}`,
       authorizationHeader,
       signal,
     )) as {
@@ -195,7 +195,7 @@ export class GatewayGitHubAdapter implements Connector {
     }
 
     const response = await fetch(
-      `${this.baseUrl}/repos/${owner}/${repo}/pulls/${pullNumber}/merge`,
+      `${this.baseUrl}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${pullNumber}/merge`,
       {
         method: "PUT",
         signal,
@@ -246,8 +246,16 @@ function parseTarget(target: string): {
   repo: string;
   pullNumber: string;
 } {
-  const match = /^([^/]+)\/([^#]+)#(\d+)$/.exec(target);
-  if (!match) {
+  //
+  // Owner and repository are restricted to the characters GitHub allows
+  // (an owner: letters, digits and hyphens; a repository: also "." and
+  // "_", but never "." or ".." alone). Both are interpolated into the
+  // request path, so "/", "..", "?" or "%" in either would let a target
+  // that reads as one repository address a different API path.
+  //
+  const match =
+    /^([A-Za-z0-9-]{1,39})\/([A-Za-z0-9._-]{1,100})#(\d{1,10})$/.exec(target);
+  if (!match || match[2] === "." || match[2] === "..") {
     throw new Error(
       `GitHubConnector received an invalid target "${target}". Expected "<owner>/<repo>#<pull_number>".`,
     );
