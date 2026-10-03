@@ -34,6 +34,12 @@ type Operation = {
 const METHODS = ["get", "put", "post", "delete", "patch"] as const;
 
 const root = process.cwd();
+
+// A path bash can open on every platform: relative to the repo root,
+// with forward slashes. WSL's bash on Windows strips the backslashes
+// from an absolute Windows path (D:\x\y becomes D:xy) and fails.
+const bashPath = (file: string) =>
+  path.relative(root, file).split(path.sep).join("/");
 const bundle = parse(
   readFileSync(path.join(root, "openapi", "openapi.bundled.yaml"), "utf8"),
 ) as {
@@ -157,10 +163,11 @@ describe("API reference code samples", () => {
 
   it("writes every cURL sample as valid shell", () => {
     for (const { operation } of operations) {
-      execFileSync("bash", [
-        "-n",
-        samplePaths(operation.operationId ?? "").curl,
-      ]);
+      execFileSync(
+        "bash",
+        ["-n", bashPath(samplePaths(operation.operationId ?? "").curl)],
+        { cwd: root },
+      );
     }
   });
 

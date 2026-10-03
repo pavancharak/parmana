@@ -46,10 +46,16 @@ describe("the sandbox playground", () => {
 
   it("has a cURL script that is valid shell", () => {
     expect(() =>
-      execFileSync("bash", [
-        "-n",
-        path.join(root, "examples", "sandbox-playground", "playground.sh"),
-      ]),
+      execFileSync(
+        "bash",
+        [
+          "-n",
+          // Relative, forward slashes: works for Linux bash, Git Bash and
+          // WSL's bash, which mangles an absolute Windows path.
+          "examples/sandbox-playground/playground.sh",
+        ],
+        { cwd: root },
+      ),
     ).not.toThrow();
   });
 
