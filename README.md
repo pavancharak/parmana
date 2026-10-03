@@ -61,11 +61,14 @@ What has been demonstrated:
   ([CLAIMS.md, Maturity Assessment](docs/CLAIMS.md)). An earlier deployment briefly reached
   TRL 7 on Razorpay evidence before that connector was removed on 2026-08-12; the Maturity
   Assessment has the history.
-- **A source code audit of the authorization path**: four passes traced the execution path
-  for every capability, whatever kind of caller requests it (AI agent, person or other
-  system), to check whether any action can run without authorization. The fourth pass found
-  none for the capabilities registered in production, with the caveats stated alongside the
-  result ([CLAIMS.md 2.25](docs/CLAIMS.md)).
+- **An internal source code review of the authorization path**: four passes traced the
+  execution path for every capability, whatever kind of caller requests it (AI agent, person
+  or other system), to check whether any action can run without authorization. The fourth
+  pass found none for the capabilities registered in production, with the caveats stated
+  alongside the result ([CLAIMS.md 2.25](docs/CLAIMS.md)). These were internal reviews, not
+  an independent audit; the
+  [Audit guide](https://docs.parmanasystems.com/evaluation/audit-guide) is the starting
+  point for one.
 
 ## Architecture
 

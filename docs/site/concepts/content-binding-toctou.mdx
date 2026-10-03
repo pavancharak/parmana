@@ -168,7 +168,9 @@ system and released later.
   Parmana are cryptographically impossible to accept. This claim holds only for
   a receiving system that (a) runs `@parmana/envelope-verifier` and (b) gates
   every execution-triggering code path behind its verification result. Parmana
-  enforces nothing at the network level."*
+  enforces nothing at the network level."* It also assumes Parmana's
+  authorization signing key is not compromised; see the [Audit
+  guide](/evaluation/audit-guide).
 </Note>
 
 This is real, tested protection, for a **gateway-integrated system**. It is not a

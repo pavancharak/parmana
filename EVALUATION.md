@@ -69,6 +69,9 @@ the record and the public keys, without Parmana's runtime or database, using
 
 ## Where to read next
 
+- [Audit guide](https://docs.parmanasystems.com/evaluation/audit-guide): the system under
+  evaluation, the points where execution is refused, what an attacker controls in each case
+  (including a compromised signing key), and a bounded scenario pinned to a commit.
 - [docs/CLAIMS.md](docs/CLAIMS.md): every technical claim, scoped to its evidence, with the
   code and tests that back it, and what is explicitly not claimed.
 - [docs/VERIFICATION-GAPS.md](docs/VERIFICATION-GAPS.md): what was found missing or wrong and
