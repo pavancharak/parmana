@@ -1,0 +1,67 @@
+---
+title: "Claims and evidence"
+description: "Each core claim, where it is stated in full, and the tests and commands that check it."
+---
+
+Parmana states what it claims in
+[docs/CLAIMS.md](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). Every
+claim there is scoped to its evidence: the code that implements it, the tests that check it,
+and what it explicitly does not cover. This site mirrors that file and never overrides it.
+When the two disagree, CLAIMS.md is authoritative and the site is wrong.
+
+## How to read a claim
+
+- **The heading states the claim.** A heading marked `(Scoped)` holds only within the
+  boundary its text states.
+- **Evidence lists the code and tests.** A claim is written in the present tense only when
+  code and tests back it.
+- **Dated updates record changes.** When a claim is narrowed, corrected or extended, a dated
+  `Update` paragraph is added rather than the original text being rewritten, so the history
+  stays readable.
+- **What is not claimed is stated too.** See [Limitations](/security/limitations), and
+  section 5 of CLAIMS.md.
+
+Gaps that were found, and how each was closed or narrowed, are in
+[docs/VERIFICATION-GAPS.md](https://github.com/pavancharak/parmana/blob/main/docs/VERIFICATION-GAPS.md).
+Open work is in
+[docs/REMAINING-WORK.md](https://github.com/pavancharak/parmana/blob/main/docs/REMAINING-WORK.md).
+
+## Core claims
+
+Run any listed test after `npm ci` and `npm run build` with
+`npx vitest run <path>`. Every test also runs in `npm test`.
+
+| Claim                                                                                                           | CLAIMS.md  | Tests that check it                                                                                                                                   |
+| --------------------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Policy evaluation is deterministic: the same transaction and policy give the same decision                      | 2.2, 2.3   | `packages/policy/tests/unit/ReferencePoliciesDeterminism.test.ts`, `packages/policy/tests/unit/PolicyEngine.test.ts`                                  |
+| An approved decision becomes a signed, single use, time bounded authorization                                   | 2.8        | `packages/envelope-verifier/tests/unit/envelope-verifier.test.ts`                                                                                     |
+| A forged, tampered, expired or replayed authorization is refused before anything executes                       | 2.10, 2.15 | `packages/envelope-verifier/tests/unit/envelope-verifier.test.ts`, `packages/execution-gateway/tests/unit/execution-gateway.test.ts`                  |
+| Every caller is authenticated at the API boundary                                                               | 2.16       | `packages/api/tests/integration/caller-auth.integration.test.ts`                                                                                      |
+| A duplicate business transaction is rejected atomically                                                         | 2.20       | `packages/storage/tests/unit/business-transaction-repository-duplicate-consistency.test.ts`                                                           |
+| No AI agent action is authorized without a signed human approval for that action and resource                   | 2.42, 2.47 | `packages/approval/tests/unit/ApprovalSignalVerifier.test.ts`, `packages/api/tests/integration/paytm-refund.integration.test.ts`                      |
+| A policy changes only through maker checker: one person proposes, another approves with a step up signature     | 2.26, 2.34 | `packages/api/tests/integration/pending-policy-changes-governance.integration.test.ts`, `packages/api/tests/unit/PolicyChangeApprovalService.test.ts` |
+| The gateway refuses an authorization whose policy is not the approved, current version                          | 2.27, 2.36 | `packages/execution-gateway/tests/unit/policy-binding-fail-closed.test.ts`, `packages/execution-gateway/tests/unit/policy-freshness.test.ts`          |
+| The gateway re-checks the signals an authorization was signed over                                              | 2.29       | `packages/execution-gateway/tests/unit/signal-freshness.test.ts`                                                                                      |
+| A connector's credential never reaches the caller, the decision or the evidence                                 | 2.23       | `packages/execution-gateway/tests/unit/credential-non-exposure.test.ts`                                                                               |
+| A signed Execution Intent exists before release, and a missing Trust Record can be rebuilt                      | 2.39       | `packages/runtime/tests/unit/execution-intent.test.ts`, `packages/api/tests/integration/execution-intents.integration.test.ts`                        |
+| Every approved action produces a signed Execution Trust Record, verifiable with only the record and public keys | 2.5, 2.6   | `packages/crypto/tests/unit/offline-verifier.test.ts`; command: `npx tsx scripts/verify-trust-record.ts <record.json> default=<key.pem>`              |
+| Records can carry hybrid Ed25519 and ML-DSA-65 signatures                                                       | 3.13       | `packages/crypto/tests/unit/hybrid-signature-provider.test.ts`                                                                                        |
+| A self hosted deployment enforces policy with no internet route                                                 | 2.40       | command: `bash docker/local/offline-check/run.sh` (Docker)                                                                                            |
+| `/execute`, failed authentication and the public routes are rate limited                                        | 3.14       | `packages/api/tests/integration/rate-limit.integration.test.ts`                                                                                       |
+
+Each claim's full text, scope and remaining limits are in the CLAIMS.md section named in the
+middle column. Read it before relying on the one line summary here.
+
+## Claims about live deployments
+
+Statements about the hosted sandbox and production (sections 2.51, 3.8, 3.9 and 3.18 of
+CLAIMS.md) describe what was checked on a stated date, against a stated deployment. They are
+evidence that the code ran there on that date, not a continuous guarantee. Sections marked
+`Historical` describe connectors that have since been removed.
+
+## Changing a claim
+
+A claim changes only together with its evidence, in the same pull request: CLAIMS.md first,
+then this site. See
+[CONTRIBUTING.md](https://github.com/pavancharak/parmana/blob/main/CONTRIBUTING.md) and
+[Contributing to this documentation](/contributing).

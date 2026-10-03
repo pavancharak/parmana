@@ -12,6 +12,41 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-03
 
+**Added: evaluation and audit pages**
+
+- New [Evaluate and audit](/evaluation/overview) section: an evaluation guide, an
+  [Audit guide](/evaluation/audit-guide) that names the enforcement points, what an attacker
+  controls in each case and a bounded scenario, and a
+  [Claims and evidence](/evaluation/claims-and-evidence) map from each core claim to its tests.
+
+**Fixed: security and correctness issues from an internal review**
+
+These change behavior a caller or operator can see
+([pavancharak/parmana#6](https://github.com/pavancharak/parmana/pull/6),
+[pavancharak/parmana#7](https://github.com/pavancharak/parmana/pull/7),
+[pavancharak/parmana#8](https://github.com/pavancharak/parmana/pull/8)):
+
+- A rejected or already approved policy change can no longer be approved and applied
+  (`409`). Two approvals of the same change at once apply it only once; a retry by the same
+  approver after a partial failure completes. New migration
+  `20261003120000_unique_policy_change_approval_per_pending_change.sql`.
+- `POST /execute` refuses a `metadata.tenantId` the API key does not list in its new
+  `allowedTenantIds` (`403 TENANT_NOT_ALLOWED`). A request with no tenant id is unaffected.
+- A signed approval's `scope.field` is checked: `value` when the policy declares a `value`,
+  otherwise `resourceId`. The SDKs and `scripts/sign-approval.ts` already write these.
+- The gateway checks a request with no `signals` against the authorization's signed signals
+  hash instead of skipping the check.
+- Failed authentication is rate limited per IP (`RATE_LIMIT_AUTH_FAILURE_PER_MINUTE`, default
+  30), and key discovery shares the public rate limiter.
+- `page` and `pageSize` on `GET /transactions` and `GET /trust-records` must be whole numbers;
+  `pageSize` is at most 100 (`400` otherwise).
+- Under AWS KMS: `GET /.well-known/jwks.json` lists the signing keys instead of answering `501`;
+  a key ARN is refused as a key id; public keys are cached for 5 minutes; a tenant key
+  `tenant.<id>` maps to the alias `alias/tenant/<id>`.
+- The server refuses to start with `CRYPTO_MODE=hybrid` and `KEY_PROVIDER=aws-kms`, or with
+  hybrid key files missing.
+- GitHub targets accept only a valid `owner/repo#number`.
+
 **Changed: the TypeScript and Python SDKs are proprietary**
 
 - From the next release, `@parmana/sdk` and `parmana` are licensed under the same proprietary,
