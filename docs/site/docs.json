@@ -592,7 +592,6 @@
               "reference/runtime",
               "reference/storage",
               "reference/replay",
-              "reference/receipt",
               "reference/api"
             ]
           },
@@ -716,6 +715,10 @@
     {
       "source": "/trust-and-claims/verification-log",
       "destination": "/security/limitations"
+    },
+    {
+      "source": "/reference/receipt",
+      "destination": "/reference/crypto"
     }
   ],
   "navbar": {

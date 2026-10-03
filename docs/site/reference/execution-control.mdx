@@ -1,12 +1,10 @@
 ---
 title: "@parmana/execution-control"
-description: "Gateway-authenticated, session-scoped credential isolation for connectors. Also home to a separate, currently-unwired Execution Permit model, disambiguated below."
+description: "Gateway-authenticated, session-scoped credential isolation for connectors."
 ---
 
 <Info>
   **[AVAILABLE]** for credential isolation, wired into the default server.
-  **[PARTIAL]** for the separate `ExecutionPermit` model described below, real
-  and tested, not reachable from `packages/api` or `packages/runtime` today.
 </Info>
 
 ## Purpose
@@ -18,9 +16,7 @@ for the concepts.
 
 ## Install
 
-```bash
-npm install @parmana/execution-control
-```
+Not published to npm. This is an internal package of this repository, used from a clone of it: `npm ci` at the repository root links every workspace package. The packages published to npm are [`@parmana/sdk`](/sdks/typescript), [`@parmana/connector-sdk`](/reference/connector-sdk) and [`@parmana/sign`](/sdks/parmana-sign/overview).
 
 ## Key exports: the wired credential-isolation path
 
@@ -51,38 +47,6 @@ npm install @parmana/execution-control
   already-verified route — see `docs/CLAIMS.md` §2.31 for the full,
   honestly-scoped writeup.
 </Note>
-
-## A second, separate model in this package: `ExecutionPermit`
-
-<Warning>
-**This is not the same thing as "Execution Permit," an earlier prototype name for [Execution
-authorization](/concepts/execution-authorization)** (`packages/shared/src/domain/execution-permit.ts`,
-added and deleted the same day, see the [Glossary](/glossary)). That file is gone. This is a
-different, currently real, `ExecutionPermit`:
-
-```typescript
-// packages/execution-control/src/models/ExecutionPermit.ts
-export interface ExecutionPermit {
-  readonly permitId: string;
-  readonly artifactHash: string;
-  readonly gatewayId: string;
-  readonly policyVersion: string;
-  readonly decision: ExecutionDecision;
-  readonly issuedAt: string;
-  readonly expiresAt: string;
-  readonly signatures: SignatureBundle;
-}
-```
-
-`ExecutionPermitBuilder` and `ExecutionDecision` (also exported from this package) build
-this artifact. It's consumed by `@parmana/receipt`'s `ExecutionReceiptBuilder`, and exercised
-end to end by `examples/tutorials/53-execution-permit/` through `56-complete-execution-flow/`.
-**Nothing in `packages/runtime` or `packages/api` imports `@parmana/receipt` or this
-`ExecutionPermit` model.** It is real, tested, hybrid-signature-capable code, running in a
-parallel path the default server and the main [Execution trust record](/concepts/execution-trust-records)
-pipeline never touch.
-
-</Warning>
 
 ## Minimal example
 
@@ -115,7 +79,11 @@ Full runnable version: [Issue and verify session credentials](/guides/session-cr
   >
     Issue, consume, expire, reuse-reject, and revoke, run live.
   </Card>
-  <Card title="@parmana/receipt" icon="file-check" href="/reference/receipt">
-    The other half of the unwired `ExecutionPermit` path.
+  <Card
+    title="@parmana/execution-gateway"
+    icon="shield-check"
+    href="/reference/execution-gateway"
+  >
+    The boundary that verifies an authorization before anything here runs.
   </Card>
 </CardGroup>
