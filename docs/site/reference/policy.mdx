@@ -23,9 +23,7 @@ concept, this page is the export reference.
 
 ## Install
 
-```bash
-npm install @parmana/policy
-```
+Not published to npm. This is an internal package of this repository, used from a clone of it: `npm ci` at the repository root links every workspace package. The packages published to npm are [`@parmana/sdk`](/sdks/typescript), [`@parmana/connector-sdk`](/reference/connector-sdk) and [`@parmana/sign`](/sdks/parmana-sign/overview).
 
 ## Key exports
 
@@ -49,7 +47,6 @@ npm install @parmana/policy
 | Export               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `PolicyValidator`    | `.validate(policy)` checks a `Policy` document's structural integrity (`policyId`/`policyVersion`/`schemaVersion` present, `rules` well-formed, `boundSignals`/`unboundSignalReasons` shape, operators supported) **and now fails closed** on `boundSignals` coverage — see the note below. Invoked by `PolicyRouter.load()`. `.findUncoveredFacts(policy)` returns every fact a rule condition references that is neither in `boundSignals` nor `unboundSignalReasons` |
-| `SignalValidator`    | Validates submitted signals against a policy's `signalsSchema`                                                                                                                                                                                                                                                                                                                                                                                                          |
 | `SignalIntentBinder` | `.findViolations(policy, signals, intent)`, checks every `Policy.boundSignals` entry by strict equality against `intent`. Invoked by `RuntimeEngine`, not by `PolicyEngine` itself — see the note above                                                                                                                                                                                                                                                                 |
 
 <Note>

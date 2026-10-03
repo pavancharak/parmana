@@ -1,166 +1,114 @@
-\# Tutorial 17 — Multi Policy Routing
+# Tutorial 17 — Multi Policy Routing
 
 This tutorial demonstrates how Parmana automatically routes a Business Transaction to the correct policy.
 
 Unlike previous tutorials that focused on a single policy, this example shows that the runtime is completely independent of business policies. The runtime simply loads the policy referenced by the Business Transaction.
 
-\## What You Will Learn
+## What You Will Learn
 
-\* How Policy Routing works.
+- How Policy Routing works.
+- How the Runtime locates policies.
+- Why Runtime code never changes when new policies are added.
+- How Policy References drive deterministic execution.
 
-\* How the Runtime locates policies.
-
-\* Why Runtime code never changes when new policies are added.
-
-\* How Policy References drive deterministic execution.
-
-\## Scenario
+## Scenario
 
 An enterprise may have hundreds of policies.
 
 For example:
 
-\* Vendor Payments
-
-\* Purchase Orders
-
-\* Customer Refunds
-
-\* Production Deployments
-
-\* Database Changes
-
-\* GitHub Pull Requests
+- Vendor Payments
+- Purchase Orders
+- Customer Refunds
+- Production Deployments
+- Database Changes
+- GitHub Pull Requests
 
 Instead of hardcoding these policies into the runtime, Parmana loads the correct policy at runtime using the Policy Reference contained within the Business Transaction.
 
-\## Directory Structure
+## Directory Structure
 
 ```text
-
 17-multi-policy-routing/
-
 ├── README.md
-
 ├── run.ts
-
 └── transaction.json
-
 ```
 
-\## Policy Routing Flow
+## Policy Routing Flow
 
 ```text
-
 Business Transaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Reference
-
 (name + version)
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Router
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Load Exact Policy
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Engine
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Decision
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Execution
-
 ```
 
-\## Policy Reference
+## Policy Reference
 
 Every Business Transaction specifies the exact policy to execute.
 
 ```json
-
 {
-
-&#x20; "policy": {
-
-&#x20;   "name": "vendor-payment",
-
-&#x20;   "version": "2.0.0",
-
-&#x20;   "schemaVersion": "1.0.0"
-
-&#x20; }
-
+  "policy": {
+    "name": "vendor-payment",
+    "version": "2.0.0",
+    "schemaVersion": "1.0.0"
+  }
 }
-
 ```
 
 The Runtime does not know anything about vendor payments, purchase orders, or any other business process.
 
 It simply loads the requested policy and executes it.
 
-\## Why This Matters
+## Why This Matters
 
 As organizations grow, they continuously introduce new governance policies.
 
 With Parmana:
 
-\* New policies are added.
-
-\* Existing policies are versioned.
-
-\* Old policies remain reproducible.
-
-\* The Runtime never changes.
+- New policies are added.
+- Existing policies are versioned.
+- Old policies remain reproducible.
+- The Runtime never changes.
 
 This separation allows the Runtime to remain stable while business authorization logic evolves independently.
 
-\## Run
+## Run
 
 ```bash
-
 tsx examples/tutorials/17-multi-policy-routing/run.ts
-
 ```
 
-\## Expected Output
+## Expected Output
 
 The example demonstrates:
 
-\* Policy loading
+- Policy loading
+- Policy routing
+- Deterministic policy evaluation
+- Execution Trust Record generation
+- Verification
+- Receipt generation
 
-\* Policy routing
-
-\* Deterministic policy evaluation
-
-\* Execution Trust Record generation
-
-\* Verification
-
-\* Receipt generation
-
-\## Key Takeaway
+## Key Takeaway
 
 The Parmana Runtime is policy-agnostic.
 

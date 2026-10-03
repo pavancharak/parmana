@@ -132,6 +132,12 @@ export async function verifyExecutionTrustRecordOffline(
   trustRecord: ExecutionTrustRecord,
   publicKeys: Readonly<Record<string, string>>,
 ): Promise<OfflineVerificationResult> {
+  const malformed = malformedArtifact(trustRecord, "trustRecordHash");
+
+  if (malformed !== undefined) {
+    return malformed;
+  }
+
   const errors: string[] = [];
   const algorithmsChecked: string[] = [];
 
@@ -238,6 +244,12 @@ export async function verifyExecutionIntentOffline(
   intent: ExecutionIntent,
   publicKeys: Readonly<Record<string, string>>,
 ): Promise<OfflineVerificationResult> {
+  const malformed = malformedArtifact(intent, "intentHash");
+
+  if (malformed !== undefined) {
+    return malformed;
+  }
+
   const errors: string[] = [];
   const algorithmsChecked: string[] = [];
 
@@ -276,6 +288,47 @@ export async function verifyExecutionIntentOffline(
     legacySignatureValid,
     algorithmsChecked,
     errors,
+  };
+}
+
+/**
+ * The result for input that is not a record of the expected shape: no
+ * hash field or no signature object. Returned instead of throwing, so a
+ * caller verifying untrusted files always gets `valid: false` and a
+ * reason, as OfflineVerificationResult documents.
+ */
+function malformedArtifact(
+  artifact: unknown,
+  hashField: "trustRecordHash" | "intentHash",
+): OfflineVerificationResult | undefined {
+  const record = artifact as Record<string, unknown> | null;
+  const signature =
+    typeof record === "object" && record !== null
+      ? (record.signature as Record<string, unknown> | null | undefined)
+      : undefined;
+
+  const wellFormed =
+    typeof record === "object" &&
+    record !== null &&
+    typeof record[hashField] === "string" &&
+    typeof signature === "object" &&
+    signature !== null &&
+    typeof signature.algorithm === "string" &&
+    typeof signature.keyId === "string" &&
+    typeof signature.value === "string";
+
+  if (wellFormed) {
+    return undefined;
+  }
+
+  return {
+    valid: false,
+    hashValid: false,
+    legacySignatureValid: false,
+    algorithmsChecked: [],
+    errors: [
+      `malformed input: expected an object with a string ${hashField} and a signature with algorithm, keyId and value.`,
+    ],
   };
 }
 

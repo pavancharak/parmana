@@ -105,6 +105,23 @@ describe("GatewayPaytmAdapter", () => {
     });
   });
 
+  it("refuses an amount with more than two decimals before forwarding, so the refund matches its evidence", async () => {
+    await expect(
+      connector().execute(refundRequest({ amount: 49.999 }), context()),
+    ).rejects.toThrow(/at most two decimal places/);
+    expect(server.calls).toHaveLength(0);
+  });
+
+  it("accepts an amount with two decimals", async () => {
+    const result = await connector().execute(
+      refundRequest({ amount: 49.99 }),
+      context(),
+    );
+
+    expect(result.success).toBe(true);
+    expect(server.calls[0]?.parameters.amount).toBe("49.99");
+  });
+
   it("G-71: a refundReference makes the refId per refund, and a refundReason is sent as reason", async () => {
     const withReference = (refundReference: string) => ({
       ...refundRequest({ orderId: "order-7", transactionId: "txn-7" }),

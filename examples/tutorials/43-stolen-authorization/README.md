@@ -1,269 +1,151 @@
-\# Tutorial 43 — Stolen Authorization
+# Tutorial 43 — Stolen Authorization
 
-\## Overview
+## Overview
 
 An attacker may obtain a legitimate Execution Authorization.
 
-Possession alone, however, does \*\*not\*\* grant permission to execute arbitrary requests.
+Possession alone, however, does **not** grant permission to execute arbitrary requests.
 
 Every Execution Authorization is cryptographically bound to the exact executable content that Parmana approved.
 
 Changing the request invalidates the authorization.
 
-\---
+---
 
-\## Attack Scenario
+## Attack Scenario
 
 ```text
-
 Attacker steals
-
 Execution Authorization
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Changes payment amount
-
-
-
 25,000 USD
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 500,000 USD
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Execution Gateway
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Recompute Executable Content Hash
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Hash Mismatch
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 ✗ Execution Rejected
-
 ```
 
-\---
+---
 
-\## Original Request
+## Original Request
 
 ```text
-
 Action
-
-
-
 release-payment
-
-
-
 Target
-
-
-
 sap.payment.release
-
-
-
 Amount
-
-
-
 25,000 USD
-
 ```
 
-\---
+---
 
-\## Stolen Authorization
+## Stolen Authorization
 
 The attacker possesses a completely valid authorization.
 
 ```text
-
 ✓ Valid Signature
-
-
-
 ✓ Valid Policy
-
-
-
 ✓ Valid Authorization
-
 ```
 
 But then changes the request.
 
 ```text
-
 Amount
-
-
-
 25,000 USD
-
-
-
 ↓
-
-
-
 500,000 USD
-
 ```
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 ```text
-
 ==================================================
-
 Tutorial 43 - Stolen Authorization
-
 ==================================================
-
-
-
 ✓ Valid Execution Authorization generated.
-
-
-
 Authorization Binding
-
 \--------------------------------------------------
-
-
-
 Authorized Hash : 4b7761f6...
-
-
-
 Presented Hash  : 92afde17...
-
-
-
 ✓ Stolen authorization detected.
-
-
-
 Execution rejected.
-
-
-
 Tutorial completed successfully.
-
 ```
 
-\---
+---
 
-\## Why This Works
+## Why This Works
 
 The gateway never trusts the request itself.
 
 Instead it:
 
-1\. Rebuilds the executable content.
-
-2\. Computes its hash.
-
-3\. Compares it with the hash stored inside the authorization.
+1. Rebuilds the executable content.
+2. Computes its hash.
+3. Compares it with the hash stored inside the authorization.
 
 If they differ, execution stops.
 
-\---
+---
 
-\## Security Guarantee
+## Security Guarantee
 
 A stolen authorization is only valid for:
 
-\- the original transaction
-
-\- the original action
-
-\- the original target
-
-\- the original parameters
+- the original transaction
+- the original action
+- the original target
+- the original parameters
 
 It cannot be transferred to another request.
 
-\---
+---
 
-\## Running the Example
+## Running the Example
 
 ```bash
-
 tsx examples/tutorials/43-stolen-authorization/run.ts
-
 ```
 
 or
 
 ```bash
-
 npm run examples
-
 ```
 
-\---
+---
 
-\## Next Tutorial
+## Next Tutorial
 
-\*\*Tutorial 44 — Direct API Bypass\*\*
+**Tutorial 44 — Direct API Bypass**
 
 The next tutorial demonstrates why enterprise APIs should reject requests that bypass Parmana entirely.
 
-\---
+---
 
-\## Summary
+## Summary
 
 In this tutorial you learned:
 
-\- A valid authorization can be stolen.
-
-\- Possession alone does not grant execution rights.
-
-\- Execution Authorization is bound to the original executable content.
-
-\- Modified requests are rejected before enterprise execution.
+- A valid authorization can be stolen.
+- Possession alone does not grant execution rights.
+- Execution Authorization is bound to the original executable content.
+- Modified requests are rejected before enterprise execution.

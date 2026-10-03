@@ -1,153 +1,77 @@
-# \# Tutorial 05 — Verification
+# Tutorial 05 — Verification
 
-#
+## Overview
 
-# \## Overview
+This tutorial demonstrates how Parmana verifies an Execution Trust Record.
 
-#
+Verification confirms that an Execution Trust Record has not been modified and that its cryptographic evidence remains valid.
 
-# This tutorial demonstrates how Parmana verifies an Execution Trust Record.
+No Runtime execution occurs.
 
-#
+No Replay occurs.
 
-# Verification confirms that an Execution Trust Record has not been modified and that its cryptographic evidence remains valid.
+---
 
-#
+## Learning Objectives
 
-# No Runtime execution occurs.
+After completing this tutorial you will understand:
 
-#
+- Execution Trust Record
+- Verification
+- Cryptographic Integrity
+- Verification Result
 
-# No Replay occurs.
+---
 
-#
+## Files
 
-# \---
+| File     | Purpose                            |
+| -------- | ---------------------------------- |
+| `run.ts` | Verifies an Execution Trust Record |
 
-#
+---
 
-# \## Learning Objectives
+## Architecture
 
-#
+```
+Execution Trust Record
+  │
+  ▼
+ Verification Engine
+  │
+  ▼
+ Verification Result
+```
 
-# After completing this tutorial you will understand:
+---
 
-#
+## Run
 
-# \- Execution Trust Record
+```bash
+npm run example -- 05-verification
+```
 
-# \- Verification
+or
 
-# \- Cryptographic Integrity
+```bash
+tsx run.ts
+```
 
-# \- Verification Result
+---
 
-#
+## Expected Output
 
-# \---
+The tutorial prints:
 
-#
+- Execution Trust Record
+- Verification Result
 
-# \## Files
+No Runtime execution occurs.
 
-#
+No Replay occurs.
 
-# | File | Purpose |
+---
 
-# |------|---------|
+## Next Tutorial
 
-# | `run.ts` | Verifies an Execution Trust Record |
-
-#
-
-# \---
-
-#
-
-# \## Architecture
-
-#
-
-# ```
-
-# Execution Trust Record
-
-# &#x20; │
-
-# &#x20; ▼
-
-# &#x20;Verification Engine
-
-# &#x20; │
-
-# &#x20; ▼
-
-# &#x20;Verification Result
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Run
-
-#
-
-# ```bash
-
-# npm run example -- 05-verification
-
-# ```
-
-#
-
-# or
-
-#
-
-# ```bash
-
-# tsx run.ts
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Expected Output
-
-#
-
-# The tutorial prints:
-
-#
-
-# \- Execution Trust Record
-
-# \- Verification Result
-
-#
-
-# No Runtime execution occurs.
-
-#
-
-# No Replay occurs.
-
-#
-
-# \---
-
-#
-
-# \## Next Tutorial
-
-#
-
-# Continue to \*\*Tutorial 06 – Replay\*\*.
+Continue to **Tutorial 06 – Replay**.

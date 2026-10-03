@@ -414,8 +414,11 @@ paths:
       operationId: getJwks
       description: |
         Lists every public signing key this deployment can serve, the enumeration form of `GET /keys/{keyId}`.
-        Fetch and cache it when you verify many artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of
-        each entry; an entry may have no `jwk` field. Needs no key.
+        With local key files that is every key in the key directory. Under AWS KMS it is the keys this
+        deployment signs with: `default` and the current `PARMANA_VERIFICATION_KEY_ID`. A record signed
+        under an older key id is still served by `GET /keys/{keyId}`. Fetch and cache it when you verify
+        many artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of each entry; an entry may have no
+        `jwk` field. Needs no key.
       responses:
         "200":
           description: "Every public key this deployment can serve."
@@ -1581,16 +1584,28 @@ paths:
             minimum: 1
             default: 1
         - name: pageSize
-          description: "Items per page before filtering to your own transactions. Default 25."
+          description: "Items per page before filtering to your own transactions. Default 25. Maximum 100."
           in: query
           required: false
           schema:
             type: integer
             minimum: 1
+            maximum: 100
             default: 25
       responses:
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "400":
+          description: "page or pageSize is not a whole number in range. Nothing was read."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                pageSizeTooLarge:
+                  summary: Captured from the test suite, pageSize=1000000
+                  value:
+                    error: pageSize must be a whole number from 1 to 100.
         "200":
           description: "Your transactions on this page. May be empty."
           content:
@@ -3389,12 +3404,13 @@ paths:
             minimum: 1
             default: 1
         - name: pageSize
-          description: "Items per page before filtering. Default 25."
+          description: "Items per page before filtering. Default 25. Maximum 100."
           in: query
           required: false
           schema:
             type: integer
             minimum: 1
+            maximum: 100
             default: 25
         - name: since
           in: query
@@ -3413,6 +3429,17 @@ paths:
       responses:
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "400":
+          description: "page or pageSize is not a whole number in range. Nothing was read."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                pageSizeTooLarge:
+                  summary: Captured from the test suite, pageSize=1000000
+                  value:
+                    error: pageSize must be a whole number from 1 to 100.
         "200":
           description: "Your Trust Records on this page. May be empty."
           content:

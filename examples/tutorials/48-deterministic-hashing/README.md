@@ -1,6 +1,6 @@
-\# Tutorial 48 — Deterministic Hashing
+# Tutorial 48 — Deterministic Hashing
 
-\## Overview
+## Overview
 
 After canonical serialization, Parmana computes a deterministic cryptographic hash.
 
@@ -8,228 +8,139 @@ The same canonical bytes must always produce the same hash.
 
 This property is fundamental to:
 
-\- Execution Authorization
+- Execution Authorization
+- Trust Records
+- Digital Signatures
+- Independent Verification
+- Replay Protection
 
-\- Trust Records
+---
 
-\- Digital Signatures
-
-\- Independent Verification
-
-\- Replay Protection
-
-\---
-
-\## Architecture
+## Architecture
 
 ```text
-
 Business Object
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Canonical Serializer
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Canonical JSON
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 SHA-256
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Deterministic Hash
-
 ```
 
-\---
+---
 
-\## Why Deterministic Hashing Matters
+## Why Deterministic Hashing Matters
 
 Two identical business objects should always produce the same hash.
 
 ```text
-
 Object A
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Canonical JSON
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 SHA-256
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 4b7761f6...
-
-
-
 ──────────────────────
-
-
-
 Object B
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Canonical JSON
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 SHA-256
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 4b7761f6...
-
 ```
 
 Because the canonical JSON is identical, the hash is identical.
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 ```text
-
 ==================================================
-
 Tutorial 48 - Deterministic Hashing
-
 ==================================================
-
-
-
 Canonical JSON
-
-
-
 {"currency":"USD","invoiceId":"INV-2026-001","paymentAmount":25000,"vendorId":"VENDOR-1001"}
-
-
-
 Hash #1 : 4b7761...
-
-
-
 Hash #2 : 4b7761...
-
-
-
 ✓ Deterministic hashing verified.
-
-
-
 Tutorial completed successfully.
-
 ```
 
-\---
+---
 
-\## Why This Matters
+## Why This Matters
 
 Parmana never hashes arbitrary JSON.
 
 Every cryptographic operation follows the same pipeline:
 
 ```text
-
 Business Object
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Canonical Serializer
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Canonical JSON
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 SHA-256
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Hash
-
 ```
 
 Because the hash is deterministic:
 
-\- signatures are reproducible
+- signatures are reproducible
+- verification is independent
+- replay is deterministic
+- trust records remain verifiable
 
-\- verification is independent
+---
 
-\- replay is deterministic
-
-\- trust records remain verifiable
-
-\---
-
-\## Running the Example
+## Running the Example
 
 ```bash
-
 tsx examples/tutorials/48-deterministic-hashing/run.ts
-
 ```
 
 or
 
 ```bash
-
 npm run examples
-
 ```
 
-\---
+---
 
-\## Next Tutorial
+## Next Tutorial
 
-\*\*Tutorial 49 — Detached Signatures\*\*
+**Tutorial 49 — Detached Signatures**
 
 The next tutorial demonstrates how Parmana stores signatures separately from business data, allowing immutable payloads to be verified without modification.
 
-\---
+---
 
-\## Summary
+## Summary
 
 In this tutorial you learned:
 
-\- Canonical JSON always produces the same bytes.
-
-\- SHA-256 always produces the same hash for the same bytes.
-
-\- Deterministic hashing is the foundation of Parmana's cryptographic trust model.
+- Canonical JSON always produces the same bytes.
+- SHA-256 always produces the same hash for the same bytes.
+- Deterministic hashing is the foundation of Parmana's cryptographic trust model.

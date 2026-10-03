@@ -113,5 +113,5 @@ IDs, hashes, and signature values will differ on every run. The `attributes.conn
 is populated by `@parmana/connector-sdk`'s `SdkConnectorExecutor`.
 
 As of 2026-09-14 this example is built with `create_business_transaction()`, which derives
-the transaction's three id pairs (see [the Python SDK docs](/sdks/python)) instead of
+the transaction's three id pairs (see [the Python SDK docs](https://docs.parmanasystems.com/sdks/python)) instead of
 hand-assembling `Authority`/`Authorization`/`Intent` with hardcoded ids.

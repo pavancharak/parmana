@@ -39,7 +39,7 @@ this RFC confirmed the claim in full at the code level:
   that builds a signed `ExecutionTrustRecord`) are ever reached.
 - `Runtime.execute()` (`packages/runtime/src/Runtime.ts:34-51`) has no try/catch around the
   engine call, so the throw propagates immediately.
-- The global `errorHandler` (`packages/api/src/middleware/error-handler.ts:135-142`) turns a
+- The global `errorHandler` (`packages/api/src/middleware/error-handler.ts`) turns a
   `RuntimeError` straight into an HTTP response — no log line, no database write.
 - `BusinessTransactionRepository` (`packages/shared/src/repositories/business-transaction-repository.ts`)
   has no update method at all — the one row that _is_ durably written (at accept-time, before

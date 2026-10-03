@@ -102,6 +102,8 @@ export class StaticApprovalIssuerRegistry implements ApprovalIssuerRegistry {
   }
 
   private static key(approverId: string, keyId: string): string {
-    return `${approverId}:${keyId}`;
+    // JSON, not "approverId:keyId": ids may contain ":", and
+    // ("a:b", "c") and ("a", "b:c") must not share a key.
+    return JSON.stringify([approverId, keyId]);
   }
 }

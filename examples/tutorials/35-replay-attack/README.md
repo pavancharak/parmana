@@ -1,321 +1,187 @@
-\# Tutorial 35 — Replay Attack
+# Tutorial 35 — Replay Attack
 
-\## Overview
+## Overview
 
 A replay attack occurs when an attacker captures a valid Execution Authorization and attempts to submit the exact same authorization multiple times.
 
 Without replay protection, a previously authorized action could execute repeatedly.
 
-Parmana prevents replay attacks by requiring every Execution Authorization to contain a unique \*\*nonce\*\*. The receiving system records every accepted nonce and rejects any subsequent reuse.
+Parmana prevents replay attacks by requiring every Execution Authorization to contain a unique **nonce**. The receiving system records every accepted nonce and rejects any subsequent reuse.
 
-\---
+---
 
-\## Attack Scenario
+## Attack Scenario
 
 ```text
-
 AI Agent
-
-&#x20;   │
-
-&#x20;   ▼
-
+    │
+    ▼
 Execution Authorization
-
-&#x20;   │
-
-&#x20;   ▼
-
+    │
+    ▼
 Execution Gateway
-
-&#x20;   │
-
-&#x20;   ▼
-
+    │
+    ▼
 ✓ Accepted
-
-
-
 ──────────────────────────────
-
-
-
 Attacker replays
-
 the identical authorization
-
-
-
-&#x20;   │
-
-&#x20;   ▼
-
+    │
+    ▼
 Execution Gateway
-
-&#x20;   │
-
-&#x20;   ▼
-
+    │
+    ▼
 Nonce Store
-
-&#x20;   │
-
-&#x20;   ▼
-
+    │
+    ▼
 ✗ Replay Detected
-
 ```
 
-\---
+---
 
-\## How Replay Protection Works
+## How Replay Protection Works
 
 Every Execution Authorization contains:
 
-\- Authorization ID
-
-\- Nonce
-
-\- Signature
-
-\- Expiration Time
+- Authorization ID
+- Nonce
+- Signature
+- Expiration Time
 
 When the gateway receives an authorization it:
 
-1\. Verifies the signature.
+1. Verifies the signature.
+2. Verifies the authorization has not expired.
+3. Checks whether the nonce has already been accepted.
+4. Rejects duplicate nonces.
 
-2\. Verifies the authorization has not expired.
+---
 
-3\. Checks whether the nonce has already been accepted.
-
-4\. Rejects duplicate nonces.
-
-\---
-
-\## First Request
+## First Request
 
 The first request contains a previously unseen nonce.
 
 ```text
-
 Nonce
-
-
-
 8a5c...
-
-
-
 ↓
-
-
-
 Accepted
-
-
-
 ↓
-
-
-
 Nonce stored
-
 ```
 
-\---
+---
 
-\## Replay Attempt
+## Replay Attempt
 
 The identical authorization is submitted again.
 
 ```text
-
 Nonce
-
-
-
 8a5c...
-
-
-
 ↓
-
-
-
 Already Seen
-
-
-
 ↓
-
-
-
 Rejected
-
 ```
 
 The authorization itself is still valid.
 
 The rejection occurs because the nonce has already been consumed.
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 ```text
-
 ==================================================
-
 Tutorial 35 - Replay Attack
-
 ==================================================
-
-
-
 Generating Execution Authorization...
-
-
-
 ✓ Authorization generated.
-
-
-
 First Request
-
 \--------------------------------------------------
-
-
-
 Accepted : true
-
 Nonce Unseen : true
-
-
-
 Replay Attempt
-
 \--------------------------------------------------
-
-
-
 Accepted : false
-
 Nonce Unseen : false
-
-
-
 ✓ Replay attack detected.
-
-
-
 Execution rejected.
-
-
-
 Tutorial completed successfully.
-
 ```
 
-\---
+---
 
-\## Why Replay Protection Matters
+## Why Replay Protection Matters
 
 Replay protection prevents an attacker from executing the same approved action multiple times.
 
 Examples include:
 
-\- releasing the same payment twice
+- releasing the same payment twice
+- creating duplicate purchase orders
+- executing duplicate wire transfers
+- approving the same invoice repeatedly
 
-\- creating duplicate purchase orders
+---
 
-\- executing duplicate wire transfers
-
-\- approving the same invoice repeatedly
-
-\---
-
-\## Security Layers
+## Security Layers
 
 Replay protection is only one layer of execution trust.
 
 ```text
-
 Execution Authorization
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Signature Verification
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Expiration Check
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Replay Detection
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Authorization Binding
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Verification
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Enterprise Execution
-
 ```
 
-\---
+---
 
-\## Running the Example
+## Running the Example
 
 ```bash
-
 tsx examples/tutorials/35-replay-attack/run.ts
-
 ```
 
 or
 
 ```bash
-
 npm run examples
-
 ```
 
-\---
+---
 
-\## Next Tutorial
+## Next Tutorial
 
-\*\*Tutorial 36 — Parameter Tampering\*\*
+**Tutorial 36 — Parameter Tampering**
 
 The next tutorial demonstrates how modifying execution parameters changes the executable content hash and causes authorization verification to fail.
 
-\---
+---
 
-\## Summary
+## Summary
 
 In this tutorial you learned:
 
-\- Every Execution Authorization contains a unique nonce.
-
-\- The Execution Gateway records accepted nonces.
-
-\- A nonce can only be used once.
-
-\- Replay attacks are rejected before enterprise execution.
+- Every Execution Authorization contains a unique nonce.
+- The Execution Gateway records accepted nonces.
+- A nonce can only be used once.
+- Replay attacks are rejected before enterprise execution.

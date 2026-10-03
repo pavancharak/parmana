@@ -1,361 +1,219 @@
-\# Tutorial 28 — Envelope Replay Detection
+# Tutorial 28 — Envelope Replay Detection
 
-\## Overview
+## Overview
 
 In the previous tutorials we learned how Parmana generates and verifies Execution Authorizations.
 
-This tutorial demonstrates how Parmana prevents the \*\*same authorization\*\* from being accepted more than once.
+This tutorial demonstrates how Parmana prevents the **same authorization** from being accepted more than once.
 
 Even when:
 
-\- the signature is valid,
-
-\- the authorization has not expired,
-
-\- the payload has not been modified,
+- the signature is valid,
+- the authorization has not expired,
+- the payload has not been modified,
 
 the second attempt is rejected because the authorization nonce has already been consumed.
 
-\---
+---
 
-\## Execution Flow
+## Execution Flow
 
 ```text
-
 Business Transaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Parmana Runtime
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Signed Execution Authorization
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 EnvelopeVerifier
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 MemoryNonceStore
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 First Request
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 ✓ Accepted
-
-
-
 Second Request
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 ✗ Replay Detected
-
 ```
 
-\---
+---
 
-\## Why Replay Protection Exists
+## Why Replay Protection Exists
 
 Without replay protection an attacker could capture a valid authorization and execute it repeatedly until it expired.
 
 Replay detection guarantees that every authorization can only be accepted once.
 
-\---
+---
 
-\## Building the Runtime
+## Building the Runtime
 
 ```ts
-
-const runtime =
-
-&#x20; new RuntimeBuilder()
-
-&#x20;   .withPolicyRepository(
-
-&#x20;     new FilePolicyRepository("policies"),
-
-&#x20;   )
-
-&#x20;   .build(
-
-&#x20;     new MemoryExecutionTrustRecordRepository(),
-
-&#x20;   );
-
+const runtime = new RuntimeBuilder()
+  .withPolicyRepository(new FilePolicyRepository("policies"))
+  .build(new MemoryExecutionTrustRecordRepository());
 ```
 
-\---
+---
 
-\## Generating the Authorization
+## Generating the Authorization
 
 ```ts
-
-const { context } =
-
-&#x20; await runtime.execute(transaction);
-
-
-
-const authorization =
-
-&#x20; context.authorization!;
-
+const { context } = await runtime.execute(transaction);
+const authorization = context.authorization!;
 ```
 
-\---
+---
 
-\## Creating the Envelope Verifier
+## Creating the Envelope Verifier
 
 ```ts
-
-const verifier =
-
-&#x20; new EnvelopeVerifier({
-
-&#x20;   publicKey,
-
-&#x20;   nonceStore:
-
-&#x20;     new MemoryNonceStore(),
-
-&#x20; });
-
+const verifier = new EnvelopeVerifier({
+  publicKey,
+  nonceStore: new MemoryNonceStore(),
+});
 ```
 
 The verifier combines:
 
-\- signature verification
+- signature verification
+- expiration validation
+- TTL policy
+- replay detection
 
-\- expiration validation
+---
 
-\- TTL policy
-
-\- replay detection
-
-\---
-
-\## First Verification
+## First Verification
 
 ```ts
-
-const first =
-
-&#x20; await verifier.verify(
-
-&#x20;   authorization,
-
-&#x20; );
-
+const first = await verifier.verify(authorization);
 ```
 
 Result:
 
 ```text
-
 ✓ Accepted
-
 ```
 
 The nonce is recorded.
 
-\---
+---
 
-\## Second Verification
+## Second Verification
 
 ```ts
-
-const second =
-
-&#x20; await verifier.verify(
-
-&#x20;   authorization,
-
-&#x20; );
-
+const second = await verifier.verify(authorization);
 ```
 
 Result:
 
 ```text
-
 ✗ Replay Detected
-
 ```
 
 The authorization itself has not changed.
 
 Only the nonce state has changed.
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 ```text
-
 ==================================================
-
 Tutorial 28 - Envelope Replay Detection
-
 ==================================================
-
-
-
 Generating authorization...
-
-
-
 ✓ Authorization generated.
-
-
-
 First verification...
-
-
-
 Valid           : true
-
 Nonce Unseen    : true
-
-
-
 ✓ Authorization accepted.
-
-
-
 Second verification...
-
-
-
 Valid           : false
-
 Nonce Unseen    : false
-
-
-
 ✓ Replay detected.
-
-
-
 Tutorial completed successfully.
-
 ```
 
-\---
+---
 
-\## Verification Lifecycle
+## Verification Lifecycle
 
 ```text
-
 Authorization
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Verify Signature
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Verify Expiration
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Verify TTL
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Consume Nonce
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Execute
-
 ```
 
 The nonce is consumed only after every other verification succeeds.
 
 This prevents invalid or forged authorizations from exhausting nonce values.
 
-\---
+---
 
-\## Development vs Production
+## Development vs Production
 
 This tutorial uses:
 
 ```text
-
 MemoryNonceStore
-
 ```
 
 The in-memory implementation is intended only for examples and local development.
 
 Production deployments should use a persistent implementation backed by Redis, a database, or another durable store so replay protection survives process restarts.
 
-\---
+---
 
-\## Running the Example
+## Running the Example
 
 ```bash
-
 tsx examples/tutorials/28-envelope-replay-detection/run.ts
-
 ```
 
 or
 
 ```bash
-
 npm run examples
-
 ```
 
-\---
+---
 
-\## Next Tutorial
+## Next Tutorial
 
-\*\*Tutorial 29 — Authorization Tampering\*\*
+**Tutorial 29 — Authorization Tampering**
 
 The next tutorial demonstrates how modifying any field of a signed Execution Authorization causes signature verification to fail.
 
-\---
+---
 
-\## Summary
+## Summary
 
 In this tutorial you learned:
 
-\- Replay attacks are detected independently of signature verification.
-
-\- Every authorization nonce can be accepted only once.
-
-\- EnvelopeVerifier combines cryptographic verification with replay protection.
-
-\- NonceStore provides the foundation for secure execution authorization.
+- Replay attacks are detected independently of signature verification.
+- Every authorization nonce can be accepted only once.
+- EnvelopeVerifier combines cryptographic verification with replay protection.
+- NonceStore provides the foundation for secure execution authorization.

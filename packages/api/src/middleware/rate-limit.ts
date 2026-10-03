@@ -123,6 +123,32 @@ export function createHealthReadyRateLimiter(
  * limit and its own Store (express-rate-limit refuses one Store behind
  * two limiters).
  */
+/**
+ * Failed caller authentications, keyed by IP. Mounted in front of
+ * caller auth so it sees every authenticated route. Only a 401 counts:
+ * a request with a valid key is not counted, so callers sharing an IP
+ * are not throttled by each other's traffic, only by bad keys. Once an
+ * IP passes the limit, every request from it gets 429 until the window
+ * resets, which stops the signed caller.rejected audit write each bad
+ * key would otherwise cost.
+ */
+export function createAuthFailureRateLimiter(
+  limitPerMinute: number,
+  store?: Store,
+) {
+  return rateLimit({
+    windowMs: WINDOW_MS,
+    limit: limitPerMinute,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true,
+    requestWasSuccessful: (_req: Request, res: Response): boolean =>
+      res.statusCode !== 401,
+    handler: rateLimitHandler,
+    ...(store !== undefined ? { store } : {}),
+  });
+}
+
 export function createPublicRateLimiter(limitPerMinute: number, store?: Store) {
   return rateLimit({
     windowMs: WINDOW_MS,

@@ -1,109 +1,80 @@
-\# Tutorial 07 — Receipt Generation
+# Tutorial 07 — Receipt Generation
 
-\## Overview
+## Overview
 
 This tutorial demonstrates how Parmana generates a cryptographically verifiable Receipt after successful execution and verification.
 
 A Receipt is the final artifact produced by the Parmana execution lifecycle. It serves as immutable proof that a Business Transaction was executed according to the approved policy and successfully verified.
 
-\---
+---
 
-\## Learning Objectives
+## Learning Objectives
 
 After completing this tutorial you will understand:
 
-\- Receipt Generation
+- Receipt Generation
+- Receipt Service
+- Verified Execution
+- Cryptographic Receipt
+- Audit Evidence
 
-\- Receipt Service
+---
 
-\- Verified Execution
+## Files
 
-\- Cryptographic Receipt
-
-\- Audit Evidence
-
-\---
-
-\## Files
-
-| File | Purpose |
-
-|------|---------|
-
+| File     | Purpose                                            |
+| -------- | -------------------------------------------------- |
 | `run.ts` | Generates a Receipt from an Execution Trust Record |
 
-\---
+---
 
-\## Architecture
+## Architecture
 
 ```
-
 Business Transaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Runtime
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Execution Trust Record
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Verification
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Receipt Service
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Receipt
-
 ```
 
-\---
+---
 
-\## Run
+## Run
 
 ```bash
-
 npm run example -- 07-receipt-generation
-
 ```
 
 or
 
 ```bash
-
 tsx run.ts
-
 ```
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 The tutorial prints:
 
-\- Execution Trust Record
+- Execution Trust Record
+- Verification Result
+- Receipt
 
-\- Verification Result
+---
 
-\- Receipt
+## Next Tutorial
 
-\---
-
-\## Next Tutorial
-
-Continue to \*\*Tutorial 08 – Human Approval\*\*.
+Continue to **Tutorial 08 – Human Approval**.

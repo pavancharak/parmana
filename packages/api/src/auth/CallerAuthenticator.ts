@@ -17,6 +17,7 @@ export interface CallerIdentity {
    * fail-closed default and the "*" wildcard convention.
    */
   readonly allowedCapabilities?: readonly string[];
+  readonly allowedTenantIds?: readonly string[];
 
   /**
    * The kind of entity that holds this credential — see

@@ -1,159 +1,80 @@
-# \# Tutorial 01 — Hello World
+# Tutorial 01 — Hello World
 
-#
+## Overview
 
-# \## Overview
+This tutorial introduces the canonical Parmana `BusinessTransaction`.
 
-#
+It demonstrates the minimum structure required to represent a business transaction before any policy evaluation or runtime execution occurs.
 
-# This tutorial introduces the canonical Parmana `BusinessTransaction`.
+No policies are evaluated and no decisions are made in this tutorial.
 
-#
+---
 
-# It demonstrates the minimum structure required to represent a business transaction before any policy evaluation or runtime execution occurs.
+## Learning Objectives
 
-#
+After completing this tutorial you will understand:
 
-# No policies are evaluated and no decisions are made in this tutorial.
+- The structure of a Business Transaction
+- Authority
+- Authorization
+- Intent
+- Policy Reference
+- Signals
+- Metadata
 
-#
+---
 
-# \---
+## Files
 
-#
+| File               | Purpose                                  |
+| ------------------ | ---------------------------------------- |
+| `transaction.json` | Canonical Business Transaction           |
+| `policy.json`      | Policy reference used by the transaction |
+| `run.ts`           | Loads and prints the transaction         |
 
-# \## Learning Objectives
+---
 
-#
+## Architecture
 
-# After completing this tutorial you will understand:
+```
+Business Transaction
+  │
+  ├── Metadata
+  ├── Authority
+  ├── Authorization
+  ├── Intent
+  ├── Policy Reference
+  └── Signals
+```
 
-#
+---
 
-# \- The structure of a Business Transaction
+## Run
 
-# \- Authority
+```bash
+npm run example -- 01-hello-world
+```
 
-# \- Authorization
+or
 
-# \- Intent
+```bash
+tsx run.ts
+```
 
-# \- Policy Reference
+---
 
-# \- Signals
+## Expected Output
 
-# \- Metadata
+The tutorial prints the complete Business Transaction as formatted JSON.
 
-#
+No policy evaluation occurs.
 
-# \---
+No runtime execution occurs.
 
-#
+No Trust Record is generated.
 
-# \## Files
+---
 
-#
+## Next Tutorial
 
-# | File | Purpose |
-
-# |------|---------|
-
-# | `transaction.json` | Canonical Business Transaction |
-
-# | `policy.json` | Policy reference used by the transaction |
-
-# | `run.ts` | Loads and prints the transaction |
-
-#
-
-# \---
-
-#
-
-# \## Architecture
-
-#
-
-# ```
-
-# Business Transaction
-
-# &#x20; │
-
-# &#x20; ├── Metadata
-
-# &#x20; ├── Authority
-
-# &#x20; ├── Authorization
-
-# &#x20; ├── Intent
-
-# &#x20; ├── Policy Reference
-
-# &#x20; └── Signals
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Run
-
-#
-
-# ```bash
-
-# npm run example -- 01-hello-world
-
-# ```
-
-#
-
-# or
-
-#
-
-# ```bash
-
-# tsx run.ts
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Expected Output
-
-#
-
-# The tutorial prints the complete Business Transaction as formatted JSON.
-
-#
-
-# No policy evaluation occurs.
-
-#
-
-# No runtime execution occurs.
-
-#
-
-# No Trust Record is generated.
-
-#
-
-# \---
-
-#
-
-# \## Next Tutorial
-
-#
-
-# Continue to \*\*Tutorial 02 – Policy Evaluation\*\* to evaluate the transaction against a reference policy.
+Continue to **Tutorial 02 – Policy Evaluation** to evaluate the transaction against a reference policy.

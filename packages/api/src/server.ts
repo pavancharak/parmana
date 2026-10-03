@@ -63,6 +63,7 @@ const executeRateLimitStore = createRateLimitStore("execute:");
 const healthRateLimitStore = createRateLimitStore("health:");
 
 const publicRateLimitStore = createRateLimitStore("public:");
+const authFailureRateLimitStore = createRateLimitStore("auth-failure:");
 
 const app = createApp(application, {
   callerAuth: callerAuth.disabled
@@ -76,6 +77,9 @@ const app = createApp(application, {
     ...(executeRateLimitStore ? { executeStore: executeRateLimitStore } : {}),
     ...(healthRateLimitStore ? { healthStore: healthRateLimitStore } : {}),
     ...(publicRateLimitStore ? { publicStore: publicRateLimitStore } : {}),
+    ...(authFailureRateLimitStore
+      ? { authFailureStore: authFailureRateLimitStore }
+      : {}),
   },
   ...(callerAuth.disabled
     ? {}

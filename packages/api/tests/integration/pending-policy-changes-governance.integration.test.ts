@@ -1,6 +1,6 @@
 import { generateKeyPairSync } from "node:crypto";
 import type { KeyObject } from "node:crypto";
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -734,6 +734,36 @@ describe("Policy Governance: isHumanCaller, maker != checker, step-up (HTTP boun
       expect(response.status).toBe(200);
       expect(response.body.status).toBe("REJECTED");
       expect(response.body.resolvedBy).toBe("human-checker");
+    });
+
+    it("refuses to approve a change that was already rejected, and applies nothing", async () => {
+      const { app, scratchPolicyDir, policyChangeApprovalRecordRepository } =
+        buildApp();
+      const name = "governance-approve-after-reject";
+      const id = await proposeChange(app, name);
+
+      const rejected = await request(app)
+        .post(`/policies/pending-changes/${id}/reject`)
+        .set("Authorization", `Bearer ${HUMAN_CHECKER_KEY}`)
+        .send({
+          rejectionReason: "does not meet bar",
+          stepUpAuthorization: await signStepUp(id, "reject"),
+        });
+
+      expect(rejected.status).toBe(200);
+
+      const approved = await request(app)
+        .post(`/policies/pending-changes/${id}/approve`)
+        .set("Authorization", `Bearer ${HUMAN_CHECKER_KEY}`)
+        .send({ stepUpAuthorization: await signStepUp(id, "approve") });
+
+      expect(approved.status).toBe(409);
+      expect(
+        existsSync(path.join(scratchPolicyDir, name, "1.0.0", "policy.json")),
+      ).toBe(false);
+      await expect(
+        policyChangeApprovalRecordRepository.list(),
+      ).resolves.toEqual([]);
     });
 
     it("denies a replayed (reused) step-up envelope on a second approval attempt", async () => {

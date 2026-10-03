@@ -1,153 +1,77 @@
-# \# Tutorial 06 — Replay
+# Tutorial 06 — Replay
 
-#
+## Overview
 
-# \## Overview
+This tutorial demonstrates deterministic replay of an Execution Trust Record.
 
-#
+Replay re-executes the recorded policy decision using the original policy and execution signals to verify that the same decision is produced.
 
-# This tutorial demonstrates deterministic replay of an Execution Trust Record.
+This capability provides independent verification and auditability.
 
-#
+---
 
-# Replay re-executes the recorded policy decision using the original policy and execution signals to verify that the same decision is produced.
+## Learning Objectives
 
-#
+After completing this tutorial you will understand:
 
-# This capability provides independent verification and auditability.
+- Execution Replay
+- Deterministic Evaluation
+- Recorded Decision
+- Replayed Decision
+- Replay Verification
 
-#
+---
 
-# \---
+## Files
 
-#
+| File     | Purpose                           |
+| -------- | --------------------------------- |
+| `run.ts` | Replays an Execution Trust Record |
 
-# \## Learning Objectives
+---
 
-#
+## Architecture
 
-# After completing this tutorial you will understand:
+```
+Execution Trust Record
+  │
+  ▼
+Replay Engine
+  │
+  ▼
+Policy Evaluation
+  │
+  ▼
+Replay Result
+```
 
-#
+---
 
-# \- Execution Replay
+## Run
 
-# \- Deterministic Evaluation
+```bash
+npm run example -- 06-replay
+```
 
-# \- Recorded Decision
+or
 
-# \- Replayed Decision
+```bash
+tsx run.ts
+```
 
-# \- Replay Verification
+---
 
-#
+## Expected Output
 
-# \---
+The tutorial prints:
 
-#
+- Recorded Decision
+- Replayed Decision
+- Replay Result
+- Match Status
 
-# \## Files
+---
 
-#
+## Next Tutorial
 
-# | File | Purpose |
-
-# |------|---------|
-
-# | `run.ts` | Replays an Execution Trust Record |
-
-#
-
-# \---
-
-#
-
-# \## Architecture
-
-#
-
-# ```
-
-# Execution Trust Record
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Replay Engine
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Policy Evaluation
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Replay Result
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Run
-
-#
-
-# ```bash
-
-# npm run example -- 06-replay
-
-# ```
-
-#
-
-# or
-
-#
-
-# ```bash
-
-# tsx run.ts
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Expected Output
-
-#
-
-# The tutorial prints:
-
-#
-
-# \- Recorded Decision
-
-# \- Replayed Decision
-
-# \- Replay Result
-
-# \- Match Status
-
-#
-
-# \---
-
-#
-
-# \## Next Tutorial
-
-#
-
-# Continue to \*\*Tutorial 07 – Receipt Generation\*\*.
+Continue to **Tutorial 07 – Receipt Generation**.

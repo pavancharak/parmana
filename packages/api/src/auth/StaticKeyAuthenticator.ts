@@ -46,6 +46,9 @@ export class StaticKeyAuthenticator implements CallerAuthenticator {
           ...(entry.allowedCapabilities !== undefined
             ? { allowedCapabilities: entry.allowedCapabilities }
             : {}),
+          ...(entry.allowedTenantIds !== undefined
+            ? { allowedTenantIds: entry.allowedTenantIds }
+            : {}),
           ...(entry.credentialHolderType !== undefined
             ? { credentialHolderType: entry.credentialHolderType }
             : {}),

@@ -177,6 +177,21 @@ export function parseApiKeys(value?: string): ApiKeyEntry[] {
       }
     }
 
+    const allowedTenantIds = record.allowedTenantIds;
+
+    if (allowedTenantIds !== undefined) {
+      const validAllowedTenantIds =
+        Array.isArray(allowedTenantIds) &&
+        allowedTenantIds.every((id) => typeof id === "string" && id !== "");
+
+      if (!validAllowedTenantIds) {
+        throw new Error(
+          `PARMANA_API_KEYS[${index}].allowedTenantIds must be an array ` +
+            "of non-empty strings when present.",
+        );
+      }
+    }
+
     const credentialHolderType = record.credentialHolderType;
 
     if (credentialHolderType !== undefined) {
@@ -227,6 +242,9 @@ export function parseApiKeys(value?: string): ApiKeyEntry[] {
         : {}),
       ...(allowedCapabilities !== undefined
         ? { allowedCapabilities: allowedCapabilities as readonly string[] }
+        : {}),
+      ...(allowedTenantIds !== undefined
+        ? { allowedTenantIds: allowedTenantIds as readonly string[] }
         : {}),
       ...(credentialHolderType !== undefined
         ? { credentialHolderType: credentialHolderType as AuthorityType }

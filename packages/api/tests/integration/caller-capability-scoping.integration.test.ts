@@ -34,6 +34,7 @@ describe("Caller capability scoping (HTTP boundary)", () => {
     "capability-scoping-wildcard-caller-raw-key-for-tests-only";
   const NO_CAPABILITIES_KEY =
     "capability-scoping-no-capabilities-caller-raw-key-for-tests-only";
+  const TENANT_KEY = "capability-scoping-tenant-caller-raw-key-for-tests-only";
 
   function buildApp() {
     const { executionSystem, auditSink: executionAuditSink } =
@@ -66,6 +67,13 @@ describe("Caller capability scoping (HTTP boundary)", () => {
         allowedPrincipalIds: ["integration-test"],
         // allowedCapabilities intentionally omitted.
       },
+      {
+        callerId: "tenant-caller",
+        keyHash: hashApiKey(TENANT_KEY),
+        allowedPrincipalIds: ["integration-test"],
+        allowedCapabilities: ["test:fixture-execute"],
+        allowedTenantIds: ["acme"],
+      },
     ]);
 
     const callerAuditSink = new InMemoryCallerAuditSink();
@@ -78,6 +86,64 @@ describe("Caller capability scoping (HTTP boundary)", () => {
   }
 
   describe("POST /execute", () => {
+    async function transactionForTenant(tenantId: string) {
+      const transaction = await createBusinessTransaction();
+      return {
+        ...transaction,
+        metadata: { ...transaction.metadata, tenantId },
+      };
+    }
+
+    it("refuses a tenantId the caller's key does not list, so it cannot pick another tenant's signing key", async () => {
+      const { app } = buildApp();
+
+      const response = await request(app)
+        .post("/execute")
+        .set("Authorization", `Bearer ${SCOPED_KEY}`)
+        .send(await transactionForTenant("acme"));
+
+      expect(response.status).toBe(403);
+      expect(response.body.code).toBe("TENANT_NOT_ALLOWED");
+    });
+
+    it("treats a null tenantId as no tenant, as the SDKs send it", async () => {
+      const { app } = buildApp();
+      const transaction = await createBusinessTransaction();
+
+      const response = await request(app)
+        .post("/execute")
+        .set("Authorization", `Bearer ${SCOPED_KEY}`)
+        .send({
+          ...transaction,
+          metadata: { ...transaction.metadata, tenantId: null },
+        });
+
+      expect(response.status).toBe(200);
+    });
+
+    it("allows a tenantId the caller's key lists", async () => {
+      const { app } = buildApp();
+
+      const response = await request(app)
+        .post("/execute")
+        .set("Authorization", `Bearer ${TENANT_KEY}`)
+        .send(await transactionForTenant("acme"));
+
+      expect(response.status).toBe(200);
+    });
+
+    it("refuses a tenant-scoped key naming a different tenant", async () => {
+      const { app } = buildApp();
+
+      const response = await request(app)
+        .post("/execute")
+        .set("Authorization", `Bearer ${TENANT_KEY}`)
+        .send(await transactionForTenant("globex"));
+
+      expect(response.status).toBe(403);
+      expect(response.body.code).toBe("TENANT_NOT_ALLOWED");
+    });
+
     it("allows a caller explicitly scoped to the invoked capability", async () => {
       const { app } = buildApp();
 

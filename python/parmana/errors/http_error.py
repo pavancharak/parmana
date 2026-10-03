@@ -304,7 +304,7 @@ def build_http_error(
     if code == "POLICY_DENIED":
         return ExecutionRejectedError(message, request_id=request_id)
 
-    if code == "CAPABILITY_NOT_ALLOWED":
+    if code in ("CAPABILITY_NOT_ALLOWED", "TENANT_NOT_ALLOWED"):
         return AuthorizationError(
             message,
             request_id=request_id,

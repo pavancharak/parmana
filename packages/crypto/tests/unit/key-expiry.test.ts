@@ -74,6 +74,17 @@ describe("FileKeyExpiryStore", () => {
     await expect(store.get("key-a")).rejects.toThrow(/not valid JSON/);
   });
 
+  it("throws on an unparseable expiresAt rather than treating the key as never expiring", async () => {
+    writeFileSync(
+      keyExpiryPath,
+      JSON.stringify({ "typo-key": { expiresAt: "2026-13-45" } }),
+    );
+
+    const store = new FileKeyExpiryStore();
+
+    await expect(store.get("typo-key")).rejects.toThrow(/ISO 8601/);
+  });
+
   it("throws when the file is not a JSON object", async () => {
     writeFileSync(keyExpiryPath, JSON.stringify(["not", "an", "object"]));
 

@@ -1,259 +1,145 @@
-\# Tutorial 39 — Policy Substitution
+# Tutorial 39 — Policy Substitution
 
-\## Overview
+## Overview
 
 Policy substitution is an attack where an attacker attempts to execute a request under a different policy than the one Parmana originally evaluated.
 
-An Execution Authorization is valid \*\*only\*\* for the policy name and policy version that produced it.
+An Execution Authorization is valid **only** for the policy name and policy version that produced it.
 
 Changing either value invalidates the authorization.
 
-\---
+---
 
-\## Attack Scenario
+## Attack Scenario
 
 ```text
-
 Policy Evaluation
-
-
-
 vendor-payment@2.1.0
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Execution Authorization
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Attacker changes policy
-
-
-
 vendor-payment@2.1.0
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 vendor-payment@3.0.0
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Gateway compares policy
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 ✗ Policy Mismatch
-
-
-
-&#x20;       │
-
-&#x20;       ▼
-
-
-
+        │
+        ▼
 Execution Rejected
-
 ```
 
-\---
+---
 
-\## Authorized Policy
+## Authorized Policy
 
 ```text
-
 Policy Name
-
-
-
 vendor-payment
-
-
-
 Version
-
-
-
 2.0.0
-
 ```
 
-\---
+---
 
-\## Modified Policy
+## Modified Policy
 
 ```text
-
 Policy Name
-
-
-
 vendor-payment
-
-
-
 Version
-
-
-
 3.0.0
-
 ```
 
 Only the policy version changed.
 
 Even though the execution request is identical, the authorization is no longer valid.
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 ```text
-
 ==================================================
-
 Tutorial 39 - Policy Substitution
-
 ==================================================
-
-
-
 Authorized Policy
-
-
-
 vendor-payment@2.1.0
-
-
-
 Substituted Policy
-
-
-
 vendor-payment@3.0.0
-
-
-
 ✓ Policy substitution detected.
-
-
-
 Execution rejected.
-
-
-
 Policy Integrity
-
 \--------------------------------------------------
-
-
-
 Authorizations are valid only for the policy
-
 under which they were originally issued.
-
-
-
 Tutorial completed successfully.
-
 ```
 
-\---
+---
 
-\## Why Policy Integrity Matters
+## Why Policy Integrity Matters
 
 Enterprise policies evolve over time.
 
 Examples include:
 
-\- approval thresholds
-
-\- segregation-of-duty rules
-
-\- compliance requirements
-
-\- risk scoring
-
-\- regulatory controls
+- approval thresholds
+- segregation-of-duty rules
+- compliance requirements
+- risk scoring
+- regulatory controls
 
 An authorization issued under one policy version must never be interpreted as approval under another.
 
-\---
+---
 
-\## Gateway Validation
+## Gateway Validation
 
 The Execution Gateway verifies that:
 
-\- Policy name matches.
-
-\- Policy version matches.
-
-\- Authorization was issued for that policy.
+- Policy name matches.
+- Policy version matches.
+- Authorization was issued for that policy.
 
 Only then may execution continue.
 
-\---
+---
 
-\## Running the Example
+## Running the Example
 
 ```bash
-
 tsx examples/tutorials/39-policy-substitution/run.ts
-
 ```
 
 or
 
 ```bash
-
 npm run examples
-
 ```
 
-\---
+---
 
-\## Next Tutorial
+## Next Tutorial
 
-\*\*Tutorial 40 — Signature Forgery\*\*
+**Tutorial 40 — Signature Forgery**
 
 The next tutorial demonstrates why an attacker cannot fabricate an Execution Authorization without Parmana's private signing key.
 
-\---
+---
 
-\## Summary
+## Summary
 
 In this tutorial you learned:
 
-\- Execution Authorizations are bound to the policy that approved them.
-
-\- Changing the policy name or version invalidates the authorization.
-
-\- The Execution Gateway detects policy mismatches.
-
-\- Policy substitution is rejected before enterprise execution.
+- Execution Authorizations are bound to the policy that approved them.
+- Changing the policy name or version invalidates the authorization.
+- The Execution Gateway detects policy mismatches.
+- Policy substitution is rejected before enterprise execution.

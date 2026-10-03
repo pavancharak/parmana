@@ -289,9 +289,17 @@ export interface RateLimitConfig {
   readonly healthPerMinute: number;
 
   /**
-   * The unauthenticated verify routes and /handbook, keyed by IP (G-78).
+   * The unauthenticated verify routes, /handbook and key discovery,
+   * keyed by IP (G-78).
    */
   readonly publicPerMinute: number;
+
+  /**
+   * Failed caller authentications (401) on every authenticated route,
+   * keyed by IP. Each one writes a signed audit event, so an unlimited
+   * stream of bad keys would spend signing capacity real requests need.
+   */
+  readonly authFailurePerMinute: number;
 }
 
 /**
@@ -379,6 +387,10 @@ export function loadConfig(): Readonly<Config> {
       healthPerMinute: Number(process.env.RATE_LIMIT_HEALTH_PER_MINUTE ?? 300),
 
       publicPerMinute: Number(process.env.RATE_LIMIT_PUBLIC_PER_MINUTE ?? 60),
+
+      authFailurePerMinute: Number(
+        process.env.RATE_LIMIT_AUTH_FAILURE_PER_MINUTE ?? 30,
+      ),
     }),
 
     logging: Object.freeze({

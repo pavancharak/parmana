@@ -38,10 +38,8 @@ patterns](/guides/deploy-patterns).
 **One file in `src/bootstrap/` is dead code, not wired into anything**: `ConnectorCatalog.ts`
 lists connectors (including disabled stubs like `stripe`/`sap`) but is not imported anywhere
 in `packages/api/src`. The real, running connector registration path is
-`createConnectorRegistry.ts`, see [The gateway](/concepts/the-gateway). Two other files,
-`scripts/generate-keys.ts` (repo root) and
-`packages/api/src/bootstrap/createVendorPaymentSecureConnector.ts`, are empty, 0-byte stub
-files, also unused.
+`createConnectorRegistry.ts`, see [The gateway](/concepts/the-gateway). `scripts/generate-keys.ts`
+(repo root) is an empty, 0-byte stub file, also unused.
 
 `ExecutionControlComposition.ts` and `ConnectorFactory.ts` (a _different_, class-based
 composition root for the same responsibility as `createExecutionControl.ts` —

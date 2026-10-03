@@ -61,9 +61,9 @@ All four live in `packages/api/src/routes/pending-policy-changes.ts`, mounted at
 | `POST` | `/pending-changes/:id/reject`     | Reject (checker)                                                | Same as approve, plus a required `rejectionReason`                    |
 
 Every one of the four calls `requireHumanCaller()` first
-(`packages/api/src/routes/pending-policy-changes.ts:107`). That function checks
+(`packages/api/src/routes/pending-policy-changes.ts`). That function checks
 `isHumanCaller(req.callerCredentialHolderType)`
-(`packages/api/src/auth/isHumanCaller.ts:22`), which returns true only when the caller's
+(`packages/api/src/auth/isHumanCaller.ts`), which returns true only when the caller's
 credential was provisioned with `credentialHolderType: AuthorityType.USER`. An undefined
 value, or `ROLE`/`SERVICE`/`ORGANIZATION`, is denied the same as an unset one; the default
 is fail closed, never "assume human." A denial is recorded as a signed
@@ -77,7 +77,7 @@ only policy authorship itself is restricted to verified humans.
 
 Both the approve and reject handlers load the existing `PendingPolicyChange` by id and
 compare `existing.proposedBy === req.callerId`
-(`packages/api/src/routes/pending-policy-changes.ts:505` and `:605`). A match throws
+(`packages/api/src/routes/pending-policy-changes.ts` and `:605`). A match throws
 `SameActorCannotApproveOwnChangeError` immediately, before any step-up verification is
 even attempted. There is no override, no admin bypass, and no configuration flag for this
 check. It is the literal enforcement of "maker never equals checker."
@@ -87,7 +87,7 @@ check. It is the literal enforcement of "maker never equals checker."
 Passing `requireHumanCaller` and the maker/checker distinctness check is not enough to
 approve or reject. The request must also carry a `PolicyChangeStepUpAuthorization`
 envelope, checked by `requireStepUpAuthorization()`
-(`packages/api/src/routes/pending-policy-changes.ts:165`), which in turn delegates to
+(`packages/api/src/routes/pending-policy-changes.ts`), which in turn delegates to
 `PolicyChangeStepUpVerifier` (`packages/api/src/auth/PolicyChangeStepUpVerifier.ts`). This
 is a second, independent cryptographic proof of intent, on top of (never instead of) the
 checker's ordinary bearer token.
@@ -135,7 +135,7 @@ envelope in the first place.
 
 Once every check passes, the approve handler calls
 `PolicyChangeApprovalService.approve(existing, req.callerId)`
-(`packages/api/src/governance/PolicyChangeApprovalService.ts:53`) _before_ marking the
+(`packages/api/src/governance/PolicyChangeApprovalService.ts`) _before_ marking the
 pending change `APPROVED`. This ordering is load-bearing: if the service throws partway
 through, the pending change remains untouched at `PENDING_APPROVAL`, never falsely marked
 resolved with no corresponding live effect. Inside `approve()`:

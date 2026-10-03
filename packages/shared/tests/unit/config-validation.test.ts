@@ -223,6 +223,34 @@ describe("parseApiKeys", () => {
     ).toThrow("PARMANA_API_KEYS[0].allowedCapabilities must be an array");
   });
 
+  it("parses allowedTenantIds when present", () => {
+    const [entry] = parseApiKeys(
+      JSON.stringify([
+        {
+          callerId: "caller-1",
+          keyHash: validHash,
+          allowedTenantIds: ["acme"],
+        },
+      ]),
+    );
+
+    expect(entry?.allowedTenantIds).toEqual(["acme"]);
+  });
+
+  it("throws naming the index of an entry with an invalid allowedTenantIds", () => {
+    expect(() =>
+      parseApiKeys(
+        JSON.stringify([
+          {
+            callerId: "caller-1",
+            keyHash: validHash,
+            allowedTenantIds: ["acme", ""],
+          },
+        ]),
+      ),
+    ).toThrow("PARMANA_API_KEYS[0].allowedTenantIds must be an array");
+  });
+
   it("throws naming the index of an entry with an empty-string allowedCapabilities entry", () => {
     expect(() =>
       parseApiKeys(

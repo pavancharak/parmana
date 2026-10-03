@@ -1,223 +1,112 @@
-# \# Scenario — Expense Approval
+# Scenario — Expense Approval
 
-#
+## Overview
 
-# \## Overview
+This scenario demonstrates an employee expense reimbursement workflow using Parmana.
 
-#
+An employee submits an expense report, a manager authorizes reimbursement, Parmana evaluates the Expense Approval Policy, executes the transaction, verifies the resulting Execution Trust Record, and generates a Receipt.
 
-# This scenario demonstrates an employee expense reimbursement workflow using Parmana.
+This scenario represents a common enterprise finance workflow.
 
-#
+---
 
-# An employee submits an expense report, a manager authorizes reimbursement, Parmana evaluates the Expense Approval Policy, executes the transaction, verifies the resulting Execution Trust Record, and generates a Receipt.
+## Business Flow
 
-#
+Employee submits expense
 
-# This scenario represents a common enterprise finance workflow.
+↓
 
-#
+Manager reviews request
 
-# \---
+↓
 
-#
+Human authority approves reimbursement
 
-# \## Business Flow
+↓
 
-#
+Parmana evaluates policy
 
-# Employee submits expense
+↓
 
-#
+Runtime executes transaction
 
-# ↓
+↓
 
-#
+Execution Trust Record created
 
-# Manager reviews request
+↓
 
-#
+Verification
 
-# ↓
+↓
 
-#
+Receipt generated
 
-# Human authority approves reimbursement
+---
 
-#
+## Files
 
-# ↓
+| File               | Purpose                               |
+| ------------------ | ------------------------------------- |
+| `policy.json`      | Expense Approval Policy Reference     |
+| `transaction.json` | Expense Approval Business Transaction |
+| `run.ts`           | Executes the complete workflow        |
 
-#
+---
 
-# Parmana evaluates policy
+## Architecture
 
-#
+```
+Expense Report
+  │
+  ▼
+Authority
+  │
+  ▼
+Authorization
+  │
+  ▼
+Intent
+  │
+  ▼
+Policy Evaluation
+  │
+  ▼
+Runtime
+  │
+  ▼
+Execution Trust Record
+  │
+  ▼
+Verification
+  │
+  ▼
+Receipt
+```
 
-# ↓
+---
 
-#
+## Run
 
-# Runtime executes transaction
+```bash
+npm run example -- expense-approval
+```
 
-#
+or
 
-# ↓
+```bash
+tsx run.ts
+```
 
-#
+---
 
-# Execution Trust Record created
+## Expected Output
 
-#
+The scenario prints:
 
-# ↓
-
-#
-
-# Verification
-
-#
-
-# ↓
-
-#
-
-# Receipt generated
-
-#
-
-# \---
-
-#
-
-# \## Files
-
-#
-
-# | File | Purpose |
-
-# |------|---------|
-
-# | `policy.json` | Expense Approval Policy Reference |
-
-# | `transaction.json` | Expense Approval Business Transaction |
-
-# | `run.ts` | Executes the complete workflow |
-
-#
-
-# \---
-
-#
-
-# \## Architecture
-
-#
-
-# ```
-
-# Expense Report
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Authority
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Authorization
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Intent
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Policy Evaluation
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Runtime
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Execution Trust Record
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Verification
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Receipt
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Run
-
-#
-
-# ```bash
-
-# npm run example -- expense-approval
-
-# ```
-
-#
-
-# or
-
-#
-
-# ```bash
-
-# tsx run.ts
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Expected Output
-
-#
-
-# The scenario prints:
-
-#
-
-# \- Business Transaction
-
-# \- Policy
-
-# \- Decision
-
-# \- Execution Trust Record
-
-# \- Verification
-
-# \- Receipt
+- Business Transaction
+- Policy
+- Decision
+- Execution Trust Record
+- Verification
+- Receipt

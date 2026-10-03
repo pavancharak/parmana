@@ -3,7 +3,7 @@
 ## Objective
 
 Prove the independent-verification claim literally, one level stronger than [Verify a
-trust record independently](/guides/verify-independently): use `verifyExecutionTrustRecordOffline`
+trust record independently](https://docs.parmanasystems.com/guides/verify-independently): use `verifyExecutionTrustRecordOffline`
 (`packages/crypto/src/OfflineVerifier.ts`) with zero disk, network, or environment-variable
 access at all — not "the server process happens to be stopped," but "this function was
 never given a `PARMANA_KEY_DIR` in the first place." This closes PQC audit RED-1

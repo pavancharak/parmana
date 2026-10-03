@@ -280,6 +280,15 @@ describe("mapHttpErrorResponse", () => {
     );
   });
 
+  it("maps a 403 with code TENANT_NOT_ALLOWED to AuthorizationError, preserving the code as serverCode", () => {
+    const error = mapHttpErrorResponse(403, {
+      error: "Caller is not permitted to act for this tenantId.",
+      code: "TENANT_NOT_ALLOWED",
+    });
+    expect(error).toBeInstanceOf(AuthorizationError);
+    expect((error as AuthorizationError).serverCode).toBe("TENANT_NOT_ALLOWED");
+  });
+
   it("maps 429 to RateLimitError, parsing Retry-After from headers", () => {
     const error = mapHttpErrorResponse(
       429,

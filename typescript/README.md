@@ -62,7 +62,7 @@ Independent Verification
 # Installation
 
 ```bash
-npm install @parmana/typescript-sdk
+npm install @parmana/sdk
 ```
 
 ---
@@ -70,14 +70,11 @@ npm install @parmana/typescript-sdk
 # Quick Start
 
 ```typescript
-import { ParmanaClient, HttpTransport } from "@parmana/typescript-sdk";
+import { ParmanaClient } from "@parmana/sdk";
 
 const client = new ParmanaClient({
   endpoint: "https://runtime.example.com",
-
-  transport: new HttpTransport({
-    endpoint: "https://runtime.example.com",
-  }),
+  apiKey: process.env.PARMANA_API_KEY,
 });
 ```
 
@@ -126,7 +123,7 @@ Verification independently validates the Execution Trust Record.
 const replay = await client.replay(trustRecord.businessTransactionId);
 ```
 
-Replay deterministically re-executes the recorded execution.
+`replay()` checks the stored Trust Record's hash and signature again and returns the result (`POST /replay`). It does not evaluate the policy again and executes nothing.
 
 ---
 
@@ -245,8 +242,13 @@ ParmanaError;
 Common errors include:
 
 - ConfigurationError
-- ValidationError
-- ExecutionRejectedError
+- ValidationError (400)
+- AuthenticationError (401)
+- AuthorizationError (403, with the server's code on `serverCode`, for example `CAPABILITY_NOT_ALLOWED`)
+- ExecutionRejectedError (403 `POLICY_DENIED`)
+- NotFoundError (404)
+- ConflictError (409)
+- RateLimitError (429, with `retryAfterSeconds`)
 - VerificationError
 - ReplayError
 - NetworkError
@@ -258,17 +260,17 @@ Common errors include:
 # Configuration
 
 ```typescript
-const configuration = {
-    endpoint: "...",
-    transport: ...,
-};
+const client = new ParmanaClient({
+  endpoint: "https://runtime.example.com", // required
+  apiKey: process.env.PARMANA_API_KEY, // sent as Authorization: Bearer <apiKey>
+  timeout: 120_000, // milliseconds
+  // retryPolicy, userAgent and transport are optional
+});
 ```
 
-The SDK configuration controls communication with the Parmana Runtime.
+The SDK configuration controls communication with the Parmana Runtime. It does not control policy evaluation or runtime behavior.
 
-It does not control policy evaluation or runtime behavior.
-
-No route in the Parmana API enforces authentication or authorization today; every request is accepted from any caller who can reach the port (see docs/CLAIMS.md, "API-layer authentication and authorization"). The SDK configuration has no credentials field for that reason — do not build a client that assumes one.
+Every route except the health, readiness, documentation and public verification routes needs an API key. A request without one gets `401`.
 
 ---
 

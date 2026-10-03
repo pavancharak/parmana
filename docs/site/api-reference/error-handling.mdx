@@ -39,6 +39,7 @@ most:
 | ------ | --------------------------- | -------------------------------------------------------------------------------------------------------- |
 | 403    | `POLICY_DENIED`             | The policy refused the action, including a missing, expired or already used human approval. Nothing ran. |
 | 403    | `CAPABILITY_NOT_ALLOWED`    | Your key may not invoke this capability.                                                                 |
+| 403    | `TENANT_NOT_ALLOWED`        | Your key may not send this `metadata.tenantId`.                                                          |
 | 403    | `NON_HUMAN_CALLER_DENIED`   | A governance route refused a non human caller, such as an agent's key.                                   |
 | 409    | `CONFLICT`                  | A governance change contradicts the current state, for example one is already open.                      |
 | 429    | `RATE_LIMITED`              | Too many requests for this key. Wait and retry.                                                          |

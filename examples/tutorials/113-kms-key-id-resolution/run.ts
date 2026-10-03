@@ -24,6 +24,7 @@ console.log();
 interface Case {
   readonly description: string;
   readonly input: string;
+  /** The identifier sent to KMS, or "refused" when resolveKmsKeyId throws. */
   readonly expected: string;
 }
 
@@ -47,23 +48,32 @@ const cases: Case[] = [
     expected: "alias/parmana-ed25519-signer",
   },
   {
-    description: "A full KMS key ARN -- passed through unchanged",
+    description:
+      "A full KMS key ARN -- refused: it can name a key in another AWS account, and keyIds often come from the record being verified",
     input:
-      "arn:aws:kms:ap-south-1:013659367671:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
-    expected:
-      "arn:aws:kms:ap-south-1:013659367671:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+      "arn:aws:kms:ap-south-1:999999999999:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+    expected: "refused",
   },
   {
-    description: "A raw KMS key ID (UUID) -- passed through unchanged",
+    description:
+      "A UUID shaped keyId -- treated as an alias name in this account, never as a raw key ID",
     input: "2787acce-db19-4cd6-88ed-ce2c1319096b",
-    expected: "2787acce-db19-4cd6-88ed-ce2c1319096b",
+    expected: "alias/2787acce-db19-4cd6-88ed-ce2c1319096b",
   },
 ];
+
+function resolve(input: string): string {
+  try {
+    return resolveKmsKeyId(input);
+  } catch {
+    return "refused";
+  }
+}
 
 let allPassed = true;
 
 for (const testCase of cases) {
-  const actual = resolveKmsKeyId(testCase.input);
+  const actual = resolve(testCase.input);
   const passed = actual === testCase.expected;
   allPassed = allPassed && passed;
 
@@ -92,7 +102,7 @@ console.log();
 
 if (allPassed) {
   console.log(
-    "✓ Every keyId shape resolves to what AWS KMS actually accepts, and an already-correct identifier is never re-prefixed.",
+    "✓ Every logical keyId resolves to an alias in this account, an alias is never re-prefixed, and an ARN is refused.",
   );
 } else {
   console.log("✗ Expected every case above to match.");

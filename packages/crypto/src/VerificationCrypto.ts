@@ -50,13 +50,15 @@ export class VerificationCrypto {
   private readonly signerPromise = SignerBootstrap.create();
 
   /**
-   * Hybrid mode's secondary signature is out of scope for the Signer
-   * migration (ADR-0009): it always requires a second, independent
-   * key/algorithm pair, and KmsSigner today only supports Ed25519.
-   * HybridSignatureProvider keeps using FileKeyProvider directly, so
-   * CRYPTO_MODE=hybrid's secondary key remains local-file-backed
-   * regardless of KEY_PROVIDER. CRYPTO_MODE defaults to "single", so
-   * this does not affect a deployment that hasn't opted into hybrid.
+   * Hybrid mode is out of scope for the Signer migration (ADR-0009):
+   * it needs a second, independent key/algorithm pair, and KmsSigner
+   * today only supports Ed25519. HybridSignatureProvider keeps using
+   * FileKeyProvider directly for BOTH entries of the `signatures`
+   * array, the Ed25519 one included, so CRYPTO_MODE=hybrid is
+   * local-file-only. assertSigningKeyMaterialConfigured (packages/api)
+   * refuses CRYPTO_MODE=hybrid with KEY_PROVIDER=aws-kms at startup.
+   * CRYPTO_MODE defaults to "single", so this does not affect a
+   * deployment that hasn't opted into hybrid.
    */
   private readonly hybridKeys = new FileKeyProvider();
 

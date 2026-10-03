@@ -11,6 +11,8 @@ const ENV_KEYS = [
   "PARMANA_KEY_DIR",
   "PARMANA_KEY_MATERIAL_JSON",
   "KEY_PROVIDER",
+  "CRYPTO_MODE",
+  "SECONDARY_SIGNATURE_PROVIDER",
 ] as const;
 
 describe("assertSigningKeyMaterialConfigured", () => {
@@ -196,6 +198,51 @@ describe("assertSigningKeyMaterialConfigured", () => {
     process.env.KEY_PROVIDER = "aws-kms";
     process.env.PARMANA_KEY_DIR = tempDir;
     delete process.env.PARMANA_KEY_MATERIAL_JSON;
+
+    expect(() => assertSigningKeyMaterialConfigured()).not.toThrow();
+  });
+
+  function writeKeyPair(keyId: string): void {
+    writeFileSync(join(tempDir, `${keyId}.private.pem`), "private");
+    writeFileSync(join(tempDir, `${keyId}.public.pem`), "public");
+  }
+
+  it("refuses CRYPTO_MODE=hybrid with KEY_PROVIDER=aws-kms, whose hybrid signatures would need a local copy of the KMS key", () => {
+    process.env.NODE_ENV = "production";
+    process.env.KEY_PROVIDER = "aws-kms";
+    process.env.CRYPTO_MODE = "hybrid";
+    process.env.SECONDARY_SIGNATURE_PROVIDER = "dilithium3";
+    process.env.PARMANA_KEY_DIR = tempDir;
+    delete process.env.PARMANA_KEY_MATERIAL_JSON;
+
+    expect(() => assertSigningKeyMaterialConfigured()).toThrow(
+      /CRYPTO_MODE=hybrid is not supported with KEY_PROVIDER=aws-kms/,
+    );
+  });
+
+  it("refuses CRYPTO_MODE=hybrid at startup when the secondary key pair is missing", () => {
+    process.env.NODE_ENV = "production";
+    process.env.KEY_PROVIDER = "local";
+    process.env.CRYPTO_MODE = "hybrid";
+    process.env.SECONDARY_SIGNATURE_PROVIDER = "dilithium3";
+    process.env.PARMANA_KEY_DIR = tempDir;
+    delete process.env.PARMANA_KEY_MATERIAL_JSON;
+    writeKeyPair("default");
+
+    expect(() => assertSigningKeyMaterialConfigured()).toThrow(
+      /"default-secondary"/,
+    );
+  });
+
+  it("starts in CRYPTO_MODE=hybrid when both key pairs are present", () => {
+    process.env.NODE_ENV = "production";
+    process.env.KEY_PROVIDER = "local";
+    process.env.CRYPTO_MODE = "hybrid";
+    process.env.SECONDARY_SIGNATURE_PROVIDER = "dilithium3";
+    process.env.PARMANA_KEY_DIR = tempDir;
+    delete process.env.PARMANA_KEY_MATERIAL_JSON;
+    writeKeyPair("default");
+    writeKeyPair("default-secondary");
 
     expect(() => assertSigningKeyMaterialConfigured()).not.toThrow();
   });

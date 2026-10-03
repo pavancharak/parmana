@@ -37,6 +37,13 @@ codebase's real payloads (all ASCII identifiers) and for the entire
 Basic Multilingual Plane; they diverge only for object keys containing
 astral-plane Unicode characters (code points above U+FFFF), which
 does not occur anywhere in this system's real payloads today.
+
+A second narrow limitation: number formatting. Python and JavaScript
+print the same JSON number differently in two cases: an exponent below
+1e-6 (Python writes 1e-07, JavaScript 1e-7) and an integer above 2**53
+(JavaScript has already rounded it when parsing). Neither occurs in this
+system's payloads, whose amounts are bounded and have at most two
+decimals.
 """
 
 from __future__ import annotations

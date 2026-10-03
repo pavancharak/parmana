@@ -77,7 +77,7 @@ a reusable key from the response.
 
 Each time the gateway releases an execution, it mints a fresh, request-bound [signed
 attestation](/concepts/gateway-attestation), it does not reuse or cache one across calls
-(`packages/api/src/bootstrap/createExecutionGateway.ts:58-63`, `GatewayAttestationSigner`).
+(`packages/api/src/bootstrap/createExecutionGateway.ts`, `GatewayAttestationSigner`).
 This proves _that the gateway itself, at this moment, authorized this specific release_, it
 is a separate guarantee from the authorization envelope's own signature, using an injected
 [Clock and IdGenerator](/concepts/determinism-and-clocks) for its timestamp and nonce.

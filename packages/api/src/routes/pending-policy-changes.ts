@@ -4,6 +4,7 @@ import { Router } from "express";
 import type { NextFunction, Request, Response } from "express";
 
 import {
+  ConflictError,
   ParmanaError,
   PendingPolicyChangeStatus,
   SameActorCannotApproveOwnChangeError,
@@ -385,6 +386,20 @@ export function createPendingPolicyChangesRouter(
           pendingPolicyChangeId: id,
           action: "approve",
         });
+
+        //
+        // Checked here, before PolicyChangeApprovalService.approve()
+        // writes the live policy and its signed approval record. The
+        // same guard in pendingPolicyChangeRepository.resolve() runs
+        // only afterwards, so without this a rejected or already
+        // approved change went live and then answered 409.
+        //
+        if (existing.status !== PendingPolicyChangeStatus.PENDING_APPROVAL) {
+          throw new ConflictError(
+            `Pending Policy Change '${id}' is already '${existing.status}' -- ` +
+              "only a PENDING_APPROVAL change can be approved or rejected.",
+          );
+        }
 
         if (policyChangeApprovalService === undefined) {
           throw new Error(

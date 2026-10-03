@@ -146,7 +146,7 @@ function buildHttpError(
   // branch below would still produce the right error class
   // (AuthorizationError) but silently drop the code — checking it here
   // preserves it on `serverCode` instead.
-  if (code === "CAPABILITY_NOT_ALLOWED") {
+  if (code === "CAPABILITY_NOT_ALLOWED" || code === "TENANT_NOT_ALLOWED") {
     return new AuthorizationError(message, { serverCode: code });
   }
 

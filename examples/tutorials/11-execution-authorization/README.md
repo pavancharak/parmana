@@ -1,6 +1,6 @@
-\# Tutorial 11 — Execution Authorization
+# Tutorial 11 — Execution Authorization
 
-\## Objective
+## Objective
 
 This tutorial demonstrates how Parmana issues a cryptographically signed
 
@@ -12,95 +12,65 @@ execution request. It is intended to be verified by downstream execution
 
 systems before any business action is performed.
 
-\---
+---
 
-\## What You Will Learn
+## What You Will Learn
 
-\- How an approved Decision produces an Execution Authorization.
+- How an approved Decision produces an Execution Authorization.
+- What information is included in the authorization.
+- How the authorization is cryptographically signed.
+- How the authorization is attached to an Execution Request.
+- Why nonce and expiration protect against replay attacks.
 
-\- What information is included in the authorization.
+---
 
-\- How the authorization is cryptographically signed.
-
-\- How the authorization is attached to an Execution Request.
-
-\- Why nonce and expiration protect against replay attacks.
-
-\---
-
-\## Execution Flow
+## Execution Flow
 
 ```
-
 Business Transaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Evaluation
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Decision (APPROVED)
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Execution Authorization
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Execution Request
-
 ```
 
-\---
+---
 
-\## Authorization Contents
+## Authorization Contents
 
 A Signed Execution Authorization contains:
 
-\- Authorization ID
+- Authorization ID
+- Decision ID
+- Business Transaction ID
+- Policy Name
+- Policy Version
+- Single-use Nonce
+- Authorized Time
+- Expiration Time
+- Signature
+- Signature Algorithm
+- Key Identifier
 
-\- Decision ID
+---
 
-\- Business Transaction ID
-
-\- Policy Name
-
-\- Policy Version
-
-\- Single-use Nonce
-
-\- Authorized Time
-
-\- Expiration Time
-
-\- Signature
-
-\- Signature Algorithm
-
-\- Key Identifier
-
-\---
-
-\## Run
+## Run
 
 ```bash
-
 npx tsx examples/tutorials/11-execution-authorization/run.ts
-
 ```
 
-\---
+---
 
-\## Expected Result
+## Expected Result
 
 The tutorial executes an approved Business Transaction and prints the
 
