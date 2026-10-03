@@ -18,6 +18,16 @@ export interface PolicyChangeApprovalRecordRepository {
   list(): Promise<readonly PolicyChangeApprovalRecord[]>;
 
   /**
+   * The approval record written for a pending change (the most recent
+   * one, if a pending change approved before 2026-10-03 has two), or
+   * null if none exists yet. Lets a retry after a partial failure reuse
+   * the record its first attempt wrote, instead of signing another.
+   */
+  findByPendingPolicyChangeId(
+    pendingPolicyChangeId: string,
+  ): Promise<PolicyChangeApprovalRecord | null>;
+
+  /**
    * The most recent approval record for a given (policyName,
    * policyVersion), or null if that policy version has never been
    * through this repository's approval flow (e.g. it predates Policy

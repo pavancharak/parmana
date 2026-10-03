@@ -93,4 +93,35 @@ describe("one approval record per pending policy change", () => {
       original,
     );
   });
+
+  it("findByPendingPolicyChangeId returns the record for a pending change, the most recent of a legacy pair, or null", async () => {
+    const repository = new MemoryPolicyChangeApprovalRecordRepository();
+
+    expect(await repository.findByPendingPolicyChangeId("change-1")).toBe(null);
+
+    await repository.create(record("a", "change-1"));
+
+    expect(
+      (await repository.findByPendingPolicyChangeId("change-1"))
+        ?.policyChangeApprovalRecordId,
+    ).toBe("a");
+  });
+
+  it("postgres: findByPendingPolicyChangeId asks for the newest record of that pending change", async () => {
+    const queries: { text: string; values: unknown[] }[] = [];
+    const pool = {
+      async query(text: string, values: unknown[]) {
+        queries.push({ text, values });
+        return { rows: [] };
+      },
+    } as unknown as Pool;
+
+    const repository = new SupabasePolicyChangeApprovalRecordRepository(pool);
+
+    expect(await repository.findByPendingPolicyChangeId("change-1")).toBe(null);
+    expect(queries[0]!.values).toEqual(["change-1"]);
+    expect(queries[0]!.text).toMatch(/WHERE pending_policy_change_id = \$1/);
+    expect(queries[0]!.text).toMatch(/ORDER BY approved_at DESC/);
+    expect(queries[0]!.text).toMatch(/LIMIT 1/);
+  });
 });
