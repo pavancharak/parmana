@@ -126,9 +126,10 @@ confirms the limiter is entirely skipped when caller-auth is disabled.
 
 ## Integration Requirements
 
-| Variable                        | Effect                                                                                                                  |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `RATE_LIMIT_EXECUTE_PER_MINUTE` | Overrides the default execute limiter ceiling (`DEFAULT_EXECUTE_PER_MINUTE = 30`).                                      |
-| `RATE_LIMIT_HEALTH_PER_MINUTE`  | Overrides the default health and ready limiter ceiling (`DEFAULT_HEALTH_PER_MINUTE = 300`).                             |
-| `RATE_LIMIT_PUBLIC_PER_MINUTE`  | Overrides the default ceiling for the unauthenticated verify routes and `/handbook` (`DEFAULT_PUBLIC_PER_MINUTE = 60`). |
-| `DATABASE_URL`                  | If set, every limiter uses the durable, fleet wide `PostgresRateLimitStore` instead of per process memory.              |
+| Variable                             | Effect                                                                                                                                       |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RATE_LIMIT_EXECUTE_PER_MINUTE`      | Overrides the default execute limiter ceiling (`DEFAULT_EXECUTE_PER_MINUTE = 30`).                                                           |
+| `RATE_LIMIT_HEALTH_PER_MINUTE`       | Overrides the default health and ready limiter ceiling (`DEFAULT_HEALTH_PER_MINUTE = 300`).                                                  |
+| `RATE_LIMIT_PUBLIC_PER_MINUTE`       | Overrides the default ceiling for the unauthenticated verify routes, `/handbook` and key discovery (`DEFAULT_PUBLIC_PER_MINUTE = 60`).       |
+| `RATE_LIMIT_AUTH_FAILURE_PER_MINUTE` | Overrides the default ceiling for failed caller authentications per IP (`DEFAULT_AUTH_FAILURE_PER_MINUTE = 30`). Only `401` responses count. |
+| `DATABASE_URL`                       | If set, every limiter uses the durable, fleet wide `PostgresRateLimitStore` instead of per process memory.                                   |

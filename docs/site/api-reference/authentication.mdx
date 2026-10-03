@@ -102,11 +102,12 @@ it with `401`. See [Playground](/playground).
 
 ## Rate limits
 
-| Routes                                                                                                                 | Counted per      | Default per minute | Setting                         |
-| ---------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------ | ------------------------------- |
-| `POST /execute`                                                                                                        | Key (`callerId`) | 30                 | `RATE_LIMIT_EXECUTE_PER_MINUTE` |
-| `GET /health`, `GET /ready`                                                                                            | Client address   | 300                | `RATE_LIMIT_HEALTH_PER_MINUTE`  |
-| `POST /refusal/verify`, `POST /execution-intents/verify`, `POST /audit/verify`, `/handbook`, `POST /sandbox/approvals` | Client address   | 60                 | `RATE_LIMIT_PUBLIC_PER_MINUTE`  |
+| Routes                                                                                                                                                                    | Counted per      | Default per minute | Setting                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------ | ------------------------------------ |
+| `POST /execute`                                                                                                                                                           | Key (`callerId`) | 30                 | `RATE_LIMIT_EXECUTE_PER_MINUTE`      |
+| `GET /health`, `GET /ready`                                                                                                                                               | Client address   | 300                | `RATE_LIMIT_HEALTH_PER_MINUTE`       |
+| `POST /refusal/verify`, `POST /execution-intents/verify`, `POST /audit/verify`, `/handbook`, `POST /sandbox/approvals`, `GET /keys/{keyId}`, `GET /.well-known/jwks.json` | Client address   | 60                 | `RATE_LIMIT_PUBLIC_PER_MINUTE`       |
+| Failed authentication (`401`) on any route that needs a key                                                                                                               | Client address   | 30                 | `RATE_LIMIT_AUTH_FAILURE_PER_MINUTE` |
 
 `POST /execute` is counted per key, not per address, because many agents call from one shared backend address. Over
 the limit, the request is refused before anything is evaluated, signed or recorded:

@@ -7,6 +7,7 @@ import { createCallerAuthMiddleware } from "./middleware/caller-auth.js";
 import { createCorsMiddleware } from "./middleware/cors.js";
 import {
   createExecuteRateLimiter,
+  createAuthFailureRateLimiter,
   createHealthReadyRateLimiter,
   createPublicRateLimiter,
 } from "./middleware/rate-limit.js";
@@ -113,11 +114,22 @@ export interface RateLimitOption {
   readonly publicPerMinute?: number;
 
   readonly publicStore?: Store;
+
+  /**
+   * Failed caller authentications per IP per minute (401s only). Every
+   * one writes a signed caller.rejected audit event; see
+   * createAuthFailureRateLimiter. Defaults to
+   * DEFAULT_AUTH_FAILURE_PER_MINUTE.
+   */
+  readonly authFailurePerMinute?: number;
+
+  readonly authFailureStore?: Store;
 }
 
 const DEFAULT_EXECUTE_PER_MINUTE = 30;
 const DEFAULT_HEALTH_PER_MINUTE = 300;
 const DEFAULT_PUBLIC_PER_MINUTE = 60;
+const DEFAULT_AUTH_FAILURE_PER_MINUTE = 30;
 
 export interface CreateAppOptions {
   readonly callerAuth: CallerAuthOption;
@@ -203,6 +215,8 @@ export function createApp(
     options.rateLimit?.healthPerMinute ?? DEFAULT_HEALTH_PER_MINUTE;
   const publicPerMinute =
     options.rateLimit?.publicPerMinute ?? DEFAULT_PUBLIC_PER_MINUTE;
+  const authFailurePerMinute =
+    options.rateLimit?.authFailurePerMinute ?? DEFAULT_AUTH_FAILURE_PER_MINUTE;
 
   app.use(express.json());
 
@@ -285,6 +299,7 @@ export function createApp(
    * /.well-known/jwks.json) rather than being mounted at a prefix; see
    * keys.ts's own comment for why.
    */
+  app.use(["/keys", "/.well-known/jwks.json"], publicRateLimiter);
   app.use(createKeysRouter());
 
   /**
@@ -296,6 +311,13 @@ export function createApp(
   app.use("/handbook", publicRateLimiter, createHandbookRouter());
 
   if (options.callerAuth !== "disabled") {
+    app.use(
+      createAuthFailureRateLimiter(
+        authFailurePerMinute,
+        options.rateLimit?.authFailureStore,
+      ),
+    );
+
     app.use(
       createCallerAuthMiddleware(
         options.callerAuth.authenticator,
