@@ -122,7 +122,7 @@
                 {
                   "key": "pageSize",
                   "value": "25",
-                  "description": "Items per page before filtering to your own transactions. Default 25.",
+                  "description": "Items per page before filtering to your own transactions. Default 25. Maximum 100.",
                   "disabled": true
                 }
               ]
@@ -371,7 +371,7 @@
                 {
                   "key": "pageSize",
                   "value": "25",
-                  "description": "Items per page before filtering. Default 25.",
+                  "description": "Items per page before filtering. Default 25. Maximum 100.",
                   "disabled": true
                 },
                 {

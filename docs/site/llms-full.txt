@@ -5551,7 +5551,7 @@ const receipt = await client.latestReceipt(
 );
 ```
 
-`trustRecords()` returns only records of transactions this key submitted, newest first. A page counts transactions, so it may hold fewer records than `pageSize`. `latestReceipt()` reads the most recent receipt without generating a new one, unlike `receipt()`.
+`trustRecords()` returns only records of transactions this key submitted, newest first. A page counts transactions, so it may hold fewer records than `pageSize`. `pageSize` is at most 100; a larger value is refused with `400`. `latestReceipt()` reads the most recent receipt without generating a new one, unlike `receipt()`.
 
 ### Every HTTP error carries its status
 

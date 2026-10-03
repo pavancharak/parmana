@@ -3,6 +3,7 @@ import type { NextFunction, Request, Response } from "express";
 
 import type { ExecutionTrustApplication } from "@parmana/runtime";
 import { isOwnedByCaller } from "../auth/isOwnedByCaller.js";
+import { parsePagination } from "./pagination.js";
 
 interface TrustRecordParams {
   businessTransactionId: string;
@@ -38,10 +39,17 @@ export function createTrustRecordsRouter(
     "/",
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
-        const page = Number(req.query.page ?? 1);
-        const pageSize = Number(req.query.pageSize ?? 25);
+        const pagination = parsePagination(req.query);
 
-        const records = await application.listTrustRecords(page, pageSize);
+        if (!pagination.ok) {
+          res.status(400).json({ error: pagination.error });
+          return;
+        }
+
+        const records = await application.listTrustRecords(
+          pagination.page,
+          pagination.pageSize,
+        );
 
         const scoped =
           req.callerId === undefined
