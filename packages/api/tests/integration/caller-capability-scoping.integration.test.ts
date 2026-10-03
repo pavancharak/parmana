@@ -106,6 +106,21 @@ describe("Caller capability scoping (HTTP boundary)", () => {
       expect(response.body.code).toBe("TENANT_NOT_ALLOWED");
     });
 
+    it("treats a null tenantId as no tenant, as the SDKs send it", async () => {
+      const { app } = buildApp();
+      const transaction = await createBusinessTransaction();
+
+      const response = await request(app)
+        .post("/execute")
+        .set("Authorization", `Bearer ${SCOPED_KEY}`)
+        .send({
+          ...transaction,
+          metadata: { ...transaction.metadata, tenantId: null },
+        });
+
+      expect(response.status).toBe(200);
+    });
+
     it("allows a tenantId the caller's key lists", async () => {
       const { app } = buildApp();
 

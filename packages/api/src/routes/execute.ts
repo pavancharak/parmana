@@ -167,8 +167,10 @@ export function createExecuteRouter(
           //
           const tenantId = transaction.metadata?.tenantId;
 
+          // null and absent both mean "no tenant" (the SDKs send null).
           if (
             tenantId !== undefined &&
+            tenantId !== null &&
             !(req.callerAllowedTenantIds ?? []).includes(tenantId)
           ) {
             res.status(403).json({
