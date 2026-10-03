@@ -16,11 +16,6 @@ Parmana is permitted. Any other use including production deployment,
 redistribution, or the creation of derivative works requires prior
 written permission from Parmana Systems.
 
-Scope: this license covers every file in this repository except files in a
-directory that contains its own LICENSE file. The typescript/ and python/
-client SDK directories each contain their own LICENSE file (Apache License,
-Version 2.0), which governs the files in those directories.
-
 All rights not expressly granted are reserved.
 
 For licensing inquiries, contact: founder@parmanasystems.com
