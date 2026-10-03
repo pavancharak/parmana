@@ -78,12 +78,11 @@ the record and the public keys, without Parmana's runtime or database, using
 - [The Parmana Handbook](https://docs.parmanasystems.com/handbook/overview): the codebase
   explained chapter by chapter.
 
-## What is licensed differently
+## Licensing
 
-The root [LICENSE](./LICENSE) covers this repository except two client SDK directories that
-carry their own Apache License 2.0 and are published under it: [typescript/](typescript/)
-(`@parmana/sdk` on npm) and [python/](python/) (`parmana` on PyPI). `@parmana/sign` lives in
-its own repository, also under Apache License 2.0.
+The proprietary [LICENSE](./LICENSE) covers the whole repository, including the client SDKs
+in [typescript/](typescript/) (`@parmana/sdk` on npm) and [python/](python/) (`parmana` on
+PyPI). `@parmana/sign` is a separate repository under the Apache License 2.0.
 
 ## Questions and feedback
 

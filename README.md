@@ -184,9 +184,8 @@ license is granted to use, copy, modify, distribute, or create
 derivative works from this repository except as expressly permitted in a
 separate written agreement with Parmana Systems.
 
-The client SDKs in [typescript/](typescript/) and [python/](python/) carry
-their own Apache License 2.0, under which they are published as
-`@parmana/sdk` and `parmana`.
+This includes the client SDKs in [typescript/](typescript/) and
+[python/](python/), published as `@parmana/sdk` and `parmana`.
 
 ## More documentation
 
