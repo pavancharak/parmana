@@ -184,7 +184,7 @@ describe("KmsSigner", () => {
       const signer = await KmsSigner.create();
       await signer.hasKey(logicalKeyId);
 
-      const call = sendMock.mock.calls[0]![0] as {
+      const call = sendMock.mock.calls.at(-1)![0] as {
         input: Record<string, unknown>;
       };
       return call.input.KeyId as string;
@@ -194,8 +194,19 @@ describe("KmsSigner", () => {
       expect(await keyIdSentToKms("default")).toBe("alias/default");
     });
 
-    it("prefixes a tenant-scoped logical keyId the same way", async () => {
-      expect(await keyIdSentToKms("tenant.acme")).toBe("alias/tenant.acme");
+    it('maps a tenant-scoped logical keyId to a valid alias, "." becoming "/" (KMS alias names cannot contain ".")', async () => {
+      expect(await keyIdSentToKms("tenant.acme")).toBe("alias/tenant/acme");
+      expect(await keyIdSentToKms("tenant.acme-corp.eu")).toBe(
+        "alias/tenant/acme-corp/eu",
+      );
+    });
+
+    it('refuses a keyId that would land under AWS\'s reserved "alias/aws/" prefix', async () => {
+      const { resolveKmsKeyId } =
+        await import("../../src/providers/signer/KmsSigner.js");
+
+      expect(() => resolveKmsKeyId("aws.ebs")).toThrow(/alias\/aws\//);
+      expect(() => resolveKmsKeyId("alias/aws/ebs")).toThrow(/alias\/aws\//);
     });
 
     it("passes an already-prefixed alias/ name through unchanged", async () => {
@@ -317,6 +328,124 @@ describe("KmsSigner", () => {
     await expect(signer.getMetadata("test-key")).rejects.toThrow(
       /only supports ECC_NIST_EDWARDS25519/,
     );
+  });
+
+  describe("public key and DescribeKey cache", () => {
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    function answerEveryCommand() {
+      sendMock.mockImplementation(
+        (command: { constructor: { name: string } }) => {
+          if (command.constructor.name === "GetPublicKeyCommand") {
+            return Promise.resolve({
+              PublicKey: new Uint8Array(realPublicKeyDer),
+            });
+          }
+          if (command.constructor.name === "DescribeKeyCommand") {
+            return Promise.resolve({
+              KeyMetadata: { KeySpec: "ECC_NIST_EDWARDS25519" },
+            });
+          }
+          throw new Error(`unexpected command: ${command.constructor.name}`);
+        },
+      );
+    }
+
+    function sentCommands(): string[] {
+      return sendMock.mock.calls.map(
+        ([command]) =>
+          (command as { constructor: { name: string } }).constructor.name,
+      );
+    }
+
+    it("serves repeated lookups across signer instances from one KMS call each, until the TTL passes", async () => {
+      vi.useFakeTimers();
+      const KmsSigner = await freshKmsSigner();
+      const { KMS_KEY_CACHE_TTL_MS } =
+        await import("../../src/providers/signer/KmsSigner.js");
+      answerEveryCommand();
+
+      const first = await KmsSigner.create();
+      const second = await KmsSigner.create();
+
+      await first.getPublicKey("default");
+      await second.getPublicKey("default");
+      await first.hasKey("default");
+      await second.getMetadata("default");
+
+      expect(sentCommands()).toEqual([
+        "GetPublicKeyCommand",
+        "DescribeKeyCommand",
+      ]);
+
+      vi.advanceTimersByTime(KMS_KEY_CACHE_TTL_MS + 1);
+      await second.getPublicKey("default");
+
+      expect(sentCommands()).toEqual([
+        "GetPublicKeyCommand",
+        "DescribeKeyCommand",
+        "GetPublicKeyCommand",
+      ]);
+    });
+
+    it("shares one call between concurrent lookups of the same key", async () => {
+      const KmsSigner = await freshKmsSigner();
+      answerEveryCommand();
+
+      const signer = await KmsSigner.create();
+      await Promise.all([
+        signer.getPublicKey("default"),
+        signer.getPublicKey("default"),
+        signer.getPublicKey("default"),
+      ]);
+
+      expect(sentCommands()).toEqual(["GetPublicKeyCommand"]);
+    });
+
+    it("never caches a missing key or a failed call", async () => {
+      const KmsSigner = await freshKmsSigner();
+      const signer = await KmsSigner.create();
+
+      sendMock.mockRejectedValueOnce(new FakeNotFoundException("no such key"));
+      expect(await signer.hasKey("tenant.acme")).toBe(false);
+
+      sendMock.mockRejectedValueOnce(new Error("throttled"));
+      await expect(signer.getPublicKey("tenant.acme")).rejects.toThrow(
+        /throttled/,
+      );
+
+      answerEveryCommand();
+      expect(await signer.hasKey("tenant.acme")).toBe(true);
+      await expect(signer.getPublicKey("tenant.acme")).resolves.toBeDefined();
+
+      expect(sendMock).toHaveBeenCalledTimes(4);
+    });
+
+    it("keeps keys in different regions apart", async () => {
+      const KmsSigner = await freshKmsSigner();
+      answerEveryCommand();
+
+      await (await KmsSigner.create("us-east-1")).getPublicKey("default");
+      await (await KmsSigner.create("ap-south-1")).getPublicKey("default");
+
+      expect(sentCommands()).toEqual([
+        "GetPublicKeyCommand",
+        "GetPublicKeyCommand",
+      ]);
+    });
+
+    it("never caches Sign", async () => {
+      const KmsSigner = await freshKmsSigner();
+      sendMock.mockResolvedValue({ Signature: new Uint8Array([1]) });
+
+      const signer = await KmsSigner.create();
+      await signer.sign("default", new Uint8Array([1]));
+      await signer.sign("default", new Uint8Array([1]));
+
+      expect(sendMock).toHaveBeenCalledTimes(2);
+    });
   });
 
   it("hasKey() returns true when DescribeKey succeeds", async () => {

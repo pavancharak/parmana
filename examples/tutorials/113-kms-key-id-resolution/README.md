@@ -23,9 +23,12 @@ and reproduce, in words, exactly what used to happen before this existed. Mirror
   exactly this kind of direct demonstration) maps a bare logical keyId to
   `alias/<keyId>` — mirroring `FileKeyProvider`'s own `keyId` → `<keyId>.private.pem`
   filename convention — and passes an already-qualified `alias/` name through unchanged,
-  so it never double-prefixes it. It refuses a full key ARN: a keyId often comes from the
-  record being verified, and an ARN can name a key in another AWS account. A UUID shaped
-  keyId is treated as an alias name, never as a raw key ID.
+  so it never double-prefixes it. KMS alias names cannot contain `.`, so each `.` becomes
+  `/`: the tenant key `tenant.acme-corp` is `alias/tenant/acme-corp`. A logical keyId never
+  contains `/`, so two keyIds never map to the same alias. It refuses a full key ARN: a
+  keyId often comes from the record being verified, and an ARN can name a key in another
+  AWS account. It also refuses AWS's reserved `alias/aws/` prefix. A UUID shaped keyId is
+  treated as an alias name, never as a raw key ID.
 
 ## Running the Tutorial
 

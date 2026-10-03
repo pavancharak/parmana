@@ -38,6 +38,21 @@ const SIGNING_ALGORITHM = "ED25519_SHA_512";
 const LOGICAL_KEY_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
 
 /**
+ * How long a public key or a DescribeKey answer is reused before KMS is
+ * asked again. Only successful answers are cached: a missing key or a
+ * failed call is never remembered, so creating an alias takes effect on
+ * the next request. Five minutes bounds how long a repointed alias can
+ * keep serving its previous key's public key.
+ */
+export const KMS_KEY_CACHE_TTL_MS = 5 * 60 * 1000;
+
+/**
+ * AWS reserves alias names starting with "alias/aws/" for AWS managed
+ * keys, which never sign for Parmana.
+ */
+const RESERVED_ALIAS_PREFIX = "alias/aws/";
+
+/**
  * Maps a Parmana logical keyId (e.g. "default", "tenant.acme") to the
  * identifier AWS KMS's own APIs actually accept -- a key ID (UUID), a
  * full ARN, or an alias name/ARN (which must carry the "alias/"
@@ -48,8 +63,13 @@ const LOGICAL_KEY_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
  * class's original behavior) always fails against real AWS with
  * ValidationException/NotFoundException. Mirrors FileKeyProvider's own
  * keyId -> "<keyId>.private.pem" filename convention: here, keyId ->
- * "alias/<keyId>". An explicit "alias/<name>" is passed through
- * unchanged, so it is never double-prefixed.
+ * "alias/<keyId>", with each "." replaced by "/" because KMS alias
+ * names allow letters, digits, "/", "_" and "-" but not ".". So the
+ * tenant key "tenant.acme" is "alias/tenant/acme". A logical keyId
+ * never contains "/", so the mapping cannot make two keyIds collide.
+ * An explicit "alias/<name>" is passed through unchanged, so it is
+ * never double-prefixed. An alias under AWS's reserved "alias/aws/"
+ * prefix is refused.
  *
  * A full ARN is refused, and a UUID shaped keyId is treated as an
  * alias name like any other logical id, never as a raw key ID. A keyId often comes
@@ -61,20 +81,26 @@ const LOGICAL_KEY_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
  * account and region.
  */
 export function resolveKmsKeyId(keyId: string): string {
+  let alias: string | undefined;
+
   if (keyId.startsWith("alias/")) {
     const name = keyId.slice("alias/".length);
 
     if (name !== "" && LOGICAL_KEY_ID_PATTERN.test(name.replace(/\//g, ""))) {
-      return keyId;
+      alias = keyId;
     }
   } else if (LOGICAL_KEY_ID_PATTERN.test(keyId)) {
-    return `alias/${keyId}`;
+    alias = `alias/${keyId.replace(/\./g, "/")}`;
+  }
+
+  if (alias !== undefined && !alias.startsWith(RESERVED_ALIAS_PREFIX)) {
+    return alias;
   }
 
   throw new CryptoError(
     `Invalid KMS keyId ${JSON.stringify(keyId)}: expected a logical key id ` +
       '(for example "default" or "tenant.acme") or an "alias/" name. ' +
-      "A key ARN is not accepted.",
+      'A key ARN is not accepted, nor an "alias/aws/" name.',
   );
 }
 
@@ -106,8 +132,25 @@ function algorithmFromKeySpec(keySpec: string | undefined): SignatureAlgorithm {
  * locally, an instance/task role elsewhere) -- this class never reads
  * or accepts a static access key/secret pair.
  */
+/**
+ * Successful GetPublicKey and DescribeKey answers, by region and
+ * resolved KMS alias, for KMS_KEY_CACHE_TTL_MS. Module level, not per
+ * instance, because SignerBootstrap builds a new KmsSigner for each
+ * call (GET /keys/:keyId does so per request). Those routes and
+ * GET /.well-known/jwks.json are unauthenticated, and every
+ * verification looks up a public key, so without this each request
+ * cost up to three KMS calls against the account's shared quota.
+ * Concurrent lookups of the same key share one call. Sign is never
+ * cached.
+ */
+const publicKeyCache = new Map<string, CacheEntry<KeyObject>>();
+const keySpecCache = new Map<string, CacheEntry<string | undefined>>();
+
 export class KmsSigner implements Signer {
-  private constructor(private readonly client: KMSClient) {}
+  private constructor(
+    private readonly client: KMSClient,
+    private readonly region: string,
+  ) {}
 
   /**
    * Async factory, not a plain constructor: resolving credentials may
@@ -124,6 +167,7 @@ export class KmsSigner implements Signer {
         region,
         ...(credentials !== undefined ? { credentials } : {}),
       }),
+      region,
     );
   }
 
@@ -153,32 +197,48 @@ export class KmsSigner implements Signer {
   }
 
   async getPublicKey(keyId: string): Promise<KeyObject> {
-    const response = await this.client.send(
-      new GetPublicKeyCommand({ KeyId: resolveKmsKeyId(keyId) }),
-    );
+    const kmsKeyId = resolveKmsKeyId(keyId);
 
-    if (!response.PublicKey) {
-      throw new CryptoError(
-        `KMS GetPublicKey returned no key material for ${keyId}.`,
+    return cached(publicKeyCache, this.cacheKey(kmsKeyId), async () => {
+      const response = await this.client.send(
+        new GetPublicKeyCommand({ KeyId: kmsKeyId }),
       );
-    }
 
-    return createPublicKey({
-      key: Buffer.from(response.PublicKey),
-      format: "der",
-      type: "spki",
+      if (!response.PublicKey) {
+        throw new CryptoError(
+          `KMS GetPublicKey returned no key material for ${keyId}.`,
+        );
+      }
+
+      return createPublicKey({
+        key: Buffer.from(response.PublicKey),
+        format: "der",
+        type: "spki",
+      });
     });
   }
 
   async getMetadata(keyId: string): Promise<KeyMetadata> {
-    const response = await this.client.send(
-      new DescribeKeyCommand({ KeyId: resolveKmsKeyId(keyId) }),
-    );
-
     return {
       keyId,
-      algorithm: algorithmFromKeySpec(response.KeyMetadata?.KeySpec),
+      algorithm: algorithmFromKeySpec(
+        await this.describeKeySpec(resolveKmsKeyId(keyId)),
+      ),
     };
+  }
+
+  private cacheKey(kmsKeyId: string): string {
+    return `${this.region}\u0000${kmsKeyId}`;
+  }
+
+  private describeKeySpec(kmsKeyId: string): Promise<string | undefined> {
+    return cached(keySpecCache, this.cacheKey(kmsKeyId), async () => {
+      const response = await this.client.send(
+        new DescribeKeyCommand({ KeyId: kmsKeyId }),
+      );
+
+      return response.KeyMetadata?.KeySpec;
+    });
   }
 
   /**
@@ -206,16 +266,16 @@ export class KmsSigner implements Signer {
   }
 
   async hasKey(keyId: string): Promise<boolean> {
+    let kmsKeyId: string;
+
     try {
-      resolveKmsKeyId(keyId);
+      kmsKeyId = resolveKmsKeyId(keyId);
     } catch {
       return false;
     }
 
     try {
-      await this.client.send(
-        new DescribeKeyCommand({ KeyId: resolveKmsKeyId(keyId) }),
-      );
+      await this.describeKeySpec(kmsKeyId);
 
       return true;
     } catch (error) {
@@ -226,12 +286,41 @@ export class KmsSigner implements Signer {
       throw error;
     }
   }
+}
 
-  // listKeys() is intentionally not implemented -- optional on Signer
-  // (see FileKeyProvider's own listKeys doc comment for the same
-  // precedent). Enumerating every KMS key in an account/region is a
-  // different, broader operation (ListKeys + per-key alias lookup)
-  // than this codebase's key-discovery routes need today.
+interface CacheEntry<T> {
+  readonly value: Promise<T>;
+  readonly expiresAt: number;
+}
+
+/**
+ * Returns the cached answer for `key` while it is fresh, otherwise
+ * loads it. The pending promise is stored at once so concurrent callers
+ * share one load, and removed again if the load fails, so a failure is
+ * never served from the cache.
+ */
+function cached<T>(
+  cache: Map<string, CacheEntry<T>>,
+  key: string,
+  load: () => Promise<T>,
+): Promise<T> {
+  const now = Date.now();
+  const entry = cache.get(key);
+
+  if (entry !== undefined && entry.expiresAt > now) {
+    return entry.value;
+  }
+
+  const value = load();
+  cache.set(key, { value, expiresAt: now + KMS_KEY_CACHE_TTL_MS });
+
+  value.catch(() => {
+    if (cache.get(key)?.value === value) {
+      cache.delete(key);
+    }
+  });
+
+  return value;
 }
 
 function requireRegion(): string {
