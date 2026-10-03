@@ -111,8 +111,11 @@ implementation, resolved only through `SignerBootstrap`, never through `KeyBoots
 in-source as deliberate: AWS KMS added Ed25519 support in November 2025, so adopting it needed
 no signature-algorithm migration. `sign()`/`getPublicKey()`/`getMetadata()`/`hasKey()` each
 call a real `KMSClient` command (`SignCommand`, `GetPublicKeyCommand`, `DescribeKeyCommand`);
-`listKeys()` is deliberately unimplemented, since enumerating every key in an account/region
-is a broader operation this codebase's routes don't need.
+`listKeys()` returns only the logical ids this process signs with (`default` and the current
+`PARMANA_VERIFICATION_KEY_ID`), each if its alias exists, so `GET /.well-known/jwks.json`
+answers under KMS. It does not enumerate the account's keys: an account wide list would
+publish keys unrelated to Parmana. (Before 2026-10-03 it was unimplemented, and the endpoint
+answered `501` in production.)
 
 Credentials are never a static access key/secret pair read from this codebase's own
 configuration. If `AWS_ROLE_ARN` is set, `KmsSigner` dynamically imports the optional

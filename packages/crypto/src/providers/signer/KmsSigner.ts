@@ -10,7 +10,11 @@ import {
 
 import { SignatureAlgorithms, type SignatureAlgorithm } from "@parmana/shared";
 
-import type { KeyMetadata } from "../../KeyProvider.js";
+import {
+  DEFAULT_KEY_ID,
+  currentVerificationKeyId,
+  type KeyMetadata,
+} from "../../KeyProvider.js";
 import type { Signer } from "../../Signer.js";
 import { CryptoError } from "../../errors/CryptoError.js";
 import {
@@ -175,6 +179,30 @@ export class KmsSigner implements Signer {
       keyId,
       algorithm: algorithmFromKeySpec(response.KeyMetadata?.KeySpec),
     };
+  }
+
+  /**
+   * The signing keys this deployment publishes: the default key and the
+   * current verification key (PARMANA_VERIFICATION_KEY_ID), each only
+   * if its alias exists. KMS has no cheap, scoped way to enumerate every
+   * key in an account, and an account wide list would publish keys that
+   * have nothing to do with Parmana, so this lists the logical ids this
+   * process signs with. Lets GET /.well-known/jwks.json answer under
+   * KEY_PROVIDER=aws-kms instead of 501. A record signed under an older
+   * PARMANA_VERIFICATION_KEY_ID is still served by GET /keys/:keyId.
+   */
+  async listKeys(): Promise<string[]> {
+    const candidates = [
+      ...new Set([DEFAULT_KEY_ID, currentVerificationKeyId()]),
+    ];
+
+    const present = await Promise.all(
+      candidates.map(async (keyId) =>
+        (await this.hasKey(keyId)) ? keyId : undefined,
+      ),
+    );
+
+    return present.filter((keyId): keyId is string => keyId !== undefined);
   }
 
   async hasKey(keyId: string): Promise<boolean> {

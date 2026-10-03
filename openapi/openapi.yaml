@@ -414,8 +414,11 @@ paths:
       operationId: getJwks
       description: |
         Lists every public signing key this deployment can serve, the enumeration form of `GET /keys/{keyId}`.
-        Fetch and cache it when you verify many artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of
-        each entry; an entry may have no `jwk` field. Needs no key.
+        With local key files that is every key in the key directory. Under AWS KMS it is the keys this
+        deployment signs with: `default` and the current `PARMANA_VERIFICATION_KEY_ID`. A record signed
+        under an older key id is still served by `GET /keys/{keyId}`. Fetch and cache it when you verify
+        many artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of each entry; an entry may have no
+        `jwk` field. Needs no key.
       responses:
         "200":
           description: "Every public key this deployment can serve."

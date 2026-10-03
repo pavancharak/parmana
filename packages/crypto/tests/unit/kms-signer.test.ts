@@ -233,6 +233,58 @@ describe("KmsSigner", () => {
     });
   });
 
+  describe("listKeys() (GET /.well-known/jwks.json under KMS)", () => {
+    const ORIGINAL_VERIFICATION_KEY_ID =
+      process.env.PARMANA_VERIFICATION_KEY_ID;
+
+    afterEach(() => {
+      if (ORIGINAL_VERIFICATION_KEY_ID === undefined) {
+        delete process.env.PARMANA_VERIFICATION_KEY_ID;
+      } else {
+        process.env.PARMANA_VERIFICATION_KEY_ID = ORIGINAL_VERIFICATION_KEY_ID;
+      }
+    });
+
+    function describeKeyFor(existing: readonly string[]) {
+      sendMock.mockImplementation(
+        (command: {
+          constructor: { name: string };
+          input: { KeyId: string };
+        }) => {
+          if (command.constructor.name !== "DescribeKeyCommand") {
+            throw new Error(`unexpected command: ${command.constructor.name}`);
+          }
+          if (existing.includes(command.input.KeyId)) {
+            return Promise.resolve({
+              KeyMetadata: { KeySpec: "ECC_NIST_EDWARDS25519" },
+            });
+          }
+          return Promise.reject(new FakeNotFoundException("not found"));
+        },
+      );
+    }
+
+    it("lists the default key when it exists", async () => {
+      delete process.env.PARMANA_VERIFICATION_KEY_ID;
+      const KmsSigner = await freshKmsSigner();
+      describeKeyFor(["alias/default"]);
+
+      const signer = await KmsSigner.create();
+
+      await expect(signer.listKeys()).resolves.toEqual(["default"]);
+    });
+
+    it("adds the current verification key, and leaves out one whose alias does not exist", async () => {
+      process.env.PARMANA_VERIFICATION_KEY_ID = "signing-2026";
+      const KmsSigner = await freshKmsSigner();
+      describeKeyFor(["alias/signing-2026"]);
+
+      const signer = await KmsSigner.create();
+
+      await expect(signer.listKeys()).resolves.toEqual(["signing-2026"]);
+    });
+  });
+
   it("getMetadata() maps ECC_NIST_EDWARDS25519 to the ed25519 SignatureAlgorithm", async () => {
     const KmsSigner = await freshKmsSigner();
 
