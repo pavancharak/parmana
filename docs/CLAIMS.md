@@ -752,6 +752,8 @@ Evidence
 
 ---
 
+**Update (2026-10-03):** "independently" in this section means each pass was run fresh, without relying on the earlier passes' conclusions. All four passes were internal reviews within Parmana's own development process, not an audit by a third party.
+
 ## 2.26 Policy Governance (Maker-Checker)
 
 Policy content changes now go through a human-only, maker-checker approval flow before taking effect, closing the prior gap that policy authoring was entirely outside Parmana's own governance surface: any caller with write access to `policies/` could change what a policy allows with no second party involved and no durable, signed record of who approved it.
@@ -1462,6 +1464,8 @@ The following claims are true only under an explicitly stated scope. The scope c
 For any system running the Parmana envelope verifier, execution requests not authorized by Parmana are cryptographically impossible to accept.
 
 This claim holds only for a receiving system that (a) runs @parmana/envelope-verifier and (b) gates every execution-triggering code path behind its verification result. Parmana enforces nothing at the network level. A receiving system that does not call the verifier, or that calls it but does not act on a failing result, is not covered by this claim.
+
+**Update (2026-10-03):** the claim also assumes Parmana's authorization signing key is not compromised. Whoever holds that key, or can make the signing service sign (under AWS KMS, a process with `kms:Sign` on it), can produce authorizations the verifier accepts. "Not authorized by Parmana" means not signed with that key; it does not mean not approved by policy. See the attacker table in `docs/site/evaluation/audit-guide.mdx`.
 
 Evidence
 
