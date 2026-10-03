@@ -1,0 +1,114 @@
+---
+title: "Evaluate Parmana"
+description: "The shortest path from a fresh clone to a working local system, and what to read next."
+---
+
+<Warning>
+  **Evaluation only.** Reading, building and running Parmana to assess it is
+  permitted. Any other use needs a separate written agreement with Parmana
+  Systems. See [License and evaluation](/license).
+</Warning>
+
+This page is for anyone assessing Parmana: an engineer trying it, a security reviewer, or an
+auditor. It needs no accounts, credentials, database or network access beyond `npm ci`.
+Auditors should continue with the [Audit guide](/evaluation/audit-guide) after step 2.
+
+## Requirements
+
+- Node.js 24.6 or later. The hybrid Ed25519 and ML-DSA-65 signatures use `node:crypto`,
+  which supports ML-DSA from 24.6.
+- npm, as bundled with Node.js.
+- Git, and Bash for two tests that syntax check shell scripts. On Windows, Git for Windows
+  provides it.
+- Docker, only for the optional offline check in step 4.
+
+Linux, macOS and Windows are supported.
+
+## 1. Install, build and test
+
+```bash
+git clone https://github.com/pavancharak/parmana.git
+cd parmana
+npm ci
+npm run build
+npm test
+```
+
+`npm run build` comes first because tests import the workspace packages from their built
+`dist/` output; `npm test` refuses to run against stale output.
+
+No `.env` is needed. The test setup uses the same local defaults as CI: the committed
+`./policies`, in memory storage, and local Ed25519 keys generated for the run. Suites that
+need live services (HubSpot, Supabase) skip. Expect about 2,880 passing tests and about 54
+skipped.
+
+## 2. Run every example
+
+```bash
+npm run examples
+```
+
+This runs each tutorial in
+[examples/tutorials/](https://github.com/pavancharak/parmana/tree/main/examples/tutorials)
+against local mock connectors, with throwaway keys deleted afterwards. Several tutorials print
+`FAILED` or `✗` on purpose: they show a forged, replayed or tampered request being refused.
+The run ends with `All Parmana examples completed successfully.` and exit code `0`.
+
+To see the whole chain in one walkthrough (policy evaluation, signed authorization, envelope
+verification, credential isolation, connector execution and the signed Trust Record):
+
+```bash
+npx tsx examples/tutorials/60-end-to-end-enterprise-execution/run.ts
+```
+
+`npm run preflight` runs everything a contributor runs before a change: typecheck, lint,
+format check, the Python model check, every test, the build and every example.
+
+## 3. Try the hosted sandbox (optional)
+
+A public sandbox runs the same API with demo policies and a published demo approver key. Use
+the [Playground](/playground), or the scripts in
+[examples/sandbox-playground/](https://github.com/pavancharak/parmana/tree/main/examples/sandbox-playground)
+from cURL, PowerShell, TypeScript or Python. See
+[Live API and demos](/guides/live-api-and-demos).
+
+## 4. Run the full stack with no internet route (optional, Docker)
+
+```bash
+bash docker/local/offline-check/run.sh
+```
+
+This starts the server, Postgres and a stand in downstream system on a Docker network with no
+route to the internet, approves a policy through maker checker, runs an approved and a refused
+refund, and verifies the resulting Trust Record with only the public keys. See
+[Offline verification](/self-hosted/offline-verification). CI runs the same check on every
+change to the server image.
+
+## 5. Verify a record without Parmana
+
+Every approved action produces a signed Execution Trust Record. It can be checked with only the
+record and the public keys, using [`@parmana/sign`](/sdks/parmana-sign/overview) (Apache 2.0,
+a separate repository) or this repository's `scripts/verify-trust-record.ts`:
+
+```bash
+npx tsx scripts/verify-trust-record.ts trust-record.json default=default.public.pem
+```
+
+See [Verify independently](/guides/verify-independently).
+
+## What to read next
+
+| If you want to                              | Read                                                                                                    |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Check what Parmana claims, and the evidence | [Claims and evidence](/evaluation/claims-and-evidence)                                                  |
+| Review it for security or audit             | [Audit guide](/evaluation/audit-guide)                                                                  |
+| Know what it does not do                    | [Limitations](/security/limitations)                                                                    |
+| Understand the design                       | [Architecture](/architecture/overview), then [How Parmana thinks](/how-parmana-thinks)                  |
+| Read the code chapter by chapter            | [The Parmana Handbook](/handbook/overview)                                                              |
+| See every gap found and how it was closed   | [docs/VERIFICATION-GAPS.md](https://github.com/pavancharak/parmana/blob/main/docs/VERIFICATION-GAPS.md) |
+
+## Questions and feedback
+
+Email [founder@parmanasystems.com](mailto:founder@parmanasystems.com) for questions, a guided
+walkthrough or licensing. Report security issues privately as described in
+[SECURITY.md](https://github.com/pavancharak/parmana/blob/main/SECURITY.md).
