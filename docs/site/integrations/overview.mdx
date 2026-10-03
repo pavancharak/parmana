@@ -35,13 +35,13 @@ export interface Connector {
   health both fail closed in `SdkConnectorExecutor`, before the connector is ever invoked.
 - **`ConnectorFactory`**, the construction contract future connectors implement. No
   concrete factory ships in this milestone.
-- **`HttpConnector`** ([AVAILABLE], `packages/connector-sdk/src/HttpConnector.ts`):
+- **`GatewayHttpAdapter`** ([AVAILABLE],
+  `packages/execution-gateway/src/connector-execution/GatewayHttpAdapter.ts`):
   capability-aware HTTP forwarding: declared capabilities, per-request timeout via
   `AbortController`, Bearer-token credential injection from an already-resolved
   `CredentialHandle`, deterministic sanitized evidence. Fails closed on timeout or any
-  non-2xx response. This is a different, newer connector from
-  `packages/execution-gateway/src/HttpConnector.ts` (below), that one is untouched and
-  still serves the Gateway's separate "direct connector" mode.
+  non-2xx response. A different class from `packages/execution-gateway/src/HttpConnector.ts`,
+  which serves the Gateway's separate "direct connector" mode.
 - **`MockConnector`** ([AVAILABLE]), scripted responses and failure injection, for
   hermetic tests of anything built on top of this SDK.
 - **`SapConnector` / `OracleConnector` / `WorkdayConnector` / `SalesforceConnector`**
@@ -65,11 +65,11 @@ ExecutionGateway
      → registry.get(connectorId): SecureConnector (InMemoryConnectorRegistry)
         → InMemorySecureConnector.execute() (policy check, one-time session, credential vault)
            → SdkConnectorExecutor (adapts Connector into ConnectorExecutor)
-              → Connector.execute(...) → HttpConnector | MockConnector
+              → Connector.execute(...) → GatewayHttpAdapter | MockConnector | a built in connector
 ```
 
-`ConnectorSdkRegistry` (`packages/connector-sdk/src/ConnectorRegistry.ts`) extends
-`execution-control`'s `ConnectorRegistry` by composing an `InMemoryConnectorRegistry`
+`GatewayConnectorRegistry` (`packages/execution-gateway/src/connector-execution/GatewayConnectorRegistry.ts`)
+implements `execution-control`'s `ConnectorRegistry` by composing an `InMemoryConnectorRegistry`
 internally. It implements the same `get()` contract, so it's a drop-in wherever a plain
 `ConnectorRegistry` is expected, while adding metadata/version/health/credential-provider
 registration.
@@ -83,6 +83,6 @@ connector without ever passing through the Runtime or the AI caller.
 No _real_ connector for SAP, Oracle, Workday, or Salesforce exists, only the reference mocks
 above. No connector, mock or real, exists for OpenAI, Anthropic, ServiceNow, Jira, or any
 database driver. Building any of these means implementing `Connector` from
-`@parmana/connector-sdk` and registering it with a `ConnectorSdkRegistry`, and, to reach the
+`@parmana/connector-sdk` and registering it with a `GatewayConnectorRegistry`, and, to reach the
 default server, editing its bootstrap (see [The gateway](/concepts/the-gateway)). The SDK
 contract is real, a pre-built connector for your target system mostly is not.

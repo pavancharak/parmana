@@ -107,7 +107,7 @@ The same pipeline, traced through the classes that run it for one `POST /execute
 - A rejected Decision **never** produces a Signed Execution Authorization, authorization
   signing happens only after `executionGate.enforce()` approves
   (`packages/runtime/src/RuntimeEngine.ts`, CLAIMS.md 2.12,
-  `packages/runtime/test/execution-authorization-wiring.test.ts`, "rejected transaction
+  `packages/runtime/tests/unit/execution-authorization-wiring.test.ts`, "rejected transaction
   produces no authorization"). It throws rather than returning a rejected result, see [Write
   your first policy](/guides/write-your-first-policy).
 - Signing or verifying with the wrong key type (e.g. an Ed25519 key against an ML-DSA-65

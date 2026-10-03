@@ -65,7 +65,7 @@ worth having, independent of the corrected causal story, it is the library's own
 usage contract, and a stricter `validate` config in a future version could make this fatal for
 real.
 
-The fix itself: `RateLimitOption` (`packages/api/src/app.ts:71-91`) carries two distinct
+The fix itself: `RateLimitOption` (`packages/api/src/app.ts`) carries two distinct
 fields, `executeStore` and `healthStore`, never one shared `store`. `createRateLimitStore()`
 (`packages/api/src/bootstrap/createRateLimitStore.ts`) is called once per limiter, each with
 its own `prefix` (e.g. `"execute:"` and `"health:"`), so their counters can never collide in
@@ -119,7 +119,7 @@ confirms the limiter is entirely skipped when caller-auth is disabled.
 - `packages/storage/src/postgres/PostgresRateLimitStore.ts`, the durable store, including
   the `prefix` field's own doc comment explaining exactly why it must be named that and be
   public.
-- `packages/api/src/app.ts:71-91, 149-171, 248-264`, where both limiters are actually
+- `packages/api/src/app.ts, 149-171, 248-264`, where both limiters are actually
   constructed and mounted.
 - `examples/tutorials/115-per-limiter-rate-limit-stores/README.md`, the full incident
   account, including the corrected diagnosis.

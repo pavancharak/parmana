@@ -62,7 +62,7 @@ capabilities file says so explicitly in its own header comment (e.g.
 | Razorpay  | (historical)                                | (historical)                                                            | Removed 2026-08-12 |
 
 This table's policy column is read directly from
-`packages/capability-registry/src/CapabilityPolicyBinding.ts:43-71`,
+`packages/capability-registry/src/CapabilityPolicyBinding.ts`,
 `CANONICAL_CAPABILITY_POLICY_BINDINGS`, the same table Chapter 6 covers in depth. A request
 declaring `hubspot:deal-update` must be evaluated against exactly `hubspot-deal-update@1.1.0`
 (or the version most recently approved through governance), or it is rejected before any policy

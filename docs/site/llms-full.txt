@@ -2700,9 +2700,9 @@ delete. Widen scope in a later milestone, once the first one is fully proven, se
   behavior, not something this codebase controls. `RazorpayConnector` didn't have this
   check originally, it survived only because Razorpay's real API happened to reject an
   unrecognized key — a defense-in-depth fix was added after the fact.
-  `HubSpotConnector` refuses its own placeholder token against
+  The HubSpot connector refuses its own placeholder token against
   `https://api.hubapi.com` from its first commit, see [HubSpot](/integrations/hubspot) and
-  `packages/connector-hubspot/src/HubSpotConnector.ts`.
+  `packages/execution-gateway/src/connector-execution/GatewayHubSpotAdapter.ts`.
 - _Read the documented test-credential environment variable name directly, never through a
   bridge variable._ `createRazorpayCredentialProvider.ts`'s test-mode branch originally read
   a word-order-swapped bridge variable instead of the name `.env.example` actually
@@ -3001,7 +3001,7 @@ change a fact the approval does not cover. In a scratch copy of the tutorial fol
 
 ```
 RuntimeError: Execution rejected: Vendor payment rejected because the vendor has not been verified.
-    at ExecutionGate.enforce (packages/runtime/src/ExecutionGate.ts:28:11)
+    at ExecutionGate.enforce (packages/runtime/src/ExecutionGate.ts:11)
 ```
 
 A `REJECTED` decision does not come back as a normal object with `outcome: "REJECTED"`,
@@ -8324,25 +8324,7 @@ resolves paths relative to an arbitrary workspace directory instead of the repo 
 
 ```bash
 ./node_modules/.bin/tsx packages/api/src/server.ts
-./node_modules/.bin/vitest run   # from within the specific package directory
-```
-
-## `vitest run` from the repo root shows failures in `packages/runtime`
-
-**Cause, confirmed:** `packages/runtime/tests/PolicyRouter.test.ts` resolves its policy
-directory as `path.resolve(process.cwd(), "../../policies")`. This assumes
-`process.cwd()` is a package directory (e.g. `packages/runtime`), which is true when you
-`cd` into the package and run vitest there, but not true when a single vitest process runs
-from the true repo root against every package's tests at once, then `process.cwd()` is
-the repo root itself, and `"../../policies"` overshoots by two directory levels (landing on
-`D:\policies` rather than `D:\...\parmana-exp\policies` on this checkout).
-
-**Not a functional bug**, it's a test-path assumption that only holds under per-package
-invocation, which is how the project's own `"test": "vitest run"` script in each
-`package.json` is meant to be run:
-
-```bash
-cd packages/runtime && ../../node_modules/.bin/vitest run   # passes
+./node_modules/.bin/vitest run   # from the repository root, or with a path: vitest run packages/runtime
 ```
 
 ## `POST /execute` (or `runtime.execute()`) rejects with "declared signal(s) do not match the executed intent"

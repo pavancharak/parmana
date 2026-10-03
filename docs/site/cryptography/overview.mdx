@@ -18,8 +18,8 @@ description: "Ed25519 default, ML-DSA-65 (post-quantum) configurable. Local PEM 
 | ML-DSA-65 (FIPS 204, historically called "dilithium3" in this codebase) | [AVAILABLE], opt-in                    | Selectable via `PRIMARY_SIGNATURE_PROVIDER=dilithium3` **or** the equivalent, accepted alias `PRIMARY_SIGNATURE_PROVIDER=ml-dsa-65` (either resolves to the same provider; the internal identifier itself is `dilithium3` and stays that way for backward compatibility). Requires **Node ≥ 24** for native `node:crypto` ml-dsa-65 support. **Signatures are randomized, not deterministic**, signing the same message twice produces two different, both-valid signatures. Only verification is deterministic. |
 | ECDSA P-256                                                             | Declared in `SignatureAlgorithms` enum | No dedicated provider class, treat as unimplemented until a provider ships.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
-Evidence: `packages/crypto/test/SignatureProvider.test.ts`,
-`Dilithium3SignatureProvider.test.ts`, `dilithium3-cross-instance.test.ts`.
+Evidence: `packages/crypto/tests/unit/signature-provider.test.ts`,
+`dilithium3-signature-provider.test.ts`, `dilithium3-cross-instance.test.ts`.
 
 ## Hash algorithms
 
