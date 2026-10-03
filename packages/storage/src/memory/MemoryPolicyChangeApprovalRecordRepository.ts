@@ -41,6 +41,22 @@ export class MemoryPolicyChangeApprovalRecordRepository implements PolicyChangeA
     return this.records.get(policyChangeApprovalRecordId) ?? null;
   }
 
+  async findByPendingPolicyChangeId(
+    pendingPolicyChangeId: string,
+  ): Promise<PolicyChangeApprovalRecord | null> {
+    const matches = [...this.records.values()].filter(
+      (record) => record.pendingPolicyChangeId === pendingPolicyChangeId,
+    );
+
+    if (matches.length === 0) {
+      return null;
+    }
+
+    return matches.reduce((mostRecent, candidate) =>
+      candidate.approvedAt > mostRecent.approvedAt ? candidate : mostRecent,
+    );
+  }
+
   async list(): Promise<readonly PolicyChangeApprovalRecord[]> {
     return [...this.records.values()];
   }
