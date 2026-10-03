@@ -252,7 +252,9 @@ export class HubSpotSignalStateVerifier implements SignalStateVerifier {
    * verified value, not the caller's own declared one), so a caller
    * cannot present a genuine approval for a smaller amount and reuse
    * it to authorize a larger one -- ApprovalVerifier's own
-   * scopeSatisfied check rejects that mismatch.
+   * scopeSatisfied check rejects that mismatch. The scope must also
+   * name "amountDeltaAbs", so an approval scoped to another fact is
+   * refused even when its bound happens to compare true.
    *
    * consumeNonce is false when the Execution Gateway checks again at
    * release: the artifact was consumed for this transaction at
@@ -280,6 +282,7 @@ export class HubSpotSignalStateVerifier implements SignalStateVerifier {
             action: HUBSPOT_DEAL_UPDATE_CAPABILITY,
             resourceId: dealId,
             requestedValue: amountDeltaAbs,
+            scopeField: "amountDeltaAbs",
             consumeNonce,
           })
         ).valid

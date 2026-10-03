@@ -37,9 +37,9 @@ const cases: Case[] = [
   },
   {
     description:
-      'A tenant-scoped logical keyId (TenantKeyResolver\'s "tenant.<id>" naming convention)',
+      'A tenant-scoped logical keyId (TenantKeyResolver\'s "tenant.<id>" naming convention) -- "." becomes "/", since KMS alias names cannot contain "."',
     input: "tenant.acme-corp",
-    expected: "alias/tenant.acme-corp",
+    expected: "alias/tenant/acme-corp",
   },
   {
     description:
@@ -52,6 +52,12 @@ const cases: Case[] = [
       "A full KMS key ARN -- refused: it can name a key in another AWS account, and keyIds often come from the record being verified",
     input:
       "arn:aws:kms:ap-south-1:999999999999:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+    expected: "refused",
+  },
+  {
+    description:
+      'A keyId under AWS\'s reserved "alias/aws/" prefix -- refused, AWS managed keys never sign for Parmana',
+    input: "aws.ebs",
     expected: "refused",
   },
   {
@@ -102,7 +108,7 @@ console.log();
 
 if (allPassed) {
   console.log(
-    "✓ Every logical keyId resolves to an alias in this account, an alias is never re-prefixed, and an ARN is refused.",
+    "✓ Every logical keyId resolves to a valid alias in this account, an alias is never re-prefixed, and an ARN or reserved alias is refused.",
   );
 } else {
   console.log("✗ Expected every case above to match.");

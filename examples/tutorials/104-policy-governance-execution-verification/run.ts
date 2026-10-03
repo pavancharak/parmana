@@ -229,8 +229,13 @@ try {
       "1.0.0",
     );
   if (realRecord) {
+    // Replaces the stored record (same record id) with an edited copy.
+    // It names its own pending change, since the repository keeps one
+    // approval record per pending change; its signature no longer
+    // verifies either way.
     await policyChangeApprovalRecordRepository.create({
       ...realRecord,
+      pendingPolicyChangeId: crypto.randomUUID(),
       approvedBy: "an-attacker",
     });
   }

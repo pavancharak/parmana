@@ -113,7 +113,7 @@ export async function withDemoApproval<T extends BusinessTransaction>(
       resourceId,
       scope:
         typeof value === "number"
-          ? { field: "amount", comparator: "lte", value }
+          ? { field: "value", comparator: "lte", value }
           : { field: "resourceId", comparator: "eq", value: resourceId },
       ttlSeconds: 900,
     },

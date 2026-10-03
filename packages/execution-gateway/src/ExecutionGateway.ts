@@ -135,9 +135,10 @@ export interface ExecutionGatewayOptions {
    * execution if either the request's signals no longer hash-match the
    * authorization's own signed `signalsHash`, or the verifier reports
    * that verified state has since diverged from those signals. When
-   * omitted, or when an authorization carries no `signalsHash` or the
-   * request carries no `signals`, the check is skipped rather than
-   * failed -- see ExecutionGateway's class doc comment. Same port
+   * omitted, or when an authorization carries no `signalsHash`, the
+   * check is skipped rather than failed. A request with no `signals`
+   * is checked as `{}`, the same value RuntimeEngine hashes when a
+   * transaction has no signals -- see ExecutionGateway's class doc comment. Same port
    * RuntimeEngine already uses pre-authorization (@parmana/policy);
    * reused here, not reimplemented.
    */
@@ -187,8 +188,8 @@ export interface ExecutionGatewayOptions {
  *
  * A third additive check (G-31) closes the analogous gap for
  * runtime signals rather than policy content: when a
- * SignalStateVerifier is supplied and the request/authorization both
- * carry signals/signalsHash, the request's signals are hash-checked
+ * SignalStateVerifier is supplied and the authorization carries a
+ * signalsHash, the request's signals (`{}` when absent) are hash-checked
  * against the authorization's signed signalsHash, then independently
  * re-verified against real-world state -- so an authorization whose
  * vendor status, risk exposure, or other declared conditions have
@@ -423,10 +424,17 @@ export class ExecutionGateway implements ExecutionSystem {
       policyStillCurrent !== false &&
       policyGovernanceVerified !== false &&
       this.signalStateVerifier !== undefined &&
-      signalsHash !== undefined &&
-      request.signals !== undefined
+      signalsHash !== undefined
     ) {
-      const currentSignalsHash = await this.signalsHasher.hash(request.signals);
+      //
+      // A request without signals is hashed as `{}`, exactly as
+      // RuntimeEngine hashes a transaction without signals before
+      // signing. Omitting signals therefore matches only an
+      // authorization that was itself signed over no signals; it
+      // never skips the check.
+      //
+      const requestSignals = request.signals ?? {};
+      const currentSignalsHash = await this.signalsHasher.hash(requestSignals);
 
       if (currentSignalsHash !== signalsHash) {
         signalsStillCurrent = false;
@@ -444,7 +452,7 @@ export class ExecutionGateway implements ExecutionSystem {
             stage: "release",
             ...(verifiedPolicy !== undefined ? { policy: verifiedPolicy } : {}),
           },
-          request.signals as PolicySignals,
+          requestSignals as PolicySignals,
         );
 
         signalsStillCurrent = violations.length === 0;

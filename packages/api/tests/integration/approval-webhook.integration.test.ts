@@ -258,7 +258,7 @@ describe("approval needed webhook (HTTP boundary)", () => {
         keyId: approver.keyId,
         capability: "paytm:refund",
         resourceId: "order-ok-1",
-        scope: { field: "amount", comparator: "lte", value: 500 },
+        scope: { field: "value", comparator: "lte", value: 500 },
         ttlSeconds: 900,
       },
       approverKeys.privateKey,

@@ -68,8 +68,9 @@ needs to exist — no verifier-side configuration change.
   isolation. Over HTTP, a caller may only send a `tenantId` its API key lists in
   `allowedTenantIds`; any other is refused with `403 TENANT_NOT_ALLOWED`, so one
   tenant's caller cannot have its authorization signed with another tenant's
-  key. Under AWS KMS, per tenant keys do not work: the alias `alias/tenant.<id>`
-  cannot be created, because KMS alias names cannot contain a dot.
+  key. Under AWS KMS, the key `tenant.<id>` is the alias `alias/tenant/<id>`,
+  because KMS alias names cannot contain a dot (unit tested, not yet run
+  against real AWS).
 </Note>
 
 <Warning>

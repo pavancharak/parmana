@@ -20,4 +20,8 @@ export {
 export { evaluateApprovalScope } from "./ApprovalScopeEvaluator.js";
 
 export { isSignedApprovalShape } from "./SignedApprovalGuard.js";
-export { ApprovalSignalVerifier } from "./ApprovalSignalVerifier.js";
+export {
+  ApprovalSignalVerifier,
+  APPROVAL_SCOPE_FIELD_RESOURCE_ID,
+  APPROVAL_SCOPE_FIELD_VALUE,
+} from "./ApprovalSignalVerifier.js";

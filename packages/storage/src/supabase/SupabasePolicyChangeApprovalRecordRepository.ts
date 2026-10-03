@@ -1,10 +1,13 @@
 import type { Pool } from "pg";
 
-import type {
-  PolicyChangeApprovalRecord,
-  PolicyChangeApprovalRecordRepository,
-  Signature,
+import {
+  ConflictError,
+  type PolicyChangeApprovalRecord,
+  type PolicyChangeApprovalRecordRepository,
+  type Signature,
 } from "@parmana/shared";
+
+import { isUniqueViolation } from "../errors/PostgresErrorCodes.js";
 
 /**
  * Postgres-backed implementation of PolicyChangeApprovalRecordRepository
@@ -17,9 +20,31 @@ import type {
 export class SupabasePolicyChangeApprovalRecordRepository implements PolicyChangeApprovalRecordRepository {
   constructor(private readonly pool: Pool) {}
 
+  /**
+   * The unique index on pending_policy_change_id
+   * (20261003120000_unique_policy_change_approval_per_pending_change.sql)
+   * makes a second record for the same pending change fail atomically
+   * at the database. Mapped to ConflictError (409), the same error the
+   * in-memory repository throws, so a concurrent second approval stops
+   * before PolicyChangeApprovalService writes the live policy.
+   */
   async create(
     record: PolicyChangeApprovalRecord,
   ): Promise<PolicyChangeApprovalRecord> {
+    try {
+      await this.insert(record);
+    } catch (error) {
+      if (isUniqueViolation(error)) {
+        throw duplicateApprovalError(record.pendingPolicyChangeId);
+      }
+
+      throw error;
+    }
+
+    return record;
+  }
+
+  private async insert(record: PolicyChangeApprovalRecord): Promise<void> {
     await this.pool.query(INSERT_APPROVAL_RECORD_SQL, [
       record.policyChangeApprovalRecordId,
       record.pendingPolicyChangeId,
@@ -34,8 +59,6 @@ export class SupabasePolicyChangeApprovalRecordRepository implements PolicyChang
       JSON.stringify(record.signature),
       record.previousRecordHash ?? null,
     ]);
-
-    return record;
   }
 
   async findById(
@@ -93,6 +116,13 @@ export class SupabasePolicyChangeApprovalRecordRepository implements PolicyChang
 
     return row ? toPolicyChangeApprovalRecord(row) : null;
   }
+}
+
+function duplicateApprovalError(pendingPolicyChangeId: string): ConflictError {
+  return new ConflictError(
+    `Pending Policy Change '${pendingPolicyChangeId}' already has an ` +
+      "approval record -- it was approved concurrently or already resolved.",
+  );
 }
 
 const INSERT_APPROVAL_RECORD_SQL = `
