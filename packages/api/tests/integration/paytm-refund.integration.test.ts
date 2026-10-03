@@ -192,7 +192,7 @@ describe("Paytm refund (HTTP boundary)", () => {
         keyId: approver.keyId,
         capability: options.capability ?? "paytm:refund",
         resourceId: options.orderId,
-        scope: { field: "amount", comparator: "lte", value: options.maxAmount },
+        scope: { field: "value", comparator: "lte", value: options.maxAmount },
         ttlSeconds: 900,
       },
       options.privateKey ?? approverKeys.privateKey,
@@ -629,7 +629,7 @@ describe("Paytm refund (HTTP boundary)", () => {
         ...approval,
         payload: {
           ...approval.payload,
-          scope: { field: "amount", comparator: "lte" as const, value: 75_000 },
+          scope: { field: "value", comparator: "lte" as const, value: 75_000 },
         },
       };
 

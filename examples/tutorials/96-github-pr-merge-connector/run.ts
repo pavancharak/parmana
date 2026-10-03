@@ -183,7 +183,7 @@ try {
       capability: "github:pr-merge",
       resourceId: "acme/widgets#42",
       scope: {
-        field: "pullRequest",
+        field: "resourceId",
         comparator: "eq",
         value: "acme/widgets#42",
       },

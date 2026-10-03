@@ -415,6 +415,51 @@ describe("ApprovalVerifier", () => {
     expect(result.checks.scopeSatisfied).toBe(false);
   });
 
+  it("(scope field) rejects an artifact whose scope names another fact than the request's scopeField, and accepts the matching one", async () => {
+    const { privateKey, publicKey } = generateKeyPair();
+
+    const verifier = new ApprovalVerifier({
+      crypto,
+      issuerRegistry: new StaticApprovalIssuerRegistry([
+        {
+          approverId: "manager-jane",
+          keyId: "manager-jane-key-1",
+          publicKey,
+          revoked: false,
+        },
+      ]),
+      nonceStore: new MemoryNonceStore(),
+    });
+
+    // buildPayload() scopes the approval to amountDeltaAbs <= 50,000.
+    const artifact = await signPayload(buildPayload(), privateKey);
+    const now = new Date("2026-08-05T12:30:00.000Z");
+    const request = {
+      action: "hubspot:deal-update",
+      resourceId: "9005",
+      requestedValue: 40_000,
+      consumeNonce: false,
+    };
+
+    const wrongField = await verifier.verify(
+      artifact,
+      { ...request, scopeField: "value" },
+      now,
+    );
+
+    expect(wrongField.valid).toBe(false);
+    expect(wrongField.checks.scopeSatisfied).toBe(false);
+
+    const rightField = await verifier.verify(
+      artifact,
+      { ...request, scopeField: "amountDeltaAbs" },
+      now,
+    );
+
+    expect(rightField.valid).toBe(true);
+    expect(rightField.checks.scopeSatisfied).toBe(true);
+  });
+
   it("(between comparator) supports a range bound", async () => {
     const { privateKey, publicKey } = generateKeyPair();
 

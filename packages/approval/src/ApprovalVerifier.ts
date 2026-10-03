@@ -19,6 +19,16 @@ export interface ApprovalVerificationRequest {
   readonly requestedValue: unknown;
 
   /**
+   * The fact the artifact's scope must name. When given, the
+   * artifact's scope.field must equal it exactly, so an approval
+   * signed for one fact (say, a resource id) is never accepted as
+   * covering another (say, an amount) that happens to compare true.
+   * ApprovalSignalVerifier always sets it; a capability specific
+   * caller should too.
+   */
+  readonly scopeField?: string;
+
+  /**
    * Whether to consume the artifact's nonce. Defaults to true. Set to
    * false only when the same artifact was already consumed for the same
    * transaction, as when the Execution Gateway checks signals again at
@@ -141,10 +151,10 @@ export class ApprovalVerifier {
 
     const resourceMatches = artifact.payload.resourceId === request.resourceId;
 
-    const scopeSatisfied = evaluateApprovalScope(
-      request.requestedValue,
-      artifact.payload.scope,
-    );
+    const scopeSatisfied =
+      (request.scopeField === undefined ||
+        artifact.payload.scope.field === request.scopeField) &&
+      evaluateApprovalScope(request.requestedValue, artifact.payload.scope);
 
     //
     // 3. Nonce consumption is attempted LAST, and only recorded as

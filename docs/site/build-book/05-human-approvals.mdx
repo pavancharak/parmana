@@ -133,6 +133,7 @@ release, the server checks:
 | `capability` is the request's action                                   | Same                                                          |
 | `resourceId` equals the request field the policy names                 | Same                                                          |
 | The amount in the request (never the agent's signal) is within `scope` | Same                                                          |
+| `scope.field` is `value` (the policy gives a `value`) or `resourceId`  | Same                                                          |
 | The approval was not used before (its nonce is stored once used)       | Same                                                          |
 
 A refused approval is a `403 POLICY_DENIED`, because the declared signal does not match what the server verified:

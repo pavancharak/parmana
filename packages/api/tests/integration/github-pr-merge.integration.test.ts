@@ -172,7 +172,7 @@ describe("GitHub PR merge (HTTP boundary)", () => {
         keyId: approver.keyId,
         capability: "github:pr-merge",
         resourceId: pullRequest,
-        scope: { field: "pullRequest", comparator: "eq", value: pullRequest },
+        scope: { field: "resourceId", comparator: "eq", value: pullRequest },
         ttlSeconds: 900,
       },
       approverKeys.privateKey,
