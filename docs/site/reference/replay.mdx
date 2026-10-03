@@ -18,9 +18,7 @@ signature or hash recheck.
 
 ## Install
 
-```bash
-npm install @parmana/replay
-```
+Not published to npm. This is an internal package of this repository, used from a clone of it: `npm ci` at the repository root links every workspace package. The packages published to npm are [`@parmana/sdk`](/sdks/typescript), [`@parmana/connector-sdk`](/reference/connector-sdk) and [`@parmana/sign`](/sdks/parmana-sign/overview).
 
 ## Key exports
 
@@ -30,7 +28,6 @@ npm install @parmana/replay
 | `ReplayBuilder`                                  | [AVAILABLE]. `.build(): ReplayEngine`                                                                                                                                  |
 | `ReplayVerifier`                                 | [AVAILABLE]. `.verify(original, replayed): boolean`, deep-equality via `JSON.stringify` comparison                                                                     |
 | `ReplayPipeline`, `ReplayExecutor`, `ReplayPlan` | [AVAILABLE]. Build and run a multi-step replay plan from recorded execution IDs                                                                                        |
-| `ReplayContext`                                  | Per-replay context                                                                                                                                                     |
 | `ReplayError`                                    | Thrown on an invalid or incomplete trust record                                                                                                                        |
 
 ## `ReplayResult` shape

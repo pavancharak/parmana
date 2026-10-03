@@ -18,8 +18,8 @@ description: "Ed25519 default, ML-DSA-65 (post-quantum) configurable. Local PEM 
 | ML-DSA-65 (FIPS 204, historically called "dilithium3" in this codebase) | [AVAILABLE], opt-in                    | Selectable via `PRIMARY_SIGNATURE_PROVIDER=dilithium3` **or** the equivalent, accepted alias `PRIMARY_SIGNATURE_PROVIDER=ml-dsa-65` (either resolves to the same provider; the internal identifier itself is `dilithium3` and stays that way for backward compatibility). Requires **Node ≥ 24** for native `node:crypto` ml-dsa-65 support. **Signatures are randomized, not deterministic**, signing the same message twice produces two different, both-valid signatures. Only verification is deterministic. |
 | ECDSA P-256                                                             | Declared in `SignatureAlgorithms` enum | No dedicated provider class, treat as unimplemented until a provider ships.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
-Evidence: `packages/crypto/test/SignatureProvider.test.ts`,
-`Dilithium3SignatureProvider.test.ts`, `dilithium3-cross-instance.test.ts`.
+Evidence: `packages/crypto/tests/unit/signature-provider.test.ts`,
+`dilithium3-signature-provider.test.ts`, `dilithium3-cross-instance.test.ts`.
 
 ## Hash algorithms
 
@@ -65,7 +65,11 @@ needs to exist — no verifier-side configuration change.
   `generate-keypair` run per tenant. An unprovisioned or malformed `tenantId`
   falls back to the shared `default` key rather than failing closed, deliberate,
   so adoption is incremental, but worth knowing before relying on it for
-  isolation.
+  isolation. Over HTTP, a caller may only send a `tenantId` its API key lists in
+  `allowedTenantIds`; any other is refused with `403 TENANT_NOT_ALLOWED`, so one
+  tenant's caller cannot have its authorization signed with another tenant's
+  key. Under AWS KMS, per tenant keys do not work: the alias `alias/tenant.<id>`
+  cannot be created, because KMS alias names cannot contain a dot.
 </Note>
 
 <Warning>

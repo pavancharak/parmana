@@ -1,14 +1,14 @@
-\# ADR-0003 — Verification Is Independent
+# ADR-0003 — Verification Is Independent
 
-\*\*Status:\*\* Accepted
+**Status:** Accepted
 
-\*\*Date:\*\* 2026-06-25
+**Date:** 2026-06-25
 
-\*\*Decision Makers:\*\* Parmana Architecture Team
+**Decision Makers:** Parmana Architecture Team
 
-\---
+---
 
-\# Context
+# Context
 
 Parmana establishes trust by independently verifying execution.
 
@@ -18,9 +18,9 @@ Should verification be part of the Runtime, or should it operate as an independe
 
 Embedding verification within the Runtime would simplify implementation but tightly couple execution with trust evaluation. This coupling would make independent auditing, deterministic replay, and external verification more difficult.
 
-\---
+---
 
-\# Decision
+# Decision
 
 Verification SHALL be an independent subsystem.
 
@@ -30,11 +30,11 @@ The Verification Engine SHALL consume those facts without modifying them.
 
 Verification SHALL operate entirely outside the Runtime execution pipeline.
 
-\---
+---
 
-\# Rationale
+# Rationale
 
-\## Separation of Responsibilities
+## Separation of Responsibilities
 
 The Runtime answers:
 
@@ -46,151 +46,116 @@ The Verification Engine answers:
 
 These are distinct responsibilities and should remain independent.
 
-\---
+---
 
-\## Independent Trust
+## Independent Trust
 
 Trust is stronger when it can be established by a component that did not participate in execution.
 
 An independent verifier reduces the possibility that execution and verification share the same implementation defects or assumptions.
 
-\---
+---
 
-\## Replay
+## Replay
 
 Verification must support deterministic replay.
 
 Operating on immutable execution records enables replay without re-running business logic or the Runtime.
 
-\---
+---
 
-\## Auditability
+## Auditability
 
 Auditors should be able to verify an execution using only recorded artifacts.
 
 Verification should not require:
 
-\* Runtime state
+- Runtime state
+- Runtime memory
+- Network services
+- Internal implementation details
 
-\* Runtime memory
+---
 
-\* Network services
-
-\* Internal implementation details
-
-\---
-
-\## Technology Independence
+## Technology Independence
 
 The Verification Engine should remain portable across environments.
 
 It should be usable:
 
-\* Offline
+- Offline
+- In CI/CD pipelines
+- By external auditors
+- By regulatory bodies
+- By third-party implementations
 
-\* In CI/CD pipelines
+---
 
-\* By external auditors
-
-\* By regulatory bodies
-
-\* By third-party implementations
-
-\---
-
-\# Architectural Relationship
+# Architectural Relationship
 
 ```text
-
 Application
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ▼
 Runtime
-
-&#x20;     │
-
-&#x20;     ▼
-
+      │
+      ▼
 ExecutionTransaction
-
-&#x20;     │
-
-&#x20;     ├──────────────┐
-
-&#x20;     ▼              ▼
-
+      │
+      ├──────────────┐
+      ▼              ▼
 Storage     Verification Engine
-
-&#x20;                   │
-
-&#x20;                   ▼
-
-&#x20;         Verification Report
-
+                    │
+                    ▼
+          Verification Report
 ```
 
 The Runtime and Verification Engine communicate only through immutable execution records.
 
-\---
+---
 
-\# Consequences
+# Consequences
 
-\## Positive
+## Positive
 
-\* Independent trust evaluation.
+- Independent trust evaluation.
+- Deterministic replay.
+- Easier auditing.
+- Clear package boundaries.
+- Technology independence.
+- Support for offline verification.
+- Simpler testing.
 
-\* Deterministic replay.
+---
 
-\* Easier auditing.
+## Negative
 
-\* Clear package boundaries.
-
-\* Technology independence.
-
-\* Support for offline verification.
-
-\* Simpler testing.
-
-\---
-
-\## Negative
-
-\* Additional implementation complexity.
-
-\* Verification becomes a separate package.
-
-\* Execution and verification are no longer a single process.
+- Additional implementation complexity.
+- Verification becomes a separate package.
+- Execution and verification are no longer a single process.
 
 These trade-offs are acceptable because Parmana prioritizes verifiable trust over implementation simplicity.
 
-\---
+---
 
-\# Prohibited Behaviors
+# Prohibited Behaviors
 
 The Runtime SHALL NOT:
 
-\* Verify its own execution.
-
-\* Produce verification reports.
-
-\* Modify verification results.
+- Verify its own execution.
+- Produce verification reports.
+- Modify verification results.
 
 The Verification Engine SHALL NOT:
 
-\* Execute business logic.
+- Execute business logic.
+- Modify transactions.
+- Generate execution artifacts.
+- Depend on Runtime internals.
 
-\* Modify transactions.
+---
 
-\* Generate execution artifacts.
-
-\* Depend on Runtime internals.
-
-\---
-
-\# Runtime Contract
+# Runtime Contract
 
 The Runtime guarantees that it produces a complete immutable `ExecutionTransaction`.
 
@@ -198,37 +163,36 @@ It makes no claim regarding trust.
 
 Trust is established only after independent verification.
 
-\---
+---
 
-\# Verification Contract
+# Verification Contract
 
 The Verification Engine guarantees that identical immutable transactions produce identical verification results.
 
 Verification is deterministic, side-effect free, and independent of execution.
 
-\---
+---
 
-\# Alternatives Considered
+# Alternatives Considered
 
-\## Verification Inside Runtime
+## Verification Inside Runtime
 
 Rejected because execution and verification would become tightly coupled, reducing auditability and limiting independent verification.
 
-\---
+---
 
-\## Runtime Callback Verification
+## Runtime Callback Verification
 
 Rejected because callbacks create implicit coupling between execution and verification and complicate deterministic replay.
 
-\---
+---
 
-\## Impact
+## Impact
 
 This decision establishes one of Parmana's core architectural boundaries:
 
-\* Runtime is responsible for execution.
-
-\* Verification is responsible for trust.
+- Runtime is responsible for execution.
+- Verification is responsible for trust.
 
 Future implementations SHALL preserve this separation unless explicitly superseded by a future Architecture Decision Record.
 

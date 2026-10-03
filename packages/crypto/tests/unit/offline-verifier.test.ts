@@ -365,3 +365,29 @@ describe("verifyExecutionTrustRecordOffline", () => {
     },
   );
 });
+
+describe("verifyExecutionTrustRecordOffline on malformed input", () => {
+  it.each([
+    ["null", null],
+    ["a string", "not a record"],
+    ["a record with no signature", { trustRecordHash: "abc" }],
+    [
+      "a signature missing its value",
+      {
+        trustRecordHash: "abc",
+        signature: { algorithm: "ed25519", keyId: "default" },
+      },
+    ],
+  ])(
+    "returns valid: false with a reason for %s, never throws",
+    async (_label, input) => {
+      const result = await verifyExecutionTrustRecordOffline(
+        input as unknown as ExecutionTrustRecord,
+        {},
+      );
+
+      expect(result.valid).toBe(false);
+      expect(result.errors[0]).toMatch(/malformed input/);
+    },
+  );
+});

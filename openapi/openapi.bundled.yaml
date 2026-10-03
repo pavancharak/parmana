@@ -715,10 +715,19 @@ paths:
         Lists every public signing key this deployment can serve, the
         enumeration form of `GET /keys/{keyId}`.
 
-        Fetch and cache it when you verify many artifacts. Not a strict RFC 7517
-        JWK Set: use the `pem` of
+        With local key files that is every key in the key directory. Under AWS
+        KMS it is the keys this
 
-        each entry; an entry may have no `jwk` field. Needs no key.
+        deployment signs with: `default` and the current
+        `PARMANA_VERIFICATION_KEY_ID`. A record signed
+
+        under an older key id is still served by `GET /keys/{keyId}`. Fetch and
+        cache it when you verify
+
+        many artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of each
+        entry; an entry may have no
+
+        `jwk` field. Needs no key.
       responses:
         "200":
           description: Every public key this deployment can serve.
@@ -2326,12 +2335,14 @@ paths:
             minimum: 1
             default: 1
         - name: pageSize
-          description: Items per page before filtering to your own transactions. Default 25.
+          description: Items per page before filtering to your own transactions. Default
+            25. Maximum 100.
           in: query
           required: false
           schema:
             type: integer
             minimum: 1
+            maximum: 100
             default: 25
       responses:
         "200":
@@ -2464,6 +2475,17 @@ paths:
                         riskScore: 9
                       status: RECEIVED
                       createdAt: 2026-07-13T17:36:20.483Z
+        "400":
+          description: page or pageSize is not a whole number in range. Nothing was read.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                pageSizeTooLarge:
+                  summary: Captured from the test suite, pageSize=1000000
+                  value:
+                    error: pageSize must be a whole number from 1 to 100.
         "401":
           $ref: "#/components/responses/Unauthorized"
       x-codeSamples:
@@ -4751,12 +4773,13 @@ paths:
             minimum: 1
             default: 1
         - name: pageSize
-          description: Items per page before filtering. Default 25.
+          description: Items per page before filtering. Default 25. Maximum 100.
           in: query
           required: false
           schema:
             type: integer
             minimum: 1
+            maximum: 100
             default: 25
         - name: since
           in: query
@@ -4972,6 +4995,17 @@ paths:
                         keyId: default
                         value: QOHBaXP4Qplx66sH2q1wkhfM+u1Geswh+DdPUPc6URt179sibLMts035o5D42HIudgz20NwL9UYiGBmVNjxCBg==
                         signedAt: 2026-10-01T10:14:05.117Z
+        "400":
+          description: page or pageSize is not a whole number in range. Nothing was read.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                pageSizeTooLarge:
+                  summary: Captured from the test suite, pageSize=1000000
+                  value:
+                    error: pageSize must be a whole number from 1 to 100.
         "401":
           $ref: "#/components/responses/Unauthorized"
       x-codeSamples:

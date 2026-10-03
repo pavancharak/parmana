@@ -54,14 +54,15 @@ from the sandbox with the demo key:
 Each key is one entry in the server's `PARMANA_API_KEYS` (a JSON array). The entry, not the request, decides what the
 key may do:
 
-| Field                  | Meaning                                                                                    | If left out                                      | Refused with                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `callerId`             | Who the key is. Appears in every audit event.                                              | Required                                         |                                                                                     |
-| `keyHash`              | SHA-256 of the raw key, 64 hex characters.                                                 | Required                                         |                                                                                     |
-| `allowedCapabilities`  | The actions (`intent.action`) the key may ask for. `"*"` allows every action.              | **Nothing.** A key with no list may invoke none. | `403 CAPABILITY_NOT_ALLOWED`                                                        |
-| `allowedPrincipalIds`  | The `authority.principalId` values the key may declare.                                    | Only its own `callerId`.                         | `403` with no code, `Caller is not permitted to assert this authority.principalId.` |
-| `credentialHolderType` | `USER` marks a key held by a verified person. Only `USER` keys may use governance routes.  | Not a person.                                    | `403 NON_HUMAN_CALLER_DENIED`                                                       |
-| `stepUpPublicKey`      | The public half of a checker's step up key, for approving or rejecting governance changes. | The key cannot approve or reject.                | See [Policy governance](/guides/policy-governance-maker-checker)                    |
+| Field                  | Meaning                                                                                    | If left out                                                                  | Refused with                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `callerId`             | Who the key is. Appears in every audit event.                                              | Required                                                                     |                                                                                     |
+| `keyHash`              | SHA-256 of the raw key, 64 hex characters.                                                 | Required                                                                     |                                                                                     |
+| `allowedCapabilities`  | The actions (`intent.action`) the key may ask for. `"*"` allows every action.              | **Nothing.** A key with no list may invoke none.                             | `403 CAPABILITY_NOT_ALLOWED`                                                        |
+| `allowedPrincipalIds`  | The `authority.principalId` values the key may declare.                                    | Only its own `callerId`.                                                     | `403` with no code, `Caller is not permitted to assert this authority.principalId.` |
+| `allowedTenantIds`     | The `metadata.tenantId` values the key may send. The tenant id picks the signing key.      | **None.** A request with a `tenantId` is refused; one without is unaffected. | `403 TENANT_NOT_ALLOWED`                                                            |
+| `credentialHolderType` | `USER` marks a key held by a verified person. Only `USER` keys may use governance routes.  | Not a person.                                                                | `403 NON_HUMAN_CALLER_DENIED`                                                       |
+| `stepUpPublicKey`      | The public half of a checker's step up key, for approving or rejecting governance changes. | The key cannot approve or reject.                                            | See [Policy governance](/guides/policy-governance-maker-checker)                    |
 
 An agent's key is usually `allowedCapabilities` with its few actions and nothing else. A person who approves policy or
 approver changes holds a separate `USER` key with a step up key ([Credentials](/guides/credentials-maker-checker-approver)).
@@ -102,11 +103,12 @@ it with `401`. See [Playground](/playground).
 
 ## Rate limits
 
-| Routes                                                                                                                 | Counted per      | Default per minute | Setting                         |
-| ---------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------ | ------------------------------- |
-| `POST /execute`                                                                                                        | Key (`callerId`) | 30                 | `RATE_LIMIT_EXECUTE_PER_MINUTE` |
-| `GET /health`, `GET /ready`                                                                                            | Client address   | 300                | `RATE_LIMIT_HEALTH_PER_MINUTE`  |
-| `POST /refusal/verify`, `POST /execution-intents/verify`, `POST /audit/verify`, `/handbook`, `POST /sandbox/approvals` | Client address   | 60                 | `RATE_LIMIT_PUBLIC_PER_MINUTE`  |
+| Routes                                                                                                                                                                    | Counted per      | Default per minute | Setting                              |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ------------------ | ------------------------------------ |
+| `POST /execute`                                                                                                                                                           | Key (`callerId`) | 30                 | `RATE_LIMIT_EXECUTE_PER_MINUTE`      |
+| `GET /health`, `GET /ready`                                                                                                                                               | Client address   | 300                | `RATE_LIMIT_HEALTH_PER_MINUTE`       |
+| `POST /refusal/verify`, `POST /execution-intents/verify`, `POST /audit/verify`, `/handbook`, `POST /sandbox/approvals`, `GET /keys/{keyId}`, `GET /.well-known/jwks.json` | Client address   | 60                 | `RATE_LIMIT_PUBLIC_PER_MINUTE`       |
+| Failed authentication (`401`) on any route that needs a key                                                                                                               | Client address   | 30                 | `RATE_LIMIT_AUTH_FAILURE_PER_MINUTE` |
 
 `POST /execute` is counted per key, not per address, because many agents call from one shared backend address. Over
 the limit, the request is refused before anything is evaluated, signed or recorded:
@@ -125,13 +127,14 @@ the limit. Without it, each instance counts on its own.
 
 Real bodies, from the sandbox.
 
-| Status | When                                                      | Body                                                                                                                                                  |
-| ------ | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `401`  | No header, not `Bearer <key>`, or an unknown key          | `{"error":"authentication required"}`                                                                                                                 |
-| `403`  | `intent.action` is not in the key's `allowedCapabilities` | `{"error":"Caller is not permitted to invoke this capability.","code":"CAPABILITY_NOT_ALLOWED"}`                                                      |
-| `403`  | `authority.principalId` is not one the key may declare    | `{"error":"Caller is not permitted to assert this authority.principalId."}`                                                                           |
-| `403`  | A governance route with a key that is not `USER`          | `{"error":"This action requires a caller credential provisioned as a verified human (credentialHolderType: USER).","code":"NON_HUMAN_CALLER_DENIED"}` |
-| `429`  | Over a rate limit                                         | `{"error":"Rate limit exceeded. Try again later.","code":"RATE_LIMITED"}`                                                                             |
+| Status | When                                                       | Body                                                                                                                                                  |
+| ------ | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `401`  | No header, not `Bearer <key>`, or an unknown key           | `{"error":"authentication required"}`                                                                                                                 |
+| `403`  | `intent.action` is not in the key's `allowedCapabilities`  | `{"error":"Caller is not permitted to invoke this capability.","code":"CAPABILITY_NOT_ALLOWED"}`                                                      |
+| `403`  | `authority.principalId` is not one the key may declare     | `{"error":"Caller is not permitted to assert this authority.principalId."}`                                                                           |
+| `403`  | `metadata.tenantId` is not in the key's `allowedTenantIds` | `{"error":"Caller is not permitted to act for this tenantId.","code":"TENANT_NOT_ALLOWED"}`                                                           |
+| `403`  | A governance route with a key that is not `USER`           | `{"error":"This action requires a caller credential provisioned as a verified human (credentialHolderType: USER).","code":"NON_HUMAN_CALLER_DENIED"}` |
+| `429`  | Over a rate limit                                          | `{"error":"Rate limit exceeded. Try again later.","code":"RATE_LIMITED"}`                                                                             |
 
 For each of these nothing is evaluated, approved or released. The `401` and `403` refusals are written to the caller
 audit trail; a `429` is refused before that. Fix the key or the request and send again. Every other error is in

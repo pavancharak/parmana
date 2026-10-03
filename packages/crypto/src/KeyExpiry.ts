@@ -75,8 +75,19 @@ export class FileKeyExpiryStore implements KeyExpiryStore {
       revoked?: unknown;
     };
 
-    if (expiresAt !== undefined && typeof expiresAt !== "string") {
-      throw new Error(`${path}["${keyId}"].expiresAt must be a string.`);
+    if (
+      expiresAt !== undefined &&
+      (typeof expiresAt !== "string" || Number.isNaN(Date.parse(expiresAt)))
+    ) {
+      //
+      // An unparseable date became an Invalid Date, and EnvelopeVerifier's
+      // `expiresAt <= now` is false for it, so a typo silently left the
+      // key valid forever. Refused instead, like every other malformed
+      // entry in this file.
+      //
+      throw new Error(
+        `${path}["${keyId}"].expiresAt must be an ISO 8601 date string.`,
+      );
     }
 
     if (revoked !== undefined && typeof revoked !== "boolean") {

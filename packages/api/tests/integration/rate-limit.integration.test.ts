@@ -26,6 +26,7 @@ describe("Rate limiting (HTTP boundary)", () => {
     executePerMinute: number;
     healthPerMinute: number;
     publicPerMinute?: number;
+    authFailurePerMinute?: number;
   }) {
     const { executionSystem, auditSink: executionAuditSink } =
       createInspectableExecutionSystem();
@@ -54,7 +55,7 @@ describe("Rate limiting (HTTP boundary)", () => {
       rateLimit,
     });
 
-    return { app, executionAuditSink };
+    return { app, executionAuditSink, callerAuditSink };
   }
 
   describe("POST /execute, keyed by authenticated caller identity", () => {
@@ -242,6 +243,82 @@ describe("Rate limiting (HTTP boundary)", () => {
       await request(app).post("/audit/verify").send({});
 
       expect((await request(app).get("/health")).status).toBe(200);
+    });
+  });
+
+  describe("failed caller authentication, keyed by IP", () => {
+    it("bad keys over the limit get a clean 429 and stop writing caller.rejected audit events", async () => {
+      const { app, callerAuditSink } = buildApp({
+        executePerMinute: 100,
+        healthPerMinute: 300,
+        authFailurePerMinute: 2,
+      });
+
+      const statuses: number[] = [];
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const response = await request(app)
+          .get("/transactions")
+          .set("Authorization", "Bearer not-a-real-key");
+        statuses.push(response.status);
+      }
+
+      expect(statuses).toEqual([401, 401, 429, 429]);
+
+      const rejected = callerAuditSink.events.filter(
+        (event) => event.type === "caller.rejected",
+      );
+      expect(rejected).toHaveLength(2);
+    });
+
+    it("requests with a valid key do not count against the limit", async () => {
+      const { app } = buildApp({
+        executePerMinute: 100,
+        healthPerMinute: 300,
+        authFailurePerMinute: 2,
+      });
+
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const response = await request(app)
+          .get("/transactions")
+          .set("Authorization", `Bearer ${CALLER_A_KEY}`);
+        expect(response.status).toBe(200);
+      }
+
+      const bad = await request(app)
+        .get("/transactions")
+        .set("Authorization", "Bearer not-a-real-key");
+      expect(bad.status).toBe(401);
+    });
+  });
+
+  describe("key discovery, keyed by IP with the public routes", () => {
+    it("GET /keys/:keyId over the public limit gets a clean 429", async () => {
+      const { app } = buildApp({
+        executePerMinute: 100,
+        healthPerMinute: 300,
+        publicPerMinute: 1,
+      });
+
+      const first = await request(app).get("/keys/default");
+      const second = await request(app).get("/keys/default");
+
+      expect(first.status).not.toBe(429);
+      expect(second.status).toBe(429);
+    });
+
+    it("the public limiter does not count authenticated routes", async () => {
+      const { app } = buildApp({
+        executePerMinute: 100,
+        healthPerMinute: 300,
+        publicPerMinute: 1,
+      });
+
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const response = await request(app)
+          .get("/transactions")
+          .set("Authorization", `Bearer ${CALLER_A_KEY}`);
+        expect(response.status).toBe(200);
+      }
     });
   });
 

@@ -22,8 +22,10 @@ and reproduce, in words, exactly what used to happen before this existed. Mirror
 - `resolveKmsKeyId` (`packages/crypto/src/providers/signer/KmsSigner.ts`, exported for
   exactly this kind of direct demonstration) maps a bare logical keyId to
   `alias/<keyId>` — mirroring `FileKeyProvider`'s own `keyId` → `<keyId>.private.pem`
-  filename convention — while passing an already-qualified alias, ARN, or raw key ID
-  straight through unchanged, so it never double-prefixes something already correct.
+  filename convention — and passes an already-qualified `alias/` name through unchanged,
+  so it never double-prefixes it. It refuses a full key ARN: a keyId often comes from the
+  record being verified, and an ARN can name a key in another AWS account. A UUID shaped
+  keyId is treated as an alias name, never as a raw key ID.
 
 ## Running the Tutorial
 

@@ -34,7 +34,8 @@
               "playground",
               "choose-your-path",
               "quickstart",
-              "how-parmana-thinks"
+              "how-parmana-thinks",
+              "license"
             ]
           },
           {
@@ -592,7 +593,6 @@
               "reference/runtime",
               "reference/storage",
               "reference/replay",
-              "reference/receipt",
               "reference/api"
             ]
           },
@@ -716,6 +716,10 @@
     {
       "source": "/trust-and-claims/verification-log",
       "destination": "/security/limitations"
+    },
+    {
+      "source": "/reference/receipt",
+      "destination": "/reference/crypto"
     }
   ],
   "navbar": {
@@ -729,6 +733,25 @@
   "footer": {
     "socials": {
       "github": "https://github.com/pavancharak/parmana"
-    }
+    },
+    "links": [
+      {
+        "header": "Legal",
+        "items": [
+          {
+            "label": "License and evaluation",
+            "href": "/license"
+          },
+          {
+            "label": "Security",
+            "href": "https://github.com/pavancharak/parmana/blob/main/SECURITY.md"
+          }
+        ]
+      }
+    ]
+  },
+  "banner": {
+    "content": "Proprietary software, source-available for evaluation only. No license is granted to use, copy, modify, or distribute it without a written agreement with Parmana Systems. [License and evaluation](/license)",
+    "dismissible": false
   }
 }

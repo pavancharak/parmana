@@ -1,6 +1,6 @@
-\# Tutorial 04 — Policy Router
+# Tutorial 04 — Policy Router
 
-\## Overview
+## Overview
 
 This tutorial demonstrates how Parmana resolves a policy reference to a concrete policy definition.
 
@@ -10,104 +10,77 @@ No Runtime execution occurs.
 
 No Trust Record is generated.
 
-\---
+---
 
-\## Learning Objectives
+## Learning Objectives
 
 After completing this tutorial you will understand:
 
-\- Policy References
+- Policy References
+- FilePolicyRepository
+- PolicyRouter
+- Policy Resolution
+- Policy Versioning
 
-\- FilePolicyRepository
+---
 
-\- PolicyRouter
+## Files
 
-\- Policy Resolution
-
-\- Policy Versioning
-
-\---
-
-\## Files
-
-| File | Purpose |
-
-|------|---------|
-
+| File               | Purpose                                            |
+| ------------------ | -------------------------------------------------- |
 | `transaction.json` | Business Transaction containing a Policy Reference |
+| `run.ts`           | Loads the policy through the Policy Router         |
 
-| `run.ts` | Loads the policy through the Policy Router |
+---
 
-\---
-
-\## Architecture
+## Architecture
 
 ```
-
 Business Transaction
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Reference
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 Policy Router
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 File Policy Repository
-
-&#x20;       │
-
-&#x20;       ▼
-
+        │
+        ▼
 policy.json
-
 ```
 
-\---
+---
 
-\## Run
+## Run
 
 ```bash
-
 npm run example -- 04-policy-router
-
 ```
 
 or
 
 ```bash
-
 tsx run.ts
-
 ```
 
-\---
+---
 
-\## Expected Output
+## Expected Output
 
 The tutorial prints:
 
-\- Policy Reference
-
-\- Resolved Policy
-
-\- Policy Version
+- Policy Reference
+- Resolved Policy
+- Policy Version
 
 No policy evaluation occurs.
 
 No Runtime execution occurs.
 
-\---
+---
 
-\## Next Tutorial
+## Next Tutorial
 
-Continue to \*\*Tutorial 05 – Verification\*\*.
+Continue to **Tutorial 05 – Verification**.

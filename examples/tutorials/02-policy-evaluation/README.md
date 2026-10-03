@@ -1,169 +1,85 @@
-# \# Tutorial 02 — Policy Evaluation
+# Tutorial 02 — Policy Evaluation
 
-#
+## Overview
 
-# \## Overview
+This tutorial demonstrates how Parmana evaluates business signals against a reference policy.
 
-#
+Unlike Tutorial 01, this tutorial executes the Policy Engine and produces a policy decision.
 
-# This tutorial demonstrates how Parmana evaluates business signals against a reference policy.
+No Runtime execution occurs.
 
-#
+No Trust Record is generated.
 
-# Unlike Tutorial 01, this tutorial executes the Policy Engine and produces a policy decision.
+---
 
-#
+## Learning Objectives
 
-# No Runtime execution occurs.
+After completing this tutorial you will understand:
 
-#
+- Reference Policies
+- Policy Engine
+- Structured Conditions
+- Signals
+- Policy Decisions
+- Decision Reasons
 
-# No Trust Record is generated.
+---
 
-#
+## Files
 
-# \---
+| File           | Purpose                    |
+| -------------- | -------------------------- |
+| `policy.json`  | Reference Policy           |
+| `signals.json` | Runtime Signals            |
+| `run.ts`       | Executes the Policy Engine |
 
-#
+---
 
-# \## Learning Objectives
+## Architecture
 
-#
+```
+Signals
+  │
+  ▼
+Policy Engine
+  │
+  ▼
+Evaluate Rules
+  │
+  ▼
+Decision
+```
 
-# After completing this tutorial you will understand:
+---
 
-#
+## Run
 
-# \- Reference Policies
+```bash
+npm run example -- 02-policy-evaluation
+```
 
-# \- Policy Engine
+or
 
-# \- Structured Conditions
+```bash
+tsx run.ts
+```
 
-# \- Signals
+---
 
-# \- Policy Decisions
+## Expected Output
 
-# \- Decision Reasons
+The tutorial prints:
 
-#
+- Signals
+- Policy Decision
+- Decision Reason
 
-# \---
+No Runtime execution occurs.
 
-#
+No Trust Record is generated.
 
-# \## Files
+---
 
-#
+## Next Tutorial
 
-# | File | Purpose |
-
-# |------|---------|
-
-# | `policy.json` | Reference Policy |
-
-# | `signals.json` | Runtime Signals |
-
-# | `run.ts` | Executes the Policy Engine |
-
-#
-
-# \---
-
-#
-
-# \## Architecture
-
-#
-
-# ```
-
-# Signals
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Policy Engine
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Evaluate Rules
-
-# &#x20; │
-
-# &#x20; ▼
-
-# Decision
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Run
-
-#
-
-# ```bash
-
-# npm run example -- 02-policy-evaluation
-
-# ```
-
-#
-
-# or
-
-#
-
-# ```bash
-
-# tsx run.ts
-
-# ```
-
-#
-
-# \---
-
-#
-
-# \## Expected Output
-
-#
-
-# The tutorial prints:
-
-#
-
-# \- Signals
-
-# \- Policy Decision
-
-# \- Decision Reason
-
-#
-
-# No Runtime execution occurs.
-
-#
-
-# No Trust Record is generated.
-
-#
-
-# \---
-
-#
-
-# \## Next Tutorial
-
-#
-
-# Continue to \*\*Tutorial 03 – Runtime Execution\*\* to execute a complete Business Transaction.
+Continue to **Tutorial 03 – Runtime Execution** to execute a complete Business Transaction.

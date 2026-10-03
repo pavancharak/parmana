@@ -10,7 +10,11 @@ import {
 
 import { SignatureAlgorithms, type SignatureAlgorithm } from "@parmana/shared";
 
-import type { KeyMetadata } from "../../KeyProvider.js";
+import {
+  DEFAULT_KEY_ID,
+  currentVerificationKeyId,
+  type KeyMetadata,
+} from "../../KeyProvider.js";
 import type { Signer } from "../../Signer.js";
 import { CryptoError } from "../../errors/CryptoError.js";
 import {
@@ -28,8 +32,10 @@ import {
 const SUPPORTED_KEY_SPEC = "ECC_NIST_EDWARDS25519";
 const SIGNING_ALGORITHM = "ED25519_SHA_512";
 
-const RAW_KMS_KEY_ID_PATTERN =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+/**
+ * A Parmana logical keyId: the same characters FileKeyProvider accepts.
+ */
+const LOGICAL_KEY_ID_PATTERN = /^[A-Za-z0-9._-]+$/;
 
 /**
  * Maps a Parmana logical keyId (e.g. "default", "tenant.acme") to the
@@ -42,21 +48,34 @@ const RAW_KMS_KEY_ID_PATTERN =
  * class's original behavior) always fails against real AWS with
  * ValidationException/NotFoundException. Mirrors FileKeyProvider's own
  * keyId -> "<keyId>.private.pem" filename convention: here, keyId ->
- * "alias/<keyId>". A caller that already supplies a real ARN, an
- * explicit "alias/..." name, or a raw key ID (UUID) is passed through
- * unchanged so this never double-prefixes or breaks an already-correct
- * identifier.
+ * "alias/<keyId>". An explicit "alias/<name>" is passed through
+ * unchanged, so it is never double-prefixed.
+ *
+ * A full ARN is refused, and a UUID shaped keyId is treated as an
+ * alias name like any other logical id, never as a raw key ID. A keyId often comes
+ * from the artifact being verified (a record's signature.keyId, a
+ * request body on POST /audit/verify or /refusal/verify), and an ARN
+ * can name a key in another AWS account: one whose key policy lets
+ * anyone read its public key would make a record signed by that key
+ * verify as valid. An alias always resolves in this deployment's own
+ * account and region.
  */
 export function resolveKmsKeyId(keyId: string): string {
-  if (keyId.startsWith("arn:") || keyId.startsWith("alias/")) {
-    return keyId;
+  if (keyId.startsWith("alias/")) {
+    const name = keyId.slice("alias/".length);
+
+    if (name !== "" && LOGICAL_KEY_ID_PATTERN.test(name.replace(/\//g, ""))) {
+      return keyId;
+    }
+  } else if (LOGICAL_KEY_ID_PATTERN.test(keyId)) {
+    return `alias/${keyId}`;
   }
 
-  if (RAW_KMS_KEY_ID_PATTERN.test(keyId)) {
-    return keyId;
-  }
-
-  return `alias/${keyId}`;
+  throw new CryptoError(
+    `Invalid KMS keyId ${JSON.stringify(keyId)}: expected a logical key id ` +
+      '(for example "default" or "tenant.acme") or an "alias/" name. ' +
+      "A key ARN is not accepted.",
+  );
 }
 
 function algorithmFromKeySpec(keySpec: string | undefined): SignatureAlgorithm {
@@ -162,7 +181,37 @@ export class KmsSigner implements Signer {
     };
   }
 
+  /**
+   * The signing keys this deployment publishes: the default key and the
+   * current verification key (PARMANA_VERIFICATION_KEY_ID), each only
+   * if its alias exists. KMS has no cheap, scoped way to enumerate every
+   * key in an account, and an account wide list would publish keys that
+   * have nothing to do with Parmana, so this lists the logical ids this
+   * process signs with. Lets GET /.well-known/jwks.json answer under
+   * KEY_PROVIDER=aws-kms instead of 501. A record signed under an older
+   * PARMANA_VERIFICATION_KEY_ID is still served by GET /keys/:keyId.
+   */
+  async listKeys(): Promise<string[]> {
+    const candidates = [
+      ...new Set([DEFAULT_KEY_ID, currentVerificationKeyId()]),
+    ];
+
+    const present = await Promise.all(
+      candidates.map(async (keyId) =>
+        (await this.hasKey(keyId)) ? keyId : undefined,
+      ),
+    );
+
+    return present.filter((keyId): keyId is string => keyId !== undefined);
+  }
+
   async hasKey(keyId: string): Promise<boolean> {
+    try {
+      resolveKmsKeyId(keyId);
+    } catch {
+      return false;
+    }
+
     try {
       await this.client.send(
         new DescribeKeyCommand({ KeyId: resolveKmsKeyId(keyId) }),

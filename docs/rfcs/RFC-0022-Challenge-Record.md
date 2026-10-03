@@ -354,7 +354,7 @@ the kind of overclaim `docs/CLAIMS.md` and this project's own discipline exist t
   a specific, independently-checkable thing (a file, a commit, a command's real output), the same
   discipline that already makes `CLAIMS.md` and `VERIFICATION-GAPS.md` credible without any
   cryptography at all. A reader doesn't need a signature to check "does
-  `packages/runtime/src/ExecutionGate.ts:33-42` actually say what this record claims it says" —
+  `packages/runtime/src/ExecutionGate.ts` actually say what this record claims it says" —
   they need the citation, and the ability to go look, same as today.
 - **Public disclosure** (§ Proposal 1's `disclosure` field) — for challenges disclosed publicly,
   the durable evidence against silent alteration is the same mechanism `docs/site` pages, git

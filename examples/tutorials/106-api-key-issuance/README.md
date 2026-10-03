@@ -21,7 +21,7 @@ time — no retrofit needed.
 - Independently-attested facts still produce specific, human-readable rejection reasons
   (Scenario 3) — the auditability payoff of writing explicit rejection rules instead of
   relying solely on the engine's own default-reject (see
-  [Write your first policy](/guides/write-your-first-policy)'s "Why explicit rejection
+  [Write your first policy](https://docs.parmanasystems.com/guides/write-your-first-policy)'s "Why explicit rejection
   rules?" section)
 - `PolicyValidator.findRuleConflicts(policy)` reports zero warnings for this policy's shape
   (one nested-`all` approve rule, several single-fact reject rules, one trailing

@@ -253,9 +253,9 @@ delete. Widen scope in a later milestone, once the first one is fully proven, se
   behavior, not something this codebase controls. `RazorpayConnector` didn't have this
   check originally, it survived only because Razorpay's real API happened to reject an
   unrecognized key — a defense-in-depth fix was added after the fact.
-  `HubSpotConnector` refuses its own placeholder token against
+  The HubSpot connector refuses its own placeholder token against
   `https://api.hubapi.com` from its first commit, see [HubSpot](/integrations/hubspot) and
-  `packages/connector-hubspot/src/HubSpotConnector.ts`.
+  `packages/execution-gateway/src/connector-execution/GatewayHubSpotAdapter.ts`.
 - _Read the documented test-credential environment variable name directly, never through a
   bridge variable._ `createRazorpayCredentialProvider.ts`'s test-mode branch originally read
   a word-order-swapped bridge variable instead of the name `.env.example` actually

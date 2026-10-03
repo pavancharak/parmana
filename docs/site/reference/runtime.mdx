@@ -17,9 +17,7 @@ the resulting [Execution trust record](/concepts/execution-trust-records).
 
 ## Install
 
-```bash
-npm install @parmana/runtime
-```
+Not published to npm. This is an internal package of this repository, used from a clone of it: `npm ci` at the repository root links every workspace package. The packages published to npm are [`@parmana/sdk`](/sdks/typescript), [`@parmana/connector-sdk`](/reference/connector-sdk) and [`@parmana/sign`](/sdks/parmana-sign/overview).
 
 ## Key exports
 
@@ -43,8 +41,8 @@ npm install @parmana/runtime
 ### Services, [AVAILABLE]
 
 `business-transaction-service`, `execution-service`, `receipt-service` (uses
-`@parmana/crypto`'s `ReceiptCrypto`, not `@parmana/receipt`, see that package's reference
-page), `verification-service`.
+`@parmana/crypto`'s `ReceiptCrypto`; there is no separate receipt package),
+`verification-service`.
 
 ### Errors, [AVAILABLE]
 

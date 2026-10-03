@@ -47,8 +47,9 @@ See [Packages](/architecture/packages) for the full table with status and eviden
 package. Grouped by role:
 
 **Trust core**: `shared`, `policy`, `runtime`, `crypto`, `storage` (all `[AVAILABLE]`);
-`receipt` and `replay` are `[PARTIAL]`, real and tested but disconnected from `runtime`/`api`,
-see [@parmana/receipt](/reference/receipt) and [@parmana/replay](/reference/replay).
+`replay` is `[PARTIAL]`, real and tested but disconnected from `runtime`/`api`, see
+[@parmana/replay](/reference/replay). Receipts are built by `crypto`'s `ReceiptCrypto`; there
+is no separate receipt package.
 
 **HTTP surface**: `api` (`[AVAILABLE]`) is the only long-running server.
 `execution-system` (`[AVAILABLE]`) is the interface `createExecutionSystem()` implements;

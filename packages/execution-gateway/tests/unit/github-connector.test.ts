@@ -169,6 +169,39 @@ describe("GatewayGitHubAdapter", () => {
     fetchSpy.mockRestore();
   });
 
+  it.each([
+    "acme/widgets/../../repos/other/repo#42",
+    "acme/../other#42",
+    "acme/..#42",
+    "acme/widgets?x=1#42",
+    "acme/wid%2Fgets#42",
+    "../acme/widgets#42",
+  ])(
+    "refuses target %s before any network call, so it cannot address a different API path",
+    async (target) => {
+      seedPr();
+      const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+      try {
+        await expect(
+          connector().execute(
+            {
+              capability: GITHUB_PR_MERGE_CAPABILITY,
+              businessTransactionId: "txn-bad-target",
+              action: GITHUB_PR_MERGE_CAPABILITY,
+              target,
+              parameters: { mergeMethod: "squash", expectedHeadSha: "abc123" },
+            },
+            context(),
+          ),
+        ).rejects.toThrow(/invalid target/);
+        expect(fetchSpy).not.toHaveBeenCalled();
+      } finally {
+        fetchSpy.mockRestore();
+      }
+    },
+  );
+
   it("fails closed on a non-2xx response", async () => {
     await expect(
       connector().execute(

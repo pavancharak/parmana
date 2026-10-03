@@ -22,6 +22,7 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [Choose your path](https://docs.parmanasystems.com/choose-your-path): One table that tells you exactly where to start, whether you are a developer, an operator, an auditor or an AI agent.
 * [Quickstart](https://docs.parmanasystems.com/quickstart): Your first authorized execution: in one minute against the live sandbox with nothing installed, then in under 10 minutes on your own local server.
 * [How Parmana thinks](https://docs.parmanasystems.com/how-parmana-thinks): The six ideas behind every request Parmana handles: deterministic policy, fail-closed defaults, signed authorization, gateway verification, credential isolation, and trust records.
+* [License and evaluation](https://docs.parmanasystems.com/license): Parmana is proprietary software, source-available for evaluation only.
 ## Get started: For AI agents
 
 * [Integrate Parmana: specification for AI agents](https://docs.parmanasystems.com/agents/integrate): An exact, ordered procedure to send an action to Parmana and act on the answer. Every step says what to do, what you should see, and what to do if you do not.
@@ -234,13 +235,12 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [@parmana/crypto](https://docs.parmanasystems.com/reference/crypto): Signing, hashing, and verification. Ed25519 and ML-DSA-65 providers, canonical serialization, and the file-based key provider.
 * [@parmana/policy](https://docs.parmanasystems.com/reference/policy): Deterministic, first-match-wins rule evaluation, plus loading and validating policy documents.
 * [@parmana/execution-system](https://docs.parmanasystems.com/reference/execution-system): The single interface every execution boundary implements: a no-op placeholder, an HTTP forwarder, and the real Execution Gateway all plug into the same seam.
-* [@parmana/execution-control](https://docs.parmanasystems.com/reference/execution-control): Gateway-authenticated, session-scoped credential isolation for connectors. Also home to a separate, currently-unwired Execution Permit model, disambiguated below.
+* [@parmana/execution-control](https://docs.parmanasystems.com/reference/execution-control): Gateway-authenticated, session-scoped credential isolation for connectors.
 * [@parmana/envelope-verifier](https://docs.parmanasystems.com/reference/envelope-verifier): Independently verifies a signed execution authorization: version, signature, expiry, TTL, and nonce. Zero third-party runtime dependencies.
 * [@parmana/execution-gateway](https://docs.parmanasystems.com/reference/execution-gateway): The sole boundary through which Parmana releases approved execution requests to connectors. Includes two deprecated fields, documented here with their replacements.
 * [@parmana/runtime](https://docs.parmanasystems.com/reference/runtime): Orchestrates policy evaluation, authorization signing, execution, and trust record assembly. The composition root for everything else.
 * [@parmana/storage](https://docs.parmanasystems.com/reference/storage): Package reference for @parmana/storage. For the conceptual overview and configuration, see Storage.
 * [@parmana/replay](https://docs.parmanasystems.com/reference/replay): Genuinely re-evaluates a recorded policy decision against its recorded signals. Real, tested, and disconnected from packages/api and packages/runtime.
-* [@parmana/receipt](https://docs.parmanasystems.com/reference/receipt): A real, tested receipt/permit model. Nothing in packages/runtime or packages/api currently consumes it.
 * [@parmana/api](https://docs.parmanasystems.com/reference/api): The Express server and its bootstrap composition root. For the REST surface itself, see the API Reference section.
 ## Reference: Project
 

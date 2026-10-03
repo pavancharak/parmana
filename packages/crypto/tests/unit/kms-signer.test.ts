@@ -204,16 +204,84 @@ describe("KmsSigner", () => {
       );
     });
 
-    it("passes a full key ARN through unchanged", async () => {
-      const arn =
-        "arn:aws:kms:ap-south-1:013659367671:key/2787acce-db19-4cd6-88ed-ce2c1319096b";
-      expect(await keyIdSentToKms(arn)).toBe(arn);
+    it("refuses a full key ARN, which can name a key in another AWS account", async () => {
+      const { resolveKmsKeyId } =
+        await import("../../src/providers/signer/KmsSigner.js");
+      expect(() =>
+        resolveKmsKeyId(
+          "arn:aws:kms:ap-south-1:999999999999:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+        ),
+      ).toThrow(/key ARN is not accepted/);
     });
 
-    it("passes a raw KMS key UUID through unchanged", async () => {
+    it("treats a UUID shaped keyId as an alias name in this account, never as a raw key ID", async () => {
       expect(await keyIdSentToKms("2787acce-db19-4cd6-88ed-ce2c1319096b")).toBe(
-        "2787acce-db19-4cd6-88ed-ce2c1319096b",
+        "alias/2787acce-db19-4cd6-88ed-ce2c1319096b",
       );
+    });
+
+    it("hasKey() answers false for an ARN without calling KMS", async () => {
+      const KmsSigner = await freshKmsSigner();
+      const signer = await KmsSigner.create();
+
+      await expect(
+        signer.hasKey(
+          "arn:aws:kms:ap-south-1:999999999999:key/2787acce-db19-4cd6-88ed-ce2c1319096b",
+        ),
+      ).resolves.toBe(false);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("listKeys() (GET /.well-known/jwks.json under KMS)", () => {
+    const ORIGINAL_VERIFICATION_KEY_ID =
+      process.env.PARMANA_VERIFICATION_KEY_ID;
+
+    afterEach(() => {
+      if (ORIGINAL_VERIFICATION_KEY_ID === undefined) {
+        delete process.env.PARMANA_VERIFICATION_KEY_ID;
+      } else {
+        process.env.PARMANA_VERIFICATION_KEY_ID = ORIGINAL_VERIFICATION_KEY_ID;
+      }
+    });
+
+    function describeKeyFor(existing: readonly string[]) {
+      sendMock.mockImplementation(
+        (command: {
+          constructor: { name: string };
+          input: { KeyId: string };
+        }) => {
+          if (command.constructor.name !== "DescribeKeyCommand") {
+            throw new Error(`unexpected command: ${command.constructor.name}`);
+          }
+          if (existing.includes(command.input.KeyId)) {
+            return Promise.resolve({
+              KeyMetadata: { KeySpec: "ECC_NIST_EDWARDS25519" },
+            });
+          }
+          return Promise.reject(new FakeNotFoundException("not found"));
+        },
+      );
+    }
+
+    it("lists the default key when it exists", async () => {
+      delete process.env.PARMANA_VERIFICATION_KEY_ID;
+      const KmsSigner = await freshKmsSigner();
+      describeKeyFor(["alias/default"]);
+
+      const signer = await KmsSigner.create();
+
+      await expect(signer.listKeys()).resolves.toEqual(["default"]);
+    });
+
+    it("adds the current verification key, and leaves out one whose alias does not exist", async () => {
+      process.env.PARMANA_VERIFICATION_KEY_ID = "signing-2026";
+      const KmsSigner = await freshKmsSigner();
+      describeKeyFor(["alias/signing-2026"]);
+
+      const signer = await KmsSigner.create();
+
+      await expect(signer.listKeys()).resolves.toEqual(["signing-2026"]);
     });
   });
 

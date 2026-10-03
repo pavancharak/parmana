@@ -122,7 +122,7 @@
                 {
                   "key": "pageSize",
                   "value": "25",
-                  "description": "Items per page before filtering to your own transactions. Default 25.",
+                  "description": "Items per page before filtering to your own transactions. Default 25. Maximum 100.",
                   "disabled": true
                 }
               ]
@@ -371,7 +371,7 @@
                 {
                   "key": "pageSize",
                   "value": "25",
-                  "description": "Items per page before filtering. Default 25.",
+                  "description": "Items per page before filtering. Default 25. Maximum 100.",
                   "disabled": true
                 },
                 {
@@ -1547,7 +1547,7 @@
                 "jwks.json"
               ]
             },
-            "description": "operationId: getJwks\n\nLists every public signing key this deployment can serve, the enumeration form of `GET /keys/{keyId}`.\nFetch and cache it when you verify many artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of\neach entry; an entry may have no `jwk` field. Needs no key."
+            "description": "operationId: getJwks\n\nLists every public signing key this deployment can serve, the enumeration form of `GET /keys/{keyId}`.\nWith local key files that is every key in the key directory. Under AWS KMS it is the keys this\ndeployment signs with: `default` and the current `PARMANA_VERIFICATION_KEY_ID`. A record signed\nunder an older key id is still served by `GET /keys/{keyId}`. Fetch and cache it when you verify\nmany artifacts. Not a strict RFC 7517 JWK Set: use the `pem` of each entry; an entry may have no\n`jwk` field. Needs no key."
           }
         },
         {

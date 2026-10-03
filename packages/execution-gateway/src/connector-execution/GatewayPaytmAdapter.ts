@@ -351,5 +351,15 @@ function requireNumber(value: unknown, field: string): number {
       `PaytmConnector request field "${field}" must be a finite number.`,
     );
   }
+  //
+  // The amount is sent as amount.toFixed(2). An amount with more than
+  // two decimals would be approved and recorded as given but refunded
+  // rounded, so the refund and its evidence would disagree. Refused.
+  //
+  if (Math.abs(Math.round(value * 100) - value * 100) > 1e-6) {
+    throw new Error(
+      `PaytmConnector request field "${field}" must have at most two decimal places.`,
+    );
+  }
   return value;
 }

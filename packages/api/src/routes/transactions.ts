@@ -11,6 +11,7 @@ import { isPrincipalAllowed } from "../auth/isPrincipalAllowed.js";
 import { isCapabilityAllowed } from "../auth/isCapabilityAllowed.js";
 import type { CallerAuditSink } from "../auth/CallerAuditSink.js";
 import { recordCallerAuditEvent } from "../auth/recordCallerAuditEvent.js";
+import { parsePagination } from "./pagination.js";
 
 export function createTransactionsRouter(
   application: ExecutionTrustApplication,
@@ -39,11 +40,17 @@ export function createTransactionsRouter(
     "/",
     async (req: Request, res: Response, next: NextFunction): Promise<void> => {
       try {
-        const page = Number(req.query.page ?? 1);
+        const pagination = parsePagination(req.query);
 
-        const pageSize = Number(req.query.pageSize ?? 25);
+        if (!pagination.ok) {
+          res.status(400).json({ error: pagination.error });
+          return;
+        }
 
-        const transactions = await application.listTransactions(page, pageSize);
+        const transactions = await application.listTransactions(
+          pagination.page,
+          pagination.pageSize,
+        );
 
         // Filtered post-fetch, not pushed into the repository query —
         // a smaller, route-level change than threading callerId through
