@@ -64,7 +64,7 @@ record = client.execute(request("hello", {"receiptApproved": True, "approvalArti
 print("5.", record.executions[0].decision.outcome, record.business_transaction_id)
 
 # 6. Verify the signed record offline, with the sandbox's public key only.
-#    Pass the record as the server sent it (plain JSON): in parmana 1.4.0 the
+#    Pass the record as the server sent it (plain JSON): in parmana 1.4.0 and earlier the
 #    decoded model drops a null previousChainHash, so it fails to verify.
 pem = client.public_key("default").pem
 raw_record = requests.get(

@@ -155,9 +155,9 @@ actually cover](/concepts/execution-trust-records).
   `python/tests/test_offline_verifier.py`, which signs a record with the real TypeScript
   signer and verifies it with only the Python module. Install it with
   `pip install "parmana[verify]"`, since the module needs the `cryptography` package,
-  which the `verify` extra provides. On the published 1.4.0, pass the record as the plain
+  which the `verify` extra provides. On 1.4.0 and earlier, pass the record as the plain
   JSON the server returned, not a decoded model: a decoded record whose
-  `previousChainHash` is `null` fails to verify there (G-85, fixed for the next release).
+  `previousChainHash` is `null` fails to verify there (G-85, fixed in 1.5.0).
   **Ed25519 only for now**: the
   `cryptography` package version this SDK depends on has no `ml_dsa` module yet, so a
   hybrid-signed record's ML-DSA-65 signature cannot be checked from Python until that
