@@ -169,7 +169,7 @@ Each of these is also available under its own namespace (e.g. `client.execution.
 
 ## License
 
-Proprietary. Source-available for evaluation only. No license is granted to use, copy, modify, or distribute this software, in whole or in part, without a separate written agreement with Parmana Systems. See LICENSE. Licensing inquiries: founder@parmanasystems.com
+Apache License 2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE). This SDK is a client: it needs a Parmana server, which is licensed separately. Licensing inquiries: founder@parmanasystems.com
 
 ---
 

@@ -17,6 +17,15 @@ Parmana is permitted. Any other use including production deployment,
 redistribution, or the creation of derivative works requires prior
 written permission from Parmana Systems.
 
+Exceptions: the following directories are licensed under the Apache
+License, Version 2.0, as stated in the LICENSE file in each of them, and
+not under this license:
+
+  typescript/               (@parmana/sdk on npm)
+  python/                   (parmana on PyPI)
+  packages/connector-sdk/   (@parmana/connector-sdk on npm)
+  python-connector-sdk/     (parmana-connector-sdk)
+
 All rights not expressly granted are reserved.
 
 For licensing inquiries, contact: founder@parmanasystems.com

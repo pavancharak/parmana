@@ -18,7 +18,8 @@
     "dist/**/*.d.ts",
     "dist/**/*.d.ts.map",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -51,5 +52,5 @@
   "engines": {
     "node": ">=22"
   },
-  "license": "SEE LICENSE IN LICENSE"
+  "license": "Apache-2.0"
 }
