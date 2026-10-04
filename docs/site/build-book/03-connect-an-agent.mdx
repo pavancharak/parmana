@@ -47,7 +47,7 @@ me = client.caller()
 Your action must be in `allowedCapabilities`. The principal you act as must be in `allowedPrincipalIds`; the safe
 choice is your `callerId`. Never log or print the key.
 
-## 2. Read the policy in effect (next release)
+## 2. Read the policy in effect (1.5.0)
 
 Ask the server which policy governs the action, at which version, and what a request must carry. Never write a policy
 version into the agent: an approved new version replaces the old one at once, and a request naming an old one is
@@ -75,7 +75,7 @@ in_effect.signals.approval      # {"managerApproved": {"resourceId": "parameters
 
 `signals.facts` is every fact the rules read. `signals.bound` names the signals that must equal a value of the request.
 `signals.approval` names the approval signal, and where in the request the resource (and amount) it approves are. With
-SDK 1.4.0, call `GET /policies/in-effect?capability=...` directly; the answer is the same.
+SDK 1.4.0 or earlier, call `GET /policies/in-effect?capability=...` directly; the answer is the same.
 
 ## 3. Build the request
 

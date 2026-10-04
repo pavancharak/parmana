@@ -12,9 +12,9 @@ acts with its own credentials, and answers. Parmana holds none of the system's c
   **Status, 2026-10-01.** Registering a connector through maker checker, and
   releasing approved requests to it, are live in production and were checked end
   to end against a deployed endpoint (`docs/CLAIMS.md` 2.49 and 2.50). The SDK
-  helpers `verifyParmanaRelease` and `verify_parmana_release` are in the
-  repository but **not yet published** to npm and PyPI: until the next SDK
-  release, build the endpoint from the repository's SDK packages, as
+  helpers `verifyParmanaRelease` and `verify_parmana_release` are published in
+  SDK 1.5.0 (2026-10-04) on npm and PyPI; with an older SDK, build the endpoint
+  from the repository's SDK packages, as
   `examples/live-checks/external-connector/build-endpoint.ts` does. An approved
   request took 24 to 32 seconds in production (G-84): give the agent a timeout
   of at least 120 seconds.
