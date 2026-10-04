@@ -16,7 +16,7 @@ npm pack --workspace=typescript --pack-destination /tmp/parmana-npm --dry-run
 npm pack --workspace=typescript --pack-destination /tmp/parmana-npm
 ```
 
-The tarball must contain only `dist/`, `README.md`, `LICENSE` and `package.json`, and it must be named `parmana-sdk-<version>.tgz`.
+The tarball must contain only `dist/`, `README.md`, `LICENSE`, `NOTICE` and `package.json`, and it must be named `parmana-sdk-<version>.tgz`.
 
 ## 3. Test the packed tarball in a clean project
 
