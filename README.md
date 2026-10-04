@@ -204,6 +204,9 @@ separate written agreement with Parmana Systems.
 This includes the client SDKs in [typescript/](typescript/) and
 [python/](python/), published as `@parmana/sdk` and `parmana`.
 
+Copyright (c) 2026 Parmana Systems Private Limited. "Parmana" is a trademark of Parmana Systems
+Private Limited. See [NOTICE](./NOTICE).
+
 ## More documentation
 
 **New here? Start with [The Parmana Handbook](https://docs.parmanasystems.com/handbook/overview)**:
