@@ -7,6 +7,7 @@ runs leaves a signed record anyone can verify.**
 [![CI](https://github.com/pavancharak/parmana/actions/workflows/ci.yml/badge.svg)](https://github.com/pavancharak/parmana/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-proprietary-lightgrey)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D24.6-brightgreen)](package.json)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/pavancharak/parmana/badge)](https://scorecard.dev/viewer/?uri=github.com/pavancharak/parmana)
 
 > **Proprietary software evaluation only.** This repository is source-available
 > for evaluation purposes. No license is granted to use, copy, modify, or
