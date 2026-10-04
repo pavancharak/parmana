@@ -1,0 +1,12 @@
+Parmana
+Copyright (c) 2026 Parmana Systems Private Limited. All rights reserved.
+
+This repository is source-available for evaluation only. See LICENSE.
+
+"Parmana" and the Parmana logo are trademarks of Parmana Systems Private
+Limited. The license does not grant any right to use them, except to refer
+to this software accurately.
+
+@parmana/sign (https://github.com/pavancharak/parmana-sign) and versions
+1.4.0 and earlier of @parmana/sdk (npm) and parmana (PyPI) were published
+under the Apache License 2.0 and remain available under that license.
