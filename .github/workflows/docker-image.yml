@@ -60,12 +60,15 @@ on:
       - .github/workflows/docker-image.yml
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-and-boot:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Build the image
         run: docker build -t parmana-api .
@@ -121,7 +124,7 @@ jobs:
           docker exec pg psql -U postgres -tA -c "select to_regclass('consumed_nonces'), to_regclass('execution_audit_events'), to_regclass('policies'), to_regclass('approval_issuers')"
 
       - name: Set up Node for the repository tests
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
           cache: npm
@@ -167,7 +170,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Start the self hosted deployment with one command
         run: docker compose up -d --build --wait
@@ -193,7 +196,7 @@ jobs:
           docker compose logs seed | grep -q ', 0 added'
 
       - name: Set up Node for the quickstart's signing step
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
           cache: npm
