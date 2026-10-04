@@ -314,7 +314,7 @@ record = client.execute(request("hello", {"receiptApproved": True, "approvalArti
 print("5.", record.executions[0].decision.outcome, record.business_transaction_id)
 
 # 6. Verify the signed record offline, with the sandbox's public key only.
-#    Pass the record as the server sent it (plain JSON): in parmana 1.4.0 the
+#    Pass the record as the server sent it (plain JSON): in parmana 1.4.0 and earlier the
 #    decoded model drops a null previousChainHash, so it fails to verify.
 pem = client.public_key("default").pem
 raw_record = requests.get(
@@ -546,12 +546,13 @@ Every response below is real, captured from the sandbox on 2026-10-02.
 </Steps>
 
 <Note>
-  Python SDK 1.4.0: pass the record to `verify_execution_trust_record_offline`
-  as the plain JSON the server sent, for example from `GET /trust-records/
+  Python SDK 1.4.0 and earlier: pass the record to
+  `verify_execution_trust_record_offline` as the plain JSON the server sent, for
+  example from `GET /trust-records/
   {businessTransactionId}`. The decoded model that `client.execute()` and
   `client.trust_record()` return drops a `null` `previousChainHash`, so
   verifying the model reports a hash mismatch although the record is intact. The
-  TypeScript SDK is not affected, and the next Python release fixes it.
+  TypeScript SDK is not affected, and Python SDK 1.5.0 fixes it.
 </Note>
 
 ## Every refusal you can meet

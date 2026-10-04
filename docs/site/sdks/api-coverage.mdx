@@ -6,10 +6,10 @@ description: "Every API operation, the TypeScript and Python method that calls i
 Both SDKs cover the same operations. TypeScript exposes each as a method on `ParmanaClient`. Python exposes each area as an attribute of the client, such as `client.policy` or `client.receipt`, and adds a shortcut method on the client for most of them. Both forms are listed.
 
 <Info>
-  **Version.** Rows marked **1.4.0** need SDK 1.4.0, published on 2026-09-29,
-  and rows marked **1.3.0** need 1.3.0 or later, both on npm (`npm install
-  @parmana/sdk`) and PyPI (`pip install parmana`). Every other row works in
-  1.2.0.
+  **Version.** Rows marked **1.5.0** need SDK 1.5.0, published on 2026-10-04,
+  rows marked **1.4.0** need 1.4.0 or later, and rows marked **1.3.0** need
+  1.3.0 or later, both on npm (`npm install @parmana/sdk`) and PyPI (`pip
+  install parmana`). Every other row works in 1.2.0.
 </Info>
 
 ## Executing and deciding
@@ -38,7 +38,7 @@ Both SDKs cover the same operations. TypeScript exposes each as a method on `Par
 | `GET /keys/{keyId}`                               | `publicKey(keyId)` **1.3.0**                                | `public_key(key_id)` **1.3.0**, `callers.public_key(key_id)`         |
 | Trust Record checked with only public keys        | `verifyExecutionTrustRecordOffline(record, keys)` **1.3.0** | `parmana.crypto.verify_execution_trust_record_offline(record, keys)` |
 | Execution Intent checked with only public keys    | `verifyExecutionIntentOffline(intent, keys)` **1.3.0**      | `parmana.crypto.verify_execution_intent_offline(intent, keys)`       |
-| Release checked at an external connector endpoint | `verifyParmanaRelease(body, options)` **next release**      | `parmana.crypto.verify_parmana_release(body, ...)` **next release**  |
+| Release checked at an external connector endpoint | `verifyParmanaRelease(body, options)` **1.5.0**             | `parmana.crypto.verify_parmana_release(body, ...)` **1.5.0**         |
 
 The offline verifiers make no network call. Get the public key once with `publicKey()` or `public_key()` and keep it. In Python they need `pip install "parmana[verify]"`, and from 1.3.0 they accept either the raw JSON or the SDK's own model.
 
@@ -56,7 +56,7 @@ The offline verifiers make no network call. Get the public key once with `public
 
 | Operation                                                | TypeScript                                            | Python                                                                             |
 | -------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `GET /policies/in-effect?capability=`                    | `policyInEffect(capability)` **next release**         | `policy_in_effect(capability)` **next release**, `policy.in_effect(...)`           |
+| `GET /policies/in-effect?capability=`                    | `policyInEffect(capability)` **1.5.0**                | `policy_in_effect(capability)` **1.5.0**, `policy.in_effect(...)`                  |
 | `POST /policies/validate`                                | `validatePolicy(name, version)`                       | `validate_policy(name, version)`, `policy.validate(...)`                           |
 | `POST /policies/{name}/{version}/pending-changes`        | `proposePolicyChange(name, version, input)` **1.3.0** | `propose_policy_change(name, version, proposed_content=, reason=)` **1.3.0**       |
 | `GET /policies/pending-changes`                          | `policyChanges(status?)` **1.3.0**                    | `policy_changes(status=None)` **1.3.0**, `policy.list_changes(...)`                |
@@ -77,15 +77,15 @@ The offline verifiers make no network call. Get the public key once with `public
 
 ## External connectors
 
-| Operation                                        | TypeScript                                                           | Python                                                                                                  |
-| ------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `GET /external-connectors`                       | `externalConnectors()` **next release**                              | `list_external_connectors()`, `external_connectors.list()` **next release**                             |
-| `POST /external-connectors/changes`              | `proposeExternalConnectorChange({ action, ... })` **next release**   | `external_connectors.propose_register(...)`, `external_connectors.propose_revoke(...)` **next release** |
-| `GET /external-connectors/changes`               | `externalConnectorChanges(status?)` **next release**                 | `external_connector_changes(status=None)` **next release**                                              |
-| `POST /external-connectors/changes/{id}/approve` | `approveExternalConnectorChange(id, stepUp)` **next release**        | `approve_external_connector_change(id, step_up)` **next release**                                       |
-| `POST /external-connectors/changes/{id}/reject`  | `rejectExternalConnectorChange(id, reason, stepUp)` **next release** | `reject_external_connector_change(id, reason, step_up)` **next release**                                |
+| Operation                                        | TypeScript                                                    | Python                                                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `GET /external-connectors`                       | `externalConnectors()` **1.5.0**                              | `list_external_connectors()`, `external_connectors.list()` **1.5.0**                             |
+| `POST /external-connectors/changes`              | `proposeExternalConnectorChange({ action, ... })` **1.5.0**   | `external_connectors.propose_register(...)`, `external_connectors.propose_revoke(...)` **1.5.0** |
+| `GET /external-connectors/changes`               | `externalConnectorChanges(status?)` **1.5.0**                 | `external_connector_changes(status=None)` **1.5.0**                                              |
+| `POST /external-connectors/changes/{id}/approve` | `approveExternalConnectorChange(id, stepUp)` **1.5.0**        | `approve_external_connector_change(id, step_up)` **1.5.0**                                       |
+| `POST /external-connectors/changes/{id}/reject`  | `rejectExternalConnectorChange(id, reason, stepUp)` **1.5.0** | `reject_external_connector_change(id, reason, step_up)` **1.5.0**                                |
 
-Sign the step up authorization for approve or reject with `signPolicyChangeStepUp()` or `sign_policy_change_step_up()`, with the `changeId` as `pendingPolicyChangeId`. Until the next release is published, call these routes directly; see [Connect any external system](/guides/connect-any-external-system).
+Sign the step up authorization for approve or reject with `signPolicyChangeStepUp()` or `sign_policy_change_step_up()`, with the `changeId` as `pendingPolicyChangeId`. With an SDK older than 1.5.0, call these routes directly; see [Connect any external system](/guides/connect-any-external-system).
 
 ## Caller and service
 

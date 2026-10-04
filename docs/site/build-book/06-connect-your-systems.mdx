@@ -74,7 +74,7 @@ The SDK helper does the checks; your code does the action.
 <CodeGroup>
 
 ```typescript TypeScript
-import { verifyParmanaRelease } from "@parmana/sdk"; // next release
+import { verifyParmanaRelease } from "@parmana/sdk"; // 1.5.0
 
 const check = await verifyParmanaRelease(body, {
   publicKeys: { default: parmanaPublicKeyPem }, // GET /keys/default
@@ -87,7 +87,7 @@ const check = await verifyParmanaRelease(body, {
 ```
 
 ```python Python
-from parmana.crypto import verify_parmana_release  # next release
+from parmana.crypto import verify_parmana_release  # 1.5.0
 
 check = verify_parmana_release(
     body,
@@ -154,8 +154,8 @@ external connector. The literal procedure, with what to expect and what to do at
 
 Registration through maker checker, and releasing approved requests to the registered endpoint, are live in
 production, checked end to end on 2026-10-01 (`docs/CLAIMS.md` 2.50, `examples/live-checks/external-connector`). An
-approved request took 24 to 32 seconds there (G-84): give agents a timeout of at least 120 seconds. `verifyParmanaRelease` and `verify_parmana_release` are in the
-repository and not yet published. What the endpoint answers is its claim, not proof that it acted
+approved request took 24 to 32 seconds there (G-84): give agents a timeout of at least 120 seconds. `verifyParmanaRelease` and `verify_parmana_release` are in SDK
+1.5.0 and later. What the endpoint answers is its claim, not proof that it acted
 (`docs/VERIFICATION-GAPS.md` G-82).
 
 ## See it run
