@@ -84,7 +84,7 @@
   },
   "dependencies": {
     "swagger-ui-express": "^5.0.1",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   },
   "overrides": {
     "qs": "^6.16.0",
