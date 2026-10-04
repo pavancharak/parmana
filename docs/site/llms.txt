@@ -27,7 +27,7 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [Evaluate Parmana](https://docs.parmanasystems.com/evaluation/overview): The shortest path from a fresh clone to a working local system, and what to read next.
 * [Audit guide](https://docs.parmanasystems.com/evaluation/audit-guide): The system under evaluation, where it blocks execution, what an attacker controls in each case, and how to record which attacks are blocked and which succeed.
 * [Claims and evidence](https://docs.parmanasystems.com/evaluation/claims-and-evidence): Each core claim, where it is stated in full, and the tests and commands that check it.
-* [License and evaluation](https://docs.parmanasystems.com/license): Parmana is proprietary software, source-available for evaluation only.
+* [License and evaluation](https://docs.parmanasystems.com/license): The Parmana server is proprietary software, source-available for evaluation only. The client and connector SDKs are Apache 2.0.
 ## Get started: For AI agents
 
 * [Integrate Parmana: specification for AI agents](https://docs.parmanasystems.com/agents/integrate): An exact, ordered procedure to send an action to Parmana and act on the answer. Every step says what to do, what you should see, and what to do if you do not.

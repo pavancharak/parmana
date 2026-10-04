@@ -17,4 +17,4 @@ except PackageNotFoundError:
 
 __author__ = "Parmana"
 
-__license__ = "Proprietary"
+__license__ = "Apache-2.0"

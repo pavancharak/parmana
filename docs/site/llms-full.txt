@@ -5066,7 +5066,7 @@ Source: https://docs.parmanasystems.com/sdks/typescript
 npm install @parmana/sdk
 ```
 
-From the next release the SDK is proprietary, evaluation only, like the rest of Parmana; 1.4.0 and earlier are Apache License 2.0. See [License and evaluation](/license).
+The SDK is licensed under the Apache License 2.0. It is a client and needs a Parmana server, which is licensed separately. See [License and evaluation](/license).
 
 Real registry install. `npm view @parmana/sdk version` returns the current published
 version directly from npm, confirmed while fixing this page's own stale claim otherwise.
@@ -6159,7 +6159,7 @@ Source: https://docs.parmanasystems.com/sdks/python
 pip install parmana
 ```
 
-From the next release the SDK is proprietary, evaluation only, like the rest of Parmana; 1.4.0 and earlier are Apache License 2.0. See [License and evaluation](/license).
+The SDK is licensed under the Apache License 2.0. It is a client and needs a Parmana server, which is licensed separately. See [License and evaluation](/license).
 
 To use the standalone offline Trust Record verifier (`parmana.crypto`), install the optional
 `verify` extra, which adds the `cryptography` package it needs for Ed25519:

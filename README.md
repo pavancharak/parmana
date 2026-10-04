@@ -12,7 +12,8 @@ runs leaves a signed record anyone can verify.**
 > **Proprietary software evaluation only.** This repository is source-available
 > for evaluation purposes. No license is granted to use, copy, modify, or
 > distribute this software, in whole or in part, without a separate written
-> agreement with Parmana Systems. See [LICENSE](./LICENSE).
+> agreement with Parmana Systems. See [LICENSE](./LICENSE). The client SDKs
+> and connector SDKs are the exception: they are Apache 2.0 (see [License](#license)).
 
 As organizations connect AI agents to real systems, the open question is
 no longer whether the agent can act. It is what the agent is allowed to
@@ -202,8 +203,12 @@ license is granted to use, copy, modify, distribute, or create
 derivative works from this repository except as expressly permitted in a
 separate written agreement with Parmana Systems.
 
-This includes the client SDKs in [typescript/](typescript/) and
-[python/](python/), published as `@parmana/sdk` and `parmana`.
+The exceptions are the SDKs, which are licensed under the Apache License 2.0:
+the client SDKs in [typescript/](typescript/) and [python/](python/) (published
+as `@parmana/sdk` and `parmana`), and the connector SDKs in
+[packages/connector-sdk/](packages/connector-sdk/) and
+[python-connector-sdk/](python-connector-sdk/). See the LICENSE file in each
+directory.
 
 Copyright (c) 2026 Parmana Systems Private Limited. "Parmana" is a trademark of Parmana Systems
 Private Limited. See [NOTICE](./NOTICE).
