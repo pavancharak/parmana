@@ -1,10 +1,17 @@
 version: 2
 updates:
+  # Minor and patch updates arrive as one grouped pull request per week;
+  # each major update gets its own, since it may need code changes.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "pip"
     directories:
@@ -12,16 +19,34 @@ updates:
       - "/python-connector-sdk"
     schedule:
       interval: "weekly"
+    groups:
+      pip-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
 
+  # Digest and minor updates only: the runtime targets Node 24 (see
+  # "engines" in package.json), so a new Node major is a deliberate
+  # change, not a dependency bump.
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
 
   # Keeps the SHA-pinned actions in .github/workflows/*.yml current —
   # Dependabot understands the "@<sha> # vX.Y.Z" comment convention and
-  # opens a PR bumping both when a new release is out.
+  # opens a PR bumping both when a new release is out. One grouped pull
+  # request, so github/codeql-action's init, analyze and upload-sarif
+  # always move to the same version together.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
