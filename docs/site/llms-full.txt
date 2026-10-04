@@ -18,9 +18,11 @@ by step.
 
 <Info>
   **Proprietary software, evaluation only.** You may read, build and run Parmana
-  to assess it; any other use needs a written agreement. See [License and
-  evaluation](/license). Evaluators and auditors start at [Evaluate
-  Parmana](/evaluation/overview) and the [Audit guide](/evaluation/audit-guide).
+  to assess it; any other use needs a written agreement. The client and
+  connector SDKs are the exception: they are open source under the Apache
+  License 2.0. See [License and evaluation](/license). Evaluators and auditors
+  start at [Evaluate Parmana](/evaluation/overview) and the [Audit
+  guide](/evaluation/audit-guide).
 </Info>
 
 <Tip>
@@ -8319,6 +8321,35 @@ patterns](/guides/deploy-patterns#caller-authentication). This authentication la
 independent of, and does not substitute for, [Execution
 Authorization](/concepts/execution-authorization) or [gateway
 attestation](/concepts/gateway-attestation).
+
+## Automated checks on the repository
+
+Every pull request to `main` in
+[github.com/pavancharak/parmana](https://github.com/pavancharak/parmana) must pass these before it can
+merge. `main` is protected: no direct pushes, no force pushes, no deletion.
+
+| Check                                                          | What it does                                                                                             |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `build-and-test`                                               | Build, lint, typecheck and the full test suite                                                           |
+| `verify-policy-approvals`                                      | Fails if any policy file in the tree has no matching maker checker approval record for its exact content |
+| CodeQL (`Analyze (javascript-typescript)`, `Analyze (python)`) | Static analysis for security bugs, on every pull request, on push to `main` and weekly                   |
+| `dependency-review`                                            | Blocks a pull request that adds a dependency with a known vulnerability                                  |
+
+Also enabled on the repository:
+
+- [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/pavancharak/parmana): a public
+  supply chain security score, recomputed weekly and on every push to `main`.
+- Dependabot alerts and grouped weekly update pull requests for npm, Python, the Dockerfile and
+  GitHub Actions.
+- GitHub secret scanning with push protection, which blocks a commit that contains a known
+  secret format.
+- Private vulnerability reporting, alongside the email route in
+  [SECURITY.md](https://github.com/pavancharak/parmana/blob/main/SECURITY.md).
+- GitHub Actions and Docker base images pinned to exact commits and digests, and workflow tokens
+  limited to read access.
+
+These are hygiene checks on the code and its supply chain. They do not replace a review of the
+enforcement design; see the [Audit guide](/evaluation/audit-guide) for that.
 
 ## Where hardening work is tracked
 
