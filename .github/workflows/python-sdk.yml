@@ -70,9 +70,13 @@ jobs:
         run: npm run check:python-models
 
       - name: Install Python package
+        # Dependencies come from a hash-pinned lock file
+        # (python/requirements-dev.txt, regeneration command in its header),
+        # then the SDK itself is installed from the checkout without
+        # resolving anything further.
         run: |
-          python -m pip install --upgrade pip
-          pip install -e "./python[dev]"
+          pip install --require-hashes -r python/requirements-dev.txt
+          pip install --no-deps -e ./python
 
       - name: Lint (ruff)
         run: ruff check .
