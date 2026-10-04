@@ -1080,7 +1080,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/execution-trust-record.schema"
+                $ref: "#/components/schemas/execution-trust-record-response.schema"
               examples:
                 test-fixture-flow:
                   summary: Real captured response, currently runnable (pairs with the
@@ -1764,7 +1764,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/execution-trust-record.schema"
+                $ref: "#/components/schemas/execution-trust-record-response.schema"
               examples:
                 test-fixture-flow:
                   summary: Real captured response, currently runnable (pairs with the
@@ -2546,7 +2546,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/business-transaction.schema"
+                $ref: "#/components/schemas/transaction-response.schema"
               examples:
                 vendor-payment-flow-transactions-endpoint:
                   summary: Real captured response
@@ -2861,7 +2861,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/refusal-record.schema"
+              $ref: "#/components/schemas/refusal-verify-request.schema"
       responses:
         "200":
           description: The check ran. Read `valid`. A `200` alone does not mean the
@@ -3170,7 +3170,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/refusal-record.schema"
+                $ref: "#/components/schemas/refusal-record-response.schema"
               examples:
                 refused:
                   summary: Real captured response, a payment refused for insufficient funds
@@ -3317,7 +3317,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/execution-intent.schema"
+              $ref: "#/components/schemas/execution-intent-verify-request.schema"
       responses:
         "200":
           description: The check ran. Read `valid`. A `200` alone does not mean the
@@ -4558,7 +4558,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/receipt.schema"
+                $ref: "#/components/schemas/receipt-response.schema"
               examples:
                 vendor-payment-flow:
                   summary: Real captured response
@@ -4680,7 +4680,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/receipt.schema"
+                $ref: "#/components/schemas/receipt-response.schema"
               examples:
                 vendor-payment-flow:
                   summary: Real captured response
@@ -5076,7 +5076,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/execution-trust-record.schema"
+                $ref: "#/components/schemas/execution-trust-record-response.schema"
               examples:
                 vendor-payment-flow:
                   summary: Real captured response
@@ -5776,7 +5776,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/pending-policy-change.schema"
+                $ref: "#/components/schemas/pending-policy-change-response.schema"
               examples:
                 proposed:
                   summary: Real captured response
@@ -6061,7 +6061,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/pending-policy-change.schema"
+                $ref: "#/components/schemas/pending-policy-change-response.schema"
               examples:
                 approved:
                   summary: Real captured response
@@ -6241,7 +6241,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/pending-policy-change.schema"
+                $ref: "#/components/schemas/pending-policy-change-response.schema"
               examples:
                 rejected:
                   summary: Real captured response
@@ -6503,7 +6503,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/approval-issuer-change.schema"
+                $ref: "#/components/schemas/approval-issuer-change-response.schema"
               examples:
                 add:
                   summary: Real captured response
@@ -6799,7 +6799,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/approval-issuer-change.schema"
+                $ref: "#/components/schemas/approval-issuer-change-response.schema"
               examples:
                 approved:
                   summary: Real captured response
@@ -6964,7 +6964,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/approval-issuer-change.schema"
+                $ref: "#/components/schemas/approval-issuer-change-response.schema"
               examples:
                 rejected:
                   summary: Real captured response
@@ -7274,7 +7274,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/external-connector-change.schema"
+                $ref: "#/components/schemas/external-connector-change-response.schema"
               examples:
                 register:
                   summary: Real captured response
@@ -7652,7 +7652,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/external-connector-change.schema"
+                $ref: "#/components/schemas/external-connector-change-response.schema"
               examples:
                 approved:
                   summary: Real captured response
@@ -7846,7 +7846,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/external-connector-change.schema"
+                $ref: "#/components/schemas/external-connector-change-response.schema"
               examples:
                 rejected:
                   summary: Real captured response
@@ -9402,6 +9402,13 @@ components:
             keyId: default
             value: l41lr6nCUbrzEfoil/3+gkXd4zEQ9TR1qFaSwLuE70L/9U6cVz3VXdM1lPsDfELKh6RO4qcDrFWF/S3k4CAxAQ==
             signedAt: 2026-07-07T16:38:59.330Z
+    execution-trust-record-response.schema:
+      title: Execution Trust Record Response
+      description: Response returned by POST /execute, POST /transactions, and GET
+        /trust-records/{businessTransactionId}. A bare Execution Trust Record,
+        no wrapper. POST /execute returns this with status 200; POST
+        /transactions returns the identical shape with status 201.
+      $ref: "#/components/schemas/execution-trust-record.schema"
     transactions-list-response.schema:
       title: Transactions List Response
       description: Response returned by GET /transactions. A bare array, no pagination
@@ -9410,6 +9417,13 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/business-transaction.schema"
+    transaction-response.schema:
+      title: Transaction Response
+      description: Response returned by GET /transactions/{businessTransactionId} (and
+        as each item of GET /transactions' array). A bare Business Transaction,
+        no wrapper, no links, no embedded Decision (that lives on each
+        Execution, not on the transaction).
+      $ref: "#/components/schemas/business-transaction.schema"
     verification-request.schema:
       title: Verification Request
       description: Request payload for POST /verify. businessTransactionId is required
@@ -9569,6 +9583,13 @@ components:
             keyId: default
             value: tT32/iJ0bEDxjc+/KPeAegTBSrzpRFW14f9Vyv3Ykx+H/rLHcgd7SlFH/BAXut8sEH2mpo0smg82tSoXmZkpDQ==
             signedAt: 2026-09-15T03:27:45.668Z
+    refusal-verify-request.schema:
+      title: Refusal Verify Request
+      description: "Request body for POST /refusal/verify: the Refusal Record itself,
+        not a lookup by ID. Checked structurally on the server (refusalRecordId,
+        businessTransactionId, decision, refusalRecordHash, signature required)
+        before signature verification runs."
+      $ref: "#/components/schemas/refusal-record.schema"
     verify-result-response.schema:
       title: Verify Result Response
       description: "Response shared by POST /refusal/verify and POST /audit/verify: a
@@ -9587,6 +9608,11 @@ components:
       examples:
         - valid: true
         - valid: false
+    refusal-record-response.schema:
+      title: Refusal Record Response
+      description: Response returned by GET /refusal/{businessTransactionId}. A bare
+        Refusal Record, no wrapper.
+      $ref: "#/components/schemas/refusal-record.schema"
     execution-intent.schema:
       title: Execution Intent
       description: "A signed statement, made and stored BEFORE an action is released
@@ -9717,6 +9743,15 @@ components:
             value: UhXnkSnm5A3QU4CVrKGbP3FcTWkShnitn86psJprJpqgEBnsXWzDcZ+ktSO0FJek1X+n9DvO3SjR+WvSofS1CA==
             signedAt: 2026-09-21T05:40:28.555Z
             algorithm: ed25519
+    execution-intent-verify-request.schema:
+      title: Execution Intent Verify Request
+      description: "Request body for POST /execution-intents/verify: the Execution
+        Intent itself (the intent field of GET
+        /execution-intents/{businessTransactionId}), not a lookup by ID. Checked
+        structurally on the server (intentId, businessTransactionId,
+        authorizationId, intentHash, signature required) before signature
+        verification runs."
+      $ref: "#/components/schemas/execution-intent.schema"
     execution-intent-status.schema:
       title: Execution Intent Status
       description: "Operational status kept next to a signed Execution Intent. It is
@@ -10034,6 +10069,11 @@ components:
             the request fails with a 409.
       examples:
         - businessTransactionId: eed2a972-1bf5-4166-8472-761f76fbf1b2
+    receipt-response.schema:
+      title: Receipt Response
+      description: Response returned by POST /receipt and GET
+        /receipt/latest/{businessTransactionId}. A bare Receipt, no wrapper.
+      $ref: "#/components/schemas/receipt.schema"
     trust-records-list-response.schema:
       title: Trust Records List Response
       description: Response returned by GET /trust-records (bulk/compliance export). A
@@ -10043,7 +10083,7 @@ components:
         /trust-records/{businessTransactionId} returns for one.
       type: array
       items:
-        $ref: "#/components/schemas/execution-trust-record.schema"
+        $ref: "#/components/schemas/execution-trust-record-response.schema"
     replay-request.schema:
       title: Replay Request
       description: Request payload for POST /replay. businessTransactionId is required
@@ -10268,6 +10308,14 @@ components:
           reason: Capture a real Pending Policy Change for the OpenAPI spec
           resolvedBy: human-checker
           resolvedAt: 2026-09-15T03:48:03.586Z
+    pending-policy-change-response.schema:
+      title: Pending Policy Change Response
+      description: Response returned by POST
+        /policies/{name}/{version}/pending-changes (201), POST
+        /policies/pending-changes/{id}/approve (200), and POST
+        /policies/pending-changes/{id}/reject (200). A bare Pending Policy
+        Change, no wrapper.
+      $ref: "#/components/schemas/pending-policy-change.schema"
     pending-changes-list-response.schema:
       title: Pending Changes List Response
       description: "Response returned by GET /policies/pending-changes. Each entry is
@@ -10651,6 +10699,11 @@ components:
           approverId: manager-priya
           keyId: manager-priya-key-1
           reason: Priya moved to another team.
+    approval-issuer-change-response.schema:
+      title: Approver Change Response
+      description: Response of POST /approval-issuers/changes (201) and of approve and
+        reject (200). A bare Approver Change, no wrapper.
+      $ref: "#/components/schemas/approval-issuer-change.schema"
     external-connector.schema:
       title: External Connector
       description: "A capability bound to an HTTPS endpoint an operator runs, and to
@@ -10892,6 +10945,11 @@ components:
         - action: revoke
           capability: erp:create-invoice
           reason: The ERP endpoint moves to a new host.
+    external-connector-change-response.schema:
+      title: External Connector Change Response
+      description: Response of POST /external-connectors/changes (201) and of approve
+        and reject (200). A bare External Connector Change, no wrapper.
+      $ref: "#/components/schemas/external-connector-change.schema"
     sandbox-approval-request.schema:
       title: Sandbox Approval Request
       description: Asks the sandbox's demo approver to approve one sandbox:receipt request.
