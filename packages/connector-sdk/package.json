@@ -45,7 +45,7 @@
   },
   "homepage": "https://github.com/pavancharak/parmana",
   "devDependencies": {
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.6.3",
     "typescript": "^5.9.0",
     "vitest": "^4.1.11"
   },
