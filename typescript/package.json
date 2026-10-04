@@ -20,8 +20,8 @@
     "NOTICE"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc --noEmit",
+    "build": "node ../node_modules/typescript7/bin/tsc -p tsconfig.json",
+    "typecheck": "node ../node_modules/typescript7/bin/tsc --noEmit",
     "test": "vitest run",
     "clean": "rimraf dist"
   },
