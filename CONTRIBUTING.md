@@ -71,7 +71,8 @@ Two TypeScript versions are installed, each for what it can do
 
 `npm run mutation -- <package>` runs [Stryker](https://stryker-mutator.io) on one or more
 packages, for example `npm run mutation -- envelope-verifier approval`. Run `npm run build`
-first. Stryker makes small deliberate changes to the package's `src` (a `<=` turned into `<`, a
+first, on Node 24 (the command refuses an older Node: there the ML-DSA-65 tests skip themselves
+and the crypto score would be wrong). Stryker makes small deliberate changes to the package's `src` (a `<=` turned into `<`, a
 condition forced to `true`, a call removed), one at a time, and runs that package's tests against
 each. The mutation score is the share of those changes the tests catch: it says more about the
 tests than a test count or line coverage does.
