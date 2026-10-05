@@ -106,6 +106,19 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Verify the policy approval log
+        # governance/policy-approvals.jsonl: the chain, every signature,
+        # and that a change only appends to it (compared with the base).
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            git fetch --no-tags --depth=1 origin "$BASE_SHA"
+            npm run policy-log:verify -- --base "$BASE_SHA"
+          else
+            npm run policy-log:verify
+          fi
+
   verify-policy-approvals:
     # Preventive Policy Governance gate (maker-checker): fails the run if
     # any policies/{name}/{version}/policy.json in the tree has no
