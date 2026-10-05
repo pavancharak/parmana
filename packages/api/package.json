@@ -25,10 +25,10 @@
     "@parmana/storage": "0.1.0",
     "@vercel/connect": "^2.3.5",
     "@vercel/oidc-aws-credentials-provider": "^3.3.9",
-    "express": "^4.18.2",
+    "express": "^4.22.3",
     "express-rate-limit": "^8.7.0",
     "pg": "^8.23.1",
-    "resend": "^6.31.0"
+    "resend": "^6.32.0"
   },
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^16.0.3",
