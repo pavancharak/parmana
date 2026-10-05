@@ -124,7 +124,7 @@ jobs:
           docker exec pg psql -U postgres -tA -c "select to_regclass('consumed_nonces'), to_regclass('execution_audit_events'), to_regclass('policies'), to_regclass('approval_issuers')"
 
       - name: Set up Node for the repository tests
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: npm
@@ -196,7 +196,7 @@ jobs:
           docker compose logs seed | grep -q ', 0 added'
 
       - name: Set up Node for the quickstart's signing step
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           cache: npm
