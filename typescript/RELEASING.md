@@ -27,23 +27,33 @@ npm install /tmp/parmana-npm/parmana-sdk-<version>.tgz
 node --input-type=module -e "import * as sdk from '@parmana/sdk'; console.log(Object.keys(sdk).length, 'exports', typeof sdk.ParmanaClient)"
 ```
 
-## 4. Publish
+## 4. Publish a GitHub release
 
-Publishing needs an npm account that can publish `@parmana/sdk`, with two factor authentication. Never commit a token.
+Merge the version bump to `main` first. Then on GitHub: Releases, Draft a new release, type the
+new tag `sdk-v<version>`, choose **Create new tag**, check the target is `main`, and publish.
+
+`.github/workflows/release.yml` builds the four SDK packages from that tag, attaches them to the
+release, and attaches signed SLSA provenance (`multiple.intoto.jsonl`). Wait for the workflow run
+to be green and the release to show seven files. A release on an existing tag that predates the
+workflow does not run it.
+
+## 5. Publish the release's own file to npm
+
+Publish the file the release built, not a local build, so the package on npm is byte for byte the
+one the provenance covers. Download `parmana-sdk-<version>.tgz` from the release page (or run
+`gh release download sdk-v<version> --pattern 'parmana-sdk-*.tgz'`), then:
 
 ```bash
 npm login
-npm publish /tmp/parmana-npm/parmana-sdk-<version>.tgz --access public
+npm publish parmana-sdk-<version>.tgz --access public
 ```
 
-If your account uses a one time password, add `--otp <code>`.
+Publishing needs an npm account that can publish `@parmana/sdk`, with two factor authentication;
+add `--otp <code>` if your account uses a one time password. Never commit a token.
+`@parmana/connector-sdk` is published the same way from `parmana-connector-sdk-<version>.tgz`.
 
-## 5. After publishing
+## 6. After publishing
 
 1. Confirm the version at `https://www.npmjs.com/package/@parmana/sdk` and that `npm view @parmana/sdk version` shows it.
-2. Update the published version statements in `docs/site/sdks/typescript.mdx` and the "built but not yet published" wording in `docs/site/changelog.mdx`.
-3. Tag the release in git (`sdk-v<version>`), push the tag, and publish a GitHub release for it
-   (Releases, then Draft a new release, choose the tag, Publish). `.github/workflows/release.yml`
-   then builds the four SDK packages from that tag, attaches them to the release, and attaches
-   signed SLSA provenance (`multiple.intoto.jsonl`). Check the workflow run is green and the
-   release has seven files. See "Verifying an SDK package" in `docs/site/security/overview.mdx`.
+2. Check that `npm view @parmana/sdk@<version> dist.shasum` equals the SHA-1 of the release's `.tgz` (`sha1sum parmana-sdk-<version>.tgz`).
+3. Update the published version statements in `docs/site/sdks/typescript.mdx` and the "built but not yet published" wording in `docs/site/changelog.mdx`.
