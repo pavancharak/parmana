@@ -678,6 +678,28 @@ Evidence: the live check, 2026-10-02 (`deploy/sandbox/README.md`, stage `Check`)
 - Through maker checker in the sandbox, each proposed by `sandbox-maker` and approved by the sandbox checker: the demo approver `sandbox-demo-approver` (`sandbox-demo-approver-key-1`, change `0143b0a5-ba0f-437a-945d-abeb73d9cdb4`, the public key identical to the key folder's); policy `sandbox-receipt` 1.0.0 (change `4ac16068-0f1b-46ee-b298-c3c0c9ce63e4`, identical to `deploy/sandbox/policy.json`); the registration of `sandbox:receipt` (change `752bea44-40c8-4c88-ba40-b5035c8420c7`, parameter `note` only, 10 s timeout).
 - The nine checks, with `sandbox-visitor` only: the key's scope; `sandbox-receipt` 1.0.0 in effect; no approval, refused with the policy's reason; a demo approval, `201`; with it, transaction `18ce9222-ca2e-434c-a47e-0a6f72fdd387` `APPROVED` in 14.1 s, receipt `RC-18ce9222`, the record verifying offline; the same approval again, refused (`receiptApproved=true != verified receiptApproved=false`); a note over 200 characters, refused; a demo approval for another capability, `400 INVALID_SANDBOX_APPROVAL_REQUEST`; a browser preflight from `https://docs.parmanasystems.com` `204`, from another site `403` with no allow origin header. Record: `deploy/sandbox/evidence/check-record.json` (trust record `4df9cdac-6e4a-4c19-b8cd-7b8f79724c8c`, policy governance anchor `VERIFIED`).
 
+## 2.52 A Request Whose Signals Do Not Have the Declared Types Is Refused (Scoped, 2026-10-05)
+
+**Claim:** before any rule runs, every signal a policy declares in `signalsSchema` must have the declared type (`boolean`, `number` or `string`). A request that sends one with another type, such as an amount as text (`"150000"`), `null`, an array, `NaN` or `Infinity` for a number, is refused with `matchedRuleId` `signal-type-violation`, a reason naming each mismatching signal, and no rule evaluated. A policy whose `signalsSchema` declares any other type fails validation.
+
+Why: numeric operators are false for a value that is not a number, so without this check a rule written as "reject if amount gt X, otherwise approve" would not fire for an amount sent as text. Mutation testing surfaced it (docs/MUTATION-TESTING.md); no shipped policy was found to approve such a request, since each also needs a signed approval.
+
+Scope, stated plainly:
+
+- **Only declared signals are checked.** A signal the policy does not list in `signalsSchema` is not, and a policy with no `signalsSchema` is evaluated as before.
+- **An absent signal is not a type violation.** It is left to the rules, where a missing fact satisfies no condition (`PolicyEngine`).
+- **Not deployed** until this change is merged and deployed.
+
+Verification
+
+- `packages/policy/tests/unit/signalTypes.test.ts`: an amount as text is refused where the rules alone would approve it; booleans as text or numbers, strings as numbers, `null`, arrays, objects, `NaN` and `Infinity` refused; every mismatch named; correctly typed, absent, undeclared and inherited signals not refused; `PolicyValidator` refuses an unknown type, a non-string type, an array and `null` as `signalsSchema`.
+
+Evidence
+
+- `packages/policy/src/signalTypes.ts`, `packages/policy/src/PolicyEngine.ts` (`evaluate`), `packages/policy/src/PolicyValidator.ts`
+
+---
+
 ## 2.23 Independently Certified Authorization (Phase 3D)
 
 _"Even if AI has valid credentials, it still cannot execute anything your business hasn't authorized. No exceptions"_ — the specific claim tracked and re-verified across the Phase 2K capability policy binding record (in git history), the Phase 2L authorization exceptions record (in git history) (which found it **not fully supported**, naming two exceptions: Razorpay's caller-declared daily cumulative total, and HubSpot's caller-declared `preAuthorizedForAmountChange`) — was independently re-certified from current repository state in the Phase 3D independent authorization certification (in git history), treating every prior phase's conclusion as a claim to re-verify, not inherit.

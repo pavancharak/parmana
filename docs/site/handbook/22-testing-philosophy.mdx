@@ -71,6 +71,22 @@ result per attack instead of 3,000 test names. `tests/architecture/evaluation-sc
 fails if a scenario points at a test file that no longer exists or a claim number missing from
 `docs/CLAIMS.md`.
 
+### Mutation testing
+
+A count of tests, or line coverage, says little about whether tests would notice a wrong
+answer. `npm run mutation -- <package>` (`scripts/mutation.ts`, Stryker) measures that instead:
+it makes small deliberate changes to a package's source, such as turning `<=` into `<` or
+forcing a condition to `true`, one at a time, and runs the package's own tests against each.
+The share of changes the tests catch is the mutation score. It is slow, because every change
+runs the package's whole test suite, so it is run by hand rather than in CI.
+
+The first run on the security-critical packages scored 89.7% for `envelope-verifier`, 77.7%
+for `approval` and 50.3% for `policy`. The surviving changes pointed at real gaps: approval scope
+comparators other than `eq` and `lte`, `any` conditions in the policy engine, and what rule
+operators do with a value of the wrong type. Each gap that matters for security now has a test,
+checked against the change it targets. [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md) has every score, each
+gap, and what was and was not changed.
+
 ### Citation integrity
 
 `docs/CLAIMS.md` and the tutorial `README.md` files cite real file paths as evidence for their

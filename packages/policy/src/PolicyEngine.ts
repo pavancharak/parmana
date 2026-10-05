@@ -1,4 +1,5 @@
 import { OperatorEvaluator } from "./OperatorEvaluator.js";
+import { findSignalTypeViolations } from "./signalTypes.js";
 
 import type { Policy, PolicyCondition, PolicyRule } from "./types/Policy.js";
 
@@ -33,6 +34,33 @@ export class PolicyEngine {
    * Evaluate exactly one policy.
    */
   public evaluate(policy: Policy, signals: PolicySignals): PolicyDecision {
+    //
+    // Every signal must have the type the policy declares for it before
+    // any rule runs: a number sent as text would otherwise make every
+    // numeric condition false and let a "reject if" rule pass silently.
+    //
+    const typeViolations = findSignalTypeViolations(policy, signals);
+
+    if (typeViolations.length > 0) {
+      return {
+        policyId: policy.policyId,
+        policyVersion: policy.policyVersion,
+        outcome: PolicyOutcome.REJECT,
+        reason:
+          "Rejected: signal(s) do not have the type the policy declares (" +
+          typeViolations
+            .map(
+              (violation) =>
+                `${violation.signalKey} must be ${violation.expected}, got ${violation.actual}`,
+            )
+            .join(", ") +
+          ").",
+        matchedRuleId: "signal-type-violation",
+        evaluatedRules: 0,
+        matchedPath: [],
+      };
+    }
+
     const trace: string[] = [];
 
     const rule = this.findFirstMatch(policy.rules, signals, trace);

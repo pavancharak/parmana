@@ -120,4 +120,25 @@ describe("GitHubAppCredentialProvider", () => {
       await malformedServer.close();
     }
   });
+
+  it("refuses an exchange GitHub answers with an error status, naming only the status", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      new Response('{"message":"Bad credentials"}', { status: 401 }),
+    );
+    await expect(provider().resolve("github")).rejects.toThrow(
+      'GitHubAppCredentialProvider failed to mint an installation token for connector "github": HTTP 401.',
+    );
+  });
+
+  it.each([[{}], [{ token: 123 }], [{ token: "" }]])(
+    "refuses an answer whose token is not a non empty string: %j",
+    async (body) => {
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(body), { status: 201 }),
+      );
+      await expect(provider().resolve("github")).rejects.toThrow(
+        'GitHubAppCredentialProvider received a malformed access-token response for connector "github": missing "token".',
+      );
+    },
+  );
 });

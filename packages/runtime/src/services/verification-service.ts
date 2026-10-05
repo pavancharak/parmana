@@ -134,8 +134,10 @@ export class VerificationService {
     // Chain integrity: every chain-protected Execution's own
     // chainHash/chainSignature must verify, and previousChainHash
     // must correctly reference its predecessor's chainHash. An
-    // Execution with no chain fields at all is unprotected legacy
-    // data and does not fail this check.
+    // Execution with no chain fields at all, before the first chained
+    // one, is unprotected legacy data and does not fail this check;
+    // one carrying only some chain fields, or following a chained
+    // one, does (docs/VERIFICATION-GAPS.md G-89).
     //
     const chainResult = await this.chainCrypto.verifyChain(
       trustRecord.executions,

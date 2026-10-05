@@ -26,8 +26,9 @@ signal-state verification) exists to protect the inputs of.
 ### The Policy document
 
 A `Policy` (`packages/policy/src/types/Policy.ts:198-300`) has an identity (`policyId`,
-`policyVersion`, `schemaVersion`), an optional `signalsSchema` describing expected signal
-types, optional `boundSignals` and `unboundSignalReasons` (covered fully in Chapter 5), and an
+`policyVersion`, `schemaVersion`), an optional `signalsSchema` declaring each signal's type
+(`boolean`, `number` or `string`; a request whose signal has another type is refused before any
+rule runs, as `signal-type-violation`), optional `boundSignals` and `unboundSignalReasons` (covered fully in Chapter 5), and an
 ordered array of `rules`.
 
 Each `PolicyRule` (`Policy.ts:178-193`) has an `id`, a `condition`, and an `outcome`

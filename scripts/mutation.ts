@@ -31,6 +31,20 @@ if (packages.length === 0) {
   process.exit(2);
 }
 
+//
+// Node 24 is what this repository and CI run. On an older Node the
+// ML-DSA-65 and hybrid signature tests skip themselves, so every mutant
+// in those paths "survives" and the score is wrong, not just low.
+//
+const nodeMajor = Number(process.versions.node.split(".")[0]);
+if (nodeMajor < 24) {
+  console.error(
+    `npm run mutation needs Node 24 or later (this is ${process.versions.node}): ` +
+      "on an older Node the ML-DSA-65 tests are skipped and the scores are wrong.",
+  );
+  process.exit(2);
+}
+
 const summary: string[] = [];
 let failed = false;
 for (const pkg of packages) {

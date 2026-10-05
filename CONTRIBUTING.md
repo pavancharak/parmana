@@ -80,13 +80,9 @@ The command prints a score per package and writes `reports/mutation/<package>.ht
 (not committed). Open the HTML report to see each change the tests missed. It is slow, because
 every change runs the package's whole test suite, so it is not part of `npm test` or CI.
 
-| Package             | Score | Caught | Missed | Run on     |
-| ------------------- | ----- | ------ | ------ | ---------- |
-| `envelope-verifier` | 89.7% | 104    | 12     | 2026-10-05 |
-
-Scores for the other security-critical packages (`approval`, `policy`, `execution-gateway`,
-`crypto`) will be added here when their first run completes. `stryker.config.mjs` explains why
-the command runner is used rather than Stryker's Vitest plugin.
+[docs/MUTATION-TESTING.md](docs/MUTATION-TESTING.md) has the scores for the five
+security-critical packages, what the surviving changes showed, and what was done about them.
+`stryker.config.mjs` explains why the command runner is used rather than Stryker's Vitest plugin.
 
 ## Principles a change must keep
 
