@@ -21,21 +21,50 @@ changes showed, and what was done about them.
 
 ## Scores
 
-| Package             | First run | Caught       | After the fixes |
-| ------------------- | --------- | ------------ | --------------- |
-| `envelope-verifier` | 89.7%     | 104 of 116   | to be re-run    |
-| `approval`          | 77.7%     | 380 of 489   | to be re-run    |
-| `policy`            | 50.3%     | 659 of 1309  | to be re-run    |
-| `execution-gateway` | 67.6%     | 1087 of 1607 | to be re-run    |
-| `crypto`            | 65.4%\*   | 662 of 1012  | to be re-run    |
+| Package             | First run | Caught       | Re-run on Node 24 | Caught       |
+| ------------------- | --------- | ------------ | ----------------- | ------------ |
+| `envelope-verifier` | 89.7%     | 104 of 116   | 94.0%             | 109 of 116   |
+| `approval`          | 77.7%     | 380 of 489   | 93.9%             | 459 of 489   |
+| `policy`            | 50.3%     | 659 of 1309  | 96.0%             | 1321 of 1376 |
+| `execution-gateway` | 67.6%     | 1087 of 1607 | 83.6%             | 1343 of 1607 |
+| `crypto`            | 65.4%\*   | 662 of 1012  | 85.0%             | 886 of 1042  |
 
-First run: 2026-10-05.
+First run and re-run: 2026-10-05. The number of changes differs where the fixes added code
+(the signal type check, the chain check). A few tests were added after each re-run, for the
+survivors it showed (listed below), so the current figures are slightly higher.
 
 \* Measured on Node 22. The repository and CI run Node 24; on Node 22 the ML-DSA-65 and hybrid
 signature tests skip themselves, so every change in those paths counted as missed. `npm run
 mutation` now refuses to start below Node 24, and the re-run uses Node 24 for every package.
 
-## What the survivors showed, and what changed
+## What is left
+
+The remaining survivors are, in nearly every case, one of:
+
+- **Equivalent:** a guard that a later check repeats (the gateway's `passed &&` before each
+  check), a check that cannot be reached because an earlier one already refused (the key file
+  containment check in `FileKeyProvider`), or a fallback that gives the same answer (the
+  envelope verifier's checks when no key resolves).
+- **Advisory:** `PolicyValidator.findRuleConflicts`, which only logs possible rule overlaps.
+- **Text:** wording and plural forms in error messages, request formatting in the built in
+  connectors.
+
+Survivors in a check that refuses an action were each given a test, checked by putting the
+change back by hand.
+
+## Re-run on Node 24: what the survivors showed
+
+| Package             | Gap                                                                                                                                                                                         | Done                                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `crypto`            | The new partial chain refusal (G-89) could be removed: the rule refusing an unchained Execution after a chained one caught every case tested                                                | A partially chained first Execution tested, with its exact reason                                                                                     |
+| `crypto`            | KmsSigner: an empty Sign or GetPublicKey answer, alias names with characters a key id may not have, the exact five minute cache                                                             | Tested                                                                                                                                                |
+| `crypto`            | Hybrid verification with three entries or two of one algorithm, an empty `signatures` array, no `schemaVersion`; hybrid receipts; listing only public keys; the ML-DSA key's algorithm name | Tested                                                                                                                                                |
+| `approval`          | The approval expiry comparison could become inclusive                                                                                                                                       | Refused at the exact instant it expires, accepted a millisecond before                                                                                |
+| `policy`            | The ReDoS check's patterns for a quantifier with no comma (`(a+){2}`) and a ranged inner one (`(a{2,3})+`); the type labels for `null` and arrays                                           | Tested                                                                                                                                                |
+| `execution-gateway` | The per authorization gateway token (`mintGatewayAuthentication`) could be ignored in favour of the static one; `HttpConnector` had no test                                                 | Tested: the minted token for this authorization is presented, the static one otherwise; `HttpConnector`'s request and its refusal of a non 2xx answer |
+| `envelope-verifier` | 7 survivors, all equivalent                                                                                                                                                                 | Left                                                                                                                                                  |
+
+## First run: what the survivors showed, and what changed
 
 ### envelope-verifier
 
