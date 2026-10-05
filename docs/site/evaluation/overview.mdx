@@ -80,21 +80,24 @@ supports and the test files that check it.
 | ID    | Attack                                                   | Claims           |
 | ----- | -------------------------------------------------------- | ---------------- |
 | EV-01 | Replay a used authorization                              | 2.8, 2.10        |
-| EV-02 | Forge or alter an authorization                          | 2.8, 2.10        |
+| EV-02 | Forge or alter an authorization                          | 2.8, 2.10, 2.15  |
 | EV-03 | Use an expired authorization or a revoked key            | 2.10, 2.28       |
 | EV-04 | Act without a person's signed approval                   | 2.42, 2.44, 2.47 |
 | EV-05 | Forge or misuse an approval                              | 2.42             |
-| EV-06 | Declare one action, execute another                      | 2.11, 2.44       |
+| EV-06 | Declare one action, execute another                      | 2.44             |
 | EV-07 | Have an action judged by a weaker policy                 | 2.22, 2.36       |
 | EV-08 | Execute under an outdated policy version                 | 2.27             |
 | EV-09 | Rely on facts that changed after approval                | 2.29             |
-| EV-10 | Obtain a connector's credentials                         | 3.10, 3.17       |
+| EV-10 | Obtain a connector's credentials                         | 2.23, 3.10, 3.17 |
 | EV-11 | Reach a connector without going through the gateway      | 3.1              |
 | EV-12 | Act without credentials or outside a caller's scope      | 2.16, 3.16       |
 | EV-13 | Change a policy without a second person                  | 2.26, 2.34       |
 | EV-14 | Alter a signed record after the fact                     | 2.5, 2.6, 3.11   |
 | EV-15 | Run the same transaction twice by racing                 | 2.20             |
 | EV-16 | Read or write a policy file outside the policy directory | none             |
+
+To run only some scenarios, name them: `npm run evaluate -- EV-04 EV-05`. The
+[Claims and evidence](/evaluation/claims-and-evidence) page gives the command for each claim.
 
 The output ends with `16 of 16 attacks blocked.` A scenario is `BLOCKED` when every test in its
 files passes, `FAILED` when any fails, and `NOT RUN` when a file is missing or ran nothing. The
