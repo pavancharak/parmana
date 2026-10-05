@@ -42,7 +42,11 @@ function read(path: string): string {
 }
 
 function cell(text: string): string {
-  return text.replace(/\s+/g, " ").replace(/\|/g, "\\|").trim();
+  return text
+    .replace(/\s+/g, " ")
+    .replace(/\\/g, "\\\\")
+    .replace(/\|/g, "\\|")
+    .trim();
 }
 
 function frontMatter(title: string, description: string): string {

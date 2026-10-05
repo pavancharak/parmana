@@ -5,7 +5,11 @@ import type { NextFunction, Request, Response } from "express";
 
 import { handbookDownloadLeadRepository } from "../repositories.js";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Linear time: each domain label excludes ".", so the engine never has
+// two ways to split the same input (the old pattern did, which made it
+// quadratic on long input). Same shape: local@label(.label)+.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
+const EMAIL_MAX_LENGTH = 254;
 
 /**
  * Served by this API itself (see routes/handbook-pdf.ts), not the
@@ -20,7 +24,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PDF_URL = "https://parmana-api-real.vercel.app/parmana-handbook.pdf";
 
 async function captureLead(email: unknown): Promise<string | null> {
-  if (typeof email !== "string" || !EMAIL_PATTERN.test(email.trim())) {
+  if (
+    typeof email !== "string" ||
+    email.length > EMAIL_MAX_LENGTH ||
+    !EMAIL_PATTERN.test(email.trim())
+  ) {
     return null;
   }
 

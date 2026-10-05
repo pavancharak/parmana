@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   parseApiKeys,
   parseCryptoMode,
+  parseSecretsProvider,
   parseSignatureAlgorithm,
   parseStorageProvider,
 } from "../../src/config/ConfigValidation.js";
@@ -67,6 +68,15 @@ describe("parseStorageProvider", () => {
     expect(() => parseStorageProvider("sqlite")).toThrow(
       "Invalid PARMANA_STORAGE: sqlite",
     );
+  });
+
+  it("does not echo an invalid PARMANA_SECRETS_PROVIDER value, which may be a real secret", () => {
+    const pasted = "sk_live_not_a_provider_name";
+
+    expect(() => parseSecretsProvider(pasted)).toThrow(
+      /^Invalid PARMANA_SECRETS_PROVIDER: expected one of /,
+    );
+    expect(() => parseSecretsProvider(pasted)).not.toThrow(pasted);
   });
 
   it("fails at startup naming the replacement when the retired DATABASE_PROVIDER is present", () => {

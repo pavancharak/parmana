@@ -85,7 +85,10 @@ function readCurl(source: string): {
 
 function routePattern(route: string): RegExp {
   return new RegExp(
-    `^${route.replace(/[.]/g, "\\.").replace(/\{[^}]+\}/g, "[^/]+")}$`,
+    `^${route
+      .split(/\{[^}]+\}/)
+      .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("[^/]+")}$`,
   );
 }
 

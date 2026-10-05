@@ -80,3 +80,43 @@ describe("POST /handbook/download-leads", () => {
     expect(response.body.error).toContain("email");
   });
 });
+
+describe("handbook email check", () => {
+  // CodeQL js/polynomial-redos: the old pattern took quadratic time on
+  // long input. These pin the accepted shapes and the length cap.
+  for (const email of ["reader@example.com", "a.b+tag@mail.example.co.uk"]) {
+    it(`accepts ${email}`, async () => {
+      const response = await request(await buildApp())
+        .post("/handbook/download-leads")
+        .send({ email });
+
+      expect(response.status).toBe(201);
+    });
+  }
+
+  for (const email of [
+    "reader@example",
+    "reader@example.",
+    "reader@.example.com",
+    "reader@example..com",
+    `${"a".repeat(250)}@example.com`,
+  ]) {
+    it(`rejects ${JSON.stringify(email.length > 40 ? `${email.slice(0, 12)}... (${email.length} chars)` : email)}`, async () => {
+      const response = await request(await buildApp())
+        .post("/handbook/download-leads")
+        .send({ email });
+
+      expect(response.status).toBe(400);
+    });
+  }
+
+  it("answers quickly on a long hostile input", async () => {
+    const started = Date.now();
+    const response = await request(await buildApp())
+      .post("/handbook/download-leads")
+      .send({ email: `a@${"a.".repeat(5000)}` });
+
+    expect(response.status).toBe(400);
+    expect(Date.now() - started).toBeLessThan(2000);
+  });
+});
