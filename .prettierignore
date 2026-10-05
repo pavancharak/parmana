@@ -11,3 +11,8 @@ postman/parmana.postman_collection.json
 # pytest cache artifacts (already gitignored; Prettier doesn't read
 # .gitignore on its own, so it needs its own entry here too).
 **/.pytest_cache/
+
+# npm run mutation: Stryker's copy of the repository, and its reports
+# (both gitignored).
+.stryker-tmp/
+reports/

@@ -552,4 +552,116 @@ describe("ApprovalSignalVerifier", () => {
       ),
     ).toEqual([]);
   });
+
+  // Found by mutation testing: how a path is resolved, and which values
+  // count as a number or a resource id, could change without a test
+  // failing.
+  describe("resolving the resource and the amount from the Intent", () => {
+    const missingResource = (path: string) => ({
+      signalKey: "managerApproved",
+      declaredValue: true,
+      actualValue: `<missing: ${path} is required to verify an approval>`,
+    });
+    const missingNumber = (path: string) => ({
+      signalKey: "managerApproved",
+      declaredValue: true,
+      actualValue: `<missing: ${path} must be a number to verify an approval>`,
+    });
+
+    const approvalFor = (resourceId: string, scope?: ApprovalScope) =>
+      sign(
+        "paytm:refund",
+        resourceId,
+        scope ?? { field: "value", comparator: "lte", value: 75_000 },
+      );
+
+    it.each([
+      ["a root other than parameters", "metadata.orderId"],
+      ["parameters with no field", "parameters"],
+    ])("refuses a resource path with %s", async (_label, resourcePath) => {
+      const { verifier } = setup();
+      expect(
+        await verifier.findViolations(
+          refundRequest({
+            policy: policy({
+              managerApproved: {
+                resourceId: resourcePath,
+                value: "parameters.amount",
+              },
+            }),
+            intentParameters: {
+              orderId: "order-1",
+              amount: 75_000,
+              metadata: { orderId: "order-1" },
+            },
+          }),
+          {
+            managerApproved: true,
+            approvalArtifact: await approvalFor("order-1"),
+          },
+        ),
+      ).toEqual([missingResource(resourcePath)]);
+    });
+
+    it.each([
+      ["null", null],
+      ["a string", "order-1"],
+    ])(
+      "refuses when the path passes through %s instead of an object",
+      async (_label, order) => {
+        const { verifier } = setup();
+        expect(
+          await verifier.findViolations(
+            refundRequest({
+              policy: policy({
+                managerApproved: {
+                  resourceId: "parameters.order.id",
+                  value: "parameters.amount",
+                },
+              }),
+              intentParameters: { order, amount: 75_000 },
+            }),
+            {
+              managerApproved: true,
+              approvalArtifact: await approvalFor("order-1"),
+            },
+          ),
+        ).toEqual([missingResource("parameters.order.id")]);
+      },
+    );
+
+    it("refuses an amount that is not a finite number, even if the scope would cover it", async () => {
+      const { verifier } = setup();
+      expect(
+        await verifier.findViolations(
+          refundRequest({
+            intentParameters: { orderId: "order-1", amount: Infinity },
+          }),
+          {
+            managerApproved: true,
+            approvalArtifact: await approvalFor("order-1", {
+              field: "value",
+              comparator: "gt",
+              value: 100,
+            }),
+          },
+        ),
+      ).toEqual([missingNumber("parameters.amount")]);
+    });
+
+    it("refuses a resource id that is not a finite number", async () => {
+      const { verifier } = setup();
+      expect(
+        await verifier.findViolations(
+          refundRequest({
+            intentParameters: { orderId: Infinity, amount: 75_000 },
+          }),
+          {
+            managerApproved: true,
+            approvalArtifact: await approvalFor("Infinity"),
+          },
+        ),
+      ).toEqual([missingResource("parameters.orderId")]);
+    });
+  });
 });

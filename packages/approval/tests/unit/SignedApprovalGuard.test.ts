@@ -130,4 +130,49 @@ describe("isSignedApprovalShape", () => {
     expect(() => isSignedApprovalShape(hostile)).not.toThrow();
     expect(isSignedApprovalShape(hostile)).toBe(false);
   });
+
+  // Found by mutation testing: each field's check could be dropped without
+  // a test failing, because only some fields were tried, and null was
+  // never tried where an object is required. Every field ApprovalVerifier
+  // reads is set, one at a time, to a value of the wrong kind.
+  it.each([
+    ["payload", null],
+    ["signature", null],
+    ["payload.issuer", null],
+    ["payload.scope", null],
+    ["payload.scope", "lte 50000"],
+    ["payload.scope.field", 7],
+    ["payload.scope.comparator", 7],
+    ["payload.scope.value", null],
+    ["payload.scope.value", true],
+    ["payload.scope.value", { min: 1 }],
+    ["payload.scope.value", { max: 2 }],
+    ["payload.approvalId", 1],
+    ["payload.issuedAt", 1],
+    ["payload.expiresAt", 1],
+    ["payload.issuer.approverId", 1],
+    ["signature.algorithm", 1],
+    ["signature.keyId", 1],
+  ])("rejects %s set to %j", (path, wrongValue) => {
+    const artifact = validArtifact() as Record<string, unknown>;
+    const keys = path.split(".");
+    const parent = keys
+      .slice(0, -1)
+      .reduce<Record<string, unknown>>(
+        (object, key) => object[key] as Record<string, unknown>,
+        artifact,
+      );
+    parent[keys[keys.length - 1]!] = wrongValue;
+    expect(isSignedApprovalShape(artifact)).toBe(false);
+  });
+
+  it("accepts a scope whose bound is a string", () => {
+    const artifact = validArtifact() as { payload: { scope: unknown } };
+    artifact.payload.scope = {
+      field: "orderId",
+      comparator: "eq",
+      value: "order-1",
+    };
+    expect(isSignedApprovalShape(artifact)).toBe(true);
+  });
 });

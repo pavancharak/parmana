@@ -342,6 +342,64 @@ describe("EnvelopeVerifier", () => {
     // The live nonce is still recorded and still rejects reuse.
     expect(await nonceStore.checkAndRecord("live-nonce", future)).toBe(false);
   });
+
+  it("accepts a TTL exactly at maxTtlSeconds and rejects one second more", async () => {
+    // Found by mutation testing: `<=` could be turned into `<` without a
+    // test failing. The boundary is inclusive.
+    const { privateKey, publicKey } = generateKeyPair();
+    const verifier = new EnvelopeVerifier({
+      publicKey,
+      nonceStore: new MemoryNonceStore(),
+      maxTtlSeconds: 300,
+    });
+
+    const atLimit = await verifier.verifyChecks(
+      await signAuthorization(privateKey, 300),
+    );
+    expect(atLimit.checks.ttlWithinPolicy).toBe(true);
+    expect(atLimit.passed).toBe(true);
+
+    const overLimit = await verifier.verifyChecks(
+      await signAuthorization(privateKey, 301),
+    );
+    expect(overLimit.checks.ttlWithinPolicy).toBe(false);
+    expect(overLimit.passed).toBe(false);
+  });
+
+  it("MemoryNonceStore purges an entry expiring at exactly now, and keeps one expiring a millisecond later", async () => {
+    // Found by mutation testing: the purge boundary (`expiry <= now`) was
+    // untested.
+    const now = Date.UTC(2026, 9, 5, 12, 0, 0);
+    vi.useFakeTimers({ now });
+    try {
+      const nonceStore = new MemoryNonceStore();
+      const exactlyNow = new Date(now).toISOString();
+      for (let i = 0; i < 9_999; i++) {
+        await nonceStore.checkAndRecord(`at-now-${i}`, exactlyNow);
+      }
+      await nonceStore.checkAndRecord(
+        "one-ms-later",
+        new Date(now + 1).toISOString(),
+      );
+      expect(nonceStore.size).toBe(10_000);
+
+      // Crossing the threshold purges: every entry expiring at exactly
+      // now goes, the one expiring a millisecond later stays.
+      await nonceStore.checkAndRecord(
+        "live-nonce",
+        new Date(now + 3_600_000).toISOString(),
+      );
+      expect(nonceStore.size).toBe(2);
+      expect(
+        await nonceStore.checkAndRecord(
+          "one-ms-later",
+          new Date(now + 1).toISOString(),
+        ),
+      ).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 describe("EnvelopeVerifier keyId-aware verification (Gap 2A)", () => {
@@ -438,6 +496,36 @@ describe("EnvelopeVerifier keyId-aware verification (Gap 2A)", () => {
     expect(result.checks.keyValid).toBe(false);
   });
 
+  it("rejects a key expiring at exactly now and accepts one expiring a millisecond later", async () => {
+    // Found by mutation testing: neither a key with a future expiry nor
+    // the exact expiry instant was tested. A key is expired from its
+    // expiresAt instant on, the same convention as authorizations.
+    const { privateKey, publicKey } = generateKeyPair();
+    const signed = await signAuthorization(privateKey, 60, "dated-key");
+    const now = new Date(Date.parse(signed.payload.authorizedAt) + 1_000);
+    const keyProvider = new MapKeyProvider(new Map([["dated-key", publicKey]]));
+
+    const verifierWithKeyExpiry = (expiresAt: Date) =>
+      new EnvelopeVerifier({
+        publicKey: generateKeyPair().publicKey,
+        keyProvider,
+        keyExpiryStore: new MapKeyExpiryStore(
+          new Map([["dated-key", { expiresAt }]]),
+        ),
+        nonceStore: new MemoryNonceStore(),
+      });
+
+    const atExpiry = await verifierWithKeyExpiry(now).verifyChecks(signed, now);
+    expect(atExpiry.checks.keyValid).toBe(false);
+    expect(atExpiry.passed).toBe(false);
+
+    const beforeExpiry = await verifierWithKeyExpiry(
+      new Date(now.getTime() + 1),
+    ).verifyChecks(signed, now);
+    expect(beforeExpiry.checks.keyValid).toBe(true);
+    expect(beforeExpiry.passed).toBe(true);
+  });
+
   it("a keyId with no keyExpiryStore entry is treated as always valid", async () => {
     const { privateKey, publicKey } = generateKeyPair();
     const signed = await signAuthorization(privateKey, 60, "unlisted-key");
@@ -517,6 +605,26 @@ describe("requireParmanaAuthorization", () => {
 
     expect(res.statusCode).toBe(401);
     expect(res.body).toEqual({ error: "authorization required" });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("returns 401 when the request has no body at all", async () => {
+    // Found by mutation testing: only an empty body was tested, not a
+    // missing one (no body parser, or a request without a body).
+    const { publicKey } = generateKeyPair();
+    const middleware = requireParmanaAuthorization(
+      new EnvelopeVerifier({ publicKey, nonceStore: new MemoryNonceStore() }),
+    );
+    const res = createMockResponse();
+    const next = vi.fn();
+
+    await middleware(
+      {} as Parameters<typeof middleware>[0],
+      res as unknown as Parameters<typeof middleware>[1],
+      next,
+    );
+
+    expect(res.statusCode).toBe(401);
     expect(next).not.toHaveBeenCalled();
   });
 
