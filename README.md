@@ -1,8 +1,8 @@
 # Parmana
 
-**The authorization layer for AI agents: every action is checked against
-policy and a signed human approval before it runs, and every action that
-runs leaves a signed record anyone can verify.**
+**Let AI agents act on real systems: every action needs policy approval and a
+person's signed approval before it runs, and leaves a signed record anyone can
+verify afterwards.**
 
 [![CI](https://github.com/pavancharak/parmana/actions/workflows/ci.yml/badge.svg)](https://github.com/pavancharak/parmana/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-proprietary-lightgrey)](./LICENSE)
@@ -16,18 +16,72 @@ runs leaves a signed record anyone can verify.**
 > agreement with Parmana Systems. See [LICENSE](./LICENSE). The client SDKs
 > and connector SDKs are the exception: they are Apache 2.0 (see [License](#license)).
 
-As organizations connect AI agents to real systems, the open question is
-no longer whether the agent can act. It is what the agent is allowed to
-do, and whether what it did can be proven afterward rather than assumed.
-Parmana sits between an AI agent and the systems it calls: every
-requested action is checked against an explicit policy before it runs, so
-an agent can only do what it was approved to do. No agent action, reads
-included, is authorized without a signed approval from a trusted person
-([CLAIMS.md 2.47](docs/CLAIMS.md)). Every approved action
-also produces a signed, tamper-evident record, so what happened can be
-proven afterward, not just trusted. Parmana does not decide what the
-agent should do. It decides, and proves, whether the agent was allowed to
-do it.
+## The problem
+
+Companies want AI agents to issue refunds, pay vendors, update CRM deals, merge
+pull requests and post to team channels. Two questions stop that from reaching
+production:
+
+- **What is this agent allowed to do?** An instruction in a prompt ("only refund
+  up to 500") is not a control. The agent, or whoever injects text into it, can
+  ignore it.
+- **Can we prove what it did?** Logs written by the same system that acted are a
+  claim, not evidence.
+
+## What Parmana does
+
+Parmana sits between an AI agent and the systems it calls.
+
+- **Before an action:** the request is checked against an explicit, versioned
+  policy, and it needs a signed approval from a person you trust. No approval, no
+  action, reads included ([CLAIMS.md 2.47](docs/CLAIMS.md)).
+- **When it runs:** the agent never holds the real credentials. Parmana's gateway
+  releases one approved action, once, through a connector.
+- **After it runs:** a signed record of what was authorized and what happened,
+  which anyone can verify offline without trusting Parmana's servers or database.
+
+Parmana does not decide what the agent should do. It decides, and proves, whether
+the agent was allowed to do it.
+
+## Who it is for
+
+- **Teams putting agents near money:** refunds, payouts, vendor payments.
+- **Teams letting agents change systems of record:** CRM, code repositories,
+  internal tools.
+- **Security, risk and compliance teams** who have to sign off on what an agent
+  may do, and **auditors** who need evidence rather than assurances.
+
+## Why it holds up to review
+
+- **Claims you can check.** [docs/CLAIMS.md](docs/CLAIMS.md) states each claim at
+  the scope its evidence supports, with the code and tests behind it, and lists
+  what is not yet true.
+- **Fails closed.** A misconfigured server refuses to start; a request without a
+  valid approval is refused and the refusal is recorded.
+- **Policy changes need two people.** A proposed policy change takes effect only
+  with a second person's signed approval.
+- **Works with what you run.** Built in connectors for HubSpot, GitHub, Slack and
+  Paytm, and a [generic connector](https://docs.parmanasystems.com/guides/connect-any-external-system)
+  for your own systems.
+- **Standard cryptography.** Ed25519 signatures by default, post quantum ML-DSA-65
+  available.
+- **Supply chain hygiene in the open.**
+  [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/pavancharak/parmana),
+  CodeQL on every change, and SDK releases with signed build provenance.
+
+**Try it without an account:** the [docs playground](https://docs.parmanasystems.com/playground)
+sends real requests to a public sandbox, and the SDKs are open source (Apache 2.0):
+`npm install @parmana/sdk` or `pip install parmana`.
+
+## Work with us
+
+We are looking for a small number of **design partners**: teams with a real agent
+use case that touches money or a system of record. You get direct help from the
+founder to put Parmana in front of that workflow, policies written with you, and a
+say in what gets built next. We ask for a real integration under real constraints
+and honest feedback.
+
+Email **founder@parmanasystems.com** with a line about your use case.
 
 ## What the evidence shows
 
@@ -182,13 +236,12 @@ Assessed at TRL 6 on the evidence in [docs/CLAIMS.md](docs/CLAIMS.md).
 Explicitly not claimed: sustained volume, load-bearing traffic, high
 availability, or multi-tenant production operation. The claims file also
 tracks what has no implementation yet, every connector beyond HubSpot,
-GitHub, and Paytm among them. Adding a new connector is a bootstrap source change
+GitHub, Slack and Paytm among them. Adding a new connector is a bootstrap source change
 today, not a runtime configuration option. See
 [docs/connectors/BUILDING_A_CONNECTOR.md](docs/connectors/BUILDING_A_CONNECTOR.md).
 
-We're looking for a small number of design partners to run Parmana
-against a real integration under real constraints. If that's you, or
-you're evaluating Parmana for a role, reach out: **founder@parmanasystems.com**.
+Interested in running Parmana against a real integration? See
+[Work with us](#work-with-us), or write to **founder@parmanasystems.com**.
 
 ## Support
 

@@ -78,8 +78,9 @@ jobs:
       id-token: write # sign the provenance with GitHub's OIDC identity
       contents: write # upload the provenance to the release
     # Referenced by tag, not commit: the generator verifies its own ref and
-    # only accepts a release tag. Scorecard exempts it from pinning for that
-    # reason.
+    # only accepts a release tag, so pinning it to a commit breaks it.
+    # OpenSSF Scorecard's Pinned-Dependencies check still flags this line;
+    # that alert is dismissed as "won't fix" for this reason.
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0 # zizmor: ignore[unpinned-uses]
     with:
       base64-subjects: ${{ needs.build.outputs.hashes }}
