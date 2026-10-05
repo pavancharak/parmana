@@ -170,6 +170,9 @@ Also enabled on the repository:
 
 - [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/pavancharak/parmana): a public
   supply chain security score, recomputed weekly and on every push to `main`.
+- [OpenSSF Best Practices](https://www.bestpractices.dev/projects/15230): the project's answers to
+  the OpenSSF Best Practices criteria. The badge is "in progress", not "passing": the passing level
+  requires the whole project to be open source, and only the SDKs are.
 - Dependabot alerts and grouped weekly update pull requests for npm, Python, the Dockerfile and
   GitHub Actions.
 - GitHub secret scanning with push protection, which blocks a commit that contains a known
@@ -178,6 +181,26 @@ Also enabled on the repository:
   [SECURITY.md](https://github.com/pavancharak/parmana/blob/main/SECURITY.md).
 - GitHub Actions and Docker base images pinned to exact commits and digests, and workflow tokens
   limited to read access.
+- Signed build provenance for every SDK release (below).
+
+### Verifying an SDK package from a GitHub release
+
+Each [GitHub release](https://github.com/pavancharak/parmana/releases) of the SDKs carries the
+four packages built by GitHub Actions from the release's tag, and a `multiple.intoto.jsonl` file:
+[SLSA](https://slsa.dev) build provenance, signed with GitHub's identity for the release
+workflow, recording the commit, the workflow and each file's SHA-256. To check a downloaded
+package with [slsa-verifier](https://github.com/slsa-framework/slsa-verifier):
+
+```bash
+slsa-verifier verify-artifact parmana-sdk-1.5.0.tgz \
+  --provenance-path multiple.intoto.jsonl \
+  --source-uri github.com/pavancharak/parmana \
+  --source-tag sdk-v1.5.0
+```
+
+The provenance covers the files attached to the release. The npm and PyPI packages are published
+separately, from the same commit; compare a registry download's SHA-256 with the release file's
+to tie the two together.
 
 These are hygiene checks on the code and its supply chain. They do not replace a review of the
 enforcement design; see the [Audit guide](/evaluation/audit-guide) for that.

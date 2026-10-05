@@ -42,4 +42,8 @@ If your account uses a one time password, add `--otp <code>`.
 
 1. Confirm the version at `https://www.npmjs.com/package/@parmana/sdk` and that `npm view @parmana/sdk version` shows it.
 2. Update the published version statements in `docs/site/sdks/typescript.mdx` and the "built but not yet published" wording in `docs/site/changelog.mdx`.
-3. Tag the release in git.
+3. Tag the release in git (`sdk-v<version>`), push the tag, and publish a GitHub release for it
+   (Releases, then Draft a new release, choose the tag, Publish). `.github/workflows/release.yml`
+   then builds the four SDK packages from that tag, attaches them to the release, and attaches
+   signed SLSA provenance (`multiple.intoto.jsonl`). Check the workflow run is green and the
+   release has seven files. See "Verifying an SDK package" in `docs/site/security/overview.mdx`.

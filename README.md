@@ -8,6 +8,7 @@ runs leaves a signed record anyone can verify.**
 [![License](https://img.shields.io/badge/license-proprietary-lightgrey)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D24.6-brightgreen)](package.json)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/pavancharak/parmana/badge)](https://scorecard.dev/viewer/?uri=github.com/pavancharak/parmana)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15230/badge)](https://www.bestpractices.dev/projects/15230)
 
 > **Proprietary software evaluation only.** This repository is source-available
 > for evaluation purposes. No license is granted to use, copy, modify, or
