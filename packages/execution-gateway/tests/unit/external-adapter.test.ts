@@ -515,3 +515,184 @@ describe("createPinnedHttpsTransport", () => {
     ).rejects.toThrow(/No checked address/);
   });
 });
+
+/**
+ * Mutation testing found these unpinned: the single address branch of
+ * the pinned lookup (Node asks for all addresses by default, so the
+ * other branch never ran), the exact size limits, and which refusal a
+ * malformed answer gets.
+ */
+describe("GatewayExternalAdapter: exact limits and refusals", () => {
+  type Captured = { lookup?: (...args: unknown[]) => void };
+
+  function capturingRequest(captured: Captured) {
+    return ((options: Captured) => {
+      captured.lookup = options.lookup;
+      const fake = {
+        on: () => fake,
+        end: () => undefined,
+        destroy: () => undefined,
+      };
+      return fake;
+    }) as unknown as typeof http.request;
+  }
+
+  it("the pinned lookup answers with the checked address, whether one or all are asked for", () => {
+    const captured: Captured = {};
+    void createPinnedHttpsTransport({ request: capturingRequest(captured) })({
+      url: new URL("https://erp.example.com/release"),
+      addresses: [
+        { address: "203.0.114.10", family: 4 },
+        { address: "203.0.114.11", family: 4 },
+      ],
+      body: "{}",
+      timeoutMs: 50,
+    }).catch(() => undefined);
+
+    const one: unknown[] = [];
+    captured.lookup!("evil.example.com", {}, (...args: unknown[]) =>
+      one.push(...args),
+    );
+    expect(one).toEqual([null, "203.0.114.10", 4]);
+
+    const all: unknown[] = [];
+    captured.lookup!("evil.example.com", { all: true }, (...args: unknown[]) =>
+      all.push(...args),
+    );
+    expect(all).toEqual([null, [{ address: "203.0.114.10", family: 4 }]]);
+  });
+
+  it("connects to port 443 when the URL names none", () => {
+    let port: unknown;
+    const request = ((options: { port: unknown }) => {
+      port = options.port;
+      const fake = {
+        on: () => fake,
+        end: () => undefined,
+        destroy: () => undefined,
+      };
+      return fake;
+    }) as unknown as typeof http.request;
+
+    void createPinnedHttpsTransport({ request })({
+      url: new URL("https://erp.example.com/release"),
+      addresses: [{ address: "203.0.114.10", family: 4 }],
+      body: "{}",
+      timeoutMs: 50,
+    }).catch(() => undefined);
+
+    expect(port).toBe(443);
+  });
+
+  describe("an answer of exactly the limit", () => {
+    let server: http.Server | undefined;
+
+    afterEach(async () => {
+      await new Promise<void>((resolve) =>
+        server === undefined ? resolve() : server.close(() => resolve()),
+      );
+      server = undefined;
+    });
+
+    it("is read in full", async () => {
+      server = http.createServer((_incoming, outgoing) => {
+        outgoing.writeHead(200);
+        outgoing.end("x".repeat(1024));
+      });
+      await new Promise<void>((resolve) =>
+        server!.listen(0, "127.0.0.1", () => resolve()),
+      );
+      const port = (server.address() as AddressInfo).port;
+
+      const response = await createPinnedHttpsTransport({
+        request: http.request,
+        maxResponseBytes: 1024,
+      })({
+        url: new URL(`https://erp.parmana-test.invalid:${port}/release`),
+        addresses: [{ address: "127.0.0.1", family: 4 }],
+        body: "{}",
+        timeoutMs: 2000,
+      });
+
+      expect(response.body).toHaveLength(1024);
+    });
+  });
+
+  it("accepts a result of exactly 16 KB, refuses one byte more", async () => {
+    // {"blob":"..."} is 11 bytes around the string.
+    const exact = { blob: "x".repeat(16 * 1024 - 11) };
+    const over = { blob: "x".repeat(16 * 1024 - 10) };
+
+    await expect(
+      adapter(recordingTransport(200, answer({ result: exact }))).execute(
+        request,
+        context,
+      ),
+    ).resolves.toMatchObject({ success: true });
+    await expect(
+      adapter(recordingTransport(200, answer({ result: over }))).execute(
+        request,
+        context,
+      ),
+    ).rejects.toThrow(/result is larger than 16384 bytes/);
+  });
+
+  it.each(["[]", "5", "null", '"text"'])(
+    "refuses JSON %s as not an object, before reading any field",
+    async (body) => {
+      await expect(
+        adapter(recordingTransport(200, body)).execute(request, context),
+      ).rejects.toThrow(
+        'External connector "ext-erp:create-invoice" endpoint answered with JSON that is not an object.',
+      );
+    },
+  );
+
+  it("records executedAt only when the endpoint sent one", async () => {
+    const without = await adapter(
+      recordingTransport(200, answer({ executedAt: undefined })),
+    ).execute(request, context);
+    expect(without.metadata).not.toHaveProperty("executedAt");
+
+    const withIt = await adapter(recordingTransport()).execute(
+      request,
+      context,
+    );
+    expect(withIt.metadata).toMatchObject({
+      executedAt: "2026-10-01T10:00:02.000Z",
+    });
+  });
+
+  it("names the connector and the reason when an address is refused", async () => {
+    await expect(
+      adapter(recordingTransport(), {
+        lookup: async () => [{ address: "10.0.0.1", family: 4 as const }],
+      }).execute(request, context),
+    ).rejects.toThrow(
+      /^External connector "ext-erp:create-invoice" refuses to release: /,
+    );
+  });
+
+  it("names every refused parameter", async () => {
+    await expect(
+      adapter(recordingTransport()).execute(
+        { ...request, parameters: { amount: 1, iban: "x", note: "y" } },
+        context,
+      ),
+    ).rejects.toThrow(
+      'External connector "ext-erp:create-invoice" refuses to forward parameters "iban", "note": the registration allows only amount, currency.',
+    );
+    await expect(
+      adapter(recordingTransport()).execute(
+        { ...request, parameters: { iban: "x" } },
+        context,
+      ),
+    ).rejects.toThrow('refuses to forward parameter "iban": the registration');
+  });
+
+  it("declares exactly its one capability", () => {
+    expect(adapter(recordingTransport()).capabilities.declared).toEqual([
+      "erp:create-invoice",
+    ]);
+  });
+});

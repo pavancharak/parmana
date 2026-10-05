@@ -1440,6 +1440,18 @@ inside `basePath`. `FileKeyProvider` gained the same containment check, though k
 file name always ends in `.private.pem` or `.public.pem`). Tests: `packages/policy/tests/unit/file-policy-repository.test.ts`,
 "FilePolicyRepository dot-only name/version"; the three `save` cases failed before the fix.
 
+**G-89. An edited Execution with its `chainSignature` removed passed the execution chain check. FOUND 2026-10-05
+by mutation testing, CLOSED the same day.** `ExecutionChainCrypto.verifyChain` treated an Execution as chain
+protected only when it carried both `chainHash` and `chainSignature`, and skipped any other Execution as legacy
+data that predates chaining. Removing `chainSignature` from an edited Execution therefore skipped it, and removing
+both fields from the last Execution of a record did too. Not exploitable on its own: every Execution is inside the
+trust record's own hash and signature, which `VerificationService` checks as well, so the edit still failed
+verification there. The chain is a second layer, and it was weaker than described. Fixed in
+`packages/crypto/src/ExecutionChainCrypto.ts`: an Execution carrying only some chain fields is a break (`chain()`
+always writes both), and once the chain has started, a later Execution without chain fields is a break. Legacy
+Executions before the first chained one are still accepted. Tests: `packages/crypto/tests/unit/crypto-verifiers.exact.test.ts`,
+"ExecutionChainCrypto, exactly"; three cases failed before the fix.
+
 ---
 
 ## Remaining gaps, by severity

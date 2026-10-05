@@ -64,6 +64,9 @@ the agent was allowed to do it.
 - **Attacks you can run.** `npm run evaluate` runs 16 attacks (replay, forgery,
   acting without a signed approval, policy substitution, gateway bypass, record
   tampering and more) and reports each one blocked or not, tied to the commit.
+- **Tests that are tested.** Mutation testing deliberately breaks the security
+  code and checks the tests notice; the scores and the gaps it found are in
+  [docs/MUTATION-TESTING.md](docs/MUTATION-TESTING.md).
 - **Fails closed.** A misconfigured server refuses to start; a request without a
   valid approval is refused and the refusal is recorded.
 - **Policy changes need two people.** A proposed policy change takes effect only
