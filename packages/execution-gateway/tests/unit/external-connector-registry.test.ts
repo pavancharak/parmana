@@ -232,3 +232,27 @@ describe("GatewayCapabilityConnectorPolicy", () => {
     },
   );
 });
+
+describe("GatewayConnectorRegistry, exactly", () => {
+  it("refuses a registration without an audit sink unless legacyInsecure is set", () => {
+    const { legacyInsecure: _legacy, ...secure } =
+      fixtureRegistration("stripe");
+    expect(() => new GatewayConnectorRegistry().register(secure)).toThrow(
+      'Connector "stripe" registration requires an ExecutionAuditSink',
+    );
+  });
+
+  it("resolves a capability to the connector declaring it, and refuses one nobody declares", () => {
+    const registry = new GatewayConnectorRegistry();
+    registry.register(fixtureRegistration("hubspot", "crm:read"));
+    registry.register(fixtureRegistration("slack", "slack:post-message"));
+
+    expect(registry.resolveCapability("slack:post-message").connectorId).toBe(
+      "slack",
+    );
+    expect(registry.resolveCapability("crm:read").connectorId).toBe("hubspot");
+    expect(() => registry.resolveCapability("crm:write")).toThrow(
+      ConnectorNotRegisteredError,
+    );
+  });
+});
