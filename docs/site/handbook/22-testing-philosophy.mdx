@@ -59,6 +59,18 @@ rest of the list) and `examples/tutorials/09-rest-api` (POSTs to a live server t
 not start), each documented with a comment in `scripts/run-examples.ts` explaining exactly why,
 and pointing at that example's own `README.md` for how to run it individually.
 
+### Attack scenarios
+
+`npm run evaluate` (`scripts/evaluate.ts`) groups existing tests into 16 attack scenarios,
+listed in `evaluations/scenarios.json`: replay, forgery, acting without a signed approval,
+policy substitution, gateway bypass, record tampering and more. Each scenario names what the
+attacker controls, the invariant and the test files that check it. The runner runs those files
+once and reports each scenario `BLOCKED`, `FAILED` or `NOT RUN`, with an
+`evaluation-report.json` tied to the commit. It adds no new tests: it gives an evaluator one
+result per attack instead of 3,000 test names. `tests/architecture/evaluation-scenarios.test.ts`
+fails if a scenario points at a test file that no longer exists or a claim number missing from
+`docs/CLAIMS.md`.
+
 ### Citation integrity
 
 `docs/CLAIMS.md` and the tutorial `README.md` files cite real file paths as evidence for their
