@@ -21,10 +21,13 @@
  * Usage: npm run loadtest [-- --connections 20 --duration 15]
  */
 import { spawn, type ChildProcess } from "node:child_process";
-import { randomUUID } from "node:crypto";
+import { generateKeyPairSync, randomUUID } from "node:crypto";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { signApproval } from "@parmana/sdk";
 import autocannon from "autocannon";
 import getPort from "get-port";
 
@@ -51,6 +54,24 @@ function parseCliOptions(): CliOptions {
     duration: get("--duration", 15),
   };
 }
+
+// No agent action is authorized without a signed human approval
+// (docs/CLAIMS.md 2.47), so every /execute request carries one. A server
+// started with NODE_ENV=test trusts "local-test-approver" with the public
+// key in PARMANA_TEST_APPROVER_PUBLIC_KEY_FILE
+// (packages/api/src/bootstrap/codeApprovalIssuers.ts). Approvals are
+// single use, so each request signs a fresh one.
+const approverKeys = generateKeyPairSync("ed25519");
+const APPROVER_PRIVATE_KEY_PEM = approverKeys.privateKey
+  .export({ format: "pem", type: "pkcs8" })
+  .toString();
+const APPROVER_PUBLIC_KEY_PEM = approverKeys.publicKey
+  .export({ format: "pem", type: "spki" })
+  .toString();
+
+const TARGET = "vendor://payments";
+const AMOUNT = 1000;
+const CAPABILITY = "test:fixture-execute";
 
 function businessTransactionBody(): Record<string, unknown> {
   const businessTransactionId = randomUUID();
@@ -82,24 +103,33 @@ function businessTransactionBody(): Record<string, unknown> {
     intent: {
       intentId,
       authorizationId,
-      action: "test:fixture-execute",
-      target: "vendor://payments",
-      parameters: { paymentId: "payment-001", amount: 1000 },
+      action: CAPABILITY,
+      target: TARGET,
+      parameters: { paymentId: "payment-001", amount: AMOUNT },
       createdAt: new Date().toISOString(),
     },
     policy: {
       name: "vendor-payment",
-      version: "2.0.0",
+      version: "2.1.0",
       schemaVersion: "1.0.0",
     },
     signals: {
+      humanApproved: true,
+      approvalArtifact: signApproval({
+        privateKeyPem: APPROVER_PRIVATE_KEY_PEM,
+        approverId: "local-test-approver",
+        keyId: "local-test-approver-key-1",
+        capability: CAPABILITY,
+        resourceId: TARGET,
+        maxAmount: AMOUNT,
+      }),
       vendorVerified: true,
       invoiceVerified: true,
       paymentApproved: true,
       sufficientFunds: true,
-      paymentAmount: 1000,
+      paymentAmount: AMOUNT,
       riskScore: 10,
-      vendorId: "vendor://payments",
+      vendorId: TARGET,
     },
     decision: { outcome: "APPROVED" },
     status: "APPROVED",
@@ -126,7 +156,31 @@ async function waitForHealth(
   throw new Error(`Server did not become healthy within ${timeoutMs}ms.`);
 }
 
-function startServer(port: number): Promise<ChildProcess> {
+// The server needs a "default" (authorization) and a "gateway" (attestation)
+// Ed25519 key pair in PARMANA_KEY_DIR before it starts. Without one set,
+// use throwaway keys in a temp directory deleted afterwards, as
+// scripts/run-examples.ts does. Never writes into ./keys.
+function throwawayKeyDirectory(): string {
+  const directory = mkdtempSync(path.join(tmpdir(), "parmana-loadtest-keys-"));
+  for (const keyId of ["default", "gateway"]) {
+    const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+    writeFileSync(
+      path.join(directory, `${keyId}.private.pem`),
+      privateKey.export({ format: "pem", type: "pkcs8" }),
+    );
+    writeFileSync(
+      path.join(directory, `${keyId}.public.pem`),
+      publicKey.export({ format: "pem", type: "spki" }),
+    );
+  }
+  return directory;
+}
+
+function startServer(
+  port: number,
+  keyDirectory: string,
+  approverPublicKeyFile: string,
+): Promise<ChildProcess> {
   return new Promise((resolve, reject) => {
     const child = spawn(
       process.execPath,
@@ -141,6 +195,13 @@ function startServer(port: number): Promise<ChildProcess> {
           NODE_ENV: "test",
           PORT: String(port),
           PARMANA_AUTH_DISABLED: "true",
+          // The server refuses to start without a policy directory
+          // (Config.ts requirePolicyDirectory). The /execute benchmark
+          // evaluates policies/vendor-payment from this repository.
+          PARMANA_POLICY_DIR:
+            process.env.PARMANA_POLICY_DIR ?? path.join(root, "policies"),
+          PARMANA_KEY_DIR: keyDirectory,
+          PARMANA_TEST_APPROVER_PUBLIC_KEY_FILE: approverPublicKeyFile,
 
           // Deliberately uncapped for this run: RATE_LIMIT_HEALTH_PER_
           // MINUTE's real default (300) exists for PaaS polling every
@@ -156,6 +217,15 @@ function startServer(port: number): Promise<ChildProcess> {
         stdio: ["ignore", "pipe", "pipe"],
       },
     );
+
+    // Keep the server's stderr so a failed start reports why, instead of
+    // only "did not become healthy".
+    let stderr = "";
+    child.stderr?.on("data", (chunk: Buffer) => {
+      stderr = (stderr + chunk.toString()).slice(-4000);
+    });
+    child.stdout?.resume();
+    Object.defineProperty(child, "recentStderr", { get: () => stderr });
 
     child.once("error", reject);
     child.once("exit", (code) => {
@@ -189,10 +259,32 @@ async function main(): Promise<void> {
   console.log(
     `Starting server on ${baseUrl} (NODE_ENV=test, in-memory storage, auth disabled)...`,
   );
-  const server = await startServer(port);
+  const throwawayKeys = process.env.PARMANA_KEY_DIR
+    ? undefined
+    : throwawayKeyDirectory();
+  const approverDirectory =
+    throwawayKeys ??
+    mkdtempSync(path.join(tmpdir(), "parmana-loadtest-approver-"));
+  const approverPublicKeyFile = path.join(
+    approverDirectory,
+    "local-test-approver.public.pem",
+  );
+  writeFileSync(approverPublicKeyFile, APPROVER_PUBLIC_KEY_PEM);
+  const server = await startServer(
+    port,
+    process.env.PARMANA_KEY_DIR ?? (throwawayKeys as string),
+    approverPublicKeyFile,
+  );
 
   try {
-    await waitForHealth(baseUrl, 15_000);
+    try {
+      await waitForHealth(baseUrl, 15_000);
+    } catch (error) {
+      const stderr = (server as ChildProcess & { recentStderr?: string })
+        .recentStderr;
+      if (stderr) console.error(`Server stderr:\n${stderr}`);
+      throw error;
+    }
     console.log("Server is healthy. Running load test...\n");
 
     const healthResult = await autocannon({
@@ -231,6 +323,7 @@ async function main(): Promise<void> {
     );
   } finally {
     server.kill("SIGTERM");
+    rmSync(approverDirectory, { recursive: true, force: true });
   }
 }
 
