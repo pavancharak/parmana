@@ -35,8 +35,8 @@ A plain install must import `parmana`, and `parmana.crypto` must only work after
 Merge the version bump to `main` first, then publish a GitHub release on a new tag `sdk-v<version>`
 targeting `main`, as in `typescript/RELEASING.md` step 4 (one release covers all four SDKs).
 `.github/workflows/release.yml` attaches the wheel and source distribution for `parmana` and
-`parmana-connector-sdk`, with signed SLSA provenance. Wait for the run to be green and the release
-to show seven files.
+`parmana-connector-sdk`, an SBOM for each wheel, and signed SLSA provenance. Wait for the run to be
+green and the release to show eleven files.
 
 ## 5. Publish the release's own files to PyPI
 
