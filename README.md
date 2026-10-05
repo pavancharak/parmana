@@ -261,6 +261,9 @@ Interested in running Parmana against a real integration? See
 - Website: [parmanasystems.com](https://parmanasystems.com/)
 - Documentation: [docs.parmanasystems.com](https://docs.parmanasystems.com)
 - Issues: [github.com/pavancharak/parmana/issues](https://github.com/pavancharak/parmana/issues)
+- Conduct: everyone in issues, pull requests and other project spaces follows the
+  [Code of Conduct](CODE_OF_CONDUCT.md).
+- Citing Parmana: [CITATION.cff](CITATION.cff), or **Cite this repository** on GitHub.
 
 ## License
 

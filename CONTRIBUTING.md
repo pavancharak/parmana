@@ -7,6 +7,7 @@ This repository is proprietary and source-available for evaluation only (see
 prior written contributor agreement, and will be closed. Questions, feedback and bug reports
 are welcome by email at [founder@parmanasystems.com](mailto:founder@parmanasystems.com) or as
 a GitHub issue. Report security issues privately, as described in [SECURITY.md](SECURITY.md).
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 The rest of this file is the process for people working on Parmana under such an agreement.
 
