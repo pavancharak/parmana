@@ -98,7 +98,7 @@ async function run(options: {
         policyName: "erp-invoice",
         policyVersion: "1.0.0",
         ...(options.signalsHash === "match"
-          ? { signalsHash: await signalsHasher.hash(SIGNALS) }
+          ? { signalsHash: await signalsHasher.hash(options.signals ?? {}) }
           : {}),
         executableContent: CONTENT,
       },
@@ -162,4 +162,40 @@ describe("ExecutionGateway release approvals", () => {
 
     expect(release.approvals).toEqual([]);
   });
+
+  it("lists none for a request with no signals, signed over none", async () => {
+    const release = await run({
+      signalsHash: "match",
+      verifier: new FixedSignalStateVerifier([]),
+    });
+
+    expect(release.approvals).toEqual([]);
+  });
+
+  it.each([
+    ["approverId", { approverId: 7, keyId: "k-1" }],
+    ["keyId", { approverId: "manager-y", keyId: 7 }],
+  ])(
+    "skips a value shaped like an approval whose %s is not a string",
+    async (_field, issuer) => {
+      const signals = {
+        ...SIGNALS,
+        malformed: { payload: { approvalId: "ap-2", issuer } },
+      } as unknown as PolicySignals;
+
+      const release = await run({
+        signalsHash: "match",
+        signals,
+        verifier: new FixedSignalStateVerifier([]),
+      });
+
+      expect(release.approvals).toEqual([
+        {
+          approverId: "manager-x",
+          keyId: "manager-x-key-1",
+          approvalId: "ap-1",
+        },
+      ]);
+    },
+  );
 });
