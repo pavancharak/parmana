@@ -30,18 +30,31 @@ python -m venv /tmp/parmana-venv
 
 A plain install must import `parmana`, and `parmana.crypto` must only work after the `verify` extra installs `cryptography`.
 
-## 4. Publish
+## 4. Publish a GitHub release
 
-Publishing to PyPI needs a PyPI API token for the `parmana` project. Never commit the token.
+Merge the version bump to `main` first, then publish a GitHub release on a new tag `sdk-v<version>`
+targeting `main`, as in `typescript/RELEASING.md` step 4 (one release covers all four SDKs).
+`.github/workflows/release.yml` attaches the wheel and source distribution for `parmana` and
+`parmana-connector-sdk`, with signed SLSA provenance. Wait for the run to be green and the release
+to show seven files.
+
+## 5. Publish the release's own files to PyPI
+
+Publish the files the release built, not a local build, so the packages on PyPI are byte for byte
+the ones the provenance covers. Download `parmana-<version>-py3-none-any.whl` and
+`parmana-<version>.tar.gz` from the release page (or `gh release download sdk-v<version> --pattern 'parmana-*'`), then:
 
 ```bash
-python -m twine upload /tmp/parmana-dist/*
+python -m twine check parmana-<version>*
+python -m twine upload parmana-<version>*
 ```
 
-Use `--repository testpypi` first if you want a dry run.
+Publishing needs a PyPI API token for the `parmana` project. Never commit the token. Use
+`--repository testpypi` first if you want a dry run. `parmana-connector-sdk` is published the same
+way from its `parmana_connector_sdk-<version>*` files.
 
-## 5. After publishing
+## 6. After publishing
 
 1. Confirm the new version at `https://pypi.org/project/parmana/<version>/` and that `pip install "parmana==<version>"` works in a clean environment.
-2. Update the published version statements in `docs/site/sdks/python.mdx`.
-3. Tag the release in git.
+2. Check that the SHA-256 PyPI shows for each file equals `sha256sum` of the release's file.
+3. Update the published version statements in `docs/site/sdks/python.mdx`.
