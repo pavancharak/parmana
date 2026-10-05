@@ -179,13 +179,47 @@ export class ExecutionChainCrypto {
     executions: readonly Execution[],
   ): Promise<ChainVerificationResult> {
     let previous: Execution | undefined;
+    let chainStarted = false;
 
     for (const execution of executions) {
       const isChained =
         execution.chainHash !== undefined &&
         execution.chainSignature !== undefined;
 
+      //
+      // chain() always writes chainHash and chainSignature together,
+      // so an Execution carrying only some chain fields was altered:
+      // removing chainSignature must not turn an edited Execution into
+      // "unprotected legacy data" that is skipped. Likewise, once the
+      // chain has started, a later Execution without chain fields is a
+      // break, not legacy data: legacy Executions predate chaining.
+      //
+      const hasAnyChainField =
+        execution.chainHash !== undefined ||
+        execution.chainSignature !== undefined ||
+        (execution.previousChainHash ?? null) !== null;
+
+      if (!isChained && hasAnyChainField) {
+        return {
+          valid: false,
+          brokenAt: execution.executionId,
+          reason:
+            "Execution carries only some chain fields; chainHash and chainSignature are always written together.",
+        };
+      }
+
+      if (!isChained && chainStarted) {
+        return {
+          valid: false,
+          brokenAt: execution.executionId,
+          reason:
+            "Execution has no chain fields but follows a chained execution.",
+        };
+      }
+
       if (isChained) {
+        chainStarted = true;
+
         const entryValid = await this.verifyEntry(execution);
 
         if (!entryValid) {
