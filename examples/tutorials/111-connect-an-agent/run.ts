@@ -300,12 +300,12 @@ try {
     "Scenario 6: Missing credential -- rejected before anything else runs",
   );
   console.log("--------------------------------------------------");
-  const noAuth = await fetch(`${baseUrl}/execute`, {
+  const withoutKeyResponse = await fetch(`${baseUrl}/execute`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(refundTransaction({})),
   });
-  console.log(`Status : ${noAuth.status}`);
+  console.log(`Status : ${withoutKeyResponse.status}`);
   console.log();
 
   console.log("==================================================");
@@ -323,7 +323,7 @@ try {
     deniedBody.code === "POLICY_DENIED" &&
     badRequest.status === 400 &&
     callersMe.status === 200 &&
-    noAuth.status === 401;
+    withoutKeyResponse.status === 401;
 
   if (allPassed) {
     console.log(

@@ -218,3 +218,50 @@ describe("FilePolicyRepository.save", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * Found by CodeQL (js/path-injection): the name/version pattern allowed
+ * a bare "." or "..", which path.join() treats as a directory step, so
+ * name ".." reached the directory above basePath, for both reading and
+ * writing a sibling directory's policy.json.
+ */
+describe("FilePolicyRepository dot-only name/version", () => {
+  const roots: string[] = [];
+
+  afterEach(() => {
+    for (const root of roots.splice(0)) {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  function layout() {
+    const root = mkdtempSync(path.join(tmpdir(), "policy-dots-"));
+    roots.push(root);
+    const basePath = path.join(root, "policies");
+    const sibling = path.join(root, "sibling");
+    return { basePath, sibling };
+  }
+
+  for (const [name, version] of [
+    ["..", "sibling"],
+    [".", "x"],
+    ["refund", ".."],
+  ] as const) {
+    it(`load rejects name ${JSON.stringify(name)}, version ${JSON.stringify(version)}`, async () => {
+      const { basePath } = layout();
+
+      await expect(
+        new FilePolicyRepository(basePath).load(name, version),
+      ).rejects.toThrow(PolicyNotFoundError);
+    });
+
+    it(`save rejects name ${JSON.stringify(name)}, version ${JSON.stringify(version)} and writes nothing outside basePath`, async () => {
+      const { basePath, sibling } = layout();
+
+      await expect(
+        new FilePolicyRepository(basePath).save(name, version, {} as Policy),
+      ).rejects.toThrow(PolicyWriteRejectedError);
+      expect(existsSync(path.join(sibling, "policy.json"))).toBe(false);
+    });
+  }
+});

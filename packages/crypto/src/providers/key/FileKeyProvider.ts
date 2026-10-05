@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 
 import { readdir } from "node:fs/promises";
 
-import { join } from "node:path";
+import { resolve, sep } from "node:path";
 
 import {
   loadConfig,
@@ -176,17 +176,32 @@ export class FileKeyProvider implements KeyProvider {
    * Resolves the private key path.
    */
   private privateKeyPath(keyId: string): string {
-    assertValidKeyId(keyId);
-
-    return join(this.getKeyDirectory(), `${keyId}.private.pem`);
+    return this.keyFilePath(keyId, "private");
   }
 
   /**
    * Resolves the public key path.
    */
   private publicKeyPath(keyId: string): string {
+    return this.keyFilePath(keyId, "public");
+  }
+
+  /**
+   * `<keyDirectory>/<keyId>.<kind>.pem`, after assertValidKeyId() and a
+   * second check that the resolved path stays inside the key directory.
+   */
+  private keyFilePath(keyId: string, kind: "private" | "public"): string {
     assertValidKeyId(keyId);
 
-    return join(this.getKeyDirectory(), `${keyId}.public.pem`);
+    const directory = resolve(this.getKeyDirectory());
+    const file = resolve(directory, `${keyId}.${kind}.pem`);
+
+    if (!file.startsWith(directory + sep)) {
+      throw new CryptoError(
+        `Invalid keyId: ${JSON.stringify(keyId)}. Must name a file in the key directory.`,
+      );
+    }
+
+    return file;
   }
 }

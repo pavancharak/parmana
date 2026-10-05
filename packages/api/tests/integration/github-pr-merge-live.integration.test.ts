@@ -319,8 +319,8 @@ describe.skipIf(!gitHubLiveConfigured)(
           // the merge endpoint, depending on which layer the configured
           // test credentials are valid for), and a real client-error status
           // came back.
-          const gitHubCalls = observed.filter((entry) =>
-            entry.url.startsWith("https://api.github.com"),
+          const gitHubCalls = observed.filter(
+            (entry) => new URL(entry.url).host === "api.github.com",
           );
           expect(gitHubCalls.length).toBeGreaterThanOrEqual(1);
           expect(gitHubCalls.every((entry) => entry.status >= 400)).toBe(true);
@@ -355,8 +355,8 @@ describe.skipIf(!gitHubLiveConfigured)(
       // ExecutionComponent ever dispatches to the connector or resolves a
       // credential -- zero real GitHub calls for the denial itself, not
       // even the access_tokens exchange.
-      const gitHubCalls = observed.filter((entry) =>
-        entry.url.startsWith("https://api.github.com"),
+      const gitHubCalls = observed.filter(
+        (entry) => new URL(entry.url).host === "api.github.com",
       );
       expect(gitHubCalls).toHaveLength(0);
     }, 30_000);

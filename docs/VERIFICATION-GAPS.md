@@ -1430,6 +1430,16 @@ caller gets `500 {"error":"Internal Server Error"}` with no code and no hint of 
 and in the error catalog. Fix, not built: check that each required object is present before validating and answer
 `400` naming it.
 
+**G-88. A policy named `..` let `FilePolicyRepository` read and write outside the policy directory. FOUND
+2026-10-05 by CodeQL (`js/path-injection`), CLOSED the same day.** The name and version pattern
+(`/^[A-Za-z0-9._-]+$/`) rejected `/` but allowed a bare `.` or `..`, which `path.join` treats as a directory step.
+`load("..", "x")` read `<basePath>/../x/policy.json`, and `save("..", "x", ...)` wrote it; `save` runs when an
+approved policy change is applied, so reaching it needs an authenticated proposer and a second approver. Fixed in
+`packages/policy/src/FilePolicyRepository.ts`: dot-only segments are rejected, and the resolved directory must stay
+inside `basePath`. `FileKeyProvider` gained the same containment check, though key ids could not traverse (a key
+file name always ends in `.private.pem` or `.public.pem`). Tests: `packages/policy/tests/unit/file-policy-repository.test.ts`,
+"FilePolicyRepository dot-only name/version"; the three `save` cases failed before the fix.
+
 ---
 
 ## Remaining gaps, by severity

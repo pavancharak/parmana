@@ -81,13 +81,28 @@ export const parseSignatureAlgorithm = (value?: string): SignatureAlgorithm =>
 export const parseKeyProvider = (value?: string): KeyProvider =>
   parse(value, KeyProviders, "KEY_PROVIDER", KeyProviders.LOCAL);
 
-export const parseSecretsProvider = (value?: string): SecretsProvider =>
-  parse(
-    value,
-    SecretsProviders,
-    "PARMANA_SECRETS_PROVIDER",
-    SecretsProviders.ENV,
-  );
+/**
+ * Unlike the other settings, an invalid value is not echoed: a value set
+ * in the wrong variable can be a real secret (a token pasted into
+ * PARMANA_SECRETS_PROVIDER, say), and this message reaches logs. Kept
+ * separate from parse() so the value never reaches its message.
+ */
+export const parseSecretsProvider = (value?: string): SecretsProvider => {
+  const accepted = Object.values(SecretsProviders);
+  const match = accepted.find((provider) => provider === value);
+
+  if (value === undefined) {
+    return SecretsProviders.ENV;
+  }
+
+  if (match === undefined) {
+    throw new Error(
+      `Invalid PARMANA_SECRETS_PROVIDER: expected one of ${accepted.join(", ")}`,
+    );
+  }
+
+  return match;
+};
 
 export const parseTrustProfile = (value?: string): TrustProfile =>
   parse(value, TrustProfiles, "TRUST_PROFILE", TrustProfiles.V1);

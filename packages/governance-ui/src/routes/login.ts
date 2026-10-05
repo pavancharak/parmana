@@ -23,6 +23,7 @@ import { renderLoginPage } from "../views/login.js";
  */
 const LOGIN_RATE_LIMIT_WINDOW_MS = 60_000;
 const LOGIN_RATE_LIMIT_MAX_ATTEMPTS = 10;
+const LOGIN_PAGE_RATE_LIMIT_MAX_REQUESTS = 60;
 
 function regenerateSession(req: Request): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -54,14 +55,27 @@ export function createLoginRouter(apiBaseUrl: string): Router {
     legacyHeaders: false,
   });
 
-  router.get("/login", (req: Request, res: Response): void => {
-    if (req.session.apiKey !== undefined) {
-      res.redirect("/");
-      return;
-    }
-
-    res.send(renderLoginPage());
+  // Page loads get their own, more generous limiter, so viewing the
+  // login page does not use up the sign-in attempts above.
+  const loginPageRateLimiter = rateLimit({
+    windowMs: LOGIN_RATE_LIMIT_WINDOW_MS,
+    limit: LOGIN_PAGE_RATE_LIMIT_MAX_REQUESTS,
+    standardHeaders: true,
+    legacyHeaders: false,
   });
+
+  router.get(
+    "/login",
+    loginPageRateLimiter,
+    (req: Request, res: Response): void => {
+      if (req.session.apiKey !== undefined) {
+        res.redirect("/");
+        return;
+      }
+
+      res.send(renderLoginPage());
+    },
+  );
 
   router.post(
     "/login",
