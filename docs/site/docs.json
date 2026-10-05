@@ -84,6 +84,7 @@
             "group": "Verification and evidence",
             "pages": [
               "verification/overview",
+              "verification/verify-in-browser",
               "replay/overview",
               "cryptography/overview",
               "storage/overview"
