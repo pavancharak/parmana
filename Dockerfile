@@ -57,8 +57,10 @@ COPY tsconfig.json ./
 COPY packages ./packages
 COPY typescript ./typescript
 
-# Compile only parmana-api and its dependencies
-RUN npx tsc --build packages/api
+# Compile only parmana-api and its dependencies, with TypeScript 7 (the
+# typescript7 alias; the typescript package stays on 6 for tools that need
+# the compiler API, see docs/adr/ADR-0015).
+RUN node node_modules/typescript7/bin/tsc --build packages/api
 
 ################################################################################
 # Stage 3: prod-deps -- a second, independent `npm ci --omit=dev`. Kept as

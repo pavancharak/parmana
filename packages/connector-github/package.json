@@ -24,7 +24,7 @@
     "@parmana/connector-sdk": "0.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
+    "typescript": "^6.0.3",
     "vitest": "^5.0.3"
   },
   "engines": {
