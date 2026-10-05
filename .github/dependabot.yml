@@ -12,6 +12,21 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    # Majors that break the build or the tests today, or that target a Node
+    # line this project does not run (package.json "engines": Node 24).
+    # Each is a planned upgrade with code changes, not a dependency bump.
+    # Minor and patch updates of these still arrive.
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@vitest/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "express"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "pip"
     directories:
