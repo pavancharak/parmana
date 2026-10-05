@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@parmana/shared": "0.1.0",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

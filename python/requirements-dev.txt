@@ -468,9 +468,9 @@ deprecated==1.3.1 \
     #   databind
     #   docspec
     #   nr-util
-docspec==2.2.2 \
-    --hash=sha256:854d25401e7ec2d155b0c1e001e25819d16b6df3a7575212a7f340ae8b00122e \
-    --hash=sha256:c772c6facfce839176b647701082c7a22b3d22d872d392552cf5d65e0348c919
+docspec==2.2.1 \
+    --hash=sha256:4854e77edc0e2de40e785e57e95880f7095a05fe978f8b54cef7a269586e15ff \
+    --hash=sha256:7538f750095a9688c6980ff9a4e029a823a500f64bd00b6b4bdb27951feb31cb
     # via
     #   docspec-python
     #   pydoc-markdown
@@ -478,9 +478,8 @@ docspec-python==2.2.2 \
     --hash=sha256:429be834d09549461b95bf45eb53c16859f3dfb3e9220408b3bfb12812ccb3fb \
     --hash=sha256:caa32dc1e8c470af8a5ecad67cca614e68c1563ac01dab0c0486c4d7f709d6b1
     # via pydoc-markdown
-docstring-parser==0.18.0 \
-    --hash=sha256:292510982205c12b1248696f44959db3cdd1740237a968ea1e2e7a900eeb2015 \
-    --hash=sha256:b3fcbed555c47d8479be0796ef7e19c2670d428d72e96da63f3a40122860374b
+docstring-parser==0.11 \
+    --hash=sha256:93b3f8f481c7d24e37c5d9f30293c89e2933fa209421c8abd731dd3ef0715ecb
     # via pydoc-markdown
 idna==3.20 \
     --hash=sha256:a7db850025b95ded1eae8a46181a1a6c56c92c96f0e2b005d9ff8dc0210cab44 \
