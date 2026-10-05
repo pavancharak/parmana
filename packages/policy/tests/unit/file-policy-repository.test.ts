@@ -1,4 +1,11 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -51,6 +58,35 @@ describe("FilePolicyRepository name/version sanitization", () => {
 
     expect(error).toBeInstanceOf(PolicyNotFoundError);
   });
+
+  // Found by mutation testing: the character check's anchors and the "."
+  // check could be weakened without a test failing, because every
+  // traversal test also leaves basePath and is caught by the second,
+  // resolved-path check. These names stay inside basePath, so only the
+  // character check refuses them.
+  it.each([
+    ["a name with a slash", "nested/name", "1.0.0"],
+    ["a version with a slash", "nested", "name/1.0.0"],
+    ["a name that is only a dot", ".", "1.0.0"],
+  ])(
+    "rejects %s even when it stays inside basePath",
+    async (_label, name, version) => {
+      const base = mkdtempSync(path.join(tmpdir(), "policy-inside-"));
+      try {
+        const policyJson = JSON.stringify({ policyId: "inside", rules: [] });
+        for (const dir of ["nested/name/1.0.0", "1.0.0"]) {
+          mkdirSync(path.join(base, dir), { recursive: true });
+          writeFileSync(path.join(base, dir, "policy.json"), policyJson);
+        }
+        const repository = new FilePolicyRepository(base);
+        await expect(repository.load(name, version)).rejects.toThrow(
+          PolicyNotFoundError,
+        );
+      } finally {
+        rmSync(base, { recursive: true, force: true });
+      }
+    },
+  );
 
   it("accepts the well-formed name/version used by the rest of the suite", async () => {
     const repository = new FilePolicyRepository(basePath);
