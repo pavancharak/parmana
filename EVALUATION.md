@@ -51,7 +51,47 @@ isolation, connector execution and the signed trust record):
 npx tsx examples/tutorials/60-end-to-end-enterprise-execution/run.ts
 ```
 
-## 3. Try the hosted sandbox (optional)
+## 3. Run the attack scenarios
+
+```bash
+npm run evaluate
+```
+
+This runs 16 attacks against the code and reports, for each, whether it was blocked. Each
+scenario in [evaluations/scenarios.json](evaluations/scenarios.json) states what the attacker
+controls, the attack, the invariant that must hold, the claims in
+[docs/CLAIMS.md](docs/CLAIMS.md) it supports, and the test files that check it:
+
+| ID    | Attack                                                   |
+| ----- | -------------------------------------------------------- |
+| EV-01 | Replay a used authorization                              |
+| EV-02 | Forge or alter an authorization                          |
+| EV-03 | Use an expired authorization or a revoked key            |
+| EV-04 | Act without a person's signed approval                   |
+| EV-05 | Forge or misuse an approval                              |
+| EV-06 | Declare one action, execute another                      |
+| EV-07 | Have an action judged by a weaker policy                 |
+| EV-08 | Execute under an outdated policy version                 |
+| EV-09 | Rely on facts that changed after approval                |
+| EV-10 | Obtain a connector's credentials                         |
+| EV-11 | Reach a connector without going through the gateway      |
+| EV-12 | Act without credentials or outside a caller's scope      |
+| EV-13 | Change a policy without a second person                  |
+| EV-14 | Alter a signed record after the fact                     |
+| EV-15 | Run the same transaction twice by racing                 |
+| EV-16 | Read or write a policy file outside the policy directory |
+
+A scenario is BLOCKED when every test in its files passes, FAILED when any fails, and NOT RUN
+when a file is missing or ran nothing. The command exits non-zero unless all are BLOCKED, and
+writes `evaluation-report.json` with the commit, whether the working tree was clean, the
+Node.js version, a hash of the policies, and each test file's hash and counts.
+
+EV-04 covers prompt injection by its effect, not by detecting it: whatever an injected agent
+sends, an action that needs approval is not authorized without a signed approval from a trusted
+person. These are tests of the code in this repository, run locally. They do not test a
+deployment's configuration, its key custody or its network.
+
+## 4. Try the hosted sandbox (optional)
 
 A public sandbox runs the same API with demo policies. The scripts in
 [examples/sandbox-playground/](examples/sandbox-playground/) call it from cURL, PowerShell,
@@ -59,7 +99,7 @@ TypeScript or Python. See
 [Live API and demos](https://docs.parmanasystems.com/guides/live-api-and-demos) for
 authentication and the request shape.
 
-## 4. Verify a record offline
+## 5. Verify a record offline
 
 Every approved action produces a signed Execution Trust Record. It can be checked with only
 the record and the public keys, without Parmana's runtime or database, using
