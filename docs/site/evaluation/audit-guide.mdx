@@ -114,6 +114,15 @@ The same chain runs against a real Postgres, on a network with no internet route
 attacks against the server running locally (`npm run dev`, or the Docker stack) rather than
 rely only on the tests listed here.
 
+## Running every scenario at once
+
+`npm run evaluate` runs the attacks above together with the rest of the 16 scenarios in
+[evaluations/scenarios.json](https://github.com/pavancharak/parmana/blob/main/evaluations/scenarios.json)
+and writes `evaluation-report.json` with the commit, whether the tree was clean, a hash of the
+policies and each test file's hash and counts. It is a quick baseline, not a replacement for
+your own attacks: it shows that the repository's tests for each scenario pass at that commit.
+See [Run the attack scenarios](/evaluation/overview#3-run-the-attack-scenarios).
+
 ## Recording results
 
 A useful result is a reproducible account of which attacks were blocked, which succeeded, and

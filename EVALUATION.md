@@ -16,7 +16,8 @@ accounts, credentials, database or network access beyond `npm ci`.
 - Git, and Bash for two tests that syntax check shell scripts. On Windows, Git for Windows
   provides it.
 
-Linux, macOS and Windows are supported.
+Linux, macOS and Windows are supported. On Windows PowerShell 5.1, run each command on its own
+line: it does not accept `&&` between commands.
 
 ## 1. Install, build and test
 
@@ -123,9 +124,12 @@ the record and the public keys, without Parmana's runtime or database, using
 
 ## Licensing
 
-The proprietary [LICENSE](./LICENSE) covers the whole repository, including the client SDKs
-in [typescript/](typescript/) (`@parmana/sdk` on npm) and [python/](python/) (`parmana` on
-PyPI). `@parmana/sign` is a separate repository under the Apache License 2.0.
+The proprietary [LICENSE](./LICENSE) covers the server and everything else in this repository
+except the SDKs. The SDKs are licensed under the Apache License 2.0: [typescript/](typescript/)
+(`@parmana/sdk` on npm), [python/](python/) (`parmana` on PyPI),
+[packages/connector-sdk/](packages/connector-sdk/) and
+[python-connector-sdk/](python-connector-sdk/). `@parmana/sign` is a separate repository, also
+under the Apache License 2.0.
 
 ## Questions and feedback
 
