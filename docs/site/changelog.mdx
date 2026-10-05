@@ -12,6 +12,13 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-05
 
+**Added: mutation testing of the security packages**
+
+- `npm run mutation -- <package>` measures how many deliberate changes to the security code the
+  tests catch. First scores: `envelope-verifier` 89.7%, `approval` 77.7%, `policy` 50.3%. The
+  gaps that matter for security now have tests; see
+  [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).
+
 **Added: an SBOM with every SDK release**
 
 - From the next release on, each SDK package on a
