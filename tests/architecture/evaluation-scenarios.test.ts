@@ -72,3 +72,29 @@ describe("evaluation scenarios", () => {
     },
   );
 });
+
+describe("the Reproduce column on the Claims and evidence page", () => {
+  const page = readFileSync(
+    path.join(root, "docs", "site", "evaluation", "claims-and-evidence.mdx"),
+    "utf8",
+  );
+  const ids = new Set(scenarios.map((s) => s.id));
+
+  it("names only scenarios that exist", () => {
+    const named = [...page.matchAll(/npm run evaluate -- ([^`]+)`/g)].flatMap(
+      (match) => match[1]!.trim().split(/\s+/),
+    );
+    expect(named.length).toBeGreaterThan(0);
+    for (const id of named) expect(ids.has(id), id).toBe(true);
+  });
+
+  it("names only test files that exist", () => {
+    const files = [...page.matchAll(/npx vitest run ([^`]+)`/g)].flatMap(
+      (match) => match[1]!.trim().split(/\s+/),
+    );
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) {
+      expect(existsSync(path.join(root, file)), file).toBe(true);
+    }
+  });
+});

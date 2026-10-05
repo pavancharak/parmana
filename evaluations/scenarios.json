@@ -21,7 +21,7 @@
       "attackerControls": "The bytes of an authorization in transit, and any key that is not the signer's.",
       "attack": "Change a field of a signed authorization, or sign one with another key.",
       "invariant": "The signature check fails and nothing executes.",
-      "claims": ["2.8", "2.10"],
+      "claims": ["2.8", "2.10", "2.15"],
       "tests": [
         "packages/envelope-verifier/tests/unit/envelope-verifier.test.ts",
         "packages/execution-gateway/tests/unit/execution-gateway.test.ts"
@@ -74,7 +74,7 @@
       "attackerControls": "The policy signals and the execution intent of a request.",
       "attack": "Describe a small, approved action in the signals while the intent executes a different amount or target.",
       "invariant": "Bound signals must match the executed intent; a mismatch or a missing bound signal is refused.",
-      "claims": ["2.11", "2.44"],
+      "claims": ["2.44"],
       "tests": [
         "packages/policy/tests/unit/SignalIntentBinder.test.ts",
         "packages/policy/tests/unit/PolicyRouter-boundSignals-coverage.test.ts"
@@ -124,7 +124,7 @@
       "attackerControls": "The caller side of every request and every response it receives.",
       "attack": "Look for connector credentials in responses, decisions and evidence.",
       "invariant": "A connector's credential never reaches the caller, the decision or the evidence.",
-      "claims": ["3.10", "3.17"],
+      "claims": ["2.23", "3.10", "3.17"],
       "tests": [
         "packages/execution-gateway/tests/unit/credential-non-exposure.test.ts",
         "packages/api/tests/integration/credential-isolation.integration.test.ts"

@@ -14,6 +14,8 @@
  * commit, the Node.js version, a hash of the policies, and each test file's
  * hash and counts, so a result can be tied to exactly what was run. It exits
  * 1 unless every scenario is BLOCKED.
+ *
+ * `npm run evaluate -- EV-04 EV-05` runs only the scenarios named.
  */
 
 import { spawnSync } from "node:child_process";
@@ -149,8 +151,27 @@ function resultFor(tests: { counts: FileCounts | null }[]): Result {
   return "BLOCKED";
 }
 
+/**
+ * Scenario ids given on the command line (`npm run evaluate -- EV-04 EV-05`)
+ * select those scenarios; none selects all. An unknown id is an error, so a
+ * typo never reports a smaller set as all blocked.
+ */
+function selectScenarios(all: Scenario[], ids: string[]): Scenario[] {
+  if (ids.length === 0) return all;
+  const known = new Set(all.map((scenario) => scenario.id));
+  const unknown = ids.filter((id) => !known.has(id.toUpperCase()));
+  if (unknown.length > 0) {
+    console.error(
+      `Unknown scenario: ${unknown.join(", ")}. Known: ${[...known].join(", ")}.`,
+    );
+    process.exit(2);
+  }
+  const wanted = new Set(ids.map((id) => id.toUpperCase()));
+  return all.filter((scenario) => wanted.has(scenario.id));
+}
+
 function main(): void {
-  const scenarios = loadScenarios();
+  const scenarios = selectScenarios(loadScenarios(), process.argv.slice(2));
   const files = [
     ...new Set(scenarios.flatMap((scenario) => scenario.tests)),
   ].sort();

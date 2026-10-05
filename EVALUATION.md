@@ -82,6 +82,8 @@ controls, the attack, the invariant that must hold, the claims in
 | EV-15 | Run the same transaction twice by racing                 |
 | EV-16 | Read or write a policy file outside the policy directory |
 
+To run only some scenarios, name them: `npm run evaluate -- EV-04 EV-05`.
+
 A scenario is BLOCKED when every test in its files passes, FAILED when any fails, and NOT RUN
 when a file is missing or ran nothing. The command exits non-zero unless all are BLOCKED, and
 writes `evaluation-report.json` with the commit, whether the working tree was clean, the
