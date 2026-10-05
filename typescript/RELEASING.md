@@ -33,8 +33,9 @@ Merge the version bump to `main` first. Then on GitHub: Releases, Draft a new re
 new tag `sdk-v<version>`, choose **Create new tag**, check the target is `main`, and publish.
 
 `.github/workflows/release.yml` builds the four SDK packages from that tag, attaches them to the
-release, and attaches signed SLSA provenance (`multiple.intoto.jsonl`). Wait for the workflow run
-to be green and the release to show seven files. A release on an existing tag that predates the
+release with a CycloneDX SBOM for each (`<package file>.cdx.json`), and attaches signed SLSA
+provenance (`multiple.intoto.jsonl`) covering all of them. Wait for the workflow run to be green and
+the release to show eleven files: six packages, four SBOMs and the provenance. A release on an existing tag that predates the
 workflow does not run it.
 
 ## 5. Publish the release's own file to npm

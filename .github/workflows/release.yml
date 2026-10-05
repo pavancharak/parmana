@@ -1,5 +1,6 @@
 # Builds the four SDK packages when a GitHub release is published, attaches
-# them to the release, and attaches SLSA build provenance
+# them to the release with a CycloneDX SBOM for each (<package file>.cdx.json),
+# and attaches SLSA build provenance
 # (multiple.intoto.jsonl): a signed statement, made by GitHub's OIDC identity
 # for this workflow, of which commit and workflow produced each file and its
 # SHA-256. Anyone can check a downloaded package against it with
@@ -57,6 +58,32 @@ jobs:
           pip install --require-hashes -r .github/release/build-requirements.txt
           python -m build python --outdir release-dist
           python -m build python-connector-sdk --outdir release-dist
+
+      - name: Write the SBOMs
+        # One CycloneDX 1.5 file per package, named after it:
+        # <package file>.cdx.json. Written before hashing, so the provenance
+        # covers the SBOMs too. npm packages: from the packed package itself,
+        # runtime dependencies only. Wheels: from a clean environment holding
+        # just the wheel and the user facing extras named here.
+        run: |
+          for tgz in release-dist/*.tgz; do
+            work="$(mktemp -d)"
+            tar -xzf "$tgz" -C "$work"
+            (
+              cd "$work/package"
+              npm install --package-lock-only --omit=dev --ignore-scripts --no-audit --no-fund
+              npm sbom --package-lock-only --omit=dev --sbom-format=cyclonedx --sbom-type=library > sbom.json
+              node -e 'const fs = require("fs"); const sbom = JSON.parse(fs.readFileSync("sbom.json", "utf8")); sbom.metadata.component.name = require("./package.json").name; fs.writeFileSync("sbom.json", JSON.stringify(sbom, null, 2) + "\n");'
+            )
+            mv "$work/package/sbom.json" "$tgz.cdx.json"
+            rm -rf "$work"
+          done
+          for wheel in release-dist/parmana-[0-9]*.whl; do
+            python .github/release/python_sbom.py "$wheel" "$wheel.cdx.json" verify
+          done
+          for wheel in release-dist/parmana_connector_sdk-*.whl; do
+            python .github/release/python_sbom.py "$wheel" "$wheel.cdx.json"
+          done
 
       - name: Hash the packages
         id: hash
