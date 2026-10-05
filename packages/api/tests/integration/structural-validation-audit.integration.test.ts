@@ -261,4 +261,25 @@ describe("Structural validation audit trail (G-29, HTTP boundary)", () => {
       expect(response.status).toBe(400);
     });
   });
+
+  describe("no request body at all", () => {
+    // Express 5 leaves req.body undefined when a request has no body
+    // (Express 4 set it to {}); a bare destructure of req.body would
+    // then throw and return 500 instead of the 400 below.
+    for (const route of ["/execute", "/transactions"]) {
+      it(`POST ${route}: rejects with 400 and audits it`, async () => {
+        const { app, callerAuditSink } = buildApp();
+
+        const response = await request(app)
+          .post(route)
+          .set("Authorization", `Bearer ${VALID_KEY}`);
+
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe(
+          "businessTransactionId must be a valid UUID.",
+        );
+        expect(structuralEvents(callerAuditSink)).toHaveLength(1);
+      });
+    }
+  });
 });

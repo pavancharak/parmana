@@ -120,7 +120,7 @@ export function createTransactionsRouter(
       // Declared ahead of the try block, not inside it: `catch` below
       // needs it too (G-29 audit), and `try`/`catch` are separate block
       // scopes -- a `const` declared inside `try` is not visible there.
-      const { businessTransactionId } = req.body;
+      const { businessTransactionId } = req.body ?? {};
 
       try {
         if (!isValidBusinessTransactionId(businessTransactionId)) {

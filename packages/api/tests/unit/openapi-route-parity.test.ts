@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import express from "express";
 import { describe, expect, it } from "vitest";
 import { parse } from "yaml";
 
@@ -10,6 +11,34 @@ import { generateKeyPairSync } from "node:crypto";
 import { createApplication } from "../../src/application.js";
 import { createApp } from "../../src/app.js";
 import { createExecutionSystem } from "../../src/bootstrap/createExecutionSystem.js";
+
+/**
+ * Express 5 does not keep a router's mount path on its layer (only a
+ * matcher function), so the path is recorded here as each use() call
+ * adds layers. Installed before createApp below so every mount is seen.
+ */
+const MOUNT_PATH = Symbol("mountPath");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const routerPrototype = (express.Router as any).prototype;
+const originalUse = routerPrototype.use;
+routerPrototype.use = function use(
+  this: { stack: Array<Record<symbol, unknown>> },
+  ...args: unknown[]
+) {
+  const before = this.stack.length;
+  const result = originalUse.apply(this, args);
+  const mountPath =
+    typeof args[0] === "function" ||
+    (Array.isArray(args[0]) && typeof args[0][0] === "function")
+      ? "/"
+      : args[0];
+
+  for (const layer of this.stack.slice(before)) {
+    layer[MOUNT_PATH] = mountPath;
+  }
+
+  return result;
+};
 
 /**
  * The app with every optional route mounted, so each one is checked
@@ -66,62 +95,20 @@ const DOC_SURFACE_ALLOWLIST = new Set(["get /documentation", "get /reference"]);
 
 interface ExpressLayer {
   route?: {
+    path: unknown;
     methods: Record<string, boolean>;
   };
-  regexp: RegExp;
-  keys: Array<{ name: string | number }>;
   handle?: { stack?: ExpressLayer[] };
-}
-
-/**
- * Express 5 (path-to-regexp v8) layer regexps follow a predictable shape:
- * a mount-prefix layer's regexp ends in \/?(?=\/|$) (optional trailing
- * slash, followed by / or end-of-string); a leaf route layer's regexp
- * ends in \/?$ (optional trailing slash, then end). Every :param becomes
- * (?:\/([^/]+?)) in registration order, matching layer.keys in the same
- * order. There is no other stored copy of the original path string on an
- * Express 5 Layer before it has matched a real request (layer.path is a
- * getter populated only during matching), so this is the only way to
- * recover route templates without issuing a live HTTP request per route.
- */
-function regexpToTemplate(regexp: RegExp, keys: ExpressLayer["keys"]): string {
-  let src = regexp.source;
-
-  src = src.replace(/^\^/, "");
-  src = src.replace(/\\\/\?\(\?=\\\/\|\$\)$/, "");
-  src = src.replace(/\\\/\?\$$/, "");
-
-  let keyIndex = 0;
-  src = src.replace(
-    /\(\?:\\\/\(\[\^\/\]\+\?\)\)/g,
-    () => `/:${keys[keyIndex++]?.name}`,
-  );
-
-  // Unescape the regex-escaped literal characters path-to-regexp emits
-  // for static segments (e.g. \/well-known\/jwks\.json -> /well-known/jwks.json).
-  src = src.replace(/\\([./])/g, "$1");
-
-  const stillEncoded = src.match(/[()?[\]]/);
-
-  if (stillEncoded) {
-    throw new Error(
-      `regexpToTemplate could not fully decode ${regexp.source} -- ` +
-        `unexpected regex metacharacter '${stillEncoded[0]}' survived ` +
-        "conversion. Express's path-to-regexp output shape has likely " +
-        "changed; update this converter rather than trusting its output.",
-    );
-  }
-
-  return src;
+  [MOUNT_PATH]?: unknown;
 }
 
 function findMountedRoutes(expressApp: unknown): Set<string> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const router = (expressApp as any)._router;
+  const router = (expressApp as any).router;
 
   if (!router?.stack) {
     throw new Error(
-      "app._router.stack not found -- Express's internal router shape " +
+      "app.router.stack not found -- Express's internal router shape " +
         "has likely changed across a version bump. Update this test's " +
         "introspection to match, rather than silently skipping it.",
     );
@@ -132,8 +119,16 @@ function findMountedRoutes(expressApp: unknown): Set<string> {
   function walk(stack: ExpressLayer[], prefix: string): void {
     for (const layer of stack) {
       if (layer.route) {
-        const template = regexpToTemplate(layer.regexp, layer.keys);
-        const full = (prefix + template).replace(/\/+/g, "/") || "/";
+        if (typeof layer.route.path !== "string") {
+          throw new Error(
+            `Route path ${String(layer.route.path)} is not a string -- ` +
+              "update this test to handle it rather than skipping it.",
+          );
+        }
+
+        const full =
+          (prefix + layer.route.path).replace(/\/+/g, "/").replace(/\/$/, "") ||
+          "/";
 
         for (const [method, enabled] of Object.entries(layer.route.methods)) {
           if (enabled) {
@@ -145,8 +140,17 @@ function findMountedRoutes(expressApp: unknown): Set<string> {
       }
 
       if (layer.handle?.stack) {
-        const prefixAddition = regexpToTemplate(layer.regexp, layer.keys);
-        walk(layer.handle.stack, prefix + prefixAddition);
+        const mountPath = layer[MOUNT_PATH];
+
+        if (typeof mountPath !== "string") {
+          throw new Error(
+            `A router is mounted at ${String(mountPath)}, not a single ` +
+              "path string -- update this test to handle it rather than " +
+              "skipping it.",
+          );
+        }
+
+        walk(layer.handle.stack, prefix + mountPath);
       }
     }
   }

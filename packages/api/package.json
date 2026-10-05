@@ -25,7 +25,7 @@
     "@parmana/storage": "0.1.0",
     "@vercel/connect": "^2.3.5",
     "@vercel/oidc-aws-credentials-provider": "^3.3.9",
-    "express": "^4.22.3",
+    "express": "^5.2.1",
     "express-rate-limit": "^8.7.0",
     "pg": "^8.23.1",
     "resend": "^6.32.0"
