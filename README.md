@@ -56,6 +56,9 @@ the agent was allowed to do it.
 - **Claims you can check.** [docs/CLAIMS.md](docs/CLAIMS.md) states each claim at
   the scope its evidence supports, with the code and tests behind it, and lists
   what is not yet true.
+- **A standing challenge.** [SECURITY-CHALLENGE.md](SECURITY-CHALLENGE.md) lists
+  what counts as breaking Parmana on a copy you run yourself, and credits every
+  confirmed break.
 - **Attacks you can run.** `npm run evaluate` runs 16 attacks (replay, forgery,
   acting without a signed approval, policy substitution, gateway bypass, record
   tampering and more) and reports each one blocked or not, tied to the commit.

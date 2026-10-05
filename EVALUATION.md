@@ -133,6 +133,11 @@ except the SDKs. The SDKs are licensed under the Apache License 2.0: [typescript
 [python-connector-sdk/](python-connector-sdk/). `@parmana/sign` is a separate repository, also
 under the Apache License 2.0.
 
+## Break it
+
+[SECURITY-CHALLENGE.md](SECURITY-CHALLENGE.md) lists what counts as breaking Parmana on a
+copy you run yourself, what does not, and how to report a break privately.
+
 ## Questions and feedback
 
 Email [founder@parmanasystems.com](mailto:founder@parmanasystems.com) for questions, a guided
