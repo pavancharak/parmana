@@ -270,15 +270,22 @@ describe("PolicyValidator refusals, exactly", () => {
       );
     });
 
-    it.each(["(a+)+", "(a*)*", "(a+){2,}", "(a{2})+", "x(b+)*y", "(a)(b+)+"])(
-      "refuses the nested quantifier %s",
-      (pattern) => {
-        refuses(
-          matching(pattern),
-          `'matches' pattern '${pattern}' contains a nested quantifier (a quantified group whose own contents are themselves quantified, e.g. '(a+)+') -- a common source of catastrophic backtracking (ReDoS) once evaluated against live signal values. Rewrite the pattern to avoid quantifying a group that already contains a quantifier.`,
-        );
-      },
-    );
+    it.each([
+      "(a+)+",
+      "(a+){2}",
+      "(a{2,3})+",
+      "(a+){10}",
+      "(a*)*",
+      "(a+){2,}",
+      "(a{2})+",
+      "x(b+)*y",
+      "(a)(b+)+",
+    ])("refuses the nested quantifier %s", (pattern) => {
+      refuses(
+        matching(pattern),
+        `'matches' pattern '${pattern}' contains a nested quantifier (a quantified group whose own contents are themselves quantified, e.g. '(a+)+') -- a common source of catastrophic backtracking (ReDoS) once evaluated against live signal values. Rewrite the pattern to avoid quantifying a group that already contains a quantifier.`,
+      );
+    });
 
     it.each(["(ab)+", "(a|b)*", "a+(b)", "(a+)", "^ref-\\d+$"])(
       "accepts %s",

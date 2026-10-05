@@ -68,6 +68,15 @@ describe("signal types are enforced before rules run", () => {
     expect(decide(signals).matchedRuleId).toBe("signal-type-violation");
   });
 
+  it("names null and arrays as such", () => {
+    expect(decide({ refundAmount: null }).reason).toBe(
+      "Rejected: signal(s) do not have the type the policy declares (refundAmount must be number, got null).",
+    );
+    expect(decide({ region: ["eu"] }).reason).toBe(
+      "Rejected: signal(s) do not have the type the policy declares (region must be string, got array).",
+    );
+  });
+
   it("names every mismatching signal", () => {
     expect(
       decide({ refundAmount: "5", customerVerified: "yes", region: "eu" })
