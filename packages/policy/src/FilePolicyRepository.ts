@@ -25,6 +25,36 @@ import { PolicyWriteRejectedError } from "./errors/PolicyWriteRejectedError.js";
 const VALID_NAME_OR_VERSION = /^[A-Za-z0-9._-]+$/;
 
 /**
+ * True when `name` and `version` are safe single path segments: the
+ * pattern above, and not "." or ".." (which the pattern allows but
+ * path.join() treats as directory steps; found by CodeQL
+ * js/path-injection, see file-policy-repository.test.ts).
+ */
+function isSafeSegmentPair(name: string, version: string): boolean {
+  return [name, version].every(
+    (segment) =>
+      VALID_NAME_OR_VERSION.test(segment) &&
+      segment !== "." &&
+      segment !== "..",
+  );
+}
+
+/**
+ * Resolves `<basePath>/<name>/<version>` and confirms it stays inside
+ * basePath, as a second check on top of isSafeSegmentPair().
+ */
+function versionDirectoryWithin(
+  basePath: string,
+  name: string,
+  version: string,
+): string | undefined {
+  const root = path.resolve(basePath);
+  const directory = path.resolve(root, name, version);
+
+  return directory.startsWith(root + path.sep) ? directory : undefined;
+}
+
+/**
  * File-based Policy Repository.
  *
  * Layout:
@@ -38,14 +68,15 @@ export class FilePolicyRepository implements PolicyRepository {
   constructor(private readonly basePath: string) {}
 
   public async load(name: string, version: string): Promise<Policy> {
-    if (
-      !VALID_NAME_OR_VERSION.test(name) ||
-      !VALID_NAME_OR_VERSION.test(version)
-    ) {
+    const directory = isSafeSegmentPair(name, version)
+      ? versionDirectoryWithin(this.basePath, name, version)
+      : undefined;
+
+    if (directory === undefined) {
       throw new PolicyNotFoundError(name, version);
     }
 
-    const file = path.join(this.basePath, name, version, "policy.json");
+    const file = path.join(directory, "policy.json");
 
     try {
       const json = await readFile(file, "utf8");
@@ -69,14 +100,13 @@ export class FilePolicyRepository implements PolicyRepository {
     version: string,
     content: Policy,
   ): Promise<void> {
-    if (
-      !VALID_NAME_OR_VERSION.test(name) ||
-      !VALID_NAME_OR_VERSION.test(version)
-    ) {
+    const directory = isSafeSegmentPair(name, version)
+      ? versionDirectoryWithin(this.basePath, name, version)
+      : undefined;
+
+    if (directory === undefined) {
       throw new PolicyWriteRejectedError(name, version);
     }
-
-    const directory = path.join(this.basePath, name, version);
 
     const file = path.join(directory, "policy.json");
 

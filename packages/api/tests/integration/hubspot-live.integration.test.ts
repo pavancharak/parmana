@@ -284,8 +284,10 @@ describe.skipIf(!hubspotLiveConfigured)(
       // failure or a bug that never left this process: exactly one real
       // call landed on api.hubapi.com, and a real client-error status
       // came back.
-      const hubspotCalls = observed.filter((entry) =>
-        entry.url.startsWith("https://api.hubapi.com/crm/v3/objects/deals/"),
+      const hubspotCalls = observed.filter(
+        (entry) =>
+          new URL(entry.url).host === "api.hubapi.com" &&
+          new URL(entry.url).pathname.startsWith("/crm/v3/objects/deals/"),
       );
       expect(hubspotCalls).toHaveLength(1);
       expect(hubspotCalls[0]?.status).toBeGreaterThanOrEqual(400);
@@ -319,8 +321,8 @@ describe.skipIf(!hubspotLiveConfigured)(
       // Policy rejection happens in ExecutionGate.enforce, before
       // ExecutionComponent ever dispatches to the connector — zero real
       // HubSpot calls for the denial itself.
-      const hubspotCalls = observed.filter((entry) =>
-        entry.url.startsWith("https://api.hubapi.com"),
+      const hubspotCalls = observed.filter(
+        (entry) => new URL(entry.url).host === "api.hubapi.com",
       );
       expect(hubspotCalls).toHaveLength(0);
     }, 30_000);
