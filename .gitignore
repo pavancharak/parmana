@@ -91,3 +91,4 @@ skills-lock.json
 # Private working notes, kept only on the author's machine and never
 # committed or published (for example, unfiled invention ideas).
 docs/private/
+release-dist/
