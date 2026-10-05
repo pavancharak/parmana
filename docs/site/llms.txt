@@ -54,6 +54,7 @@ This file is generated from the documentation navigation. Do not edit it by hand
 ## Concepts: Verification and evidence
 
 * [Verification](https://docs.parmanasystems.com/verification/overview): Exactly 3 checks, always run, always reported independently.
+* [Verify a record in your browser](https://docs.parmanasystems.com/verification/verify-in-browser): Paste a signed Execution Trust Record and a public key, and check the hash and the Ed25519 signature in your browser. Nothing is uploaded.
 * [Replay](https://docs.parmanasystems.com/replay/overview): Two separate things share this name today, what each actually does.
 * [Cryptography](https://docs.parmanasystems.com/cryptography/overview): Ed25519 default, ML-DSA-65 (post-quantum) configurable. Local PEM keys or AWS KMS for the signing key; other key custody is roadmap.
 * [Storage](https://docs.parmanasystems.com/storage/overview): Append-only persistence for Business Transactions, Trust Records, and policies.

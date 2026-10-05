@@ -12,6 +12,13 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-05
 
+**Added: verify a record in your browser**
+
+- [Verify a record in your browser](/verification/verify-in-browser) checks a signed Execution
+  Trust Record's hash and Ed25519 signature with Web Crypto, in the reader's browser. It comes
+  with an example record and a changed copy that fails, and can fetch the sandbox's public key.
+  A test runs the page's code against records signed by Parmana's signer.
+
 **Added: a threat model**
 
 - [THREAT-MODEL.md](https://github.com/pavancharak/parmana/blob/main/THREAT-MODEL.md) lists the assets, trust boundaries and

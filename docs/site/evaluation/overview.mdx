@@ -136,7 +136,9 @@ change to the server image.
 ## 6. Verify a record without Parmana
 
 Every approved action produces a signed Execution Trust Record. It can be checked with only the
-record and the public keys, using [`@parmana/sign`](/sdks/parmana-sign/overview) (Apache 2.0,
+record and the public keys. The quickest way is
+[Verify a record in your browser](/verification/verify-in-browser): paste a record and a key,
+nothing is uploaded. For scripts, use [`@parmana/sign`](/sdks/parmana-sign/overview) (Apache 2.0,
 a separate repository) or this repository's `scripts/verify-trust-record.ts`:
 
 ```bash
