@@ -6,27 +6,38 @@ import { createErrorHandler } from "../../src/middleware/error-handler.js";
 
 /**
  * On Vercel, a malformed JSON body returned 500 (found 2026-09-28 from
- * production logs). Vercel's Node.js runtime defines a lazy req.body
- * getter; express.json() reads req.body first, so the getter throws
+ * production logs). Vercel's Node.js runtime reads the request body
+ * itself and defines a lazy req.body getter (with a setter) that throws
  * Error("Invalid JSON") with statusCode 400, not body-parser's
- * entity.parse.failed error. This reproduces that chain: a getter that
- * throws the same way, then the real express.json() and error handler.
+ * entity.parse.failed error. This reproduces that chain: the stream is
+ * already consumed, so express.json() skips parsing, and the route's
+ * read of req.body throws into the real error handler.
  */
 function appBehindVercelBodyGetter(error: Error) {
   const app = express();
 
   app.use((req, _res, next) => {
-    Object.defineProperty(req, "body", {
-      configurable: true,
-      get() {
-        throw error;
-      },
+    req.on("data", () => {});
+    req.on("end", () => {
+      Object.defineProperty(req, "body", {
+        configurable: true,
+        get() {
+          throw error;
+        },
+        set(value: unknown) {
+          Object.defineProperty(req, "body", {
+            configurable: true,
+            writable: true,
+            value,
+          });
+        },
+      });
+      next();
     });
-    next();
   });
   app.use(express.json());
-  app.post("/x", (_req, res) => {
-    res.status(200).json({ reached: true });
+  app.post("/x", (req, res) => {
+    res.status(200).json({ reached: true, body: req.body as unknown });
   });
   app.use(createErrorHandler());
 
