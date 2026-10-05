@@ -67,6 +67,27 @@ Two TypeScript versions are installed, each for what it can do
 - TypeScript majors are upgraded by hand; Dependabot ignores them. ADR-0015 lists the steps to
   finish the move to 7 once `typescript-eslint` and `typedoc` support it.
 
+## Mutation testing
+
+`npm run mutation -- <package>` runs [Stryker](https://stryker-mutator.io) on one or more
+packages, for example `npm run mutation -- envelope-verifier approval`. Run `npm run build`
+first. Stryker makes small deliberate changes to the package's `src` (a `<=` turned into `<`, a
+condition forced to `true`, a call removed), one at a time, and runs that package's tests against
+each. The mutation score is the share of those changes the tests catch: it says more about the
+tests than a test count or line coverage does.
+
+The command prints a score per package and writes `reports/mutation/<package>.html` and `.json`
+(not committed). Open the HTML report to see each change the tests missed. It is slow, because
+every change runs the package's whole test suite, so it is not part of `npm test` or CI.
+
+| Package             | Score | Caught | Missed | Run on     |
+| ------------------- | ----- | ------ | ------ | ---------- |
+| `envelope-verifier` | 89.7% | 104    | 12     | 2026-10-05 |
+
+Scores for the other security-critical packages (`approval`, `policy`, `execution-gateway`,
+`crypto`) will be added here when their first run completes. `stryker.config.mjs` explains why
+the command runner is used rather than Stryker's Vitest plugin.
+
 ## Principles a change must keep
 
 - The policy decides; nothing executes without an approved decision.

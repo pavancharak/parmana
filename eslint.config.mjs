@@ -9,6 +9,10 @@ export default [
       "**/coverage/**",
       "**/node_modules/**",
 
+      // npm run mutation: Stryker's copy of the repository, and its reports.
+      ".stryker-tmp/**",
+      "reports/**",
+
       // Legacy/generated JS examples
       "typescript/**",
     ],

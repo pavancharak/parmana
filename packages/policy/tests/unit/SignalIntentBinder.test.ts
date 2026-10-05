@@ -131,4 +131,33 @@ describe("SignalIntentBinder", () => {
 
     expect(mismatching).toHaveLength(1);
   });
+
+  // Found by mutation testing: a path that passes through a value that is
+  // not an object was untested. It must resolve to nothing (a violation),
+  // never read a property of a string or throw on null.
+  it("does not read through a string or null on the way to a bound value", () => {
+    const binder = new SignalIntentBinder();
+    const policy: Policy = {
+      ...policyWithBindings,
+      boundSignals: { declared: "parameters.order.length" },
+    };
+
+    // "abcd".length is 4: following the path into the string would make
+    // a declared 4 look bound to the Intent.
+    const throughString = binder.findViolations(
+      policy,
+      { declared: 4 },
+      { target: "t", parameters: { order: "abcd" } },
+    );
+    expect(throughString).toHaveLength(1);
+    expect(throughString[0]!.intentValue).toBeUndefined();
+
+    const throughNull = binder.findViolations(
+      policy,
+      { declared: 4 },
+      { target: "t", parameters: { order: null } },
+    );
+    expect(throughNull).toHaveLength(1);
+    expect(throughNull[0]!.intentValue).toBeUndefined();
+  });
 });
