@@ -12,6 +12,14 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-05
 
+**Changed: a request whose signals do not have the declared types is refused**
+
+- Every signal a policy declares in `signalsSchema` must now have that type (`boolean`, `number`
+  or `string`) before any rule runs. A mismatch, such as an amount sent as `"500"`, is refused
+  with `matchedRuleId` `signal-type-violation` and a reason naming the signal. Signals the
+  policy does not declare, and signals not sent, are not affected. A policy whose
+  `signalsSchema` uses any other type no longer validates.
+
 **Added: mutation testing of the security packages**
 
 - `npm run mutation -- <package>` measures how many deliberate changes to the security code the

@@ -71,14 +71,15 @@ First run: 2026-10-05.
 | `PolicyValidator` (47.4%, 409 survivors): authoring-time validation of policy files                                                               | Indirect: catches mistakes before approval, decides nothing at request time                      | Left for a later pass                                                                     |
 | `SupabasePolicyRepository`, `PolicyRegistry`, error classes (0 to 50%)                                                                            | No unit tests in this package; covered by integration tests elsewhere, or unused at request time | Left                                                                                      |
 
-**Finding, not yet changed:** signal types are not checked before rules run. Each policy
-declares them in `signalsSchema`, but that is only used to tell an agent what to send. A numeric
-signal sent as text (`"150000"`) makes every numeric operator false, so a rule written as
-"reject if amount gt X, otherwise approve" would not reject it. The shipped policies tested
-(`customer-refund` 1.2.0) still refuse such a request through a later rule and the approval
-check, and no bypass was found. The proposed fix is to refuse a request whose signals do not match
-the policy's declared types before any rule runs; it changes server behavior and is tracked
-separately.
+**Finding, now fixed:** signal types were not checked before rules ran. Each policy declares
+them in `signalsSchema`, but that was only used to tell an agent what to send. A numeric signal
+sent as text (`"150000"`) makes every numeric operator false, so a rule written as "reject if
+amount gt X, otherwise approve" would not reject it. The shipped policies tested
+(`customer-refund` 1.2.0) still refused such a request through a later rule and the approval
+check, and no bypass was found. Now `PolicyEngine` refuses a request whose declared signals do
+not have the declared types before any rule runs (`signal-type-violation`), and
+`PolicyValidator` refuses a `signalsSchema` type other than `boolean`, `number` or `string`
+([CLAIMS 2.52](CLAIMS.md), threat T18 in [THREAT-MODEL.md](../THREAT-MODEL.md)).
 
 ### execution-gateway
 
