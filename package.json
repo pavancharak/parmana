@@ -80,7 +80,7 @@
     "typedoc-plugin-markdown": "^4.13.1",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.71.0",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.3"
   },
   "dependencies": {
     "swagger-ui-express": "^5.0.1",
