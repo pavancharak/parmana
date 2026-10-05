@@ -8364,12 +8364,15 @@ package with [slsa-verifier](https://github.com/slsa-framework/slsa-verifier):
 slsa-verifier verify-artifact parmana-sdk-1.5.0.tgz \
   --provenance-path multiple.intoto.jsonl \
   --source-uri github.com/pavancharak/parmana \
-  --source-tag sdk-v1.5.0
+  --source-tag sdk-v1.5.0-r1
 ```
 
-The provenance covers the files attached to the release. The npm and PyPI packages are published
-separately, from the same commit; compare a registry download's SHA-256 with the release file's
-to tie the two together.
+The provenance covers the files attached to the release. From the next SDK versions on, the files
+published to npm and PyPI are the release's own files, so a registry download has the same SHA-256
+as the release file and the provenance covers it too. The versions on npm and PyPI today
+(`@parmana/sdk` and `parmana` 1.5.0, the connector SDKs 0.2.0) were built before this workflow
+existed, so they are not byte for byte the files in release `sdk-v1.5.0-r1`, although they come
+from the same source.
 
 These are hygiene checks on the code and its supply chain. They do not replace a review of the
 enforcement design; see the [Audit guide](/evaluation/audit-guide) for that.
