@@ -5,6 +5,7 @@ import type {
 } from "./types/Policy.js";
 
 import { PolicyValidationError } from "./errors/PolicyValidationError.js";
+import { SIGNAL_TYPES } from "./signalTypes.js";
 import { collectReferencedFacts } from "./policySignalRequirements.js";
 
 /**
@@ -115,6 +116,28 @@ export class PolicyValidator {
 
     if (policy.rules.length === 0) {
       throw new PolicyValidationError("Policy must contain at least one rule.");
+    }
+
+    //
+    // signalsSchema: every declared type must be one PolicyEngine checks.
+    //
+
+    if (policy.signalsSchema !== undefined) {
+      if (
+        typeof policy.signalsSchema !== "object" ||
+        policy.signalsSchema === null ||
+        Array.isArray(policy.signalsSchema)
+      ) {
+        throw new PolicyValidationError("signalsSchema must be an object.");
+      }
+
+      for (const [signalKey, type] of Object.entries(policy.signalsSchema)) {
+        if (!(SIGNAL_TYPES as readonly unknown[]).includes(type)) {
+          throw new PolicyValidationError(
+            `signalsSchema.${signalKey} must be one of ${SIGNAL_TYPES.join(", ")}; got ${JSON.stringify(type)}.`,
+          );
+        }
+      }
     }
 
     //

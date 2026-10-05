@@ -102,3 +102,9 @@ export { PolicyOutcome } from "./types/PolicyOutcome.js";
 // -----------------------------------------------------------------------------
 
 export * from "./errors/index.js";
+export {
+  findSignalTypeViolations,
+  SIGNAL_TYPES,
+  type SignalType,
+  type SignalTypeViolation,
+} from "./signalTypes.js";
