@@ -56,6 +56,8 @@ the agent was allowed to do it.
 - **Claims you can check.** [docs/CLAIMS.md](docs/CLAIMS.md) states each claim at
   the scope its evidence supports, with the code and tests behind it, and lists
   what is not yet true.
+- **A threat model with its gaps.** [THREAT-MODEL.md](THREAT-MODEL.md) gives each
+  threat its control, the attack that tests it and the risk that remains.
 - **A standing challenge.** [SECURITY-CHALLENGE.md](SECURITY-CHALLENGE.md) lists
   what counts as breaking Parmana on a copy you run yourself, and credits every
   confirmed break.
