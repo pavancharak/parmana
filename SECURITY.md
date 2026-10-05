@@ -30,6 +30,12 @@ compromised infrastructure to demonstrate (see the
 [security limitations](https://docs.parmanasystems.com/security/limitations) page),
 denial-of-service against the demo deployments, and social engineering.
 
+## Security challenge
+
+[SECURITY-CHALLENGE.md](SECURITY-CHALLENGE.md) invites you to break Parmana's claims on a copy
+you run yourself: what counts as a break, what does not, and how breaks are credited. It
+covers local copies only, never the hosted API or the sandbox.
+
 ## Acknowledged reports
 
 We are happy to credit reporters by name in release notes, with your
