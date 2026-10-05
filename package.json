@@ -45,6 +45,8 @@
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "examples": "tsx scripts/run-examples.ts",
+    "preevaluate": "tsx scripts/check-dist-fresh.ts",
+    "evaluate": "tsx scripts/evaluate.ts",
     "loadtest": "tsx scripts/load-test.ts",
     "generate:python-models": "tsx python/scripts/generate_models.ts",
     "check:python-models": "tsx python/scripts/generate_models.ts --check",
