@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run openapi && ./node_modules/.bin/tsc -b",
+  "buildCommand": "npm run openapi && node node_modules/typescript7/bin/tsc -b",
   "installCommand": "npm install --include=dev",
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
