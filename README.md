@@ -56,6 +56,9 @@ the agent was allowed to do it.
 - **Claims you can check.** [docs/CLAIMS.md](docs/CLAIMS.md) states each claim at
   the scope its evidence supports, with the code and tests behind it, and lists
   what is not yet true.
+- **Attacks you can run.** `npm run evaluate` runs 16 attacks (replay, forgery,
+  acting without a signed approval, policy substitution, gateway bypass, record
+  tampering and more) and reports each one blocked or not, tied to the commit.
 - **Fails closed.** A misconfigured server refuses to start; a request without a
   valid approval is refused and the refusal is recorded.
 - **Policy changes need two people.** A proposed policy change takes effect only
@@ -189,7 +192,13 @@ npm ci
 npm run build
 npm test
 npm run examples
+npm run evaluate
 ```
+
+`npm run evaluate` runs the 16 attack scenarios in
+[evaluations/scenarios.json](evaluations/scenarios.json) and prints whether each was blocked;
+[EVALUATION.md](EVALUATION.md#3-run-the-attack-scenarios) explains the result and the report
+it writes.
 
 To see the full chain run against a local mock connector, no network
 access or credentials required:
