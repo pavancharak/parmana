@@ -47,5 +47,7 @@ project is held to, and the engineering references that code or tests cite.
 - [../LICENSE](../LICENSE): proprietary, source available for evaluation.
 - [../SECURITY.md](../SECURITY.md): reporting a vulnerability.
 - [../THREAT-MODEL.md](../THREAT-MODEL.md): threats, controls, evidence and residual risk.
+- [../governance/README.md](../governance/README.md): the public, hash chained log of policy
+  change approvals, and how to verify it.
 - [../SECURITY-CHALLENGE.md](../SECURITY-CHALLENGE.md): what counts as breaking Parmana on a
   local copy.
