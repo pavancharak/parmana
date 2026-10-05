@@ -8350,7 +8350,7 @@ Also enabled on the repository:
   [SECURITY.md](https://github.com/pavancharak/parmana/blob/main/SECURITY.md).
 - GitHub Actions and Docker base images pinned to exact commits and digests, and workflow tokens
   limited to read access.
-- Signed build provenance for every SDK release (below).
+- Signed build provenance and a CycloneDX SBOM for every SDK release (below).
 
 ### Verifying an SDK package from a GitHub release
 
@@ -8373,6 +8373,16 @@ as the release file and the provenance covers it too. The versions on npm and Py
 (`@parmana/sdk` and `parmana` 1.5.0, the connector SDKs 0.2.0) were built before this workflow
 existed, so they are not byte for byte the files in release `sdk-v1.5.0-r1`, although they come
 from the same source.
+
+Each npm package and each wheel also has a [CycloneDX](https://cyclonedx.org) 1.5 SBOM beside it,
+named after it (for example `parmana-sdk-1.5.0.tgz.cdx.json`): the package, and every dependency
+installed with it, with versions and package URLs. For the npm packages it lists runtime
+dependencies only; for `parmana` it includes the optional `verify` extra (`cryptography`). The
+versions are the ones resolved when the release was built; a later install can resolve newer
+versions within the declared ranges. The provenance covers the SBOM files too, so the same
+`slsa-verifier` command checks them. Feed an SBOM to a scanner such as
+[Grype](https://github.com/anchore/grype) or [OSV-Scanner](https://github.com/google/osv-scanner) to
+check the dependencies for known vulnerabilities.
 
 These are hygiene checks on the code and its supply chain. They do not replace a review of the
 enforcement design; see the [Audit guide](/evaluation/audit-guide) for that.
