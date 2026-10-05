@@ -30,6 +30,12 @@ compromised infrastructure to demonstrate (see the
 [security limitations](https://docs.parmanasystems.com/security/limitations) page),
 denial-of-service against the demo deployments, and social engineering.
 
+## Threat model
+
+[THREAT-MODEL.md](THREAT-MODEL.md) lists what Parmana protects, the attackers it is designed
+against and those it assumes away, and for each threat the control, the evidence and the
+residual risk.
+
 ## Security challenge
 
 [SECURITY-CHALLENGE.md](SECURITY-CHALLENGE.md) invites you to break Parmana's claims on a copy
