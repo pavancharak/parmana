@@ -95,3 +95,8 @@ release-dist/
 
 # npm run evaluate output
 evaluation-report.json
+
+# npm run mutation output
+reports/
+.stryker-tmp/
+stryker.log

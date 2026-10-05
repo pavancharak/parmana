@@ -8,7 +8,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   test: {
     include: ["**/test/**/*.test.ts", "**/tests/**/*.test.ts"],
-    exclude: ["**/node_modules/**", "**/dist/**"],
+    // .stryker-tmp: the repository copy npm run mutation works in.
+    exclude: ["**/node_modules/**", "**/dist/**", ".stryker-tmp/**"],
     environment: "node",
     passWithNoTests: true,
 
