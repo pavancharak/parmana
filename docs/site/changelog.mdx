@@ -20,11 +20,21 @@ every commit, run `git log` in the repository for the complete record.
   policy does not declare, and signals not sent, are not affected. A policy whose
   `signalsSchema` uses any other type no longer validates.
 
+**Changed: a partially chained Execution fails the execution chain check**
+
+- Verifying an Execution Trust Record now fails when an `Execution` carries only some of its
+  chain fields (`chainHash`, `chainSignature`, `previousChainHash`), or has none after a chained
+  one. Before, such an `Execution` was skipped as data from before chaining, so an edited one with
+  its `chainSignature` removed passed the chain check; the record's own signature still caught
+  the edit. Records the runtime writes are unaffected: it always writes both fields together.
+  `docs/VERIFICATION-GAPS.md` G-89.
+
 **Added: mutation testing of the security packages**
 
 - `npm run mutation -- <package>` measures how many deliberate changes to the security code the
-  tests catch. First scores: `envelope-verifier` 89.7%, `approval` 77.7%, `policy` 50.3%. The
-  gaps that matter for security now have tests; see
+  tests catch. First scores: `envelope-verifier` 89.7%, `approval` 77.7%, `policy` 50.3%,
+  `execution-gateway` 67.6%, `crypto` 65.4% (on Node 22, which skips the ML-DSA-65 tests; the
+  command now needs Node 24). The gaps that matter for security now have tests; see
   [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).
 
 **Added: an SBOM with every SDK release**

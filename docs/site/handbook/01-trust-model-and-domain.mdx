@@ -76,7 +76,12 @@ independently produced by evaluation itself.
 wraps exactly one `Decision`, has its own `ExecutionStatus` (`PROCESSING | COMPLETED |
 FAILED`) and `ExecutionMode` (`SYNC | ASYNC`), and optionally carries a hash-chained
 `previousChainHash`/`chainHash`/`chainSignature` linking it to the prior `Execution` for the
-same transaction (see `ExecutionChainCrypto`, Chapter 3).
+same transaction (see `ExecutionChainCrypto`, Chapter 3). Verification recomputes each chained
+`Execution`'s hash and checks its signature and its link to the one before. An `Execution` with no
+chain fields is accepted only before the first chained one, as data from before chaining existed;
+one carrying only some of the fields, or an unchained one after a chained one, fails the check
+(`docs/VERIFICATION-GAPS.md` G-89). Every `Execution` is also inside the trust record's own hash
+and signature, so the chain is a second layer, not the only one.
 
 **`ExecutionTrustRecord`** (`execution-trust-record.ts`), the aggregate root: one
 `BusinessTransaction`, arrays of `overrides`/`executions`/`verifications`/`receipts` (arrays,
