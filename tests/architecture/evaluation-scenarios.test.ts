@@ -98,3 +98,27 @@ describe("the Reproduce column on the Claims and evidence page", () => {
     }
   });
 });
+
+describe("THREAT-MODEL.md", () => {
+  const model = readFileSync(path.join(root, "THREAT-MODEL.md"), "utf8");
+  const ids = new Set(scenarios.map((s) => s.id));
+
+  it("names only scenarios that exist", () => {
+    const named = [...model.matchAll(/\bEV-\d{2}\b/g)].map((m) => m[0]);
+    expect(named.length).toBeGreaterThan(0);
+    for (const id of named) expect(ids.has(id), id).toBe(true);
+  });
+
+  it("cites only claims that exist in docs/CLAIMS.md", () => {
+    const rows = model.split("\n").filter((line) => /^\| T\d+ /.test(line));
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      const evidence = row.split("|")[5] ?? "";
+      for (const [claim] of evidence.matchAll(/\b\d\.\d{1,2}\b/g)) {
+        expect(claims, `${row.split("|")[1]?.trim()}: ${claim}`).toMatch(
+          new RegExp(`^## ${claim.replace(".", "\\.")} `, "m"),
+        );
+      }
+    }
+  });
+});
