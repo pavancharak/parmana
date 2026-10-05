@@ -2,162 +2,168 @@
 // docs/site/verification/verify-in-browser.mdx. It runs entirely in the
 // reader's browser with Web Crypto: nothing is uploaded.
 //
-// verifyParmanaTrustRecord must match @parmana/sign's
+// verifyParmanaTrustRecord, defined inside RecordVerifier, must match @parmana/sign's
 // verifyExecutionTrustRecordOffline for the hash and the ed25519
 // `signature` field. tests/architecture/browser-record-verifier.test.ts
 // runs the code between the BEGIN and END markers against records signed
 // by Parmana's own signer, and compares the result with @parmana/crypto.
 
-// BEGIN verifyParmanaTrustRecord
-export const verifyParmanaTrustRecord = async (record, publicKeyPem) => {
-  const subtle = globalThis.crypto.subtle;
-  const encoder = new TextEncoder();
-  const errors = [];
-  const notes = [];
+export const RecordVerifier = ({ exampleRecord, examplePublicKey }) => {
+  // Defined inside the component: Mintlify renders each exported
+  // component on its own, so a helper outside it is not available.
+  // BEGIN verifyParmanaTrustRecord
+  const verifyParmanaTrustRecord = async (record, publicKeyPem) => {
+    const subtle = globalThis.crypto.subtle;
+    const encoder = new TextEncoder();
+    const errors = [];
+    const notes = [];
 
-  // Same rules as @parmana/sign's CanonicalSerializer: object keys sorted,
-  // array order kept, then JSON.stringify.
-  const normalize = (value) => {
-    if (value === null || typeof value !== "object") return value;
-    if (Array.isArray(value)) return value.map(normalize);
-    return Object.keys(value)
-      .sort()
-      .reduce((out, key) => {
-        Object.defineProperty(out, key, {
-          value: normalize(value[key]),
-          enumerable: true,
-          writable: true,
-          configurable: true,
-        });
-        return out;
-      }, {});
-  };
-  const canonicalBytes = (value) =>
-    encoder.encode(JSON.stringify(normalize(value)));
-  const hex = (buffer) =>
-    Array.from(new Uint8Array(buffer), (b) =>
-      b.toString(16).padStart(2, "0"),
-    ).join("");
-  const fromBase64 = (text) =>
-    Uint8Array.from(atob(text), (c) => c.charCodeAt(0));
-
-  if (typeof record !== "object" || record === null || Array.isArray(record)) {
-    return {
-      valid: false,
-      hashValid: false,
-      signatureValid: false,
-      errors: ["The record is not a JSON object."],
-      notes,
+    // Same rules as @parmana/sign's CanonicalSerializer: object keys sorted,
+    // array order kept, then JSON.stringify.
+    const normalize = (value) => {
+      if (value === null || typeof value !== "object") return value;
+      if (Array.isArray(value)) return value.map(normalize);
+      return Object.keys(value)
+        .sort()
+        .reduce((out, key) => {
+          Object.defineProperty(out, key, {
+            value: normalize(value[key]),
+            enumerable: true,
+            writable: true,
+            configurable: true,
+          });
+          return out;
+        }, {});
     };
-  }
+    const canonicalBytes = (value) =>
+      encoder.encode(JSON.stringify(normalize(value)));
+    const hex = (buffer) =>
+      Array.from(new Uint8Array(buffer), (b) =>
+        b.toString(16).padStart(2, "0"),
+      ).join("");
+    const fromBase64 = (text) =>
+      Uint8Array.from(atob(text), (c) => c.charCodeAt(0));
 
-  // The fields Parmana hashes and signs (ExecutionTrustRecordCanonicalView).
-  const view = {
-    trustRecordId: record.trustRecordId,
-    businessTransactionId: record.businessTransactionId,
-    transaction: record.transaction,
-    authorization: record.authorization,
-    overrides: record.overrides,
-    executions: record.executions,
-    createdAt: record.createdAt,
-  };
-  const bytes = canonicalBytes(view);
+    if (
+      typeof record !== "object" ||
+      record === null ||
+      Array.isArray(record)
+    ) {
+      return {
+        valid: false,
+        hashValid: false,
+        signatureValid: false,
+        errors: ["The record is not a JSON object."],
+        notes,
+      };
+    }
 
-  const digest = hex(await subtle.digest("SHA-256", bytes));
-  const hashValid = digest === record.trustRecordHash;
-  if (!hashValid) {
-    errors.push(
-      `trustRecordHash does not match the content: computed ${digest}, record says ${String(record.trustRecordHash)}.`,
-    );
-  }
+    // The fields Parmana hashes and signs (ExecutionTrustRecordCanonicalView).
+    const view = {
+      trustRecordId: record.trustRecordId,
+      businessTransactionId: record.businessTransactionId,
+      transaction: record.transaction,
+      authorization: record.authorization,
+      overrides: record.overrides,
+      executions: record.executions,
+      createdAt: record.createdAt,
+    };
+    const bytes = canonicalBytes(view);
 
-  const signature = record.signature;
-  let signatureValid = false;
-  let signedForm;
-  if (
-    typeof signature !== "object" ||
-    signature === null ||
-    typeof signature.value !== "string"
-  ) {
-    errors.push("The record has no signature.");
-  } else if (signature.algorithm !== "ed25519") {
-    errors.push(
-      `The signature algorithm is ${String(signature.algorithm)}; this page checks ed25519 only. Use @parmana/sign.`,
-    );
-  } else {
-    try {
-      const der = fromBase64(
-        String(publicKeyPem)
-          .replace(/-----(BEGIN|END) PUBLIC KEY-----/g, "")
-          .replace(/\s+/g, ""),
-      );
-      const key = await subtle.importKey(
-        "spki",
-        der,
-        { name: "Ed25519" },
-        false,
-        ["verify"],
-      );
-      const signatureBytes = fromBase64(signature.value);
-      if (
-        await subtle.verify({ name: "Ed25519" }, key, signatureBytes, bytes)
-      ) {
-        signatureValid = true;
-        signedForm = "raw";
-      } else if (bytes.length > 4096) {
-        // Messages over 4096 bytes may be signed as a commitment
-        // (ADR-0010): a fixed prefix, then the SHA-512 of the message.
-        const prefix = encoder.encode("PARMANA-ED25519-LARGE-MESSAGE-V1\0");
-        const sha512 = new Uint8Array(await subtle.digest("SHA-512", bytes));
-        const commitment = new Uint8Array(prefix.length + sha512.length);
-        commitment.set(prefix);
-        commitment.set(sha512, prefix.length);
-        if (
-          await subtle.verify(
-            { name: "Ed25519" },
-            key,
-            signatureBytes,
-            commitment,
-          )
-        ) {
-          signatureValid = true;
-          signedForm = "commitment";
-        }
-      }
-      if (!signatureValid) {
-        errors.push(
-          `The signature does not verify with this public key. The record names key "${String(signature.keyId)}"; check that the key you pasted is that key.`,
-        );
-      }
-    } catch (error) {
-      const name = error && error.name;
+    const digest = hex(await subtle.digest("SHA-256", bytes));
+    const hashValid = digest === record.trustRecordHash;
+    if (!hashValid) {
       errors.push(
-        name === "NotSupportedError"
-          ? "This browser does not support Ed25519 in Web Crypto. Use a current Chrome, Edge, Firefox or Safari, or @parmana/sign."
-          : `The public key or signature could not be read: ${error && error.message ? error.message : String(error)}`,
+        `trustRecordHash does not match the content: computed ${digest}, record says ${String(record.trustRecordHash)}.`,
       );
     }
-  }
 
-  if (Array.isArray(record.signatures) && record.signatures.length > 0) {
-    notes.push(
-      "The record also carries a hybrid signatures array (for example ML-DSA-65). This page does not check it; @parmana/sign does.",
-    );
-  }
+    const signature = record.signature;
+    let signatureValid = false;
+    let signedForm;
+    if (
+      typeof signature !== "object" ||
+      signature === null ||
+      typeof signature.value !== "string"
+    ) {
+      errors.push("The record has no signature.");
+    } else if (signature.algorithm !== "ed25519") {
+      errors.push(
+        `The signature algorithm is ${String(signature.algorithm)}; this page checks ed25519 only. Use @parmana/sign.`,
+      );
+    } else {
+      try {
+        const der = fromBase64(
+          String(publicKeyPem)
+            .replace(/-----(BEGIN|END) PUBLIC KEY-----/g, "")
+            .replace(/\s+/g, ""),
+        );
+        const key = await subtle.importKey(
+          "spki",
+          der,
+          { name: "Ed25519" },
+          false,
+          ["verify"],
+        );
+        const signatureBytes = fromBase64(signature.value);
+        if (
+          await subtle.verify({ name: "Ed25519" }, key, signatureBytes, bytes)
+        ) {
+          signatureValid = true;
+          signedForm = "raw";
+        } else if (bytes.length > 4096) {
+          // Messages over 4096 bytes may be signed as a commitment
+          // (ADR-0010): a fixed prefix, then the SHA-512 of the message.
+          const prefix = encoder.encode("PARMANA-ED25519-LARGE-MESSAGE-V1\0");
+          const sha512 = new Uint8Array(await subtle.digest("SHA-512", bytes));
+          const commitment = new Uint8Array(prefix.length + sha512.length);
+          commitment.set(prefix);
+          commitment.set(sha512, prefix.length);
+          if (
+            await subtle.verify(
+              { name: "Ed25519" },
+              key,
+              signatureBytes,
+              commitment,
+            )
+          ) {
+            signatureValid = true;
+            signedForm = "commitment";
+          }
+        }
+        if (!signatureValid) {
+          errors.push(
+            `The signature does not verify with this public key. The record names key "${String(signature.keyId)}"; check that the key you pasted is that key.`,
+          );
+        }
+      } catch (error) {
+        const name = error && error.name;
+        errors.push(
+          name === "NotSupportedError"
+            ? "This browser does not support Ed25519 in Web Crypto. Use a current Chrome, Edge, Firefox or Safari, or @parmana/sign."
+            : `The public key or signature could not be read: ${error && error.message ? error.message : String(error)}`,
+        );
+      }
+    }
 
-  return {
-    valid: hashValid && signatureValid,
-    hashValid,
-    signatureValid,
-    keyId: signature && signature.keyId,
-    signedForm,
-    errors,
-    notes,
+    if (Array.isArray(record.signatures) && record.signatures.length > 0) {
+      notes.push(
+        "The record also carries a hybrid signatures array (for example ML-DSA-65). This page does not check it; @parmana/sign does.",
+      );
+    }
+
+    return {
+      valid: hashValid && signatureValid,
+      hashValid,
+      signatureValid,
+      keyId: signature && signature.keyId,
+      signedForm,
+      errors,
+      notes,
+    };
   };
-};
-// END verifyParmanaTrustRecord
+  // END verifyParmanaTrustRecord
 
-export const RecordVerifier = ({ exampleRecord, examplePublicKey }) => {
   const [recordText, setRecordText] = useState("");
   const [keyText, setKeyText] = useState("");
   const [result, setResult] = useState(null);
@@ -186,6 +192,14 @@ export const RecordVerifier = ({ exampleRecord, examplePublicKey }) => {
         return;
       }
       setResult(await verifyParmanaTrustRecord(record, pem));
+    } catch (error) {
+      setResult({
+        valid: false,
+        errors: [
+          `Verification could not run: ${error && error.message ? error.message : String(error)}`,
+        ],
+        notes: [],
+      });
     } finally {
       setBusy(false);
     }
