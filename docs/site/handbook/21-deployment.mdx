@@ -28,7 +28,7 @@ both.
 
 ```json
 {
-  "buildCommand": "npm run openapi && ./node_modules/.bin/tsc -b",
+  "buildCommand": "npm run openapi && node node_modules/typescript7/bin/tsc -b",
   "installCommand": "npm install --include=dev",
   "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
   "functions": {
@@ -38,6 +38,9 @@ both.
   }
 }
 ```
+
+The build compiles with TypeScript 7, installed as the `typescript7` alias next to TypeScript 6,
+which lint and documentation tools still need (ADR-0015 in the repository).
 
 Every route is rewritten to a single serverless Function, `api/index.ts`. `includeFiles` is
 notable: it explicitly bundles `policies/**` into the deployed Function, since the Function's
