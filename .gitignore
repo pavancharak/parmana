@@ -92,3 +92,6 @@ skills-lock.json
 # committed or published (for example, unfiled invention ideas).
 docs/private/
 release-dist/
+
+# npm run evaluate output
+evaluation-report.json
