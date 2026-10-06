@@ -52,6 +52,16 @@ import type { PolicyChangeApprovalService } from "../governance/PolicyChangeAppr
 
 const VALID_NAME_OR_VERSION = /^[A-Za-z0-9._-]+$/;
 
+/**
+ * A name or version is used as a path segment by FilePolicyRepository.
+ * The pattern above allows "." and "..", which are directory steps, so
+ * they are refused here with a 400 instead of failing later inside the
+ * approve flow (G-88; the repository refuses them too).
+ */
+function isSafeNameOrVersion(value: string): boolean {
+  return VALID_NAME_OR_VERSION.test(value) && value !== "." && value !== "..";
+}
+
 const policyValidator = new PolicyValidator();
 
 /**
@@ -120,11 +130,12 @@ export function createPendingPolicyChangesRouter(
         if (
           name === undefined ||
           version === undefined ||
-          !VALID_NAME_OR_VERSION.test(name) ||
-          !VALID_NAME_OR_VERSION.test(version)
+          !isSafeNameOrVersion(name) ||
+          !isSafeNameOrVersion(version)
         ) {
           res.status(400).json({
-            error: "name and version must match ^[A-Za-z0-9._-]+$.",
+            error:
+              'name and version must match ^[A-Za-z0-9._-]+$ and not be "." or "..".',
           });
           return;
         }
@@ -174,11 +185,11 @@ export function createPendingPolicyChangesRouter(
          */
         if (
           typeof candidate.policyVersion !== "string" ||
-          !VALID_NAME_OR_VERSION.test(candidate.policyVersion)
+          !isSafeNameOrVersion(candidate.policyVersion)
         ) {
           res.status(400).json({
             error:
-              "proposedContent.policyVersion must match ^[A-Za-z0-9._-]+$.",
+              'proposedContent.policyVersion must match ^[A-Za-z0-9._-]+$ and not be "." or "..".',
           });
           return;
         }
