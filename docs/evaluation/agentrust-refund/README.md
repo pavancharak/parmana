@@ -68,7 +68,7 @@ implementation.
 | `tool_transcript.hash`       | `sha256:` over the canonical list of connector calls made for the request                                                                   | To define                                                     |
 | `origin`                     | `kind: "third-party-control-plane"`, `producer: "parmana"`, `source_event_id`: the record id                                                | Available                                                     |
 | `references`                 | The Parmana record: id, resolver `GET /trust-records/{id}` or `GET /refusal/{id}`, digest = record hash                                     | Available                                                     |
-| `build_provenance`           | `slsa_level: 0` for the server today (only the SDK packages ship SLSA provenance); `digest`: to agree                                       | Partly                                                        |
+| `build_provenance`           | The server image `ghcr.io/pavancharak/parmana-api` carries SLSA provenance from the first release after 2026-10-06; `digest`: that image's  | Partly: the hosted deployment is built by Vercel, without it  |
 | `appraisal`                  | No hardware evidence to appraise: `status: "none"`                                                                                          | To agree                                                      |
 | `cnf`                        | The key that signs the TRACE record. Parmana signs its own records with its own canonical form, not the TRACE form                          | Open: an adapter key, or Parmana's key signing the TRACE form |
 

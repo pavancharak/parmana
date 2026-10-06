@@ -8395,6 +8395,23 @@ versions within the declared ranges. The provenance covers the SBOM files too, s
 [Grype](https://github.com/anchore/grype) or [OSV-Scanner](https://github.com/google/osv-scanner) to
 check the dependencies for known vulnerabilities.
 
+### Verifying the server image
+
+From the first release published after 2026-10-06, each release also builds the API server from
+the repository's `Dockerfile` and pushes it to the GitHub Container Registry as
+`ghcr.io/pavancharak/parmana-api:<release tag>`, with SLSA build provenance attached to the image
+in the registry. To check an image before you run it:
+
+```bash
+slsa-verifier verify-image ghcr.io/pavancharak/parmana-api@sha256:<digest> \
+  --source-uri github.com/pavancharak/parmana \
+  --source-tag <release tag>
+```
+
+Verify by digest, not by tag: a tag can be moved, a digest cannot. Then run that digest. The
+provenance covers this image only. The hosted API and the public sandbox are built by Vercel from
+the same repository, not from this image, and carry no SLSA provenance.
+
 These are hygiene checks on the code and its supply chain. They do not replace a review of the
 enforcement design; see the [Audit guide](/evaluation/audit-guide) for that.
 
