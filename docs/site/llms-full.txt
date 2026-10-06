@@ -8360,6 +8360,8 @@ Also enabled on the repository:
 - Every open issue, with what to do meanwhile: [Limitations](/security/limitations#open-issues).
 - Each risk in the OWASP Top 10 for LLM Applications and the OWASP Top 10 for Agentic
   Applications (2026), with what Parmana does and the evidence: [OWASP mapping](/security/owasp-mapping).
+- Human oversight and record keeping under the EU AI Act (Articles 12, 14, 26), the NIST AI RMF,
+  ISO/IEC 42001 and RBI guidance: [Regulation mapping](/security/regulation-mapping).
 
 ### Verifying an SDK package from a GitHub release
 
