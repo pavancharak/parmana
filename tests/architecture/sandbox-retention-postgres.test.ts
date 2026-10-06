@@ -191,6 +191,48 @@ describe("the sandbox retention job against real Postgres", () => {
     expect(await count("external_connectors")).toBe(1);
   });
 
+  it("previews a 0 day period, reporting the counts and deleting nothing (G-86)", async () => {
+    await seedRegistration();
+    await seedVisitorData();
+
+    const preview = await db.query<{ table_name: string; deleted: string }>(
+      "SELECT * FROM parmana_sandbox_retention_preview(0)",
+    );
+    const reported = Object.fromEntries(
+      preview.rows.map((row) => [row.table_name, Number(row.deleted)]),
+    );
+
+    expect(reported.business_transactions).toBe(2);
+    expect(reported.caller_audit_events).toBe(2);
+    expect(reported.handbook_download_leads).toBe(2);
+    expect(await count("business_transactions")).toBe(2);
+    expect(await count("caller_audit_events")).toBe(2);
+    expect(await count("handbook_download_leads")).toBe(2);
+    expect(await count("sandbox_retention_runs")).toBe(0);
+  });
+
+  it("the preview deletes nothing even with no transaction around it (G-86)", async () => {
+    await seedRegistration();
+    await seedVisitorData();
+    // Commit the seed, then call the preview on its own, as an editor that
+    // commits each statement, or a transaction pooler, would.
+    await db.exec("COMMIT");
+    try {
+      await db.query("SELECT * FROM parmana_sandbox_retention_preview(0)");
+      expect(await count("business_transactions")).toBe(2);
+      expect(await count("caller_audit_events")).toBe(2);
+    } finally {
+      await db.exec(`
+        DELETE FROM business_transactions;
+        DELETE FROM caller_audit_events;
+        DELETE FROM handbook_download_leads;
+        DELETE FROM external_connectors;
+        DELETE FROM external_connector_changes;
+      `);
+      await db.exec("BEGIN");
+    }
+  });
+
   it("refuses a database without the active sandbox:receipt registration", async () => {
     await seedVisitorData();
 
