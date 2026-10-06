@@ -98,7 +98,8 @@ the agent was allowed to do it.
   available.
 - **Supply chain hygiene in the open.**
   [OpenSSF Scorecard](https://scorecard.dev/viewer/?uri=github.com/pavancharak/parmana),
-  CodeQL on every change, and SDK releases with signed build provenance.
+  CodeQL on every change, and signed build provenance for SDK releases and the
+  server image.
 
 **Try it without an account:** the [docs playground](https://docs.parmanasystems.com/playground)
 sends real requests to a public sandbox, and the SDKs are open source (Apache 2.0):
