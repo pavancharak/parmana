@@ -34,7 +34,9 @@ every commit, run `git log` in the repository for the complete record.
 - `npm run mutation -- <package>` measures how many deliberate changes to the security code the
   tests catch. First scores: `envelope-verifier` 89.7%, `approval` 77.7%, `policy` 50.3%,
   `execution-gateway` 67.6%, `crypto` 65.4% (on Node 22, which skips the ML-DSA-65 tests; the
-  command now needs Node 24). The gaps that matter for security now have tests; see
+  command now needs Node 24). Re-run on Node 24 after the fixes: `envelope-verifier` 94.0%,
+  `approval` 93.9%, `policy` 96.0%, `crypto` 85.0%, `execution-gateway` 83.6%. The gaps that
+  matter for security now have tests; see
   [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).
 
 **Added: an SBOM with every SDK release**

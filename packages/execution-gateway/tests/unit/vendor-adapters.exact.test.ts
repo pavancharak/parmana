@@ -26,6 +26,7 @@ import {
   GatewayHubSpotAdapter,
   GatewaySlackAdapter,
 } from "../../src/connector-execution/index.js";
+import { HttpConnector } from "../../src/HttpConnector.js";
 
 /**
  * Mutation testing found these checks in the Slack, HubSpot and GitHub
@@ -353,5 +354,41 @@ describe("GatewayHttpAdapter, exactly", () => {
       (args) => (args[1]!.headers as Record<string, string>).Authorization,
     );
     expect(headers).toEqual(["Bearer t-1", undefined, undefined]);
+  });
+});
+
+describe("HttpConnector", () => {
+  it("posts the transaction with its authorization to /execute, and refuses a non-2xx answer", async () => {
+    const fetchSpy = stubFetch({ success: true });
+    const connector = new HttpConnector({
+      baseUrl: "http://127.0.0.1:9",
+      headers: { "X-Key": "k" },
+    } as never);
+    const request = {
+      transaction: { businessTransactionId: "btx-1", action: "a" },
+      authorization: { keyId: "default" },
+    } as never;
+
+    await expect(connector.execute(request)).resolves.toEqual({
+      success: true,
+    });
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(String(url)).toBe("http://127.0.0.1:9/execute");
+    expect(init).toMatchObject({
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Key": "k" },
+    });
+    expect(JSON.parse(String(init!.body))).toEqual({
+      businessTransactionId: "btx-1",
+      action: "a",
+      authorization: { keyId: "default" },
+    });
+
+    fetchSpy.mockImplementation(
+      async () => new Response("{}", { status: 503 }),
+    );
+    await expect(connector.execute(request)).rejects.toThrow(
+      "Connector returned HTTP 503.",
+    );
   });
 });

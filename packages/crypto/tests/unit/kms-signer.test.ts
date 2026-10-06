@@ -483,3 +483,68 @@ describe("KmsSigner", () => {
 // make clear the fixture is a genuine Ed25519 keypair, not just a
 // standalone public key with no matching private half).
 void realPrivateKeyObject;
+
+/**
+ * Mutation testing found these KmsSigner refusals untested: an empty
+ * answer from KMS, an alias name that is empty or carries characters a
+ * logical key id may not, and the exact moment a cached key expires.
+ */
+describe("KmsSigner, exactly", () => {
+  beforeEach(() => {
+    process.env.AWS_REGION = "us-east-1";
+    delete process.env.AWS_ROLE_ARN;
+    sendMock.mockReset();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    if (ORIGINAL_AWS_REGION === undefined) delete process.env.AWS_REGION;
+    else process.env.AWS_REGION = ORIGINAL_AWS_REGION;
+  });
+
+  it("refuses a Sign answer with no signature", async () => {
+    const KmsSigner = await freshKmsSigner();
+    sendMock.mockResolvedValue({});
+    const signer = await KmsSigner.create();
+    await expect(
+      signer.sign("default", new Uint8Array([1, 2, 3])),
+    ).rejects.toThrow("KMS Sign returned no signature for key default.");
+  });
+
+  it("refuses a GetPublicKey answer with no key material", async () => {
+    const KmsSigner = await freshKmsSigner();
+    sendMock.mockResolvedValue({});
+    const signer = await KmsSigner.create();
+    await expect(signer.getPublicKey("default")).rejects.toThrow(
+      "KMS GetPublicKey returned no key material for default.",
+    );
+  });
+
+  it.each(["alias/", "alias/a b", "alias/key:1", "alias/a*b"])(
+    "refuses the alias %j",
+    async (keyId) => {
+      const { resolveKmsKeyId } =
+        await import("../../src/providers/signer/KmsSigner.js");
+      expect(() => resolveKmsKeyId(keyId)).toThrow(/^Invalid KMS keyId/);
+    },
+  );
+
+  it("keeps a public key for exactly five minutes", async () => {
+    vi.useFakeTimers({ now: new Date("2026-10-05T00:00:00Z") });
+    const KmsSigner = await freshKmsSigner();
+    const { KMS_KEY_CACHE_TTL_MS } =
+      await import("../../src/providers/signer/KmsSigner.js");
+    expect(KMS_KEY_CACHE_TTL_MS).toBe(300_000);
+    sendMock.mockResolvedValue({ PublicKey: new Uint8Array(realPublicKeyDer) });
+    const signer = await KmsSigner.create();
+
+    await signer.getPublicKey("default");
+    vi.advanceTimersByTime(KMS_KEY_CACHE_TTL_MS - 1);
+    await signer.getPublicKey("default");
+    expect(sendMock).toHaveBeenCalledTimes(1);
+
+    vi.advanceTimersByTime(1);
+    await signer.getPublicKey("default");
+    expect(sendMock).toHaveBeenCalledTimes(2);
+  });
+});
