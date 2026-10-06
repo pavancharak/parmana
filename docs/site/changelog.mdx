@@ -12,6 +12,23 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-06
 
+**Added: policy content hash in Refusal Records**
+
+- A Refusal Record now carries `policyContentHash`, the SHA-256 hash of the policy content that decided the refusal,
+  inside the signed record. It is the same value an Execution Trust Record carries in
+  `transaction.policy.contentHash`, so a refusal and an approval under the same policy can be matched. See
+  [Refusal Records](/concepts/refusal-records).
+- Records written before this change have no `policyContentHash` and still verify.
+- Self managed deployments: apply the new migration with `npm run db:migrate -- apply` before deploying this version.
+  The Docker Compose deployment applies it on start.
+
+**Added: server image with signed build provenance**
+
+- Each GitHub release now builds the API server from the repository's `Dockerfile` and publishes it as
+  `ghcr.io/pavancharak/parmana-api:<release tag>`, with [SLSA](https://slsa.dev) build provenance attached to the
+  image in the registry. See [Verifying the server image](/security/overview#verifying-the-server-image).
+- The provenance covers that image only. The hosted API and the public sandbox are built by Vercel and carry none.
+
 **Added: technical paper, talk and demo videos**
 
 - [Technical paper](/evaluation/paper): Parmana's design, threat model, evaluation (attack scenarios, mutation

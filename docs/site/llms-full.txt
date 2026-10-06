@@ -7413,6 +7413,10 @@ Build and run the image:
 docker build -t parmana-api .
 ```
 
+Or use the image published with each GitHub release, `ghcr.io/pavancharak/parmana-api:<release tag>`. Check it with
+`slsa-verifier` first and run it by digest, as shown in
+[Verifying the server image](/security/overview#verifying-the-server-image).
+
 Then start it on your host with the variables from step 5. The server validates every required setting before it opens the port. A wrong value makes it exit at once with a message that names the variable.
 
 **Check** (replace `$URL` with your server's base URL):
@@ -8350,7 +8354,8 @@ Also enabled on the repository:
   [SECURITY.md](https://github.com/pavancharak/parmana/blob/main/SECURITY.md).
 - GitHub Actions and Docker base images pinned to exact commits and digests, and workflow tokens
   limited to read access.
-- Signed build provenance and a CycloneDX SBOM for every SDK release (below).
+- Signed build provenance and a CycloneDX SBOM for every SDK release, and signed build provenance for the server
+  image published with each release (below).
 - Mutation testing of the security-critical packages, run by hand (`npm run mutation`). The
   scores, the gaps found and what was fixed are in
   [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).

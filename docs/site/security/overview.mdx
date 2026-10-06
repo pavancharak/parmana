@@ -181,7 +181,8 @@ Also enabled on the repository:
   [SECURITY.md](https://github.com/pavancharak/parmana/blob/main/SECURITY.md).
 - GitHub Actions and Docker base images pinned to exact commits and digests, and workflow tokens
   limited to read access.
-- Signed build provenance and a CycloneDX SBOM for every SDK release (below).
+- Signed build provenance and a CycloneDX SBOM for every SDK release, and signed build provenance for the server
+  image published with each release (below).
 - Mutation testing of the security-critical packages, run by hand (`npm run mutation`). The
   scores, the gaps found and what was fixed are in
   [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).
