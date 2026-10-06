@@ -38,6 +38,10 @@ provenance (`multiple.intoto.jsonl`) covering all of them. Wait for the workflow
 the release to show eleven files: six packages, four SBOMs and the provenance. A release on an existing tag that predates the
 workflow does not run it.
 
+Publishing the release also runs `.github/workflows/server-image.yml`, which pushes the server image
+`ghcr.io/pavancharak/parmana-api:<tag>` with SLSA provenance. Check that run is green too. After the first run, set
+the `parmana-api` package to Public in its package settings on GitHub; a new package starts private.
+
 ## 5. Publish the release's own file to npm
 
 Publish the file the release built, not a local build, so the package on npm is byte for byte the
