@@ -38,11 +38,11 @@ for the run, and the connector is the mock.
 
 ## The three cases and the expected outcomes
 
-| Case             | Request                                                                            | Expected HTTP       | Decision | Connector invocations | Signed record                                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------- | ------------------- | -------- | --------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `valid-approval` | Refund of 500 for `order-eval-1`, with a manager approval for that order up to 500 | 200                 | APPROVED | 1 (mock result)       | Execution Trust Record, Ed25519, with the policy content hash                                              |
-| `refusal`        | Refund of 500 for `order-eval-2`, every caller fact `true`, no approval            | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, Ed25519, verified by `POST /refusal/verify`; rule `signal-state-verification-violation`    |
-| `replay`         | The approval from `valid-approval`, sent again with a new request                  | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, as above; reason: the approval was already used, so it verifies as `managerApproved=false` |
+| Case             | Request                                                                            | Expected HTTP       | Decision | Connector invocations | Signed record                                                                                                                     |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------------- | -------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `valid-approval` | Refund of 500 for `order-eval-1`, with a manager approval for that order up to 500 | 200                 | APPROVED | 1 (mock result)       | Execution Trust Record, Ed25519, with the policy content hash                                                                     |
+| `refusal`        | Refund of 500 for `order-eval-2`, every caller fact `true`, no approval            | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, Ed25519, same policy content hash, verified by `POST /refusal/verify`; rule `signal-state-verification-violation` |
+| `replay`         | The approval from `valid-approval`, sent again with a new request                  | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, as above; reason: the approval was already used, so it verifies as `managerApproved=false`                        |
 
 The test fails if any of these does not hold, including if the connector is invoked more than once in total.
 
@@ -53,24 +53,24 @@ evidence about one decision and, when approved, one connector invocation. The ma
 what Parmana can supply, and marks what it cannot. It is a proposal to agree with a maintainer, not an
 implementation.
 
-| TRACE field                  | From Parmana                                                                                                                       | Status                                                                 |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `eat_profile`                | Constant `tag:agentrust-io.com,2026:trace-v0.2`                                                                                    | Available                                                              |
-| `iat`                        | `createdAt` of the Trust Record or Refusal Record                                                                                  | Available                                                              |
-| `subject`                    | The calling agent. Parmana knows the caller id of the API key, not a SPIFFE ID or DID                                              | Needs an identity mapping from the integrator                          |
-| `model`                      | Parmana does not see the model behind the agent                                                                                    | Must come from the agent side                                          |
-| `runtime`                    | `platform: "software-only"`; Parmana runs no attested hardware. `measurement`: to agree (for example a digest of the server build) | Partly                                                                 |
-| `policy.bundle_hash`         | `sha256:` + the policy content hash in the record (`transaction.policy.contentHash`)                                               | Available for approved requests; Refusal Records do not carry it today |
-| `policy.enforcement_mode`    | `enforce`: the server acted on the decision                                                                                        | Available                                                              |
-| `policy.version`             | `customer-refund@1.2.0`                                                                                                            | Available                                                              |
-| `data_class`                 | Not modelled by Parmana                                                                                                            | Declared by the integrator                                             |
-| `tool_transcript.call_count` | Connector invocations for the request: 1, 0, 0 in the three cases                                                                  | Available                                                              |
-| `tool_transcript.hash`       | `sha256:` over the canonical list of connector calls made for the request                                                          | To define                                                              |
-| `origin`                     | `kind: "third-party-control-plane"`, `producer: "parmana"`, `source_event_id`: the record id                                       | Available                                                              |
-| `references`                 | The Parmana record: id, resolver `GET /trust-records/{id}` or `GET /refusal/{id}`, digest = record hash                            | Available                                                              |
-| `build_provenance`           | `slsa_level: 0` for the server today (only the SDK packages ship SLSA provenance); `digest`: to agree                              | Partly                                                                 |
-| `appraisal`                  | No hardware evidence to appraise: `status: "none"`                                                                                 | To agree                                                               |
-| `cnf`                        | The key that signs the TRACE record. Parmana signs its own records with its own canonical form, not the TRACE form                 | Open: an adapter key, or Parmana's key signing the TRACE form          |
+| TRACE field                  | From Parmana                                                                                                                                | Status                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `eat_profile`                | Constant `tag:agentrust-io.com,2026:trace-v0.2`                                                                                             | Available                                                     |
+| `iat`                        | `createdAt` of the Trust Record or Refusal Record                                                                                           | Available                                                     |
+| `subject`                    | The calling agent. Parmana knows the caller id of the API key, not a SPIFFE ID or DID                                                       | Needs an identity mapping from the integrator                 |
+| `model`                      | Parmana does not see the model behind the agent                                                                                             | Must come from the agent side                                 |
+| `runtime`                    | `platform: "software-only"`; Parmana runs no attested hardware. `measurement`: to agree (for example a digest of the server build)          | Partly                                                        |
+| `policy.bundle_hash`         | `sha256:` + the policy content hash: `transaction.policy.contentHash` in an Execution Trust Record, `policyContentHash` in a Refusal Record | Available                                                     |
+| `policy.enforcement_mode`    | `enforce`: the server acted on the decision                                                                                                 | Available                                                     |
+| `policy.version`             | `customer-refund@1.2.0`                                                                                                                     | Available                                                     |
+| `data_class`                 | Not modelled by Parmana                                                                                                                     | Declared by the integrator                                    |
+| `tool_transcript.call_count` | Connector invocations for the request: 1, 0, 0 in the three cases                                                                           | Available                                                     |
+| `tool_transcript.hash`       | `sha256:` over the canonical list of connector calls made for the request                                                                   | To define                                                     |
+| `origin`                     | `kind: "third-party-control-plane"`, `producer: "parmana"`, `source_event_id`: the record id                                                | Available                                                     |
+| `references`                 | The Parmana record: id, resolver `GET /trust-records/{id}` or `GET /refusal/{id}`, digest = record hash                                     | Available                                                     |
+| `build_provenance`           | `slsa_level: 0` for the server today (only the SDK packages ship SLSA provenance); `digest`: to agree                                       | Partly                                                        |
+| `appraisal`                  | No hardware evidence to appraise: `status: "none"`                                                                                          | To agree                                                      |
+| `cnf`                        | The key that signs the TRACE record. Parmana signs its own records with its own canonical form, not the TRACE form                          | Open: an adapter key, or Parmana's key signing the TRACE form |
 
 Questions for the maintainer before implementing:
 

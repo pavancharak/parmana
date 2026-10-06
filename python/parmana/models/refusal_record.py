@@ -53,3 +53,5 @@ class RefusalRecord:
     binding_violations: list[RefusalBindingViolation] | None = None
 
     submitted_by: str | None = None
+
+    policy_content_hash: str | None = None

@@ -38,6 +38,7 @@ export class RefusalRecordBuilder {
     evaluatedIntent: RefusalIntentSnapshot,
     bindingViolations: readonly RefusalBindingViolation[] | undefined,
     submittedBy: string | undefined,
+    policyContentHash?: string,
   ): Promise<RefusalRecord> {
     const now = new Date();
 
@@ -59,6 +60,7 @@ export class RefusalRecordBuilder {
         : {}),
 
       ...(submittedBy !== undefined ? { submittedBy } : {}),
+      ...(policyContentHash !== undefined ? { policyContentHash } : {}),
 
       createdAt: now,
     };

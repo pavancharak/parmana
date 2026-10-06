@@ -45,6 +45,10 @@ export class RefusalCrypto {
 
       submittedBy: refusalRecord.submittedBy,
 
+      // Absent on records written before it existed; an absent key is
+      // left out of the canonical form, so those records still verify.
+      policyContentHash: refusalRecord.policyContentHash,
+
       createdAt: refusalRecord.createdAt,
     };
   }
