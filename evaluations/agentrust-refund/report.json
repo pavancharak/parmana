@@ -1,8 +1,8 @@
 {
-  "commit": "8685997f30bf6e3972275055f453df1604869c2e",
+  "commit": "b4deee66fa8f0aad29a7ddc916f7fb33eef0ff50",
   "workingTreeClean": true,
   "node": "v24.21.0",
-  "ranAt": "2026-10-06T12:34:11.232Z",
+  "ranAt": "2026-10-06T12:41:10.572Z",
   "scenario": "paytm:refund under customer-refund 1.2.0",
   "connector": "MockPaytmConnectorServer (hermetic, in process)",
   "limitation": "refundEligible and fraudCheckPassed are declared by the caller and not checked against any system; they can only refuse. The signed manager approval is what authorizes.",
@@ -19,8 +19,8 @@
       "reason": null,
       "record": {
         "type": "ExecutionTrustRecord",
-        "id": "f9c64079-3ddc-4fd4-a655-ad3604e29572",
-        "hash": "e2b0f9d21743ad600dd5272bd91983fa22d8cff6e54f613092010eec3dd49fd7",
+        "id": "78c69c4e-686a-40e8-adf3-a923ae403e47",
+        "hash": "545a20b8de6d010bf14da2e51598ded31ce07f77607cb6f9d7012ab3ecd456ac",
         "signatureAlgorithm": "ed25519",
         "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
         "matchedRuleId": null,
@@ -38,8 +38,8 @@
       "reason": "Execution rejected: Rejected: declared signal(s) do not match independently verified state (managerApproved=true != verified managerApproved=false).",
       "record": {
         "type": "RefusalRecord",
-        "id": "4c6ecd71-b0db-4cd3-94f9-1cea700c0264",
-        "hash": "4f7ff09890819304aa9f431ce76fde7b98419d32739e678d39a9dcc760d86918",
+        "id": "ab84cb47-50e8-4cc5-8a41-e3c899842c13",
+        "hash": "ac2f9f17387ea0bfc0bc3f663df92e57f2ec61eeb064b1192373ccee5f8c9046",
         "signatureAlgorithm": "ed25519",
         "policyContentHash": null,
         "matchedRuleId": "signal-state-verification-violation",
@@ -57,8 +57,8 @@
       "reason": "Execution rejected: Rejected: declared signal(s) do not match independently verified state (managerApproved=true != verified managerApproved=false).",
       "record": {
         "type": "RefusalRecord",
-        "id": "17845c46-c51c-4450-bd02-0040e89e785e",
-        "hash": "263a425de4fc9c8f13e46fd763392ed30ea7ac7ee3f9d13b03e77e9ff0204136",
+        "id": "f0a02236-9488-420e-a0e1-cd0f49728fc6",
+        "hash": "f977757880e1c310caea6d95a32089acbfddaa0ca5c7de8e02383de44202f071",
         "signatureAlgorithm": "ed25519",
         "policyContentHash": null,
         "matchedRuleId": "signal-state-verification-violation",
