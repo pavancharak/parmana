@@ -36,7 +36,10 @@ refusal is a single terminal event, so there is at most one per `businessTransac
 
 The record carries the exact rejected `Decision` (not summarized or reconstructed, the same
 `Decision` object `RuntimeEngine` already built), the `evaluatedIntent` snapshot, and, only when
-the rejection came from `SignalIntentBinder`, `bindingViolations`. `RefusalRecordBuilder`
+the rejection came from `SignalIntentBinder`, `bindingViolations`. Since 2026-10-06 it also carries
+`policyContentHash`, the hash of the policy content that decided the refusal, computed by `RuntimeEngine` from the
+policy that loaded, the same value an `ExecutionTrustRecord` carries in `transaction.policy.contentHash`; older
+records omit it and still verify. `RefusalRecordBuilder`
 (`packages/runtime/src/RefusalRecordBuilder.ts`) constructs and hashes the draft, then
 `RefusalCrypto` (`packages/crypto/src/RefusalCrypto.ts`) signs it, deliberately reusing the same
 signing stack and `DEFAULT_KEY_ID` as `VerificationCrypto`, so approvals and refusals share one
