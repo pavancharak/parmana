@@ -2,6 +2,8 @@ import { generateKeyPairSync } from "node:crypto";
 import type { KeyObject } from "node:crypto";
 import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
+import http from "node:http";
+import type { AddressInfo } from "node:net";
 import path from "node:path";
 
 import request from "supertest";
@@ -38,6 +40,56 @@ import { createInspectableExecutionSystem } from "../bootstrap/createInspectable
  * own comment for why the rest of the pipeline (POST /execute,
  * /transactions) stays actor-agnostic.
  */
+/**
+ * POSTs JSON to `rawPath` exactly as given, without the client side
+ * dot-segment resolution supertest applies.
+ */
+async function rawPost(
+  app: http.RequestListener,
+  rawPath: string,
+  apiKey: string,
+  body: unknown,
+): Promise<{ status: number; body: { error?: string } }> {
+  const server = http.createServer(app);
+  await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+
+  try {
+    const { port } = server.address() as AddressInfo;
+    const payload = JSON.stringify(body);
+
+    return await new Promise((resolve, reject) => {
+      const req = http.request(
+        {
+          host: "127.0.0.1",
+          port,
+          method: "POST",
+          path: rawPath,
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+            "Content-Length": Buffer.byteLength(payload),
+          },
+        },
+        (res) => {
+          let text = "";
+          res.setEncoding("utf8");
+          res.on("data", (chunk: string) => (text += chunk));
+          res.on("end", () =>
+            resolve({
+              status: res.statusCode ?? 0,
+              body: JSON.parse(text || "{}"),
+            }),
+          );
+        },
+      );
+      req.on("error", reject);
+      req.end(payload);
+    });
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
+}
+
 describe("Policy Governance: isHumanCaller, maker != checker, step-up (HTTP boundary)", () => {
   const HUMAN_MAKER_KEY = "governance-human-maker-raw-key-for-tests-only";
   const HUMAN_CHECKER_KEY = "governance-human-checker-raw-key-for-tests-only";
@@ -655,6 +707,47 @@ describe("Policy Governance: isHumanCaller, maker != checker, step-up (HTTP boun
 
       expect(response.status).toBe(400);
     });
+
+    it.each([".", ".."])(
+      "rejects a proposal whose proposedContent.policyVersion is %j with 400, before any approval (G-88)",
+      async (policyVersion) => {
+        const { app } = buildApp();
+        const name = "governance-propose-dot-version";
+
+        const response = await request(app)
+          .post(`/policies/${name}/1.0.0/pending-changes`)
+          .set("Authorization", `Bearer ${HUMAN_MAKER_KEY}`)
+          .send({
+            proposedContent: { ...policyBody(name), policyVersion },
+            reason: "test proposal",
+          });
+
+        expect(response.status).toBe(400);
+        expect(response.body.error).toContain('not be "." or ".."');
+      },
+    );
+
+    it.each(["%2E", "%2E%2E"])(
+      "rejects a proposal whose URL name is %s (a dot-only segment) with 400 (G-88)",
+      async (encodedName) => {
+        const { app } = buildApp();
+
+        // supertest resolves dot segments, even percent-encoded ones,
+        // before sending; a raw client does not, so send the path as is.
+        const response = await rawPost(
+          app,
+          `/policies/${encodedName}/1.0.0/pending-changes`,
+          HUMAN_MAKER_KEY,
+          {
+            proposedContent: policyBody("governance-propose-dot-name"),
+            reason: "test proposal",
+          },
+        );
+
+        expect(response.status).toBe(400);
+        expect(response.body.error).toContain('not be "." or ".."');
+      },
+    );
 
     it("fails closed (never resolves the pending change) when PolicyChangeApprovalService is not configured", async () => {
       const { executionSystem } = createInspectableExecutionSystem();
