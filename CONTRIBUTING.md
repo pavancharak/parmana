@@ -10,6 +10,8 @@ at [founder@parmanasystems.com](mailto:founder@parmanasystems.com) or as a GitHu
 Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 The rest of this file is the process for people working on Parmana under such an agreement.
+A second reviewer approves pull requests and reviews the security-critical code once in depth;
+[docs/REVIEWING.md](docs/REVIEWING.md) is their brief.
 
 Parmana authorizes and evidences what automated systems do, so correctness, determinism and
 verifiable evidence come before convenience.
