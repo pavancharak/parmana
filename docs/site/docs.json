@@ -581,7 +581,8 @@
             "pages": [
               "security/overview",
               "security/limitations",
-              "security/owasp-mapping"
+              "security/owasp-mapping",
+              "security/regulation-mapping"
             ]
           },
           {
