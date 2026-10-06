@@ -72,6 +72,9 @@ the agent was allowed to do it.
 - **Mapped to OWASP.** Each risk in the OWASP Top 10 for LLM Applications and
   for Agentic Applications (2026), with what Parmana does, the evidence, and what
   it leaves to you: [OWASP mapping](https://docs.parmanasystems.com/security/owasp-mapping).
+- **Mapped to regulation.** How Parmana supports human oversight and record
+  keeping under the EU AI Act (Articles 12, 14 and 26), the NIST AI RMF and
+  ISO/IEC 42001: [Regulation mapping](https://docs.parmanasystems.com/security/regulation-mapping).
 - **Open issues, listed.** Every gap still open, with its evidence and what to
   do meanwhile, is under "Open issues at a glance" in
   [docs/VERIFICATION-GAPS.md](docs/VERIFICATION-GAPS.md) and on the
