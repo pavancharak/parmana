@@ -72,6 +72,8 @@ the agent was allowed to do it.
 - **Mapped to OWASP.** Each risk in the OWASP Top 10 for LLM Applications and
   for Agentic Applications (2026), with what Parmana does, the evidence, and what
   it leaves to you: [OWASP mapping](https://docs.parmanasystems.com/security/owasp-mapping).
+- **Compared honestly.** Parmana next to IAM, API gateways and LLM guardrails,
+  including where it is weaker: [How Parmana compares](https://docs.parmanasystems.com/how-parmana-compares).
 - **Mapped to regulation.** How Parmana supports human oversight and record
   keeping under the EU AI Act (Articles 12, 14 and 26), the NIST AI RMF,
   ISO/IEC 42001 and RBI guidance for Indian banks and NBFCs: [Regulation mapping](https://docs.parmanasystems.com/security/regulation-mapping).
