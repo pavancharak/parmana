@@ -11,9 +11,10 @@
  * named by --project.
  *
  * `check` installs the function and the job inside a transaction, runs the
- * function with a 0 day period against the real data (so every delete runs
+ * preview with a 0 day period against the real data (so every delete runs
  * against the real foreign keys), prints what it would delete, and rolls
- * everything back. `install` installs the function and the daily job, and
+ * everything back. The preview undoes its own deletes, so the check deletes
+ * nothing even if the transaction is not held (G-86). `install` installs the function and the daily job, and
  * deletes nothing.
  */
 
@@ -54,6 +55,15 @@ if (ref === PRODUCTION_PROJECT || project === PRODUCTION_PROJECT) {
   process.exit(1);
 }
 
+// Port 6543 is Supabase's transaction pooler: it can send each statement to
+// a different server connection, so BEGIN and ROLLBACK may not hold.
+if (target.port === "6543") {
+  console.error(
+    "That is the transaction pooler (port 6543). Use the session pooler string, port 5432. Nothing was done.",
+  );
+  process.exit(1);
+}
+
 if (ref !== project) {
   console.error(
     `That string is for project "${ref}", not ${project}. Nothing was done.`,
@@ -80,7 +90,7 @@ try {
 
   if (command === "check") {
     const result = await client.query<{ table_name: string; deleted: string }>(
-      "SELECT * FROM parmana_sandbox_retention(0, 'DELETE RECENT DATA')",
+      "SELECT * FROM parmana_sandbox_retention_preview(0)",
     );
 
     console.log("A 0 day period would delete, in this order:");
