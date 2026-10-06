@@ -21,6 +21,11 @@ const report = path.join(
 const test =
   "packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts";
 
+// Checked before the run, so the report written by the run does not count.
+const commit = execSync("git rev-parse HEAD", { cwd: root }).toString().trim();
+const dirty =
+  execSync("git status --porcelain", { cwd: root }).toString().trim() !== "";
+
 const run = spawnSync("npx", ["vitest", "run", test], {
   cwd: root,
   stdio: "inherit",
@@ -33,9 +38,6 @@ if (run.status !== 0) {
   process.exit(1);
 }
 
-const commit = execSync("git rev-parse HEAD", { cwd: root }).toString().trim();
-const dirty =
-  execSync("git status --porcelain", { cwd: root }).toString().trim() !== "";
 const data = JSON.parse(readFileSync(report, "utf8")) as {
   cases: {
     case: string;
