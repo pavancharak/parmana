@@ -24,7 +24,8 @@
 --
 -- A period under 7 days deletes recent data, so it is refused unless the
 -- second argument is the confirmation word 'DELETE RECENT DATA'. The kit's
--- check uses it inside a transaction it rolls back. (G-86: on 2026-10-02 all
+-- check calls parmana_sandbox_retention_preview (below), which undoes the
+-- deletes itself. (G-86: on 2026-10-02 all
 -- visitor data was deleted around the first scheduled run and the cause was
 -- never established.)
 --
@@ -146,6 +147,48 @@ BEGIN
     END IF;
     IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
         REVOKE ALL ON FUNCTION parmana_sandbox_retention(INTEGER, TEXT) FROM authenticated;
+    END IF;
+END;
+$$;
+
+-- A preview for the kit's check: runs the real function with the given
+-- period inside a block that always undoes it, and returns what it would
+-- delete. It deletes nothing even when the caller's own transaction is not
+-- held (a transaction mode pooler, or an editor that commits each
+-- statement): the undo happens inside the function. G-86.
+CREATE OR REPLACE FUNCTION parmana_sandbox_retention_preview(
+    retention_days INTEGER DEFAULT 0
+)
+RETURNS TABLE (table_name TEXT, deleted BIGINT)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    counts TEXT;
+BEGIN
+    BEGIN
+        SELECT coalesce(jsonb_agg(jsonb_build_object('t', r.table_name, 'n', r.deleted)), '[]'::jsonb)::text
+        INTO counts
+        FROM parmana_sandbox_retention(retention_days, 'DELETE RECENT DATA') AS r;
+
+        RAISE EXCEPTION USING ERRCODE = 'P0099', MESSAGE = 'preview, undone', DETAIL = counts;
+    EXCEPTION WHEN SQLSTATE 'P0099' THEN
+        GET STACKED DIAGNOSTICS counts = PG_EXCEPTION_DETAIL;
+    END;
+
+    RETURN QUERY
+    SELECT e->>'t', (e->>'n')::BIGINT
+    FROM jsonb_array_elements(counts::jsonb) AS e;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION parmana_sandbox_retention_preview(INTEGER) FROM PUBLIC;
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+        REVOKE ALL ON FUNCTION parmana_sandbox_retention_preview(INTEGER) FROM anon;
+    END IF;
+    IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+        REVOKE ALL ON FUNCTION parmana_sandbox_retention_preview(INTEGER) FROM authenticated;
     END IF;
 END;
 $$;
