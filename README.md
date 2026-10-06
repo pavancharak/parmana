@@ -74,6 +74,10 @@ the agent was allowed to do it.
   it leaves to you: [OWASP mapping](https://docs.parmanasystems.com/security/owasp-mapping).
 - **Compared honestly.** Parmana next to IAM, API gateways and LLM guardrails,
   including where it is weaker: [How Parmana compares](https://docs.parmanasystems.com/how-parmana-compares).
+- **Technical paper.** Design, threat model, evaluation and limitations:
+  [Technical paper](https://docs.parmanasystems.com/evaluation/paper)
+  ([PDF](docs/paper/parmana-paper.pdf)). A talk outline and demo video scripts:
+  [Talk and demo videos](https://docs.parmanasystems.com/evaluation/talk-and-videos).
 - **Applied to public incidents.** Three reported AI agent incidents, what Parmana
   would and would not have changed: [Case studies](https://docs.parmanasystems.com/evaluation/case-studies).
 - **Mapped to regulation.** How Parmana supports human oversight and record
