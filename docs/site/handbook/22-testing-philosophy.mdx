@@ -92,8 +92,10 @@ gap that matters for security now has a test, checked by putting the targeted ch
 hand.
 
 The crypto score was measured on Node 22, where the ML-DSA-65 tests skip themselves, so it
-undercounts. `npm run mutation` now refuses an older Node than 24, the version CI uses, and the
-packages are being re-scored on it. [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md) has every score, each
+undercounted. `npm run mutation` now refuses an older Node than 24, the version CI uses. Re-run
+on Node 24 after the fixes: `envelope-verifier` 94.0%, `approval` 93.9%, `policy` 96.0%,
+`crypto` 85.0%, `execution-gateway` 83.6%. What survives is almost all equivalent (a guard a later
+check repeats), advisory (the rule overlap warnings) or message wording. [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md) has every score, each
 gap, and what was and was not changed.
 
 ### Citation integrity

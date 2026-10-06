@@ -136,6 +136,86 @@ describe("ApprovalVerifier", () => {
     expect(result.checks.versionSupported).toBe(false);
   });
 
+  it("refuses an approval at the exact instant it expires, accepts it a millisecond before", async () => {
+    const { privateKey, publicKey } = generateKeyPair();
+    const verifierFor = () =>
+      new ApprovalVerifier({
+        crypto,
+        issuerRegistry: new StaticApprovalIssuerRegistry([
+          {
+            approverId: "manager-jane",
+            keyId: "manager-jane-key-1",
+            publicKey,
+            revoked: false,
+          },
+        ]),
+        nonceStore: new MemoryNonceStore(),
+      });
+    const artifact = await signPayload(buildPayload(), privateKey);
+    const request = {
+      action: "hubspot:deal-update",
+      resourceId: "9005",
+      requestedValue: 40_000,
+    };
+    const expiresAt = Date.parse(artifact.payload.expiresAt);
+
+    const atExpiry = await verifierFor().verify(
+      artifact,
+      request,
+      new Date(expiresAt),
+    );
+    expect(atExpiry.valid).toBe(false);
+    expect(atExpiry.checks.notExpired).toBe(false);
+
+    const justBefore = await verifierFor().verify(
+      artifact,
+      request,
+      new Date(expiresAt - 1),
+    );
+    expect(justBefore.valid).toBe(true);
+  });
+
+  it("reports every check as failed for an unsupported version, not only the version", async () => {
+    const { privateKey, publicKey } = generateKeyPair();
+    const verifier = new ApprovalVerifier({
+      crypto,
+      issuerRegistry: new StaticApprovalIssuerRegistry([
+        {
+          approverId: "manager-jane",
+          keyId: "manager-jane-key-1",
+          publicKey,
+          revoked: false,
+        },
+      ]),
+      nonceStore: new MemoryNonceStore(),
+    });
+    const artifact = await signPayload(
+      buildPayload({ version: 2 as unknown as 1 }),
+      privateKey,
+    );
+
+    expect(
+      await verifier.verify(artifact, {
+        action: "hubspot:deal-update",
+        resourceId: "9005",
+        requestedValue: 40_000,
+      }),
+    ).toEqual({
+      valid: false,
+      checks: {
+        versionSupported: false,
+        issuerKnown: false,
+        signatureVerified: false,
+        notExpired: false,
+        notRevoked: false,
+        capabilityMatches: false,
+        resourceMatches: false,
+        scopeSatisfied: false,
+        nonceUnseen: false,
+      },
+    });
+  });
+
   it("(unknown issuer) rejects an artifact whose (approverId, keyId) is not registered", async () => {
     const { privateKey } = generateKeyPair();
 

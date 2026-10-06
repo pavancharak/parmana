@@ -70,9 +70,14 @@ class FixedSignalStateVerifier implements SignalStateVerifier {
 
 class RecordingExecutionControl implements ExecutionControl {
   releases: ExecutionRelease[] = [];
+  authentications: unknown[] = [];
 
-  async execute(release: ExecutionRelease): Promise<ExecutionResult> {
+  async execute(
+    release: ExecutionRelease,
+    authentication?: unknown,
+  ): Promise<ExecutionResult> {
     this.releases.push(release);
+    this.authentications.push(authentication);
 
     return {
       ...CONTENT,
@@ -87,9 +92,11 @@ async function run(options: {
   signalsHash: "match" | "none";
   signals?: PolicySignals;
   verifier?: SignalStateVerifier;
+  mint?: (authorizationId: string) => unknown;
+  control?: RecordingExecutionControl;
 }): Promise<ExecutionRelease> {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
-  const control = new RecordingExecutionControl();
+  const control = options.control ?? new RecordingExecutionControl();
   const authorization: SignedExecutionAuthorization =
     await new AuthorizationSigner(crypto).sign(
       {
@@ -118,6 +125,9 @@ async function run(options: {
     executionControl: {
       service: control,
       gatewayAuthentication: "test",
+      ...(options.mint !== undefined
+        ? { mintGatewayAuthentication: options.mint }
+        : {}),
       route: () => "ext-erp:create-invoice",
     },
   });
@@ -198,4 +208,33 @@ describe("ExecutionGateway release approvals", () => {
       ]);
     },
   );
+
+  it("presents a gateway token minted for this authorization, instead of the static one", async () => {
+    const control = new RecordingExecutionControl();
+    const minted: string[] = [];
+    const release = await run({
+      signalsHash: "none",
+      control,
+      mint: (authorizationId) => {
+        minted.push(authorizationId);
+        return `token-for-${authorizationId}`;
+      },
+    });
+
+    expect(minted).toEqual([release.authorization.payload.authorizationId]);
+    expect(control.authentications).toEqual([
+      `token-for-${release.authorization.payload.authorizationId}`,
+    ]);
+    expect(release.verifiedTransaction).toEqual({
+      authorizationVerified: true,
+      executableContentVerified: true,
+      replayCheckPassed: true,
+    });
+  });
+
+  it("presents the static gateway token when none is minted", async () => {
+    const control = new RecordingExecutionControl();
+    await run({ signalsHash: "none", control });
+    expect(control.authentications).toEqual(["test"]);
+  });
 });

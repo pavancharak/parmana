@@ -120,6 +120,31 @@ describe("ExecutionChainCrypto, exactly", () => {
     ).toMatchObject({ valid: false, brokenAt: "e2" });
   });
 
+  it.each(["chainHash", "chainSignature"] as const)(
+    "refuses a first entry carrying only its %s, naming why",
+    async (kept) => {
+      const [first] = await chained();
+      const partial = {
+        ...draft("e1"),
+        [kept]: first[kept],
+      } as Execution;
+      expect(await chain.verifyChain([partial])).toEqual({
+        valid: false,
+        brokenAt: "e1",
+        reason:
+          "Execution carries only some chain fields; chainHash and chainSignature are always written together.",
+      });
+    },
+  );
+
+  it("refuses a first entry carrying only a previousChainHash", async () => {
+    expect(
+      await chain.verifyChain([
+        { ...draft("e1"), previousChainHash: "0".repeat(64) },
+      ]),
+    ).toMatchObject({ valid: false, brokenAt: "e1" });
+  });
+
   it("refuses an unchained entry after a chained one, even as the last", async () => {
     const [first] = await chained();
     expect(await chain.verifyChain([first, draft("e2")])).toEqual({
@@ -372,6 +397,58 @@ describe("AuthorizationSigner payload", () => {
   });
 });
 
+describe("VerificationCrypto outside hybrid mode", () => {
+  it("refuses to make hybrid signatures", async () => {
+    await expect(
+      new VerificationCrypto().signHybrid({} as ExecutionTrustRecord),
+    ).rejects.toThrow(
+      "VerificationCrypto.signHybrid() requires CRYPTO_MODE=hybrid.",
+    );
+  });
+});
+
+describe("AuthorizationSigner.signWithSigner", () => {
+  it("signs the same payload shape through a Signer, with its key id", async () => {
+    const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+    const provider = CryptoBootstrap.create().signature;
+    const signed = await new AuthorizationSigner(
+      CryptoBootstrap.create(),
+    ).signWithSigner(
+      {
+        decisionId: "d-1",
+        businessTransactionId: "txn-1",
+        policyName: "p",
+        policyVersion: "1.0.0",
+        signalsHash: "sh",
+        executableContent: {
+          businessTransactionId: "txn-1",
+          action: "pay",
+          target: "vendor/1",
+          parameters: {},
+        },
+      },
+      "kms-key",
+      {
+        sign: (_keyId: string, data: Uint8Array) =>
+          provider.sign(data, privateKey),
+        getPublicKey: async () => publicKey,
+        getMetadata: async (keyId: string) => ({
+          keyId,
+          algorithm: "ed25519" as never,
+        }),
+        hasKey: async () => true,
+      },
+      60,
+    );
+    expect(signed).toMatchObject({
+      keyId: "kms-key",
+      algorithm: "ed25519",
+      payload: { decisionId: "d-1", signalsHash: "sh" },
+    });
+    expect(signed.signature.length).toBeGreaterThan(0);
+  });
+});
+
 describe("KeyPair", () => {
   it("refuses empty halves, copies the keys and redacts the private one", () => {
     expect(() => new KeyPair(new Uint8Array(), new Uint8Array([1]))).toThrow(
@@ -465,6 +542,78 @@ describe.skipIf(!isMlDsa65Supported())(
           trustRecordHash: "x",
         }),
       ).resolves.toBe(false);
+    });
+
+    it("treats an empty signatures array as legacy when hybrid is not required", async () => {
+      const crypto = new VerificationCrypto();
+      const record = await hybridRecord(crypto);
+      await expect(crypto.verify({ ...record, signatures: [] })).resolves.toBe(
+        true,
+      );
+    });
+
+    it("verifies a hybrid record without schemaVersion against version 2", async () => {
+      const crypto = new VerificationCrypto();
+      const { schemaVersion: _v, ...record } = await hybridRecord(crypto);
+      await expect(crypto.verify(record as ExecutionTrustRecord)).resolves.toBe(
+        true,
+      );
+    });
+
+    it("refuses three hybrid entries, though two of them verify", async () => {
+      const crypto = new VerificationCrypto();
+      const record = await hybridRecord(crypto);
+      await expect(
+        crypto.verifySignature({
+          ...record,
+          signatures: [...record.signatures, record.signatures[0]!],
+        }),
+      ).resolves.toBe(false);
+    });
+
+    it("refuses two entries of the same algorithm", async () => {
+      const crypto = new VerificationCrypto();
+      const record = await hybridRecord(crypto);
+      await expect(
+        crypto.verifySignature({
+          ...record,
+          signatures: [record.signatures[0]!, record.signatures[0]!],
+        }),
+      ).resolves.toBe(false);
+    });
+
+    it("signs a receipt with both algorithms in hybrid mode", async () => {
+      const receipt = await new ReceiptCrypto().createReceipt({
+        receiptId: "r-1",
+        businessTransactionId: "txn-1",
+      } as never);
+      expect(receipt).toMatchObject({
+        receiptId: "r-1",
+        algorithm: "ed25519",
+        schemaVersion: 2,
+      });
+      expect(typeof receipt.signature).toBe("string");
+      expect(
+        receipt.signatures?.map((entry) => entry.algorithm).sort(),
+      ).toEqual(["dilithium3", "ed25519"]);
+    });
+
+    it("lists only public key files, and names the ML-DSA key's algorithm", async () => {
+      const provider = new FileKeyProvider();
+      const keys = await provider.listKeys!();
+      expect(keys).toContain("default-secondary");
+      for (const key of keys) {
+        expect(existsSync(join(keyDirectory, `${key}.public.pem`))).toBe(true);
+      }
+      expect(new Set(keys).size).toBe(keys.length);
+      expect(await provider.getMetadata("default-secondary")).toEqual({
+        keyId: "default-secondary",
+        algorithm: "dilithium3",
+      });
+      expect(await provider.getMetadata("default")).toEqual({
+        keyId: "default",
+        algorithm: "ed25519",
+      });
     });
 
     it("with HYBRID_SIGNATURE_REQUIRED, refuses a record stripped of its hybrid signatures", async () => {
