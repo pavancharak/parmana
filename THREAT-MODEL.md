@@ -113,6 +113,9 @@ listed so that a review can state them as assumptions rather than leave them imp
 | T17 | A malicious dependency or build step                                                 | Supply chain   | Actions and base images pinned, Dependabot, CodeQL on every change, OpenSSF Scorecard, SLSA provenance for SDK releases                                                                       | [Security overview](https://docs.parmanasystems.com/security/overview#automated-checks-on-the-repository) | The server image has no signed provenance yet; only the SDK packages do                                                                                                                              |
 | T18 | A signal sent with the wrong type, so a limit rule does not fire (an amount as text) | A1             | Every signal the policy declares in `signalsSchema` must have that type before any rule runs; a mismatch is refused                                                                           | 2.52                                                                                                      | A signal the policy does not declare is not checked; an absent signal is left to the rules, where it satisfies no condition                                                                          |
 
+For the same threats arranged by the OWASP Top 10 for LLM Applications and for Agentic
+Applications (2026), see [OWASP mapping](https://docs.parmanasystems.com/security/owasp-mapping).
+
 ## 6. Assumptions
 
 These are not defended. A review should state them as assumptions:

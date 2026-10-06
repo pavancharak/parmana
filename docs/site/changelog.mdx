@@ -12,6 +12,12 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-06
 
+**Added: OWASP mapping**
+
+- [OWASP mapping](/security/owasp-mapping) takes each risk in the OWASP Top 10 for LLM Applications 2026 and the
+  OWASP Top 10 for Agentic Applications 2026 and states what Parmana does about it, rated covered, partly or not
+  covered, with the claim, threat and attack scenario that show it, and what is left to you.
+
 **Fixed: an incomplete request body is a `400`, not a `500`**
 
 - A `POST /execute` or `POST /transactions` body without `metadata`, `authority`, `authorization`, `intent` or
