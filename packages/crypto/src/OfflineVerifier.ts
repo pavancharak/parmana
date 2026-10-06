@@ -172,8 +172,25 @@ export async function verifyExecutionTrustRecordOffline(
 
   let hybridSignaturesValid: boolean | undefined;
 
-  if (
+  //
+  // An auditor may hand this anything: a signatures field that is not
+  // an array of { algorithm, keyId, signature } strings is reported as
+  // an invalid hybrid envelope, never read as one (and never thrown).
+  //
+  const signaturesMalformed =
     trustRecord.signatures !== undefined &&
+    trustRecord.signatures !== null &&
+    (!Array.isArray(trustRecord.signatures) ||
+      !trustRecord.signatures.every(isSignatureEntry));
+
+  if (signaturesMalformed) {
+    errors.push(
+      "malformed signatures: expected an array of entries with string algorithm, keyId and signature.",
+    );
+    hybridSignaturesValid = false;
+  } else if (
+    trustRecord.signatures !== undefined &&
+    trustRecord.signatures !== null &&
     trustRecord.signatures.length > 0
   ) {
     const schemaVersion = trustRecord.schemaVersion ?? 2;
@@ -297,6 +314,17 @@ export async function verifyExecutionIntentOffline(
  * caller verifying untrusted files always gets `valid: false` and a
  * reason, as OfflineVerificationResult documents.
  */
+function isSignatureEntry(value: unknown): value is SignatureEntry {
+  const entry = value as Record<string, unknown> | null;
+  return (
+    typeof entry === "object" &&
+    entry !== null &&
+    typeof entry.algorithm === "string" &&
+    typeof entry.keyId === "string" &&
+    typeof entry.signature === "string"
+  );
+}
+
 function malformedArtifact(
   artifact: unknown,
   hashField: "trustRecordHash" | "intentHash",

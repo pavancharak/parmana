@@ -696,3 +696,78 @@ describe("GatewayExternalAdapter: exact limits and refusals", () => {
     ]);
   });
 });
+
+/**
+ * G-83: the transport tries the next checked address when a connection
+ * cannot be made, and never sends a release twice once one was made.
+ * Two loopback addresses (127.0.0.1 and 127.0.0.2) share one port.
+ */
+describe("createPinnedHttpsTransport, several checked addresses (G-83)", () => {
+  const servers: http.Server[] = [];
+
+  afterEach(async () => {
+    await Promise.all(
+      servers
+        .splice(0)
+        .map(
+          (server) =>
+            new Promise<void>((resolve) => server.close(() => resolve())),
+        ),
+    );
+  });
+
+  async function listenOn(
+    host: string,
+    port: number,
+    handler: http.RequestListener,
+  ): Promise<number> {
+    const server = http.createServer(handler);
+    servers.push(server);
+    await new Promise<void>((resolve) =>
+      server.listen(port, host, () => resolve()),
+    );
+    return (server.address() as AddressInfo).port;
+  }
+
+  const sendTo = (port: number, hosts: string[]) =>
+    createPinnedHttpsTransport({ request: http.request })({
+      url: new URL(`https://erp.parmana-test.invalid:${port}/release`),
+      addresses: hosts.map((address) => ({ address, family: 4 as const })),
+      body: "{}",
+      timeoutMs: 2000,
+    });
+
+  it("moves on to the next address when the first refuses the connection", async () => {
+    const port = await listenOn("127.0.0.2", 0, (_incoming, outgoing) => {
+      outgoing.writeHead(200);
+      outgoing.end('{"ok":true}');
+    });
+
+    await expect(sendTo(port, ["127.0.0.1", "127.0.0.2"])).resolves.toEqual({
+      status: 200,
+      body: '{"ok":true}',
+    });
+  });
+
+  it("never retries once a connection was made, so a release is sent once", async () => {
+    let received = 0;
+    const handler: http.RequestListener = (incoming) => {
+      received += 1;
+      incoming.socket.destroy();
+    };
+    const port = await listenOn("127.0.0.1", 0, handler);
+    await listenOn("127.0.0.2", port, handler);
+
+    await expect(sendTo(port, ["127.0.0.1", "127.0.0.2"])).rejects.toThrow();
+    expect(received).toBe(1);
+  });
+
+  it("reports the last error when no address accepts a connection", async () => {
+    const probe = await listenOn("127.0.0.3", 0, () => undefined);
+    await new Promise<void>((resolve) => servers.pop()!.close(() => resolve()));
+
+    await expect(sendTo(probe, ["127.0.0.1", "127.0.0.2"])).rejects.toThrow(
+      /ECONNREFUSED/,
+    );
+  });
+});

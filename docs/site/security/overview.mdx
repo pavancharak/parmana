@@ -185,6 +185,10 @@ Also enabled on the repository:
 - Mutation testing of the security-critical packages, run by hand (`npm run mutation`). The
   scores, the gaps found and what was fixed are in
   [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).
+- Fuzz tests (property based, with fast-check) of the API request boundary, policy loading and
+  evaluation, the offline verifier and approval parsing, run with every `npm test`. They found
+  three crashes on malformed input, all fixed (G-87, G-90, G-91 in `docs/VERIFICATION-GAPS.md`).
+- Every open issue, with what to do meanwhile: [Limitations](/security/limitations#open-issues).
 
 ### Verifying an SDK package from a GitHub release
 

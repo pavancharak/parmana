@@ -71,6 +71,19 @@ result per attack instead of 3,000 test names. `tests/architecture/evaluation-sc
 fails if a scenario points at a test file that no longer exists or a claim number missing from
 `docs/CLAIMS.md`.
 
+### Fuzzing
+
+Property based tests with [fast-check](https://fast-check.dev) send damaged and arbitrary input
+where the server reads what others wrote: request bodies (`POST /execute` and
+`POST /transactions`, a valid transaction with fields removed or replaced by arbitrary JSON, and
+arbitrary JSON), policy files (validation must accept or refuse with `PolicyValidationError`, and
+a policy that validates must evaluate any signals to `APPROVE` or `REJECT`), the offline verifier
+(any input is `valid: false` with a reason) and approval parsing. They run with every `npm test`.
+On their first run they found three crashes on malformed input: a missing `policy` or
+`authorization` gave a bare `500` (G-87), the policy validator threw `TypeError` on fields of the
+wrong type (G-90), and the offline verifier threw on malformed hybrid signatures (G-91). All three
+are fixed, each with an exact test.
+
 ### Mutation testing
 
 A count of tests, or line coverage, says little about whether tests would notice a wrong
