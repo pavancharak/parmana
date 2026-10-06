@@ -54,6 +54,4 @@ class RefusalRecord:
 
     submitted_by: str | None = None
 
-    # SHA-256 hash of the policy content that decided the refusal. None on
-    # Refusal Records written before 2026-10-06.
     policy_content_hash: str | None = None
