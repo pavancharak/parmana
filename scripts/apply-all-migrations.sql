@@ -2126,3 +2126,14 @@ ON policy_change_approval_records (
     pending_policy_change_id
 )
 WHERE approved_at >= TIMESTAMPTZ '2026-10-03 18:18:37+00';
+
+
+-- =============================================================================
+-- Source: supabase/migrations/20261006120000_add_refusal_policy_content_hash.sql
+-- Refusal Records carry the hash of the policy content that decided them,
+-- the same value an Execution Trust Record carries in
+-- transaction.policy.contentHash. Nullable: Refusal Records written before
+-- this column existed have no hash and still verify.
+
+ALTER TABLE refusal_records
+    ADD COLUMN IF NOT EXISTS policy_content_hash TEXT;

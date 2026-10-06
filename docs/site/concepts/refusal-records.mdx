@@ -36,6 +36,7 @@ export interface RefusalRecord {
   readonly evaluatedIntent: RefusalIntentSnapshot;
   readonly bindingViolations?: readonly RefusalBindingViolation[]; // present only for a SignalIntentBinder REJECT
   readonly submittedBy?: string; // absent when caller-auth is disabled
+  readonly policyContentHash?: string; // SHA-256 of the policy content that decided it; absent before 2026-10-06
   readonly refusalRecordHash: string;
   readonly signature: Signature; // same signing stack as ExecutionTrustRecord
   readonly createdAt: Date;
@@ -43,7 +44,10 @@ export interface RefusalRecord {
 ```
 
 `RefusalRecordBuilder` (`packages/runtime/src/RefusalRecordBuilder.ts`) builds the record from
-the rejected transaction, its `Decision`, and any binding violations. `RefusalCrypto`
+the rejected transaction, its `Decision`, any binding violations, and the hash of the policy content
+that decided it (`policyContentHash`), the same value an Execution Trust Record carries in
+`transaction.policy.contentHash`, so a refusal and an approval under the same policy name the same
+policy content. Refusal Records written before 2026-10-06 have no `policyContentHash` and still verify. `RefusalCrypto`
 (`packages/crypto/src/RefusalCrypto.ts`) hashes and signs it with the same
 signer and key every Execution Trust Record uses (`SignerBootstrap`: a local key, or AWS KMS in
 production), one root of trust, not a separate one for refusals. Verify it with the key from

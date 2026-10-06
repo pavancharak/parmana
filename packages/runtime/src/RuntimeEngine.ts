@@ -541,7 +541,12 @@ export class RuntimeEngine {
     // none of which reach this point at all.
     //
     if (decision.outcome !== DecisionOutcome.APPROVED) {
-      await this.writeRefusalRecord(transaction, decision, bindingViolations);
+      await this.writeRefusalRecord(
+        transaction,
+        decision,
+        bindingViolations,
+        policyContentHash,
+      );
 
       // Only a refusal by the policy's own rules, or by an approval
       // that did not verify, can be cured by an approval. A binding or
@@ -815,6 +820,7 @@ export class RuntimeEngine {
     transaction: BusinessTransaction,
     decision: Decision,
     bindingViolations: SignalIntentBindingViolation[],
+    policyContentHash: string,
   ): Promise<void> {
     if (!this.refusalRecordBuilder || !this.refusalRecordRepository) {
       return;
@@ -830,6 +836,7 @@ export class RuntimeEngine {
         },
         bindingViolations,
         transaction.metadata?.submittedBy,
+        policyContentHash,
       );
 
       await this.refusalRecordRepository.create(refusalRecord);

@@ -47,6 +47,11 @@ export interface RefusalRecord {
    * when caller-auth is disabled.
    */
   readonly submittedBy?: string;
+  /**
+   * SHA-256 hash of the policy content that decided the refusal. Absent
+   * on Refusal Records written before 2026-10-06.
+   */
+  readonly policyContentHash?: string;
   readonly refusalRecordHash: string;
   readonly signature: Signature;
   readonly createdAt: Date;

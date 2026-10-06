@@ -232,7 +232,7 @@ describe("AgenTrust refund evaluation", () => {
         id: String(at(record, "refusalRecordId")),
         hash: String(at(record, "refusalRecordHash")),
         signatureAlgorithm: str(at(record, "signature", "algorithm")),
-        policyContentHash: str(at(record, "decision", "policy", "contentHash")),
+        policyContentHash: str(at(record, "policyContentHash")),
         matchedRuleId: str(at(record, "decision", "matchedRuleId")),
         serverVerified:
           verified.status === 200 ? at(verified.body, "valid") === true : false,
@@ -293,10 +293,16 @@ describe("AgenTrust refund evaluation", () => {
     expect(refusal.connectorInvocations).toBe(0);
     expect(refusal.record?.type).toBe("RefusalRecord");
     expect(refusal.record?.serverVerified).toBe(true);
+    expect(refusal.record?.policyContentHash).toBe(
+      valid.record?.policyContentHash,
+    );
 
     expect(replay.httpStatus).not.toBe(200);
     expect(replay.connectorInvocations).toBe(0);
     expect(replay.reason).toContain("verified managerApproved=false");
+    expect(replay.record?.policyContentHash).toBe(
+      valid.record?.policyContentHash,
+    );
 
     expect(mock.paytmInvocationCount).toBe(1);
 

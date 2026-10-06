@@ -79,6 +79,7 @@ function createFakePool(options?: {
           refusalRecordHash,
           signatureJson,
           createdAt,
+          policyContentHash,
         ] = values as readonly unknown[];
 
         rows.set(businessTransactionId as string, {
@@ -93,6 +94,7 @@ function createFakePool(options?: {
           refusal_record_hash: refusalRecordHash,
           signature_json: JSON.parse(signatureJson as string),
           created_at: createdAt,
+          policy_content_hash: policyContentHash,
         });
 
         return Promise.resolve({ rows: [] });
@@ -162,6 +164,28 @@ describe("SupabaseRefusalRecordRepository (RFC-0021)", () => {
     const found = await repository.findByTransactionId("txn-2");
 
     expect(found!.bindingViolations).toBeUndefined();
+  });
+
+  it("round-trips policyContentHash", async () => {
+    const repository = new SupabaseRefusalRecordRepository(createFakePool());
+    const record = {
+      ...buildRefusalRecord("txn-4"),
+      policyContentHash: "c".repeat(64),
+    };
+
+    await repository.create(record);
+
+    const found = await repository.findByTransactionId("txn-4");
+    expect(found!.policyContentHash).toBe("c".repeat(64));
+  });
+
+  it("reads a row written before policy_content_hash existed with no policyContentHash key", async () => {
+    const repository = new SupabaseRefusalRecordRepository(createFakePool());
+
+    await repository.create(buildRefusalRecord("txn-5"));
+
+    const found = await repository.findByTransactionId("txn-5");
+    expect(found).not.toHaveProperty("policyContentHash");
   });
 
   it("returns null for a transaction with no Refusal Record", async () => {

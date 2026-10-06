@@ -31,6 +31,7 @@ export class SupabaseRefusalRecordRepository implements RefusalRecordRepository 
       record.refusalRecordHash,
       JSON.stringify(record.signature),
       record.createdAt.toISOString(),
+      record.policyContentHash ?? null,
     ]);
 
     return record;
@@ -59,6 +60,10 @@ export class SupabaseRefusalRecordRepository implements RefusalRecordRepository 
         ? { bindingViolations: row.binding_violations_json }
         : {}),
       ...(row.submitted_by !== null ? { submittedBy: row.submitted_by } : {}),
+      ...(row.policy_content_hash !== null &&
+      row.policy_content_hash !== undefined
+        ? { policyContentHash: row.policy_content_hash }
+        : {}),
 
       refusalRecordHash: row.refusal_record_hash,
       signature: row.signature_json,
@@ -70,9 +75,10 @@ export class SupabaseRefusalRecordRepository implements RefusalRecordRepository 
 const INSERT_REFUSAL_RECORD_SQL = `
   INSERT INTO refusal_records
     (refusal_record_id, business_transaction_id, decision_json, evaluated_intent_json,
-     binding_violations_json, submitted_by, refusal_record_hash, signature_json, created_at)
+     binding_violations_json, submitted_by, refusal_record_hash, signature_json, created_at,
+     policy_content_hash)
   VALUES
-    ($1, $2, $3::jsonb, $4::jsonb, $5::jsonb, $6, $7, $8::jsonb, $9)
+    ($1, $2, $3::jsonb, $4::jsonb, $5::jsonb, $6, $7, $8::jsonb, $9, $10)
 `;
 
 const SELECT_BY_TRANSACTION_ID_SQL = `
@@ -86,6 +92,7 @@ interface RefusalRecordRow {
   readonly evaluated_intent_json: RefusalRecord["evaluatedIntent"];
   readonly binding_violations_json: RefusalRecord["bindingViolations"] | null;
   readonly submitted_by: string | null;
+  readonly policy_content_hash?: string | null;
   readonly refusal_record_hash: string;
   readonly signature_json: RefusalRecord["signature"];
   readonly created_at: string | Date;
