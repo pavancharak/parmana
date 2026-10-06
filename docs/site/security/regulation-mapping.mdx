@@ -1,11 +1,11 @@
 ---
 title: "Regulation mapping"
-description: "How Parmana supports human oversight and record keeping under the EU AI Act (Articles 12, 14 and 26), the NIST AI RMF and ISO/IEC 42001: what it provides, the evidence, and what stays with your organization."
+description: "How Parmana supports human oversight and record keeping under the EU AI Act (Articles 12, 14 and 26), the NIST AI RMF, ISO/IEC 42001 and RBI guidance for Indian banks and NBFCs: what it provides, the evidence, and what stays with your organization."
 ---
 
 Compliance teams ask how an AI agent is overseen and how its actions are recorded. This page maps Parmana to the
 provisions they cite: the EU AI Act's human oversight and record keeping articles, the NIST AI Risk Management
-Framework, and ISO/IEC 42001.
+Framework, ISO/IEC 42001, and the Reserve Bank of India's IT and AI guidance.
 
 **What Parmana is, for these purposes.** Parmana is not itself an AI system. It sits between an AI agent and the
 systems it acts on, refuses any action a person has not approved, and signs a record of each action and each
@@ -63,6 +63,36 @@ the current text and your system's classification with counsel.
 | A.9 Use of AI systems                       | Use AI systems responsibly and as intended.             | Partly   | Each agent's key is limited to the actions it is meant to take, each action to its policy, each policy to an approval. | 2.16, 2.22, 3.16; EV-12 | Defining intended use.                |
 | A.10 Third-party and customer relationships | Manage AI related risks with suppliers and customers.   | Partly   | External systems are reached only through connectors registered by maker checker, with signed releases.                | 2.49, 2.50              | Supplier agreements and assessment.   |
 
+## Reserve Bank of India (RBI)
+
+For banks, NBFCs and payment system operators using AI agents, for example an agent that issues refunds through the
+Paytm connector ([Connectors](/handbook/12-connectors)). Three RBI texts are relevant, with different status:
+
+- The **Master Direction on Information Technology Governance, Risk, Controls and Assurance Practices** (7 November
+  2023, in force from 1 April 2024) is binding on the banks, NBFCs, credit information companies and all India
+  financial institutions it names.
+- The **FREE-AI Committee report** (Framework for Responsible and Ethical Enablement of AI, 13 August 2025) makes 26
+  recommendations. It is a committee report, not a direction.
+- The **draft Guidance on Regulatory Principles for Model Risk Management, 2026** (24 June 2026, consultation closed
+  24 July 2026) covers AI and machine learning models. It is a draft; check the final text.
+
+Provisions are summarized, not quoted, and FREE-AI recommendations are given a number only where it was confirmed.
+Read the source texts.
+
+| Provision                                           | What it asks                                                                                                                                                                         | Rating         | What Parmana provides                                                                                                                                                                                                  | Evidence                         | What stays with you                                                                          |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------- |
+| IT Direction, audit trails                          | Applications that can access or affect critical or sensitive information have audit and system logging and provide audit trails; logs are monitored to detect unauthorised activity. | Supports       | Each approved action has a signed Execution Trust Record, each refusal a signed Refusal Record, each caller request a chained audit event; a refused write to the audit trail refuses the request.                     | 2.5, 2.6, 2.19, 2.32; T12; EV-14 | Monitoring the records; retention; logs of systems that do not go through Parmana.           |
+| IT Direction, cryptographic controls                | Key lengths, algorithms, cipher suites and protocols used for data and authentication are strong.                                                                                    | Supports       | Records and approvals are signed with Ed25519, optionally together with ML-DSA-65 (post quantum); each key is bound to its algorithm.                                                                                  | 2.13, 2.14, 3.13                 | TLS configuration; key storage and rotation in your key management system.                   |
+| FREE-AI, board approved AI policy                   | The board approves an AI policy covering governance, the AI lifecycle, risk controls and vendor liability.                                                                           | Organizational | Each action's policy is a versioned file approved through maker checker, so the policy in force for every action is recorded.                                                                                          | 2.26, 2.34                       | The board policy itself.                                                                     |
+| FREE-AI Rec. 21, business continuity for AI systems | Fallbacks such as human in the loop review, and periodic tests of the fallback.                                                                                                      | Partly         | Parmana fails closed: when the policy, the approval or the signing key is missing or invalid, the action is refused, not run without checks. A human approval can be required for any action.                          | 2.12, 2.17, 2.47; T2             | The manual process that takes over when the agent is stopped, and testing it.                |
+| FREE-AI Rec. 22, AI incident reporting              | Report AI incidents to a sector framework in time.                                                                                                                                   | Partly         | Signed records of what the agent did and what was refused, verifiable by a third party, to support an incident report.                                                                                                 | 3.11; EV-14                      | Detecting incidents and reporting them.                                                      |
+| FREE-AI Rec. 24, AI audit framework                 | AI systems are audited, internally and by third parties.                                                                                                                             | Supports       | An auditor can verify every record offline with only the public key, without access to your systems. Claims, tests and open gaps are published.                                                                        | 2.5, 3.11; CLAIMS.md             | Running the audit; auditing the model.                                                       |
+| FREE-AI Rec. 25, disclosures                        | Disclose AI governance, adoption and consumer protection, for example in the annual report.                                                                                          | Organizational | Records can show how many actions were approved and refused, and by which policy.                                                                                                                                      | 2.5                              | The disclosure.                                                                              |
+| Draft MRM guidance, kill switch                     | A malfunctioning AI model can be suspended or deactivated at once.                                                                                                                   | Partly         | An agent's actions can be stopped: approve a policy version that refuses, revoke a connector or an approver, or remove the agent's key (effective on restart or redeploy). An action already released is not recalled. | 2.16, 2.45, 2.49; T1, T11        | Stopping the model or agent itself.                                                          |
+| Draft MRM guidance, documented human oversight      | Human oversight of model use is documented, with periodic human review of outputs.                                                                                                   | Supports       | No agent action runs without a signed approval from a registered approver; the record names the approver, the policy version and the result.                                                                           | 2.42, 2.47; T2; EV-04            | Periodic review of the model's outputs that do not become actions.                           |
+| Draft MRM guidance, model inventory and named roles | Every model is in an approved inventory with a named owner, developer, validator and approver.                                                                                       | Organizational | Approvers are registered keys added and revoked through maker checker, so the people who approve agent actions are named and recorded.                                                                                 | 2.45; T11                        | The model inventory. Approvers are not yet limited to particular actions or policies (G-50). |
+| Draft MRM guidance, customer disclosure             | Customers are told when they deal with AI and can switch to a human.                                                                                                                 | Organizational | Nothing directly.                                                                                                                                                                                                      |                                  | The disclosure and the hand over to a person.                                                |
+
 ## Reading this page
 
 - **Only actions that go through Parmana are covered.** Give agents credentials only to Parmana, so it is the one
@@ -74,4 +104,6 @@ the current text and your system's classification with counsel.
 - **This is a mapping, not a certification or legal opinion.** The provisions are summarized; read the source texts:
   [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj),
   [NIST AI RMF 1.0](https://www.nist.gov/itl/ai-risk-management-framework) and
-  [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html).
+  [ISO/IEC 42001:2023](https://www.iso.org/standard/81230.html),
+  the [RBI IT Governance Master Direction](https://www.rbi.org.in/Scripts/BS_ViewMasDirections.aspx?id=12562) and the
+  [FREE-AI report](https://rbidocs.rbi.org.in/rdocs/PublicationReport/Pdfs/FREEAIR130820250A24FF2D4578453F824C72ED9F5D5851.PDF).
