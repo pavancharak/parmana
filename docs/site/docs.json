@@ -578,7 +578,11 @@
           },
           {
             "group": "Security",
-            "pages": ["security/overview", "security/limitations"]
+            "pages": [
+              "security/overview",
+              "security/limitations",
+              "security/owasp-mapping"
+            ]
           },
           {
             "group": "Operate",

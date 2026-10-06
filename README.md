@@ -69,6 +69,9 @@ the agent was allowed to do it.
   [docs/MUTATION-TESTING.md](docs/MUTATION-TESTING.md). Fuzz tests send damaged
   and arbitrary requests, policies and records, and require a clear refusal,
   never a crash.
+- **Mapped to OWASP.** Each risk in the OWASP Top 10 for LLM Applications and
+  for Agentic Applications (2026), with what Parmana does, the evidence, and what
+  it leaves to you: [OWASP mapping](https://docs.parmanasystems.com/security/owasp-mapping).
 - **Open issues, listed.** Every gap still open, with its evidence and what to
   do meanwhile, is under "Open issues at a glance" in
   [docs/VERIFICATION-GAPS.md](docs/VERIFICATION-GAPS.md) and on the
