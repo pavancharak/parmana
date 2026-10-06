@@ -26,6 +26,28 @@ names the absence of one). Severity is one of three tiers:
 This audit was run against commit `651497a`, `npm test` reporting 345 passed, 1 skipped, 85
 test files, coverage measured via `npm run coverage` (`@vitest/coverage-v8`).
 
+## Open issues at a glance (updated 2026-10-06)
+
+Everything not listed here is closed, with its evidence in its own entry below.
+
+| Entry      | What is open                                                                                                                                                                                                             | Severity                      | Status                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | ------------------------------------------------------------------------------------- |
+| G-4        | Hybrid (Ed25519 and ML-DSA-65) signing covers Trust Records and receipts only; refusal records, audit events and authorizations are signed with one algorithm.                                                           | pre-production                | Decision D-2 required                                                                 |
+| G-65       | Nothing holds a refused request for review in the server; an approver learns of it through the optional `approval.needed` webhook (2.46) or by query.                                                                    | pre-production                | Partly closed, see the 2026-10-06 update                                              |
+| G-66       | Binding an action to a different policy name, or adding a built in capability, still needs a deploy. A new policy version, an approver key and an external connector do not.                                             | pre-production                | Partly closed, see the 2026-10-06 update                                              |
+| G-9        | Execution Control and the secure connector each write an audit record for the same execution.                                                                                                                            | cosmetic                      | Open                                                                                  |
+| G-50       | A policy change approver, or an approval issuer, is not limited to particular policies or actions: any provisioned approver can approve any.                                                                             | pre-production                | Open; a per policy and per action approver list is the proposed fix                   |
+| G-51, G-76 | Facts an agent declares (`refundEligible`, `fraudCheckPassed`, Slack `contentApproved`) are not checked against another system. Since G-80 they can only make a rule refuse; a signed human approval is what authorizes. | pre-production                | Open by design                                                                        |
+| G-53       | When an action ran but neither its Trust Record nor its result could be saved, the outcome is established from the connector and recorded by hand.                                                                       | pre-production                | Open (residual)                                                                       |
+| G-82       | What an external endpoint answers is its claim, not proof that it acted.                                                                                                                                                 | pre-production                | A property of the design, documented                                                  |
+| G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01; not measured since.                                                                                                                               | pre-production                | Open; agents are told to use a 120 second timeout and read the record after a timeout |
+| G-86       | All visitor data in the public sandbox was deleted around the retention job's first run; cause not established.                                                                                                          | pre-production (sandbox only) | Open; the job is paused                                                               |
+
+Closed on 2026-10-06: G-83 (the release tries the next checked address), G-87 (an incomplete
+request body is a `400`, not a `500`), G-11 (environment variables on the docs site), and G-90
+and G-91, found by fuzzing and fixed the same day. Recorded as closed on 2026-10-06, closed
+earlier without the entry being updated: G-7, G-19, G-47.
+
 ---
 
 ## Environment note, load-bearing for everything below
@@ -798,6 +820,15 @@ because approver keys belong to people, like step up keys.
   governance; until then every refund is refused. `refundEligible` and `fraudCheckPassed` are
   still caller declared (G-51). Nothing notifies a manager of a refusal; they find it by query.
 
+**Update (2026-10-06): what later work changed, and what is still open.** Approver keys are added and
+revoked through maker checker with no deploy (CLAIMS 2.45; live once its migration is applied in a
+deployment). A request refused only for want of a signed approval sends a signed `approval.needed`
+webhook naming what to sign, when `APPROVAL_WEBHOOK_URL` is set (2.46). Every agent action needs a
+signed approval, reads included (2.47, G-80), and `refundEligible` and `fraudCheckPassed` are no longer
+the only checks on a refund (G-51 closed). **Still open:** the server does not hold a refused
+request for review. The agent sends the request again, with the signed approval, as a new
+transaction.
+
 **G-67. A valid Approval Artifact could never pass the Execution Gateway, so an approved HubSpot
 amount change was always refused. FOUND and CLOSED 2026-09-27, `blocks-pilot`.** Found while
 building G-65. The same `SignalStateVerifier` runs twice for one request: in `RuntimeEngine`
@@ -910,6 +941,11 @@ behind maker and checker. That needs a new table and a new change type, because
   and adding an approver. `HubSpotSignalStateVerifier`'s own deal read still names
   `hubspot-deal-update` 1.0.0 in code; it goes straight to the gateway, not through this binder,
   and keeps working while 1.0.0 stays approved.
+
+**Update (2026-10-06).** Since this entry: approver keys change through maker checker with no deploy
+(CLAIMS 2.45), and external connectors are registered through maker checker with no deploy, their
+policy bound from the registration (2.49, 2.50, G-81). **Still needs a deploy:** binding a built in
+capability to a different policy name, and adding a built in capability.
 
 ## Gaps opened in the 2026-09-28 refund agent review
 
@@ -1359,6 +1395,15 @@ and connects to the first address, never resolving the host again. If that addre
 another would answer, the release fails (and is recorded as an unknown outcome) instead of trying
 the next address. Trying further checked addresses would keep the same SSRF guarantee.
 
+**CLOSED 2026-10-06.** `createPinnedHttpsTransport` tries each checked address in turn when a
+connection cannot be made, under one deadline for the whole release. Once a connection is made
+nothing is retried, so the endpoint never receives a release twice. Only addresses already checked
+to be public are used, and the host is never resolved again. Tests in
+`packages/execution-gateway/tests/unit/external-adapter.test.ts` ("several checked addresses"): a
+refused first address moves on to the second, a connection that fails after it was made is not
+retried (one request received), and no reachable address reports the error; the first failed
+before the change.
+
 **G-84. An approved request takes 24 to 32 seconds in production. FOUND 2026-10-01 in the ADR-0013
 live check, `pre-production` (availability and agent behavior, not authorization).**
 In the live check (`docs/CLAIMS.md` 2.50) an approved `livecheck:receipt` request took 23.9 seconds,
@@ -1430,6 +1475,15 @@ caller gets `500 {"error":"Internal Server Error"}` with no code and no hint of 
 and in the error catalog. Fix, not built: check that each required object is present before validating and answer
 `400` naming it.
 
+**CLOSED 2026-10-06.** `BusinessTransactionValidator.validate` now checks, before anything else, that the
+body is an object, that `metadata`, `authority`, `authorization`, `intent` and `policy` are objects, and
+that each field the checks read is a string. A missing or malformed one is refused with `400`, for
+example `{"error": "policy is required and must be an object."}`. Found again, and confirmed fixed, by the
+request fuzzing added the same day: `packages/api/tests/integration/request-fuzz.integration.test.ts`
+removes or replaces up to three fields of a valid transaction with arbitrary JSON and requires that
+neither route ever answers `500` (it found `policy: null` and `policy: {}` before the fix). Exact tests:
+`packages/runtime/tests/unit/BusinessTransactionValidator.test.ts` (20).
+
 **G-88. A policy named `..` let `FilePolicyRepository` read and write outside the policy directory. FOUND
 2026-10-05 by CodeQL (`js/path-injection`), CLOSED the same day.** The name and version pattern
 (`/^[A-Za-z0-9._-]+$/`) rejected `/` but allowed a bare `.` or `..`, which `path.join` treats as a directory step.
@@ -1451,6 +1505,28 @@ verification there. The chain is a second layer, and it was weaker than describe
 always writes both), and once the chain has started, a later Execution without chain fields is a break. Legacy
 Executions before the first chained one are still accepted. Tests: `packages/crypto/tests/unit/crypto-verifiers.exact.test.ts`,
 "ExecutionChainCrypto, exactly"; three cases failed before the fix.
+
+**G-90. `PolicyValidator` threw a `TypeError` instead of refusing a malformed policy. FOUND 2026-10-06 by
+fuzzing, CLOSED the same day, `cosmetic` (a policy is still refused; the error was the wrong kind).** A
+policy file is JSON an author writes. A `policyId`, `policyVersion`, `schemaVersion`, rule `id`, outcome
+`reason` or condition `fact` that is not a string, a rule or condition that is `null` or not an object,
+or an outcome that is a string, made `PolicyValidator.validate` throw a `TypeError` (`policyId?.trim is
+not a function`, `Cannot use 'in' operator`). The policy was still not loaded, but the error did not say
+which field was wrong, and callers that catch `PolicyValidationError` did not catch it. Each is now a
+`PolicyValidationError` naming the field. Found by `packages/policy/tests/unit/policy.fuzz.test.ts`, which
+also checks that a policy that validates evaluates any signals to `APPROVE` or `REJECT` without throwing;
+exact tests in `PolicyValidator.exact.test.ts`.
+
+**G-91. The offline verifier threw on a malformed `signatures` field. FOUND 2026-10-06 by fuzzing, CLOSED
+the same day, `pre-production` (an auditor's tool must answer, not crash).**
+`verifyExecutionTrustRecordOffline` is documented to report `valid: false`, never to throw. A record whose
+`signatures` field held `null` entries, entries missing a string `algorithm`, `keyId` or `signature`, or a
+value that is not an array, made it throw. It now reports `hybridSignaturesValid: false` with the error
+"malformed signatures". Found by `packages/crypto/tests/unit/offline-verifier.fuzz.test.ts`, which hands
+the verifier arbitrary records and keys and requires `valid: false` with a reason; exact tests in
+`offline-verifier.exact.test.ts`. `@parmana/sign`, the published verifier, was not affected: checked the same
+day, it already refuses a `signatures` value that is not an array, and any entry whose `algorithm`, `keyId`
+or `signature` is not a string (`src/parmana/OfflineVerifier.ts` in that repository).
 
 ---
 
@@ -2169,6 +2245,8 @@ production and blocks uniformly for a missing approval record, an invalid approv
 that differs from the approved content (gap 58, `docs/CLAIMS.md` 2.36). The gateway applies the same
 check at release. A graduated or configurable response (options 2 and 3) is not built.
 
+**Status (2026-10-06): closed by decision.** Option 1 is in effect (uniform blocking); options 2 and 3 are not planned.
+
 **G-48. `createExecutionGateway.ts` passed an unconditional `new FileKeyProvider()` as
 `ExecutionGateway`'s `keyProvider`, regardless of `KEY_PROVIDER` — silently verifying every
 authorization against a stale local key once `KEY_PROVIDER=aws-kms` was turned on, while
@@ -2745,6 +2823,8 @@ claim it would prove (that an execution-system failure is surfaced as
 Unlike every other gap in this document, closing this one requires a `RuntimeFactory`
 constructor signature change, which is out of scope for a test-only pass.
 
+**Update (2026-10-06): CLOSED in Phase 2D.** `RuntimeFactory.create()` takes an `ExecutionSystem`, so the test injects a failing one; `packages/api/tests/integration/execution-failure.integration.test.ts` runs, with assertions matching the API's real responses (since G-63, `502 EXECUTION_OUTCOME_UNKNOWN`). This entry was not updated at the time.
+
 **G-8. Several error branches remain untested, all reachable only via direct library use,
 not via any HTTP path this server currently exposes:**
 
@@ -2763,12 +2843,16 @@ not via any HTTP path this server currently exposes:**
   configuration this repo wires up: `DefaultConnectorPolicy.assertAllowed()` runs the
   identical check earlier in the same call chain and always wins first.
 
+**Update (2026-10-06):** the `SdkConnectorExecutor` branches named above are now tested directly: version mismatch, an unavailable connector, an undeclared capability and a raw credential (`packages/execution-gateway/tests/unit/sdk-connector-executor.exact.test.ts`, from mutation testing, `docs/MUTATION-TESTING.md`).
+
 **G-9. `ExecutionControlService` and `SessionCredentialSecureConnector` each independently
 audit-log the same execution** (confirmed directly this pass while writing the new
 credential-isolation test; see "Gaps closed" #1 above). Not a security defect: both
 records are consistent, and only the connector-level one carries `credentialId`. It is a
 duplicate-logging quirk worth a one-line fix (skip the outer log, or document why both
 exist) but was out of scope for this pass since it isn't test-only.
+
+**Status (2026-10-06): open, `cosmetic`.** Both records are still written. The connector-level one is the only one carrying `credentialId`, so removing the outer one would lose nothing, and removing the inner one would; no change made.
 
 **G-32. Signing key for Execution Authorizations was shared across every tenant in a
 single deployment process — no per-tenant isolation of the signing key itself, even
@@ -3554,6 +3638,8 @@ has no clean way to distinguish "policy said no" from "the server broke," and no
 access to why. **Not fixed this pass**, flagged only, per explicit instruction to keep the
 live-proof-widget work scoped and avoid touching the shared runtime/API packages.
 
+**Update (2026-10-06): CLOSED by CLAIMS 2.21.** A policy rejection is `403` with code `POLICY_DENIED` and the policy's reason, distinct from a server error; see `docs/site/api-reference/error-handling.mdx`.
+
 ---
 
 ### Decision record: audit-sink fail-closed
@@ -3945,6 +4031,8 @@ elsewhere in the suite. But a reader following CLAIMS.md's own citation cannot f
 proof without independently searching for it, which is the exact failure mode CLAIMS.md's
 discipline exists to prevent.
 
+**Update (2026-10-06):** `BusinessTransactionValidator` and `PolicyRouter` now have dedicated tests (`packages/runtime/tests/unit/BusinessTransactionValidator.test.ts`, `packages/policy/tests/unit/policy-stores.exact.test.ts`), and `PolicyValidator` has `PolicyValidator.exact.test.ts`.
+
 **G-11. PARTIALLY CLOSED in the 2026-07-17 session.** `EXECUTION_AUTHORIZATION_TTL_SECONDS`,
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `CRYPTO_MODE`,
 `RECEIPT_VERSION`, and `DATABASE_URL` are read by `packages/shared/src/config/Config.ts`.
@@ -3954,6 +4042,11 @@ annotated as dead per G-4. What remains open: the public docs site
 (`guides/deploy-patterns.mdx`, `deployment/local.mdx`, `cryptography/overview.mdx`) still
 does not mention them. `.env.example` is a better source of truth than doc prose (it
 can't drift as invisibly), but the site itself was not updated this session.
+
+**CLOSED (checked 2026-10-06).** `docs/site/deployment/environment-variables.mdx` now lists every
+variable the server reads, `CRYPTO_MODE`, `EXECUTION_AUTHORIZATION_TTL_SECONDS` and
+`RECEIPT_VERSION` included, and states that the server does not read `SUPABASE_URL`,
+`SUPABASE_ANON_KEY` or `SUPABASE_SERVICE_ROLE_KEY`.
 
 ---
 

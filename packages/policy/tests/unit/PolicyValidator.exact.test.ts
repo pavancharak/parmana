@@ -60,6 +60,39 @@ describe("PolicyValidator refusals, exactly", () => {
     accepts(policy());
   });
 
+  it.each([
+    ["policyId", 1],
+    ["policyVersion", false],
+    ["schemaVersion", null],
+  ])(
+    "refuses a non-string %s as missing, without a TypeError",
+    (field, value) => {
+      refuses(policy({ [field]: value }), `${field} is required.`);
+    },
+  );
+
+  it("refuses a rule, condition or outcome that is not an object", () => {
+    refuses(policy({ rules: [null] }), "Each policy rule must be an object.");
+    refuses(policy({ rules: ["r"] }), "Each policy rule must be an object.");
+    refuses(
+      policy({ rules: [{ ...REJECT_ALL, condition: null }] }),
+      "Invalid policy condition.",
+    );
+    refuses(withRule({ any: [false] }), "Invalid policy condition.");
+    refuses(
+      policy({ rules: [{ ...REJECT_ALL, outcome: "reject" }] }),
+      "Policy rule 'reject' is missing an outcome.",
+    );
+    refuses(
+      policy({ rules: [{ ...REJECT_ALL, id: 7 }] }),
+      "Policy rule id is required.",
+    );
+    refuses(
+      withRule({ fact: 5, operator: "eq", value: 1 }),
+      "Policy condition fact is required.",
+    );
+  });
+
   it("refuses no policy", () => {
     refuses(null as unknown as Policy, "Policy is required.");
   });

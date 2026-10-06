@@ -380,11 +380,14 @@ export interface PinnedHttpsTransportOptions {
 
 /**
  * Sends a release with POST and returns the status and body. It connects
- * to the first of the already checked addresses: the host name is used
- * for the Host header and TLS server name only, never resolved again.
- * Redirects are not followed (a 3xx is returned as it is, and refused by
- * the adapter). The body is read up to maxResponseBytes, and the whole
- * exchange is bounded by timeoutMs.
+ * only to the already checked addresses, in order: the host name is used
+ * for the Host header and TLS server name only, never resolved again. If
+ * a connection to one address cannot be established, the next is tried
+ * (G-83); once a connection is established, nothing is retried, so a
+ * release is never sent twice. Redirects are not followed (a 3xx is
+ * returned as it is, and refused by the adapter). The body is read up to
+ * maxResponseBytes, and the whole exchange, across every address tried,
+ * is bounded by timeoutMs.
  */
 export function createPinnedHttpsTransport(
   options: PinnedHttpsTransportOptions = {},
@@ -394,27 +397,14 @@ export function createPinnedHttpsTransport(
 
   return ({ url, addresses, body, timeoutMs }) =>
     new Promise<ReleaseTransportResponse>((resolve, reject) => {
-      const pinned = addresses[0];
-
-      if (pinned === undefined) {
+      if (addresses.length === 0) {
         reject(new Error("No checked address to connect to."));
         return;
       }
 
-      const lookup: LookupFunction = (_hostname, lookupOptions, callback) => {
-        if (lookupOptions.all === true) {
-          (
-            callback as unknown as (
-              error: null,
-              addresses: { address: string; family: number }[],
-            ) => void
-          )(null, [{ address: pinned.address, family: pinned.family }]);
-        } else {
-          callback(null, pinned.address, pinned.family);
-        }
-      };
-
       let settled = false;
+      let current: { destroy(): void } | undefined;
+
       const finish = (
         error: Error | undefined,
         value?: ReleaseTransportResponse,
@@ -426,59 +416,100 @@ export function createPinnedHttpsTransport(
         else resolve(value as ReleaseTransportResponse);
       };
 
-      const outgoing = send(
-        {
-          hostname: url.hostname,
-          port: url.port === "" ? 443 : Number(url.port),
-          path: `${url.pathname}${url.search}`,
-          method: "POST",
-          servername: url.hostname,
-          lookup,
-          agent: false,
-          headers: {
-            "Content-Type": "application/json",
-            "Content-Length": Buffer.byteLength(body, "utf8"),
-            Accept: "application/json",
-          },
-        },
-        (response) => {
-          const chunks: Buffer[] = [];
-          let size = 0;
-
-          response.on("data", (chunk: Buffer) => {
-            size += chunk.length;
-
-            if (size > maxBytes) {
-              response.destroy();
-              outgoing.destroy();
-              finish(
-                new Error(
-                  `The endpoint's answer is larger than ${maxBytes} bytes.`,
-                ),
-              );
-              return;
-            }
-
-            chunks.push(chunk);
-          });
-
-          response.on("end", () =>
-            finish(undefined, {
-              status: response.statusCode ?? 0,
-              body: Buffer.concat(chunks).toString("utf8"),
-            }),
-          );
-
-          response.on("error", (error) => finish(error));
-        },
-      );
-
       const timer = setTimeout(() => {
-        outgoing.destroy();
+        current?.destroy();
         finish(new Error(`The endpoint did not answer within ${timeoutMs}ms.`));
       }, timeoutMs);
 
-      outgoing.on("error", (error) => finish(error));
-      outgoing.end(body);
+      const attempt = (index: number) => {
+        const pinned = addresses[index]!;
+        let connected = false;
+
+        const lookup: LookupFunction = (_hostname, lookupOptions, callback) => {
+          if (lookupOptions.all === true) {
+            (
+              callback as unknown as (
+                error: null,
+                addresses: { address: string; family: number }[],
+              ) => void
+            )(null, [{ address: pinned.address, family: pinned.family }]);
+          } else {
+            callback(null, pinned.address, pinned.family);
+          }
+        };
+
+        const outgoing = send(
+          {
+            hostname: url.hostname,
+            port: url.port === "" ? 443 : Number(url.port),
+            path: `${url.pathname}${url.search}`,
+            method: "POST",
+            servername: url.hostname,
+            lookup,
+            agent: false,
+            headers: {
+              "Content-Type": "application/json",
+              "Content-Length": Buffer.byteLength(body, "utf8"),
+              Accept: "application/json",
+            },
+          },
+          (response) => {
+            const chunks: Buffer[] = [];
+            let size = 0;
+
+            response.on("data", (chunk: Buffer) => {
+              size += chunk.length;
+
+              if (size > maxBytes) {
+                response.destroy();
+                outgoing.destroy();
+                finish(
+                  new Error(
+                    `The endpoint's answer is larger than ${maxBytes} bytes.`,
+                  ),
+                );
+                return;
+              }
+
+              chunks.push(chunk);
+            });
+
+            response.on("end", () =>
+              finish(undefined, {
+                status: response.statusCode ?? 0,
+                body: Buffer.concat(chunks).toString("utf8"),
+              }),
+            );
+
+            response.on("error", (error) => finish(error));
+          },
+        );
+
+        current = outgoing;
+
+        outgoing.on("socket", (socket) => {
+          socket.once("connect", () => {
+            connected = true;
+          });
+        });
+
+        outgoing.on("error", (error) => {
+          if (settled) return;
+          //
+          // Only a connection that was never made is retried on the
+          // next checked address: once connected, the endpoint may have
+          // received the release, and sending it again could act twice.
+          //
+          if (!connected && index + 1 < addresses.length) {
+            attempt(index + 1);
+            return;
+          }
+          finish(error);
+        });
+
+        outgoing.end(body);
+      };
+
+      attempt(0);
     });
 }

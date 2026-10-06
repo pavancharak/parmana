@@ -19,6 +19,16 @@ const PARAMETER_PATH = /^parameters(\.[A-Za-z0-9_]+)+$/;
 const SIGNAL_NAME = /^[A-Za-z0-9_]+$/;
 
 /**
+ * A policy file is JSON its author wrote, so a field the types call a
+ * string may hold anything. Checked as a string before it is trimmed,
+ * so a number or null is refused as a PolicyValidationError rather
+ * than thrown as a TypeError.
+ */
+function isNonBlankString(value: unknown): value is string {
+  return typeof value === "string" && value.trim() !== "";
+}
+
+/**
  * One pair of rules whose conditions can be simultaneously true (or, for
  * "always", one rule that is not the final one). Advisory only -- see
  * PolicyValidator.findRuleConflicts' own doc comment for why this is
@@ -94,15 +104,15 @@ export class PolicyValidator {
     // Identity
     //
 
-    if (!policy.policyId?.trim()) {
+    if (!isNonBlankString(policy.policyId)) {
       throw new PolicyValidationError("policyId is required.");
     }
 
-    if (!policy.policyVersion?.trim()) {
+    if (!isNonBlankString(policy.policyVersion)) {
       throw new PolicyValidationError("policyVersion is required.");
     }
 
-    if (!policy.schemaVersion?.trim()) {
+    if (!isNonBlankString(policy.schemaVersion)) {
       throw new PolicyValidationError("schemaVersion is required.");
     }
 
@@ -218,7 +228,11 @@ export class PolicyValidator {
     const ruleIds = new Set<string>();
 
     for (const rule of policy.rules) {
-      if (!rule.id?.trim()) {
+      if (typeof rule !== "object" || rule === null || Array.isArray(rule)) {
+        throw new PolicyValidationError("Each policy rule must be an object.");
+      }
+
+      if (!isNonBlankString(rule.id)) {
         throw new PolicyValidationError("Policy rule id is required.");
       }
 
@@ -232,7 +246,11 @@ export class PolicyValidator {
 
       this.validateCondition(rule.condition);
 
-      if (!rule.outcome) {
+      if (
+        typeof rule.outcome !== "object" ||
+        rule.outcome === null ||
+        Array.isArray(rule.outcome)
+      ) {
         throw new PolicyValidationError(
           `Policy rule '${rule.id}' is missing an outcome.`,
         );
@@ -244,7 +262,7 @@ export class PolicyValidator {
         );
       }
 
-      if (!rule.outcome.reason?.trim()) {
+      if (!isNonBlankString(rule.outcome.reason)) {
         throw new PolicyValidationError(
           `Policy rule '${rule.id}' is missing an outcome reason.`,
         );
@@ -283,12 +301,20 @@ export class PolicyValidator {
    * Recursively validates a condition.
    */
   private validateCondition(condition: PolicyCondition): void {
+    if (
+      typeof condition !== "object" ||
+      condition === null ||
+      Array.isArray(condition)
+    ) {
+      throw new PolicyValidationError("Invalid policy condition.");
+    }
+
     //
     // Leaf
     //
 
     if ("fact" in condition) {
-      if (!condition.fact.trim()) {
+      if (!isNonBlankString(condition.fact)) {
         throw new PolicyValidationError("Policy condition fact is required.");
       }
 

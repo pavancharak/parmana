@@ -67,6 +67,13 @@ Two TypeScript versions are installed, each for what it can do
 - TypeScript majors are upgraded by hand; Dependabot ignores them. ADR-0015 lists the steps to
   finish the move to 7 once `typescript-eslint` and `typedoc` support it.
 
+## Fuzz tests
+
+Files named `*.fuzz.test.ts`, and `request-fuzz.integration.test.ts` in `packages/api`, use
+[fast-check](https://fast-check.dev) to send damaged and arbitrary input to the request boundary,
+policy loading and evaluation, the offline verifier and approval parsing. They run with every
+`npm test`. A failure prints a minimal counterexample; add it as an exact test next to the fix.
+
 ## Mutation testing
 
 `npm run mutation -- <package>` runs [Stryker](https://stryker-mutator.io) on one or more

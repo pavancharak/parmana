@@ -66,7 +66,13 @@ the agent was allowed to do it.
   tampering and more) and reports each one blocked or not, tied to the commit.
 - **Tests that are tested.** Mutation testing deliberately breaks the security
   code and checks the tests notice; the scores and the gaps it found are in
-  [docs/MUTATION-TESTING.md](docs/MUTATION-TESTING.md).
+  [docs/MUTATION-TESTING.md](docs/MUTATION-TESTING.md). Fuzz tests send damaged
+  and arbitrary requests, policies and records, and require a clear refusal,
+  never a crash.
+- **Open issues, listed.** Every gap still open, with its evidence and what to
+  do meanwhile, is under "Open issues at a glance" in
+  [docs/VERIFICATION-GAPS.md](docs/VERIFICATION-GAPS.md) and on the
+  [Limitations](https://docs.parmanasystems.com/security/limitations#open-issues) page.
 - **Fails closed.** A misconfigured server refuses to start; a request without a
   valid approval is refused and the refusal is recorded.
 - **Policy changes need two people.** A proposed policy change takes effect only

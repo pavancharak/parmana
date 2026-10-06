@@ -2077,7 +2077,7 @@ catalog](/api-reference/error-catalog) has every code.
 | Status | `code`                                                | Meaning                                                                                                                                                                                 | Do this                                                                                                                                        |
 | ------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `200`  | none                                                  | Approved, released to the connector, executed, and the signed Execution Trust Record is the response.                                                                                   | Record the `trustRecordId`. This is the only answer that means the action ran.                                                                 |
-| `400`  | none                                                  | Invalid `businessTransactionId`, malformed JSON, or a field that breaks the transaction's own rules.                                                                                    | Fix the request. A body missing `metadata`, `intent` or `policy` is a bare `500` instead (G-87).                                               |
+| `400`  | none                                                  | Invalid `businessTransactionId`, malformed JSON, or a field that breaks the transaction's own rules.                                                                                    | Fix the request: the message names the field.                                                                                                  |
 | `401`  | none                                                  | No key, or a key the server does not know.                                                                                                                                              | Check the key with `GET /callers/me`.                                                                                                          |
 | `403`  | none                                                  | Your key may not assert this `authority.principalId`.                                                                                                                                   | Use your own `callerId`, or ask the operator for `allowedPrincipalIds`.                                                                        |
 | `403`  | `CAPABILITY_NOT_ALLOWED`                              | `intent.action` is not in your key's `allowedCapabilities`. **The most common real bug.**                                                                                               | Compare `/callers/me`'s `allowedCapabilities` with your `intent.action`, character for character.                                              |
@@ -4629,22 +4629,21 @@ These answer `{ "error": "..." }` only, so tell them apart by status:
 one exception is `401`: caller authentication runs before the route, so a rejected caller sees
 `{"error": "authentication required"}`.
 
-## Known gap: an incomplete body returns a bare 500
+## An incomplete body is a 400
 
-A `POST /execute` or `POST /transactions` body with a valid `businessTransactionId` but without `metadata`,
-`intent` or `policy` does not get a `400`. It reaches `BusinessTransactionValidator.validate`
-(`packages/runtime/src/validators/BusinessTransactionValidator.ts`), which reads a field of the missing object and
-throws a `TypeError`, so the caller sees:
+A `POST /execute` or `POST /transactions` body without `metadata`, `authority`, `authorization`, `intent` or
+`policy`, or with one of them `null` or not an object, or with a required field that is not a string, is refused with
+`400` naming it, for example:
 
 ```json
-{ "error": "Internal Server Error" }
+{ "error": "policy is required and must be an object." }
 ```
 
-with `500`, no `code`, and no hint of which object is missing. The cause is only in the server log. Nothing is
-executed. Send every required object of the request schema in the [API reference](/api-reference/endpoints/execute-transaction).
-Tracked as G-87 in `docs/VERIFICATION-GAPS.md`.
+Nothing is executed. Until 2026-10-06 a missing `policy` or `authorization` reached the validator and was answered
+with a bare `500` (G-87 in `docs/VERIFICATION-GAPS.md`). A fuzz test now sends damaged and arbitrary bodies to both
+routes and requires that neither ever answers `500`.
 
-Fixed earlier, for reference: "no connector registered for this capability" used to be a bare `500` too. It is now
+Fixed earlier too: "no connector registered for this capability" used to be a bare `500` too. It is now
 `503 CONNECTOR_NOT_REGISTERED`.
 
 ## The SDKs
@@ -8355,6 +8354,10 @@ Also enabled on the repository:
 - Mutation testing of the security-critical packages, run by hand (`npm run mutation`). The
   scores, the gaps found and what was fixed are in
   [docs/MUTATION-TESTING.md](https://github.com/pavancharak/parmana/blob/main/docs/MUTATION-TESTING.md).
+- Fuzz tests (property based, with fast-check) of the API request boundary, policy loading and
+  evaluation, the offline verifier and approval parsing, run with every `npm test`. They found
+  three crashes on malformed input, all fixed (G-87, G-90, G-91 in `docs/VERIFICATION-GAPS.md`).
+- Every open issue, with what to do meanwhile: [Limitations](/security/limitations#open-issues).
 
 ### Verifying an SDK package from a GitHub release
 
