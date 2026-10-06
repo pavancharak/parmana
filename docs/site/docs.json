@@ -44,6 +44,7 @@
               "evaluation/overview",
               "evaluation/audit-guide",
               "evaluation/claims-and-evidence",
+              "evaluation/case-studies",
               "license"
             ]
           },
@@ -742,6 +743,10 @@
       {
         "label": "GitHub",
         "href": "https://github.com/pavancharak/parmana"
+      },
+      {
+        "label": "Discussions",
+        "href": "https://github.com/pavancharak/parmana/discussions"
       }
     ]
   },

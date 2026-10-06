@@ -74,6 +74,8 @@ the agent was allowed to do it.
   it leaves to you: [OWASP mapping](https://docs.parmanasystems.com/security/owasp-mapping).
 - **Compared honestly.** Parmana next to IAM, API gateways and LLM guardrails,
   including where it is weaker: [How Parmana compares](https://docs.parmanasystems.com/how-parmana-compares).
+- **Applied to public incidents.** Three reported AI agent incidents, what Parmana
+  would and would not have changed: [Case studies](https://docs.parmanasystems.com/evaluation/case-studies).
 - **Mapped to regulation.** How Parmana supports human oversight and record
   keeping under the EU AI Act (Articles 12, 14 and 26), the NIST AI RMF,
   ISO/IEC 42001 and RBI guidance for Indian banks and NBFCs: [Regulation mapping](https://docs.parmanasystems.com/security/regulation-mapping).
@@ -279,6 +281,7 @@ Interested in running Parmana against a real integration? See
 - Email: [founder@parmanasystems.com](mailto:founder@parmanasystems.com)
 - Website: [parmanasystems.com](https://parmanasystems.com/)
 - Documentation: [docs.parmanasystems.com](https://docs.parmanasystems.com)
+- Questions and ideas: [GitHub Discussions](https://github.com/pavancharak/parmana/discussions)
 - Issues: [github.com/pavancharak/parmana/issues](https://github.com/pavancharak/parmana/issues)
 - Conduct: everyone in issues, pull requests and other project spaces follows the
   [Code of Conduct](CODE_OF_CONDUCT.md).
