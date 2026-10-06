@@ -12,6 +12,16 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-06
 
+**Security: advisory for G-88**
+
+- Published [GHSA-hp43-9p54-wqp9](https://github.com/pavancharak/parmana/security/advisories/GHSA-hp43-9p54-wqp9)
+  (low): a policy name or version of `.` or `..` let the file based policy store read and write a `policy.json` one
+  directory outside the policy directory. Fixed on 2026-10-05; only deployments with `PARMANA_STORAGE` set to
+  `memory` or unset were affected.
+- `POST /policies/{name}/{version}/pending-changes` now refuses a dot-only name, version or
+  `proposedContent.policyVersion` with a 400 when the change is proposed, not when it is applied.
+  `@parmana/policy` is 0.1.1.
+
 **Added: how Parmana compares**
 
 - [How Parmana compares](/how-parmana-compares) sets Parmana next to IAM, API gateways, LLM guardrails, policy

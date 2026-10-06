@@ -1493,6 +1493,12 @@ approved policy change is applied, so reaching it needs an authenticated propose
 inside `basePath`. `FileKeyProvider` gained the same containment check, though key ids could not traverse (a key
 file name always ends in `.private.pem` or `.public.pem`). Tests: `packages/policy/tests/unit/file-policy-repository.test.ts`,
 "FilePolicyRepository dot-only name/version"; the three `save` cases failed before the fix.
+Follow up, 2026-10-06: the policy change route (`POST /policies/:name/:version/pending-changes`) now refuses a
+dot-only name, version or `proposedContent.policyVersion` with a 400 at proposal time, instead of the proposal
+being stored and failing only when an approved change was applied; `@parmana/policy` is now 0.1.1, the first
+version with the fix. Tests: `pending-policy-changes-governance.integration.test.ts`, the four "(G-88)" cases,
+which fail without the route change. Advisory:
+[GHSA-hp43-9p54-wqp9](https://github.com/pavancharak/parmana/security/advisories/GHSA-hp43-9p54-wqp9) (low).
 
 **G-89. An edited Execution with its `chainSignature` removed passed the execution chain check. FOUND 2026-10-05
 by mutation testing, CLOSED the same day.** `ExecutionChainCrypto.verifyChain` treated an Execution as chain

@@ -20,7 +20,7 @@
     "@parmana/envelope-verifier": "0.1.0",
     "@parmana/execution-control": "0.1.0",
     "@parmana/execution-gateway": "0.1.0",
-    "@parmana/policy": "0.1.0",
+    "@parmana/policy": "0.1.1",
     "@parmana/runtime": "0.1.0",
     "@parmana/storage": "0.1.0",
     "@vercel/connect": "^2.3.5",

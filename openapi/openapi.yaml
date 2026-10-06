@@ -4218,14 +4218,14 @@ paths:
         a human key. See [Policy lifecycle and approvals](/guides/policy-lifecycle-and-approvals).
       parameters:
         - name: name
-          description: "The policy name, for example `customer-refund`."
+          description: "The policy name, for example `customer-refund`. Not `.` or `..`."
           in: path
           required: true
           schema:
             type: string
             pattern: "^[A-Za-z0-9._-]+$"
         - name: version
-          description: "The version this proposal changes, for example `1.2.0`."
+          description: "The version this proposal changes, for example `1.2.0`. Not `.` or `..`."
           in: path
           required: true
           schema:

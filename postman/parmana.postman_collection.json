@@ -588,12 +588,12 @@
                 {
                   "key": "name",
                   "value": "",
-                  "description": "The policy name, for example `customer-refund`."
+                  "description": "The policy name, for example `customer-refund`. Not `.` or `..`."
                 },
                 {
                   "key": "version",
                   "value": "",
-                  "description": "The version this proposal changes, for example `1.2.0`."
+                  "description": "The version this proposal changes, for example `1.2.0`. Not `.` or `..`."
                 }
               ]
             },
