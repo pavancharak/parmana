@@ -47,6 +47,7 @@
     "examples": "tsx scripts/run-examples.ts",
     "preevaluate": "tsx scripts/check-dist-fresh.ts",
     "evaluate": "tsx scripts/evaluate.ts",
+    "evaluate:agentrust-refund": "tsx scripts/evaluate-agentrust-refund.ts",
     "mutation": "tsx scripts/mutation.ts",
     "policy-log:verify": "tsx scripts/policy-approval-log.ts verify",
     "policy-log:export": "tsx scripts/policy-approval-log.ts export",
