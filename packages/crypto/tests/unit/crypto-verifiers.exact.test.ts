@@ -245,6 +245,41 @@ describe("RefusalCrypto, exactly", () => {
     ).resolves.toBe(false);
   });
 
+  it("hashes a refusal without policyContentHash exactly as before the field existed, so older records still verify", async () => {
+    const { refusalRecordHash } = await signedRefusal();
+    // Computed with RefusalCrypto before policyContentHash was added.
+    expect(refusalRecordHash).toBe(
+      "1abb934fb29c8390620b5df129d48b489486b021e8369b06ee7c1535e385b7ac",
+    );
+  });
+
+  it("signs policyContentHash: changing, removing or adding it breaks verification", async () => {
+    const policyContentHash = "a".repeat(64);
+    const draft = {
+      ...(await signedRefusal()),
+      policyContentHash,
+    } as RefusalRecord;
+    const withHash = {
+      ...draft,
+      refusalRecordHash: await refusal.hash(draft),
+      signature: await refusal.sign(draft),
+    } as RefusalRecord;
+
+    await expect(refusal.verify(withHash)).resolves.toBe(true);
+    await expect(
+      refusal.verify({ ...withHash, policyContentHash: "b".repeat(64) }),
+    ).resolves.toBe(false);
+
+    const { policyContentHash: _removed, ...withoutHash } = withHash;
+    await expect(refusal.verify(withoutHash as RefusalRecord)).resolves.toBe(
+      false,
+    );
+
+    await expect(
+      refusal.verify({ ...(await signedRefusal()), policyContentHash }),
+    ).resolves.toBe(false);
+  });
+
   it("refuses a signature from another refusal", async () => {
     const genuine = await signedRefusal();
     const other = await refusal.sign({

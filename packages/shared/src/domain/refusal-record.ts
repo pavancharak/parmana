@@ -90,6 +90,16 @@ export interface RefusalRecord {
   readonly submittedBy?: string;
 
   /**
+   * SHA-256 hash of the policy content that decided this refusal, the
+   * same value an Execution Trust Record carries in
+   * transaction.policy.contentHash. Computed by the runtime from the
+   * policy that actually loaded, never from the request. Inside the
+   * signed canonical record. Absent on Refusal Records written before
+   * 2026-10-06, which still verify.
+   */
+  readonly policyContentHash?: string;
+
+  /**
    * Canonical hash of this Refusal Record, same convention as
    * ExecutionTrustRecord.trustRecordHash.
    */

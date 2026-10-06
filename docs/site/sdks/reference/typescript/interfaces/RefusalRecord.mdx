@@ -68,11 +68,22 @@ when caller-auth is disabled.
 
 ---
 
+### policyContentHash?
+
+> `readonly` `optional` **policyContentHash?**: `string`
+
+Defined in: [typescript/src/models/refusal-record.ts:54](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L54)
+
+SHA-256 hash of the policy content that decided the refusal. Absent
+on Refusal Records written before 2026-10-06.
+
+---
+
 ### refusalRecordHash
 
 > `readonly` **refusalRecordHash**: `string`
 
-Defined in: [typescript/src/models/refusal-record.ts:50](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L50)
+Defined in: [typescript/src/models/refusal-record.ts:55](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L55)
 
 ---
 
@@ -80,7 +91,7 @@ Defined in: [typescript/src/models/refusal-record.ts:50](https://github.com/pava
 
 > `readonly` **signature**: [`Signature`](/sdks/reference/typescript/interfaces/Signature)
 
-Defined in: [typescript/src/models/refusal-record.ts:51](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L51)
+Defined in: [typescript/src/models/refusal-record.ts:56](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L56)
 
 ---
 
@@ -88,4 +99,4 @@ Defined in: [typescript/src/models/refusal-record.ts:51](https://github.com/pava
 
 > `readonly` **createdAt**: `Date`
 
-Defined in: [typescript/src/models/refusal-record.ts:52](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L52)
+Defined in: [typescript/src/models/refusal-record.ts:57](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/refusal-record.ts#L57)
