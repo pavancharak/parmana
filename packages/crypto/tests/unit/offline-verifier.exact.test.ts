@@ -129,6 +129,32 @@ describe("verifyExecutionTrustRecordOffline, exactly", () => {
     );
   });
 
+  it.each([
+    ["null entry", [null]],
+    ["entry missing its signature", [{ algorithm: "ed25519", keyId: "k" }]],
+    ["a string", "sig"],
+    ["an object", { algorithm: "ed25519" }],
+  ])(
+    "refuses malformed signatures (%s) without throwing",
+    async (_label, signatures) => {
+      const result = await verifyExecutionTrustRecordOffline(
+        {
+          ...(await legacyRecord()),
+          signatures,
+        } as unknown as ExecutionTrustRecord,
+        KEYS,
+      );
+      expect(result).toMatchObject({
+        valid: false,
+        legacySignatureValid: true,
+        hybridSignaturesValid: false,
+      });
+      expect(result.errors).toContain(
+        "malformed signatures: expected an array of entries with string algorithm, keyId and signature.",
+      );
+    },
+  );
+
   it("treats an empty signatures array as no hybrid envelope", async () => {
     const result = await verifyExecutionTrustRecordOffline(
       { ...(await legacyRecord()), signatures: [] },
