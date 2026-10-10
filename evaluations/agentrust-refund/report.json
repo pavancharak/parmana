@@ -1,8 +1,8 @@
 {
-  "commit": "56b3699e7b5be00694a7631d2ec492fc8657f26a",
+  "commit": "ac22a7ed594b4a527504ce43841595c1a62f3046",
   "workingTreeClean": true,
   "node": "v22.22.0",
-  "ranAt": "2026-10-10T19:07:31.961Z",
+  "ranAt": "2026-10-10T19:13:30.772Z",
   "scenario": "paytm:refund under customer-refund 1.2.0",
   "connector": "MockPaytmConnectorServer (hermetic, in process)",
   "limitation": "refundEligible and fraudCheckPassed are declared by the caller and not checked against any system; they can only refuse. The signed manager approval is what authorizes.",
@@ -19,8 +19,8 @@
       "reason": null,
       "record": {
         "type": "ExecutionTrustRecord",
-        "id": "719bd787-b35c-47c0-95a1-30962bc1b4ea",
-        "hash": "f009941cbd220e2b21ee9f2df16c1bf783749ebac0dcbe373d1cb1f07bfbb8ce",
+        "id": "6a45f4c3-fe7a-4a54-aab7-369d84a02149",
+        "hash": "9f35c8efa1ec6c325cca9b07075ed4c7abef2ddec030c33bbc4d72971a6eb5b4",
         "signatureAlgorithm": "ed25519",
         "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
         "matchedRuleId": null,
@@ -38,8 +38,8 @@
       "reason": "Execution rejected: Rejected: declared signal(s) do not match independently verified state (managerApproved=true != verified managerApproved=false).",
       "record": {
         "type": "RefusalRecord",
-        "id": "092cd31c-b7aa-4023-80ab-852d654e18d9",
-        "hash": "9f17f55a4a3b380d375872435bedf01c07e631c2e723b4237fec2018e07a7320",
+        "id": "ba0ae497-3002-4fed-9e6a-38bf915258f8",
+        "hash": "6d0b41c9c5c3ac30f15d898d799e28a1d6ffa60c671db0e6047ecba36d6c4657",
         "signatureAlgorithm": "ed25519",
         "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
         "matchedRuleId": "signal-state-verification-violation",
@@ -57,8 +57,8 @@
       "reason": "Execution rejected: Rejected: declared signal(s) do not match independently verified state (managerApproved=true != verified managerApproved=false).",
       "record": {
         "type": "RefusalRecord",
-        "id": "7ab18db0-84c0-4372-b13d-fa9bc38e84e2",
-        "hash": "c3fd35035cb8138b3901b6a9acfbb7607be7080de16f145076a1c90ac1e3de20",
+        "id": "adecc3fc-268a-4520-9a90-d5f01c2acd24",
+        "hash": "876dcb2f44e76d77664dcb823b7aa6ca80d542eaee4ac6afd020edfa59fa46c6",
         "signatureAlgorithm": "ed25519",
         "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
         "matchedRuleId": "signal-state-verification-violation",
