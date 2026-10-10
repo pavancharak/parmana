@@ -53,11 +53,12 @@ itself: a runnable tutorial is falsifiable in a way prose is not, if the underly
 changes, the tutorial's own final assertion fails the next time anyone runs it, where a
 paragraph of documentation making the same claim would simply keep reading as true.
 
-Two entries are deliberately excluded from the automated `npm run examples` run:
-`examples/04-verified-execution` (binds a real TCP port not safe to run unattended alongside the
-rest of the list) and `examples/tutorials/09-rest-api` (POSTs to a live server the runner does
-not start), each documented with a comment in `scripts/run-examples.ts` explaining exactly why,
-and pointing at that example's own `README.md` for how to run it individually.
+One entry is deliberately excluded from the automated `npm run examples` run:
+`examples/tutorials/09-rest-api`, which POSTs to a live server the runner does not start. A
+comment in `scripts/run-examples.ts` explains why and points at its own `README.md` for how to
+run it individually. `examples/04-verified-execution` used to be excluded too, because it bound
+a fixed port; it stopped running unnoticed, and now listens on a free port and runs with the
+rest.
 
 ### Attack scenarios
 

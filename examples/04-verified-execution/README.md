@@ -95,6 +95,9 @@ PARMANA_POLICY_DIR=./policies node ./node_modules/tsx/dist/cli.mjs examples/04-v
 `PARMANA_POLICY_DIR` is required by the key generation script on a fresh
 clone with no `.env`.
 
+`npm run examples` also runs it, and fails if any of the five outcomes
+changes.
+
 ### Running under the post-quantum provider (ML-DSA-65 / dilithium3)
 
 No code path changes — only configuration and key material:
