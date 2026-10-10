@@ -29,7 +29,7 @@ async function main(): Promise<void> {
 
   const result = await runtime.execute(await withDemoApproval(transaction));
 
-  const { context } = result;
+  const { context, trustRecord } = result;
 
   console.log();
   console.log("Runtime Pipeline");
@@ -41,13 +41,9 @@ async function main(): Promise<void> {
 
   console.log(`Execution         : ${context.execution ? "✓" : "✗"}`);
 
-  console.log(`Evidence          : ${context.evidence ? "✓" : "✗"}`);
+  console.log(`Trust Record      : ${trustRecord.trustRecordId ? "✓" : "✗"}`);
 
-  console.log(`Verification      : ${context.verification ? "✓" : "✗"}`);
-
-  console.log(`Receipt           : ${context.receipt ? "✓" : "✗"}`);
-
-  console.log(`Trust Record      : ${context.trustRecord ? "✓" : "✗"}`);
+  console.log(`Signed            : ${trustRecord.signature.value ? "✓" : "✗"}`);
 
   console.log();
   console.log("Pipeline completed successfully.");

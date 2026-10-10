@@ -11,7 +11,8 @@ So far we've explored individual parts of Parmana:
 
 This tutorial demonstrates how those components work together as a single execution pipeline.
 
-The `ExecutionTrustApplication` orchestrates the complete lifecycle of a Business Transaction and produces an immutable Execution Trust Record.
+The runtime built by `RuntimeBuilder` runs a Business Transaction through every stage and
+produces a signed Execution Trust Record.
 
 ---
 
@@ -21,94 +22,67 @@ The `ExecutionTrustApplication` orchestrates the complete lifecycle of a Busines
 Business Transaction
         │
         ▼
-Accept Transaction
+Policy decision and signed approval check
         │
         ▼
-Runtime
+Signed Execution Authorization
         │
         ▼
-Execution
+Gateway release (Execution)
         │
         ▼
-Verification
-        │
-        ▼
-Receipt
-        │
-        ▼
-Execution Trust Record
+Signed Execution Trust Record
 ```
 
 Unlike previous tutorials that focused on individual components, this tutorial demonstrates the complete orchestration.
 
 ---
 
-## Building the Application
+## Building the Runtime
 
 ```ts
-const application = new ExecutionTrustApplicationBuilder()
+const runtime = new RuntimeBuilder()
+  .withSignalStateVerifier(demoApprovalSignalVerifier())
   .withPolicyRepository(new FilePolicyRepository("policies"))
   .build(new MemoryExecutionTrustRecordRepository());
 ```
 
-The builder assembles the complete Execution Trust pipeline.
+The builder assembles the runtime pipeline. The signal state verifier checks the signed human
+approval the vendor-payment policy requires; `withDemoApproval` attaches one from a demo
+approver.
 
 ---
 
 ## Executing the Pipeline
 
 ```ts
-const trustRecord = await application.execute(transaction);
+const { context, trustRecord } = await runtime.execute(
+  await withDemoApproval(transaction),
+);
 ```
 
-The application performs the following stages automatically:
+The runtime performs these stages:
 
-1. Accept the Business Transaction.
-2. Execute the Runtime.
-3. Verify the Execution Trust Record.
-4. Generate a cryptographic Receipt.
-5. Return the completed Execution Trust Record.
-
----
-
-## Pipeline Artifacts
-
-After execution, the Trust Record contains:
-
-- Business Transaction
-- Execution
-- Verification
-- Receipt
-- Trust Record Hash
-- Signature
-
-These artifacts together provide cryptographic evidence of the complete execution.
+1. Evaluate the policy and verify the signed approval (`context.decision`).
+2. Sign an Execution Authorization (`context.authorization`).
+3. Release the action through the gateway (`context.execution`).
+4. Build, sign and store the Execution Trust Record (`trustRecord`).
 
 ---
 
 ## Expected Output
 
 ```text
-==================================================
-Tutorial 32 - Execution Pipeline
-==================================================
-Executing Business Transaction...
-Pipeline Artifacts
-\------------------------------
-✓ Business Transaction : txn-000001
-✓ Execution           : 1
-✓ Verification        : 1
-✓ Receipt             : 1
-✓ Trust Record Hash   : ...
-Execution Pipeline
-\------------------------------
-✓ Transaction Accepted
-✓ Policy Evaluated
-✓ Execution Authorized
-✓ Execution Completed
-✓ Verification Completed
-✓ Receipt Generated
-✓ Execution Trust Record Created
+Runtime Pipeline
+------------------------------
+Decision          : ✓
+Authorization     : ✓
+Execution         : ✓
+Trust Record      : ✓
+Signed            : ✓
+
+Pipeline completed successfully.
+
 Tutorial completed successfully.
 ```
 

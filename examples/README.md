@@ -18,7 +18,7 @@ examples/
 ├── audit/
 │   └── AS-001-approved-vendor-payment   an example audit package (all evidence from one run)
 ├── shared/                 helper functions, reference policies, common transactions
-├── 04-verified-execution/  runs its own receiving-side HTTP server; run individually
+├── 04-verified-execution/  runs its own receiving-side HTTP server on a free port
 ├── sandbox-playground/     the Playground scripts (cURL, PowerShell, TypeScript, Python) for the public sandbox
 └── archive/                superseded examples, kept for history only
 ```
@@ -191,9 +191,8 @@ common transactions, and reference policies.
 npm install
 ```
 
-Run the entire tutorial + scenario suite (excludes `04-verified-execution` and
-`09-rest-api`, which need a listening server/port and are meant to be run individually —
-see their own READMEs):
+Run the entire tutorial + scenario suite, including `04-verified-execution` (excludes
+`09-rest-api`, which needs a running Parmana API server — see its own README):
 
 ```bash
 npm run examples

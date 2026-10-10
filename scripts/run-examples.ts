@@ -13,15 +13,9 @@ const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, "..");
 
 //
-// examples/04-verified-execution is intentionally excluded: it
-// binds a real TCP port (the "receiving side" HTTP server) and
-// isn't safe to run unattended alongside the rest of this list.
-// Run it individually — see examples/04-verified-execution/README.md.
-//
-// examples/tutorials/09-rest-api is intentionally excluded for the
-// same reason: it POSTs to a live Parmana API server at
-// PARMANA_API_URL / http://localhost:3000, which this runner does
-// not start. Run it individually with a server already up — see
+// examples/tutorials/09-rest-api is intentionally excluded: it
+// POSTs to a live Parmana API server at PARMANA_API_URL /
+// http://localhost:3000, which this runner does not start. Run it individually with a server already up — see
 // examples/tutorials/09-rest-api/README.md.
 //
 const examples = [
@@ -142,6 +136,7 @@ const examples = [
   "examples/tutorials/123-external-connector/run.ts",
   "examples/scenarios/expense-approval/run.ts",
   "examples/scenarios/purchase-order/run.ts",
+  "examples/04-verified-execution/run.ts",
 ];
 
 //
