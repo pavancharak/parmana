@@ -315,12 +315,62 @@ export interface Policy {
   approvalSignals?: Record<string, ApprovalSignalDeclaration>;
 
   /**
+   * Signals whose value comes from a business system, never from the
+   * caller (RFC-0023). For each key, Parmana asks the named source for
+   * `claim` about the business object at `subject` in the Intent, and
+   * records the answer as a TrustedSignal. Rules read the trusted value.
+   * A value the caller proposed for the same key is only compared with
+   * it: a different value refuses the request as INVALID.
+   *
+   * Fails closed: an unregistered or unreachable source, no answer, or
+   * an answer older than `maxAgeSeconds` refuses the request.
+   *
+   * A key here counts as covered for PolicyValidator's fail closed fact
+   * coverage, like a boundSignals key.
+   *
+   * Example:
+   *
+   * {
+   *   "refundEligible": {
+   *     "source": "orders-system",
+   *     "claim": "refund.eligible",
+   *     "subject": "parameters.orderId",
+   *     "maxAgeSeconds": 60
+   *   }
+   * }
+   */
+  signalSources?: Record<string, SignalSourceDeclaration>;
+
+  /**
    * Ordered evaluation rules.
    *
    * Rules are evaluated sequentially.
    * The first matching rule wins.
    */
   rules: PolicyRule[];
+}
+
+/**
+ * Where one sourced signal's value comes from (RFC-0023).
+ */
+export interface SignalSourceDeclaration {
+  /** The registered source to ask, such as "orders-system". */
+  readonly source: string;
+
+  /** What to ask the source, such as "refund.eligible". */
+  readonly claim: string;
+
+  /**
+   * The business object the claim is about: "target", or a dot path into
+   * the Intent's parameters such as "parameters.orderId".
+   */
+  readonly subject: string;
+
+  /**
+   * How old the source's answer may be when the policy is evaluated.
+   * Defaults to 300 seconds; at most 86400.
+   */
+  readonly maxAgeSeconds?: number;
 }
 
 /**

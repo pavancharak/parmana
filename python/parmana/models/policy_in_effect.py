@@ -10,6 +10,7 @@ Hand-maintained: this is the response body of GET /policies/in-effect
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from parmana.models.policy import PolicyReference
 
@@ -37,6 +38,12 @@ class PolicySignalRequirements:
     #: `signals.approvalArtifact`, with where the resource ("resourceId")
     #: and, when there is one, the amount ("value") are in the request.
     approval: dict[str, dict[str, str]]
+
+    #: Facts the server asks a business system for itself, as signal name
+    #: to "source", "claim", "subject" and, if set, "maxAgeSeconds".
+    #: Present only when the policy has any. You need not send them; a
+    #: value you send that differs from the source's is refused.
+    sourced: dict[str, dict[str, Any]] | None = None
 
 
 @dataclass(frozen=True)

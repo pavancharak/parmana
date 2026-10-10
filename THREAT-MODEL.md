@@ -8,7 +8,7 @@ risk. The evidence is one of:
   [evaluations/scenarios.json](evaluations/scenarios.json));
 - a claim in [docs/CLAIMS.md](docs/CLAIMS.md), cited by section number.
 
-Reviewed on 2026-10-05 against `main`. When a claim, an enforcement point or an attacker
+Reviewed on 2026-10-10 against `main`. When a claim, an enforcement point or an attacker
 capability changes, this file changes in the same pull request.
 
 ## 1. System and scope
@@ -158,6 +158,9 @@ agent can achieve:
   reads included (2.47).
 - What the agent declares cannot authorize anything by itself (2.44). Bound signals must
   match the action executed (EV-06).
+- A fact a policy sources from a business system (`signalSources`, 2.53, RFC-0023) is asked of
+  that system by Parmana, never taken from the agent; an agent that proposes a different value
+  is refused as `INVALID`. No business source is registered in the server yet (G-92).
 - What remains: within an approved action and resource, any parameter the approval does not
   fix is the agent's choice, and a person can be persuaded to approve a request they did not
   read closely.

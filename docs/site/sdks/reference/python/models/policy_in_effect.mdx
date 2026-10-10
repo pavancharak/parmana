@@ -41,6 +41,13 @@ Signals that count as true only with a signed approval in
 `signals.approvalArtifact`, with where the resource ("resourceId")
 and, when there is one, the amount ("value") are in the request.
 
+#### sourced
+
+Facts the server asks a business system for itself, as signal name
+to "source", "claim", "subject" and, if set, "maxAgeSeconds".
+Present only when the policy has any. You need not send them; a
+value you send that differs from the source's is refused.
+
 ## PolicyInEffect Objects
 
 ```python
