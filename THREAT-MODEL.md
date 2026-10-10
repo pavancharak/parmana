@@ -85,10 +85,20 @@ Parmana assumes nothing about the agent. It treats every request as possibly hos
 | A5. A holder of an approver key, the signing key, the gateway key or a connector credential                               | No (assumed not compromised)    |
 | A6. An attacker with write access to the database                                                                         | No (assumed)                    |
 | A7. One person holding both the maker and the checker credentials                                                         | No (assumed)                    |
+| A8. An agent that holds its own credentials to a downstream system and never calls Parmana                                | No (outside the boundary)       |
+| A9. Anyone who controls the host, container, image, build or source that Parmana runs from                                | No (assumed)                    |
 
 The [Audit guide](https://docs.parmanasystems.com/evaluation/audit-guide#what-an-attacker-controls)
 gives the expected outcome for each of A5 to A7. In most cases the attack succeeds. They are
 listed so that a review can state them as assumptions rather than leave them implicit.
+
+A8 and A9 always succeed, and Parmana cannot prevent either. Parmana governs only actions
+that are routed through it: an agent with its own credentials to a system is not governed at
+all (assumptions 5 and 6 below). Whoever controls the machine, image or code Parmana runs from
+can change what it enforces or skip it; T17 reduces the chance that the published code or
+image was altered, but nothing in Parmana defends a host its operator, or an attacker on it,
+chooses to modify. On a self hosted copy the person running it is the operator and holds A5
+to A9 by construction, so a challenge against such a copy only tests attackers A0 to A4.
 
 ## 5. Threats, controls and residual risk
 
@@ -128,6 +138,11 @@ These are not defended. A review should state them as assumptions:
 5. Connector credentials are held only by Parmana's execution control.
 6. Downstream systems accept actions only from Parmana, or verify its signed release (E5).
 7. Policies are written correctly. Parmana proves which policy decided, not that it is right.
+8. The host, container runtime, image and source Parmana runs from are not attacker
+   controlled. Image provenance (T17) can be checked before deployment; integrity after that
+   is the hosting platform's responsibility.
+9. Agents reach governed systems only through Parmana: they hold no credentials of their own
+   to those systems. This is a deployment property, not something Parmana enforces.
 
 ## 7. Prompt injection, specifically
 

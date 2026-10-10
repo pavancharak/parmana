@@ -34,6 +34,9 @@ not claim them:
   deployment environment.
 - "Non-bypassable" as an unscoped, system-wide claim. [The gateway](/concepts/the-gateway)
   enforces nothing at the network level, it's a property of systems that route through it.
+- That an AI agent cannot act at all without an approval. Parmana governs the actions routed
+  through it. An agent that holds its own credentials to a system, or anyone who controls the
+  host or image Parmana runs from, is outside that boundary.
 - Deterministic signature output for ML-DSA-65 (those signatures are randomized by design,
   only verification is deterministic; see
   [Choose a signature provider](/guides/choose-a-signature-provider)).
@@ -187,6 +190,14 @@ registered `timeoutMs`); the pipeline as a whole has none of its own, so a clien
   release and keep what it answers honest.
 - **Rate limiting and availability.** `/execute` is rate-limited per caller, `/health`/`/ready`
   per IP, this protects the service, it isn't a substitute for your own capacity planning.
+
+- **Credential custody for agents.** Give connector credentials to Parmana, never to the
+  agent. An agent that holds its own token to a system can act there without Parmana; where
+  the downstream system can, have it accept only Parmana's signed release.
+- **Runtime integrity.** Run an image you have verified
+  ([Verifying the server image](/security/overview#verifying-the-server-image)) on a host you
+  control. Parmana cannot defend against changes to the code, container or machine it runs
+  on.
 
 ## How these claims are verified
 
