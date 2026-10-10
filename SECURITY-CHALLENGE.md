@@ -25,6 +25,14 @@ infrastructure, or any deployment you do not run yourself. Do not use real crede
 HubSpot, GitHub, Slack, Paytm or any other third party service; use the mock connectors and
 stand ins that ship with the repository.
 
+## Two roles: operator and attacker
+
+On your own copy you play two roles. As the **operator** you install Parmana, hold every key,
+the database and both governance credentials, and you are trusted, the same as the operator
+of a real deployment. As the **attacker** you hold only what the next section lists. A break
+is something the attacker does; anything that needs the operator's position does not count,
+because in a real deployment the attacker does not have it.
+
 ## What counts as a break
 
 Each item below is a claim Parmana makes about an attacker who holds at most a valid agent API
@@ -59,8 +67,14 @@ and on the [Limitations](https://docs.parmanasystems.com/security/limitations) p
 - A break that only works with a development or test setting turned on, such as
   `PARMANA_AUTH_DISABLED=true` or `NODE_ENV` other than `production`, unless you show the
   setting can be reached in a production configuration.
-- Calling a downstream system directly, without going through Parmana. Parmana does not
-  enforce anything at the network level.
+- Calling a downstream system directly, without going through Parmana, or an agent that holds
+  its own credentials to that system. Parmana governs only actions routed through it and
+  does not enforce anything at the network level.
+- Changing the code, image, container, Docker installation or host that Parmana runs from,
+  before or after it starts, or exploiting the machine you download or run it on. That is
+  control of the trust boundary itself, not a way through it (attacker A9 in
+  [THREAT-MODEL.md](THREAT-MODEL.md)). A malicious change that reaches the published source
+  or the signed release image is a finding; report it.
 - Denial of service, load or rate limit testing against anything but your own copy.
 - Social engineering, and anything that targets a person.
 - A known vulnerability in a dependency, unless you show it working against Parmana.
