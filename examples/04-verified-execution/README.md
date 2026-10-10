@@ -24,7 +24,8 @@ It demonstrates two roles, in a single script:
   2. The same envelope replayed → rejected (`403`, `nonceUnseen: false`)
   3. Tampered payload (changed `decisionId`) → rejected (`403`,
      `signatureVerified: false`)
-  4. Missing authorization → rejected (`401`)
+  4. Missing authorization → rejected (`401`). This is an agent that skips
+     Parmana and calls the system directly; see below.
 - **PARMANA SIDE, again** — a fifth scenario that attacks the Gateway
   itself rather than the receiving side: a validly-signed envelope for the
   right `businessTransactionId`, paired with a payload whose `amount` was
@@ -88,8 +89,11 @@ wasn't isolated, but the repo's own `scripts/run-examples.ts` already avoids
 `npx tsx` for its spawned examples, using this same direct-CLI form):
 
 ```bash
-node ./node_modules/tsx/dist/cli.mjs examples/04-verified-execution/run.ts
+PARMANA_POLICY_DIR=./policies node ./node_modules/tsx/dist/cli.mjs examples/04-verified-execution/run.ts
 ```
+
+`PARMANA_POLICY_DIR` is required by the key generation script on a fresh
+clone with no `.env`.
 
 ### Running under the post-quantum provider (ML-DSA-65 / dilithium3)
 
@@ -137,6 +141,20 @@ The script prints, in order:
     `checks.businessTransactionHashMatches: false`, with a `hashMismatch`
     naming both the expected and actual hash. Never reaches the Connector.
 11. A one-line summary of all five outcomes.
+
+## An agent that bypasses Parmana
+
+Parmana governs only the actions routed through it. An agent that calls a
+downstream system directly is outside that boundary (attacker A8 in
+[THREAT-MODEL.md](../../THREAT-MODEL.md)), and Parmana itself cannot stop
+the call. The receiving side can: Scenario 4 is that agent's call, and a
+system that accepts only a valid Parmana signed release refuses it with
+`401`. Scenarios 2 and 3 show that a captured release cannot be replayed or
+altered instead.
+
+This closes the bypass only where the downstream system runs the check, and
+only if the agent holds no other credential that system accepts. See
+[Connect any external system](https://docs.parmanasystems.com/guides/connect-any-external-system).
 
 ## What this does _not_ prove
 
