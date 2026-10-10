@@ -47,13 +47,93 @@
     },
     "matchedPath": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "description": "Ordered rule-id trace evaluation walked to reach matchedRuleId. Same optionality as matchedRuleId."
     },
     "evaluatedAt": {
       "type": "string",
       "format": "date-time",
       "description": "UTC timestamp when policy evaluation completed."
+    },
+    "assessment": {
+      "type": "object",
+      "description": "Authority, business validation and, for a refusal, execution, each as its own status (RFC-0023). AUTHORIZED means the action type may be decided, not that this action is valid or was executed. Absent on decisions made before it existed.",
+      "required": ["authority", "businessValidation"],
+      "properties": {
+        "authority": {
+          "type": "object",
+          "required": ["status", "reason"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "AUTHORIZED",
+                "NOT_AUTHORIZED",
+                "AUTHORITY_UNCLEAR",
+                "AUTHORITY_EXPIRED"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        },
+        "businessValidation": {
+          "type": "object",
+          "required": ["status", "reason"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "VALID",
+                "INVALID",
+                "MISSING_DATA",
+                "CONFLICTING_DATA",
+                "SOURCE_UNAVAILABLE",
+                "VALIDATION_EXPIRED",
+                "NOT_EVALUATED"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            },
+            "signals": {
+              "type": "array",
+              "description": "Trusted Signals: facts established by their sources for this exact business object and action.",
+              "items": {
+                "type": "object"
+              }
+            },
+            "failures": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["signalKey", "status", "reason"]
+              }
+            }
+          }
+        },
+        "execution": {
+          "type": "object",
+          "required": ["status", "reason"],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "EXECUTED",
+                "NOT_EXECUTED",
+                "EXECUTION_FAILED",
+                "EXECUTION_UNKNOWN"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      }
     }
   },
   "examples": [

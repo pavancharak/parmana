@@ -76,6 +76,7 @@ export { SupabasePolicyRepository } from "./SupabasePolicyRepository.js";
 
 export type {
   ApprovalSignalDeclaration,
+  SignalSourceDeclaration,
   Policy,
   PolicyCondition,
   PolicyInput,

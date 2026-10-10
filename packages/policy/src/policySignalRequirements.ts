@@ -2,6 +2,7 @@ import type {
   ApprovalSignalDeclaration,
   Policy,
   PolicyCondition,
+  SignalSourceDeclaration,
 } from "./types/Policy.js";
 
 /**
@@ -46,6 +47,12 @@ export interface PolicySignalRequirements {
   readonly schema: Readonly<Record<string, string>>;
   readonly bound: Readonly<Record<string, string>>;
   readonly approval: Readonly<Record<string, ApprovalSignalDeclaration>>;
+  /**
+   * Facts Parmana asks a business system for itself (RFC-0023). Present
+   * only when the policy declares any. A caller need not send them; a
+   * value it sends that differs from the source's is refused.
+   */
+  readonly sourced?: Readonly<Record<string, SignalSourceDeclaration>>;
 }
 
 export function describePolicySignalRequirements(
@@ -56,5 +63,8 @@ export function describePolicySignalRequirements(
     schema: { ...(policy.signalsSchema ?? {}) },
     bound: { ...(policy.boundSignals ?? {}) },
     approval: { ...(policy.approvalSignals ?? {}) },
+    ...(policy.signalSources !== undefined && {
+      sourced: { ...policy.signalSources },
+    }),
   };
 }

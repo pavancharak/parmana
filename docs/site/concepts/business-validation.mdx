@@ -1,0 +1,146 @@
+---
+title: "Business validation"
+description: "An agent's proposed fact is never a business fact. How a policy names the system that owns each fact, how Parmana asks it and records a Trusted Signal, and the separate authority, validation and execution statuses on every decision."
+---
+
+An agent proposes an action and the facts it rests on: "refund ₹50,000 for order 123, the
+refund is eligible". The fact that the refund is eligible is the agent's claim, not a business
+fact. Parmana answers two questions separately, and an action runs only when both hold:
+
+- **Authority.** May this kind of action be decided here at all?
+- **Business validity.** Is this exact action valid for this exact business object, according to
+  the system that owns the facts?
+
+| What                                                                    | Status                                                     |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Separate authority, validation and execution statuses on every decision | **[AVAILABLE]**                                            |
+| A policy naming the source of each fact (`signalSources`)               | **[AVAILABLE]**                                            |
+| Parmana asking the source and recording a Trusted Signal                | **[AVAILABLE]** in the runtime                             |
+| Business sources registered in the server                               | **[NOT AVAILABLE]**: a policy that declares one is refused |
+| Per-agent limits and expiry as authority                                | **[NOT AVAILABLE]**                                        |
+| Execute only if still valid, in one call to the system                  | **[NOT AVAILABLE]**                                        |
+
+The design and its phases are in
+[RFC-0023](https://github.com/pavancharak/parmana/blob/main/docs/rfcs/RFC-0023-Business-Validation.md);
+the claim is [CLAIMS.md 2.53](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md).
+
+## The flow
+
+1. The agent proposes an action and facts.
+2. The facts must describe the action being executed (`boundSignals`).
+3. **Authority.** The policy in force must be the approved, current one, and the capability must
+   be decided under its bound policy. At the API, the caller's key must allow the capability. If
+   authority is not established the request is refused, and no business system is asked.
+4. **Business validation.** For each fact the policy declares a source for, Parmana asks that
+   source about the business object it reads from the request, never using the agent's value. If
+   the agent proposed a value, it must equal the source's.
+5. **The policy** is evaluated on the values the sources established.
+6. The signed human approval is checked ([Human approval](/concepts/human-approval)), then the
+   action is authorized and released, and a signed record is written.
+
+## Naming the source of a fact
+
+```json
+"signalSources": {
+  "refundEligible": {
+    "source": "orders-system",
+    "claim": "refund.eligible",
+    "subject": "parameters.orderId",
+    "maxAgeSeconds": 60
+  }
+}
+```
+
+- `source`: the registered business system to ask.
+- `claim`: what to ask it.
+- `subject`: where the business object is in the request, `target` or a `parameters` path.
+- `maxAgeSeconds`: how old the answer may be, from 1 to 86400, default 300.
+
+A policy with a malformed declaration fails to load. So does a policy where the same fact is also
+bound to the request, approval backed, or given an unbound reason, or where no rule reads it.
+`GET /policies/in-effect` lists the declarations under `signals.sourced`, so an agent knows it
+need not send them.
+
+## Trusted Signal
+
+Each answer is recorded as a Trusted Signal, bound to the business object and the action:
+
+```json
+{
+  "signalKey": "refundEligible",
+  "source": "orders-system",
+  "sourceIdentity": "orders.example.internal",
+  "claim": "refund.eligible",
+  "subject": "123",
+  "observedValue": true,
+  "observedAt": "2026-10-10T12:00:00.000Z",
+  "validUntil": "2026-10-10T12:01:00.000Z",
+  "action": "refund",
+  "businessTransactionId": "…",
+  "integrityProof": { "algorithm": "sha256", "digest": "…" },
+  "verificationStatus": "VERIFIED"
+}
+```
+
+The digest is the SHA-256 of the signal without its proof, and the decision that carries it is
+signed. That proves what Parmana observed. It does not prove the source said it. A source's own
+proof, when it has one, is kept in `integrityProof.sourceProof`, but it is not yet checked.
+
+## Statuses
+
+| Answer              | Statuses                                                                                                            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Authority           | `AUTHORIZED`, `NOT_AUTHORIZED`, `AUTHORITY_UNCLEAR`, `AUTHORITY_EXPIRED`                                            |
+| Business validation | `VALID`, `INVALID`, `MISSING_DATA`, `CONFLICTING_DATA`, `SOURCE_UNAVAILABLE`, `VALIDATION_EXPIRED`, `NOT_EVALUATED` |
+| Execution           | `EXECUTED`, `NOT_EXECUTED`, `EXECUTION_FAILED`, `EXECUTION_UNKNOWN`                                                 |
+
+- **`AUTHORIZED`** means the action type may be decided. It does not mean this action is valid or
+  was executed.
+- **`INVALID`**: the agent proposed a value the source contradicts, or proposed facts that do not
+  describe the action.
+- **`MISSING_DATA`**: the request names no business object, the source has no such fact, or it
+  answered with the wrong type.
+- **`CONFLICTING_DATA`**: the source holds contradictory facts.
+- **`SOURCE_UNAVAILABLE`**: the source is not registered, failed, took longer than 10 seconds, or
+  gave an incomplete answer.
+- **`VALIDATION_EXPIRED`**: the answer is older than `maxAgeSeconds`, or past the source's own
+  `validUntil`.
+- **`NOT_EVALUATED`**: validation did not run, because authority was not established or the policy
+  declares no sources. It is never `VALID`.
+
+Every status other than `VALID` refuses the request, with one exception: `NOT_EVALUATED` under a
+policy that declares no sources. Such a policy decides as it did before, and still needs a signed
+approval to approve. No status is ever turned into another.
+
+## In the record
+
+Every decision carries `assessment`, inside the signed Execution Trust Record or
+[Refusal Record](/concepts/refusal-records):
+
+```json
+"assessment": {
+  "authority": { "status": "AUTHORIZED", "reason": "…" },
+  "businessValidation": {
+    "status": "INVALID",
+    "reason": "refundEligible: the request proposed true, but source \"orders-system\" reports false for 123.",
+    "signals": [ … ]
+  },
+  "execution": { "status": "NOT_EXECUTED", "reason": "Not executed: business validation failed." }
+}
+```
+
+A refused decision always includes `execution` as `NOT_EXECUTED`. An approved decision's execution
+is in the Trust Record's `executions`. The decision's `signals` keep what the agent proposed, so a
+reader sees the proposal and the source's answer side by side. Changing any status fails
+verification. Records made before this change have no `assessment` and still verify.
+
+## Limits today
+
+- **No source is registered in the server yet,** so a policy that declares one is refused as
+  `SOURCE_UNAVAILABLE`. No shipped policy declares one. Registering sources through maker checker
+  is the next phase.
+- **Authority is the existing checks.** Per-agent limits ("Agent X: refunds up to ₹1,00,000") and
+  expiry come later, so `AUTHORITY_EXPIRED` is not yet produced.
+- **Refund eligibility has no source yet.** `refundEligible` and `fraudCheckPassed` in
+  `customer-refund` are still declared by the caller and can only refuse (see
+  [Limitations](/security/limitations)).

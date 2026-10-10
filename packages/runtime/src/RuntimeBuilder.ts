@@ -1,3 +1,5 @@
+import type { BusinessSignalSourceRegistry } from "./business-validation/BusinessSignalSource.js";
+import { TrustedSignalResolver } from "./business-validation/TrustedSignalResolver.js";
 import type { SigningReadiness } from "./SigningReadiness.js";
 import type { ExecutionIntentService } from "./ExecutionIntentService.js";
 import {
@@ -65,6 +67,8 @@ export class RuntimeBuilder {
   private executionIntents?: ExecutionIntentService;
 
   private approvalNeededNotifier?: ApprovalNeededNotifier;
+
+  private businessSignalSources?: BusinessSignalSourceRegistry;
 
   /**
    * Configure policy directory.
@@ -157,6 +161,18 @@ export class RuntimeBuilder {
    */
   public withApprovalNeededNotifier(notifier: ApprovalNeededNotifier): this {
     this.approvalNeededNotifier = notifier;
+    return this;
+  }
+
+  /**
+   * Configure the business systems a policy's signalSources may ask
+   * (RFC-0023). Without them, a policy that declares a signal source is
+   * refused as SOURCE_UNAVAILABLE.
+   */
+  public withBusinessSignalSources(
+    registry: BusinessSignalSourceRegistry,
+  ): this {
+    this.businessSignalSources = registry;
     return this;
   }
 
@@ -289,6 +305,7 @@ export class RuntimeBuilder {
       this.signingReadiness,
       this.executionIntents,
       this.approvalNeededNotifier,
+      new TrustedSignalResolver(this.businessSignalSources),
     );
 
     //

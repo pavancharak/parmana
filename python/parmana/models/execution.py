@@ -13,6 +13,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
+from .business_validation import DecisionAssessment
 from .execution_evidence import ExecutionEvidence
 from .policy import PolicyReference
 from .signature import Signature
@@ -44,6 +45,8 @@ class Decision:
     evaluated_rules: float | None = None
 
     matched_path: list[str] | None = None
+
+    assessment: DecisionAssessment | None = None
 
 
 class ExecutionStatus(str, Enum):

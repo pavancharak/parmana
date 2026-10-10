@@ -18,6 +18,8 @@ const PARAMETER_PATH = /^parameters(\.[A-Za-z0-9_]+)+$/;
 
 const SIGNAL_NAME = /^[A-Za-z0-9_]+$/;
 
+const SOURCE_NAME = /^[a-z0-9][a-z0-9-]{0,62}$/;
+
 /**
  * A policy file is JSON its author wrote, so a field the types call a
  * string may hold anything. Checked as a string before it is trimmed,
@@ -271,6 +273,8 @@ export class PolicyValidator {
 
     this.validateApprovalSignals(policy);
 
+    this.validateSignalSources(policy);
+
     this.validateEveryApprovalNeedsSignedApproval(policy);
 
     //
@@ -474,6 +478,7 @@ export class PolicyValidator {
     const acknowledgedKeys = new Set([
       ...Object.keys(policy.unboundSignalReasons ?? {}),
       ...Object.keys(policy.approvalSignals ?? {}),
+      ...Object.keys(policy.signalSources ?? {}),
     ]);
 
     const referenced = this.referencedFacts(policy);
@@ -589,6 +594,108 @@ export class PolicyValidator {
       }
 
       artifacts.add(artifact);
+    }
+  }
+
+  /**
+   * Validates signalSources (RFC-0023). Fails closed on anything that
+   * would let a sourced fact be skipped or supplied twice: a key no rule
+   * reads, a key that is also bound to the Intent, approval backed or
+   * given an unbound reason, a subject outside the Intent, or a malformed
+   * source, claim or age.
+   */
+  private validateSignalSources(policy: Policy): void {
+    const declarations = policy.signalSources;
+
+    if (declarations === undefined) {
+      return;
+    }
+
+    if (
+      typeof declarations !== "object" ||
+      declarations === null ||
+      Array.isArray(declarations)
+    ) {
+      throw new PolicyValidationError(
+        "Policy signalSources must be an object.",
+      );
+    }
+
+    const referenced = this.referencedFacts(policy);
+
+    for (const [signalKey, declaration] of Object.entries(declarations)) {
+      const label = `Policy signalSources['${signalKey}']`;
+
+      if (!SIGNAL_NAME.test(signalKey)) {
+        throw new PolicyValidationError(
+          `${label}: keys must be signal names of letters, digits and underscores.`,
+        );
+      }
+
+      if (
+        typeof declaration !== "object" ||
+        declaration === null ||
+        Array.isArray(declaration)
+      ) {
+        throw new PolicyValidationError(`${label} must be an object.`);
+      }
+
+      if (!referenced.has(signalKey)) {
+        throw new PolicyValidationError(
+          `${label} names a fact no rule references, so its source would never matter.`,
+        );
+      }
+
+      for (const [field, other] of [
+        ["boundSignals", policy.boundSignals],
+        ["approvalSignals", policy.approvalSignals],
+        ["unboundSignalReasons", policy.unboundSignalReasons],
+      ] as const) {
+        if (
+          other !== undefined &&
+          Object.prototype.hasOwnProperty.call(other, signalKey)
+        ) {
+          throw new PolicyValidationError(
+            `${label} is contradictory: '${signalKey}' also has a ${field} entry.`,
+          );
+        }
+      }
+
+      if (!SOURCE_NAME.test(String(declaration.source))) {
+        throw new PolicyValidationError(
+          `${label}.source must be a source name of lower case letters, digits and hyphens, such as "orders-system".`,
+        );
+      }
+
+      if (
+        typeof declaration.claim !== "string" ||
+        !declaration.claim.trim() ||
+        declaration.claim.length > 200
+      ) {
+        throw new PolicyValidationError(
+          `${label}.claim must be a non-empty string of at most 200 characters.`,
+        );
+      }
+
+      if (
+        declaration.subject !== "target" &&
+        !PARAMETER_PATH.test(String(declaration.subject))
+      ) {
+        throw new PolicyValidationError(
+          `${label}.subject must be "target" or a dot-path into the Intent's parameters, such as "parameters.orderId".`,
+        );
+      }
+
+      if (
+        declaration.maxAgeSeconds !== undefined &&
+        (!Number.isInteger(declaration.maxAgeSeconds) ||
+          declaration.maxAgeSeconds < 1 ||
+          declaration.maxAgeSeconds > 86400)
+      ) {
+        throw new PolicyValidationError(
+          `${label}.maxAgeSeconds must be a whole number of seconds from 1 to 86400.`,
+        );
+      }
     }
   }
 

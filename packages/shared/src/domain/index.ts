@@ -1,6 +1,7 @@
 export * from "./policy-reference.js";
 export * from "./signals.js";
 export * from "./decision.js";
+export * from "./business-validation.js";
 export * from "./business-transaction.js";
 export * from "./execution.js";
 export * from "./execution-result.js";

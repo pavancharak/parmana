@@ -7,6 +7,12 @@ import { RefusalRecordBuilder } from "./RefusalRecordBuilder.js";
 import { CryptoBootstrap, TrustRecordHasher } from "@parmana/crypto";
 
 import {
+  AuthorityStatus,
+  BusinessValidationStatus,
+  ExecutionAssessmentStatus,
+  type AuthorityAssessment,
+  type BusinessValidationAssessment,
+  type DecisionAssessment,
   BusinessTransaction,
   BusinessTransactionStatus,
   Decision,
@@ -52,6 +58,7 @@ import {
 } from "./ApprovalNeededNotifier.js";
 
 import { RuntimeHookRunner } from "./hooks/RuntimeHookRunner.js";
+import { TrustedSignalResolver } from "./business-validation/TrustedSignalResolver.js";
 
 import type { RuntimeHook } from "./hooks/RuntimeHook.js";
 
@@ -207,6 +214,14 @@ export class RuntimeEngine {
      * refused requests are found by query, as before.
      */
     private readonly approvalNeededNotifier?: ApprovalNeededNotifier,
+    /**
+     * Establishes the business facts a policy declares in signalSources
+     * (RFC-0023). The default has no sources registered, so a policy
+     * that declares any is refused as SOURCE_UNAVAILABLE: fail closed.
+     */
+    private readonly trustedSignalResolver: TrustedSignalResolver = new TrustedSignalResolver(
+      undefined,
+    ),
   ) {
     if (!pipeline) {
       throw new Error("RuntimePipeline is required.");
@@ -386,6 +401,92 @@ export class RuntimeEngine {
         : [];
 
     //
+    // Authority and business validation (RFC-0023)
+    //
+    // Two separate answers, recorded separately on the Decision.
+    // Authority: may this kind of action be decided here at all. Today
+    // that is the governance and capability/policy checks above (and,
+    // at the API, the caller key's capability scope); per-agent grants
+    // are a later phase. Business validation: are the facts the policy
+    // needs established by their sources, for this exact business
+    // object. It runs only once authority is established and the
+    // proposal describes the Intent, so a request that is not
+    // authorized never reaches a business system. Every status other
+    // than VALID refuses the request; none is ever turned into VALID.
+    //
+
+    const authority: AuthorityAssessment =
+      policyExecutionViolation !== undefined
+        ? {
+            status: AuthorityStatus.AUTHORITY_UNCLEAR,
+            reason: `The policy in force could not be established as the approved, current one: ${policyExecutionViolation.reason}.`,
+          }
+        : capabilityBindingViolation !== undefined
+          ? {
+              status: AuthorityStatus.NOT_AUTHORIZED,
+              reason: `Capability "${capabilityBindingViolation.action}" may only be decided under its bound policy, not the one declared.`,
+            }
+          : {
+              status: AuthorityStatus.AUTHORIZED,
+              reason:
+                `Capability "${transaction.intent.action}" is decided under its approved, current policy ` +
+                `${policy.policyId} ${policy.policyVersion}` +
+                (transaction.metadata?.submittedBy !== undefined
+                  ? `, for caller ${transaction.metadata.submittedBy}.`
+                  : ".") +
+                " This says the action type may be decided, not that this action is valid or was executed.",
+            };
+
+    const validation =
+      authority.status !== AuthorityStatus.AUTHORIZED
+        ? {
+            assessment: {
+              status: BusinessValidationStatus.NOT_EVALUATED,
+              reason: "Not evaluated: authority was not established.",
+            },
+            trustedValues: {},
+          }
+        : bindingViolations.length > 0
+          ? {
+              assessment: {
+                status: BusinessValidationStatus.INVALID,
+                reason:
+                  "The proposed facts do not describe the action being executed.",
+              },
+              trustedValues: {},
+            }
+          : await this.trustedSignalResolver.resolve({
+              policy,
+              action: transaction.intent.action,
+              businessTransactionId: transaction.businessTransactionId,
+              intent: {
+                target: transaction.intent.target,
+                parameters: transaction.intent.parameters,
+              },
+              proposedSignals: signals,
+            });
+
+    const businessValidation: BusinessValidationAssessment =
+      validation.assessment;
+
+    const businessValidationFailed =
+      authority.status === AuthorityStatus.AUTHORIZED &&
+      bindingViolations.length === 0 &&
+      businessValidation.status !== BusinessValidationStatus.VALID &&
+      businessValidation.status !== BusinessValidationStatus.NOT_EVALUATED;
+
+    //
+    // What the policy evaluates: the proposal, with every sourced fact
+    // replaced by the value its source established. A sourced fact the
+    // caller did not send is supplied here; one it sent differently was
+    // already refused above as INVALID.
+    //
+    const evaluatedSignals: Record<string, JsonValue> = {
+      ...signals,
+      ...validation.trustedValues,
+    };
+
+    //
     // Policy evaluation
     //
 
@@ -435,7 +536,17 @@ export class RuntimeEngine {
                 evaluatedRules: 0,
                 matchedPath: [],
               }
-            : this.policyEngine.evaluate(policy, signals);
+            : businessValidationFailed
+              ? {
+                  policyId: policy.policyId,
+                  policyVersion: policy.policyVersion,
+                  outcome: PolicyOutcome.REJECT,
+                  reason: `Rejected: business validation ${businessValidation.status}. ${businessValidation.reason}`,
+                  matchedRuleId: `business-validation-${businessValidation.status.toLowerCase().replace(/_/g, "-")}`,
+                  evaluatedRules: 0,
+                  matchedPath: [],
+                }
+              : this.policyEngine.evaluate(policy, evaluatedSignals);
 
     //
     // Signal/State verification (G-24 residual closure, RFC-0022)
@@ -468,7 +579,7 @@ export class RuntimeEngine {
               stage: "authorize",
               policy,
             },
-            signals,
+            evaluatedSignals,
           )
         : [];
 
@@ -525,7 +636,27 @@ export class RuntimeEngine {
 
     await this.hookRunner.beforeDecision(transaction, policyDecision);
 
-    const decision = this.decisionBuilder.build(transaction, policyDecision);
+    const assessment: DecisionAssessment = {
+      authority,
+      businessValidation,
+      ...(policyDecision.outcome !== PolicyOutcome.APPROVE && {
+        execution: {
+          status: ExecutionAssessmentStatus.NOT_EXECUTED,
+          reason:
+            authority.status !== AuthorityStatus.AUTHORIZED
+              ? "Not executed: authority was not established."
+              : bindingViolations.length > 0 || businessValidationFailed
+                ? "Not executed: business validation failed."
+                : `Not executed: ${policyDecision.reason ?? "the policy refused the action."}`,
+        },
+      }),
+    };
+
+    const decision = this.decisionBuilder.build(
+      transaction,
+      policyDecision,
+      assessment,
+    );
 
     //
     // Refusal Record (RFC-0021)
@@ -549,12 +680,13 @@ export class RuntimeEngine {
       );
 
       // Only a refusal by the policy's own rules, or by an approval
-      // that did not verify, can be cured by an approval. A binding or
-      // governance violation cannot.
+      // that did not verify, can be cured by an approval. A binding,
+      // governance or business validation failure cannot.
       if (
         policyExecutionViolation === undefined &&
         capabilityBindingViolation === undefined &&
-        bindingViolations.length === 0
+        bindingViolations.length === 0 &&
+        !businessValidationFailed
       ) {
         await this.notifyApprovalNeeded(transaction, decision, policy, signals);
       }

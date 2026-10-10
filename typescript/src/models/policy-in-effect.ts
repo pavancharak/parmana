@@ -53,4 +53,22 @@ export interface PolicySignalRequirements {
   readonly approval: Readonly<
     Record<string, { readonly resourceId: string; readonly value?: string }>
   >;
+
+  /**
+   * Facts the server asks a business system for itself, as signal name to
+   * source, claim and subject path. Present only when the policy has any.
+   * You need not send them; a value you send that differs from the
+   * source's is refused.
+   */
+  readonly sourced?: Readonly<
+    Record<
+      string,
+      {
+        readonly source: string;
+        readonly claim: string;
+        readonly subject: string;
+        readonly maxAgeSeconds?: number;
+      }
+    >
+  >;
 }

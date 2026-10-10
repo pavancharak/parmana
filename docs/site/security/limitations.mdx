@@ -88,22 +88,23 @@ not claim them:
 
 ## Open issues
 
-Every gap still open, as of 2026-10-06. Each has an entry in
+Every gap still open, as of 2026-10-10. Each has an entry in
 [docs/VERIFICATION-GAPS.md](https://github.com/pavancharak/parmana/blob/main/docs/VERIFICATION-GAPS.md), where the
 evidence and the proposed fix are.
 
-| Entry      | What is open                                                                                                                                              | What to do meanwhile                                                                    |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| G-50       | Any trusted approver can approve any policy change, and sign an approval for any action.                                                                  | Give approver keys only to people who may approve everything the deployment can do.     |
-| G-51, G-76 | Facts an agent declares (for example `refundEligible`, Slack `contentApproved`) are not checked against another system. They can only make a rule refuse. | Rely on the signed approval, which is what authorizes.                                  |
-| G-65       | A refused request is not held for review: the agent sends it again with the signed approval, as a new transaction.                                        | Set `APPROVAL_WEBHOOK_URL` so approvers hear of requests that wait on them.             |
-| G-66       | Binding a built in action to a different policy name, or adding a built in action, needs a deploy.                                                        | New policy versions, approvers and external connectors need none.                       |
-| G-82       | An external endpoint's answer is its claim, not proof that it acted.                                                                                      | Keep the endpoint's own records and reconcile them against Trust Records.               |
-| G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01.                                                                                    | Use a 120 second timeout; after a timeout, read the record before sending anything new. |
-| G-53       | If an action ran and neither its record nor its result could be saved, the outcome is established from the connector by hand.                             | Watch for intents left `PREPARED` (`409 EXECUTION_INTENT_RESULT_NOT_RECORDED`).         |
-| G-4        | Hybrid (Ed25519 and ML-DSA-65) signing covers Trust Records and receipts; refusal records, audit events and authorizations have one signature.            | Treat post-quantum protection as covering records and receipts only.                    |
-| G-86       | Visitor data in the public sandbox was deleted around its retention job's first run; the cause is not established. Production was not affected.           | Do not keep anything in the sandbox you need later.                                     |
-| G-9        | Two audit records are written for each execution.                                                                                                         | None needed; the connector's record is the one with the credential id.                  |
+| Entry      | What is open                                                                                                                                                       | What to do meanwhile                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| G-50       | Any trusted approver can approve any policy change, and sign an approval for any action.                                                                           | Give approver keys only to people who may approve everything the deployment can do.     |
+| G-51, G-76 | Facts an agent declares (for example `refundEligible`, Slack `contentApproved`) are not checked against another system. They can only make a rule refuse.          | Rely on the signed approval, which is what authorizes.                                  |
+| G-92       | [Business validation](/concepts/business-validation) can ask a business system for a fact, but no system is registered yet, and authority has no per-agent limits. | Keep amount limits in policy rules and rely on the signed approval.                     |
+| G-65       | A refused request is not held for review: the agent sends it again with the signed approval, as a new transaction.                                                 | Set `APPROVAL_WEBHOOK_URL` so approvers hear of requests that wait on them.             |
+| G-66       | Binding a built in action to a different policy name, or adding a built in action, needs a deploy.                                                                 | New policy versions, approvers and external connectors need none.                       |
+| G-82       | An external endpoint's answer is its claim, not proof that it acted.                                                                                               | Keep the endpoint's own records and reconcile them against Trust Records.               |
+| G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01.                                                                                             | Use a 120 second timeout; after a timeout, read the record before sending anything new. |
+| G-53       | If an action ran and neither its record nor its result could be saved, the outcome is established from the connector by hand.                                      | Watch for intents left `PREPARED` (`409 EXECUTION_INTENT_RESULT_NOT_RECORDED`).         |
+| G-4        | Hybrid (Ed25519 and ML-DSA-65) signing covers Trust Records and receipts; refusal records, audit events and authorizations have one signature.                     | Treat post-quantum protection as covering records and receipts only.                    |
+| G-86       | Visitor data in the public sandbox was deleted around its retention job's first run; the cause is not established. Production was not affected.                    | Do not keep anything in the sandbox you need later.                                     |
+| G-9        | Two audit records are written for each execution.                                                                                                                  | None needed; the connector's record is the one with the credential id.                  |
 
 ## Threat model
 

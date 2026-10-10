@@ -26,22 +26,23 @@ names the absence of one). Severity is one of three tiers:
 This audit was run against commit `651497a`, `npm test` reporting 345 passed, 1 skipped, 85
 test files, coverage measured via `npm run coverage` (`@vitest/coverage-v8`).
 
-## Open issues at a glance (updated 2026-10-06)
+## Open issues at a glance (updated 2026-10-10)
 
 Everything not listed here is closed, with its evidence in its own entry below.
 
-| Entry      | What is open                                                                                                                                                                                                             | Severity                      | Status                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- | --------------------------------------------------------------------------------------- |
-| G-4        | Hybrid (Ed25519 and ML-DSA-65) signing covers Trust Records and receipts only; refusal records, audit events and authorizations are signed with one algorithm.                                                           | pre-production                | Decision D-2 required                                                                   |
-| G-65       | Nothing holds a refused request for review in the server; an approver learns of it through the optional `approval.needed` webhook (2.46) or by query.                                                                    | pre-production                | Partly closed, see the 2026-10-06 update                                                |
-| G-66       | Binding an action to a different policy name, or adding a built in capability, still needs a deploy. A new policy version, an approver key and an external connector do not.                                             | pre-production                | Partly closed, see the 2026-10-06 update                                                |
-| G-9        | Execution Control and the secure connector each write an audit record for the same execution.                                                                                                                            | cosmetic                      | Open                                                                                    |
-| G-50       | A policy change approver, or an approval issuer, is not limited to particular policies or actions: any provisioned approver can approve any.                                                                             | pre-production                | Open; a per policy and per action approver list is the proposed fix                     |
-| G-51, G-76 | Facts an agent declares (`refundEligible`, `fraudCheckPassed`, Slack `contentApproved`) are not checked against another system. Since G-80 they can only make a rule refuse; a signed human approval is what authorizes. | pre-production                | Open by design                                                                          |
-| G-53       | When an action ran but neither its Trust Record nor its result could be saved, the outcome is established from the connector and recorded by hand.                                                                       | pre-production                | Open (residual)                                                                         |
-| G-82       | What an external endpoint answers is its claim, not proof that it acted.                                                                                                                                                 | pre-production                | A property of the design, documented                                                    |
-| G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01; not measured since.                                                                                                                               | pre-production                | Open; agents are told to use a 120 second timeout and read the record after a timeout   |
-| G-86       | All visitor data in the public sandbox was deleted around the retention job's first run; cause not established.                                                                                                          | pre-production (sandbox only) | Open; the job is paused. Check made unable to delete (2026-10-06); cause still unproven |
+| Entry      | What is open                                                                                                                                                                                                                                                                                                                                    | Severity                      | Status                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| G-4        | Hybrid (Ed25519 and ML-DSA-65) signing covers Trust Records and receipts only; refusal records, audit events and authorizations are signed with one algorithm.                                                                                                                                                                                  | pre-production                | Decision D-2 required                                                                   |
+| G-65       | Nothing holds a refused request for review in the server; an approver learns of it through the optional `approval.needed` webhook (2.46) or by query.                                                                                                                                                                                           | pre-production                | Partly closed, see the 2026-10-06 update                                                |
+| G-66       | Binding an action to a different policy name, or adding a built in capability, still needs a deploy. A new policy version, an approver key and an external connector do not.                                                                                                                                                                    | pre-production                | Partly closed, see the 2026-10-06 update                                                |
+| G-9        | Execution Control and the secure connector each write an audit record for the same execution.                                                                                                                                                                                                                                                   | cosmetic                      | Open                                                                                    |
+| G-50       | A policy change approver, or an approval issuer, is not limited to particular policies or actions: any provisioned approver can approve any.                                                                                                                                                                                                    | pre-production                | Open; a per policy and per action approver list is the proposed fix                     |
+| G-51, G-76 | Facts an agent declares (`refundEligible`, `fraudCheckPassed`, Slack `contentApproved`) are not checked against another system. Since G-80 they can only make a rule refuse; a signed human approval is what authorizes. A policy can now name the system that owns a fact (`signalSources`, RFC-0023), but no source is registered yet (G-92). | pre-production                | Open by design                                                                          |
+| G-53       | When an action ran but neither its Trust Record nor its result could be saved, the outcome is established from the connector and recorded by hand.                                                                                                                                                                                              | pre-production                | Open (residual)                                                                         |
+| G-82       | What an external endpoint answers is its claim, not proof that it acted.                                                                                                                                                                                                                                                                        | pre-production                | A property of the design, documented                                                    |
+| G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01; not measured since.                                                                                                                                                                                                                                                      | pre-production                | Open; agents are told to use a 120 second timeout and read the record after a timeout   |
+| G-86       | All visitor data in the public sandbox was deleted around the retention job's first run; cause not established.                                                                                                                                                                                                                                 | pre-production (sandbox only) | Open; the job is paused. Check made unable to delete (2026-10-06); cause still unproven |
+| G-92       | Business validation (RFC-0023) phase 1: no business source is registered in the server, so a policy that declares one is refused; authority is the existing checks, with no per-agent limits or expiry; a Trusted Signal's digest proves what Parmana observed, not what the source said.                                                       | pre-production                | Open; phases 2 to 4 of RFC-0023                                                         |
 
 Closed on 2026-10-06: G-83 (the release tries the next checked address), G-87 (an incomplete
 request body is a `400`, not a `500`), G-11 (environment variables on the docs site), and G-90
@@ -1546,6 +1547,29 @@ the verifier arbitrary records and keys and requires `valid: false` with a reaso
 `offline-verifier.exact.test.ts`. `@parmana/sign`, the published verifier, was not affected: checked the same
 day, it already refuses a `signatures` value that is not an array, and any entry whose `algorithm`, `keyId`
 or `signature` is not a string (`src/parmana/OfflineVerifier.ts` in that repository).
+
+**G-92. Business validation (RFC-0023) is in the runtime, but no business source is registered in the server.
+OPENED 2026-10-10 with phase 1, `pre-production`.** Phase 1 adds `signalSources` to policies, the Trusted
+Signal, a `BusinessSignalSource` port with a static registry, the resolver and the separate authority,
+business validation and execution statuses on every Decision (CLAIMS.md 2.53). What it does not do yet:
+
+- **No source is registered in the server.** `createApplication` wires none, so a policy that declares a
+  source is refused as `SOURCE_UNAVAILABLE`. Fail closed, but unusable until phase 2 adds registration
+  through maker checker and a generic HTTP source. No shipped policy declares one, so G-51 and G-76 are
+  unchanged in practice.
+- **Authority is the existing checks.** `AUTHORIZED` records that governance verification and the
+  capability/policy binding passed (and, at the API, the key's capability scope). Per-agent grants with limits
+  and expiry are phase 3; until then `AUTHORITY_EXPIRED` is never produced, and amount limits stay in policy
+  rules.
+- **The integrity digest proves what Parmana observed.** It is signed inside the record, but it does not prove
+  the source said it. `integrityProof.sourceProof` is kept verbatim and not checked; per-source proof checking
+  (for example a payment provider's response checksum) is later work.
+- **Validity is checked once, at decision time.** The gateway does not yet re-check `validUntil` at release,
+  and there is no conditional "execute only if still valid" call to the business system (phase 4). The
+  authorization's short TTL bounds the window.
+- **The test sources are hermetic.** Tests use in-process sources
+  (`packages/runtime/tests/unit/business-validation.test.ts`, `trusted-signal-resolver.test.ts`); no real
+  business system has been exercised.
 
 ---
 

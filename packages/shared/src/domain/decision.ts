@@ -1,6 +1,7 @@
 import { PolicyReference } from "./policy-reference.js";
 
 import type { JsonValue } from "../types/Json.js";
+import type { DecisionAssessment } from "./business-validation.js";
 
 /**
  * Parmana Trust Core
@@ -82,6 +83,13 @@ export interface Decision {
    * UTC timestamp when evaluation completed.
    */
   readonly evaluatedAt: Date;
+
+  /**
+   * Authority, business validation and, for a refusal, execution, each
+   * as its own status (RFC-0023). Absent on decisions made before it
+   * existed; those records still verify.
+   */
+  readonly assessment?: DecisionAssessment;
 }
 
 /**

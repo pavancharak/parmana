@@ -212,8 +212,13 @@ export interface Decision {
   readonly evaluatedRules?: number; // how many rules were tried
   readonly matchedPath?: readonly string[]; // the ids of the rules tried, in order
   readonly evaluatedAt: Date;
+  readonly assessment?: DecisionAssessment; // authority, business validation, execution
 }
 ```
+
+`assessment` records authority, business validation and, for a refusal, execution as separate
+statuses, and the Trusted Signals a policy's `signalSources` established. See
+[Business validation](/concepts/business-validation).
 
 The signals evaluated are captured on the Decision itself, this is what
 [replay](/replay/overview) reconstructs from: given the same recorded signals and the same

@@ -50,3 +50,16 @@ Defined in: [typescript/src/models/policy-in-effect.ts:53](https://github.com/pa
 Signals that count as true only with a signed approval in
 `signals.approvalArtifact`, and where the resource (and the amount, if
 any) the approval must name are in the request.
+
+---
+
+### sourced?
+
+> `readonly` `optional` **sourced?**: `Readonly`\<`Record`\<`string`, \{ `source`: `string`; `claim`: `string`; `subject`: `string`; `maxAgeSeconds?`: `number`; \}\>\>
+
+Defined in: [typescript/src/models/policy-in-effect.ts:63](https://github.com/pavancharak/parmana/blob/main/typescript/src/models/policy-in-effect.ts#L63)
+
+Facts the server asks a business system for itself, as signal name to
+source, claim and subject path. Present only when the policy has any.
+You need not send them; a value you send that differs from the
+source's is refused.
