@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import type { Server } from "node:http";
+import type { AddressInfo } from "node:net";
 import path from "node:path";
 
 import express from "express";
@@ -56,8 +57,8 @@ import {
 const root = path.resolve(import.meta.dirname);
 const repoRoot = path.resolve(root, "../..");
 
-const RECEIVING_SIDE_PORT = 4501;
-const RECEIVING_SIDE_URL = `http://127.0.0.1:${RECEIVING_SIDE_PORT}`;
+// Set once the receiving side is listening on a free port.
+let RECEIVING_SIDE_URL = "";
 
 /**
  * Resolves the same key directory FileKeyProvider will use, and
@@ -66,6 +67,18 @@ const RECEIVING_SIDE_URL = `http://127.0.0.1:${RECEIVING_SIDE_PORT}`;
  * e.g. on a fresh clone. Never hardcodes key material.
  */
 function ensureKeysAvailable(): void {
+  // A key directory set by the caller (for example scripts/run-examples.ts)
+  // wins, as it does for FileKeyProvider.
+  const configuredKeysDir = process.env.PARMANA_KEY_DIR;
+
+  if (
+    configuredKeysDir &&
+    existsSync(path.join(configuredKeysDir, "default.private.pem")) &&
+    existsSync(path.join(configuredKeysDir, "default.public.pem"))
+  ) {
+    return;
+  }
+
   const repoKeysDir = path.join(repoRoot, "keys");
 
   const repoKeysExist =
@@ -192,10 +205,10 @@ async function startReceivingSide(): Promise<{
   });
 
   const server = await new Promise<Server>((resolve) => {
-    const listening = app.listen(RECEIVING_SIDE_PORT, "127.0.0.1", () =>
-      resolve(listening),
-    );
+    const listening = app.listen(0, "127.0.0.1", () => resolve(listening));
   });
+
+  RECEIVING_SIDE_URL = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
 
   return { url: RECEIVING_SIDE_URL, server };
 }
@@ -452,6 +465,21 @@ async function main(): Promise<void> {
   );
 
   server.close();
+
+  // npm run examples runs this file: fail it if any outcome changes.
+  const unexpected = [
+    connector.lastResponseStatus === 200 ? undefined : "1 not accepted",
+    replay.status === 403 ? undefined : "2 replay not refused",
+    tampered.status === 403 ? undefined : "3 tampered payload not refused",
+    missing.status === 401 ? undefined : "4 direct call not refused",
+    gatewayRejection.valid === false
+      ? undefined
+      : "5 modified payload released",
+  ].filter((failure) => failure !== undefined);
+
+  if (unexpected.length > 0) {
+    throw new Error(`Unexpected outcome: ${unexpected.join("; ")}`);
+  }
 
   console.log();
   console.log("Example Complete");
