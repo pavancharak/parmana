@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-import type { JsonValue } from "@parmana/shared";
+import type { DecisionAssessment, JsonValue } from "@parmana/shared";
 
 import {
   BusinessTransaction,
@@ -32,6 +32,7 @@ export class DecisionBuilder {
   public build(
     transaction: BusinessTransaction,
     policyDecision: PolicyDecision,
+    assessment?: DecisionAssessment,
   ): Decision {
     return {
       decisionId: crypto.randomUUID(),
@@ -57,6 +58,8 @@ export class DecisionBuilder {
       matchedPath: policyDecision.matchedPath,
 
       evaluatedAt: new Date(),
+
+      ...(assessment !== undefined && { assessment }),
     };
   }
 

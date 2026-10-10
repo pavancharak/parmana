@@ -10,6 +10,20 @@ product version). The SDKs are versioned independently on their own registries, 
 and per-version notes. This page covers changes that affect what you can build against, not
 every commit, run `git log` in the repository for the complete record.
 
+## 2026-10-10
+
+**Added: business validation, in the runtime**
+
+- A policy can name the business system that owns a fact (`signalSources`). Parmana asks that system itself,
+  never using the agent's value, records the answer as a Trusted Signal, and evaluates the policy on it. A
+  proposed value that differs from the source's is refused. See [Business validation](/concepts/business-validation).
+- Every decision now carries `assessment`: authority, business validation and, for a refusal, execution, as
+  separate statuses, signed inside the Execution Trust Record and the Refusal Record. Records written before
+  this change have no `assessment` and still verify.
+- `GET /policies/in-effect` lists a policy's sourced facts under `signals.sourced`, when it has any.
+- No business system is registered in the server yet, so a policy that declares one is refused as
+  `SOURCE_UNAVAILABLE`. No shipped policy declares one; decisions are otherwise unchanged.
+
 ## 2026-10-06
 
 **Added: policy content hash in Refusal Records**

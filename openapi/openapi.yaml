@@ -4032,6 +4032,31 @@ paths:
                         description: >
                           Signals that count as true only with a signed approval in
                           signals.approvalArtifact, and what that approval must name.
+                      sourced:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          required:
+                            - source
+                            - claim
+                            - subject
+                          properties:
+                            source:
+                              type: string
+                              description: The registered business system the server asks.
+                            claim:
+                              type: string
+                              description: What the server asks it.
+                            subject:
+                              type: string
+                              description: Where the business object is in the request, target or a parameters path.
+                            maxAgeSeconds:
+                              type: integer
+                              description: How old the source's answer may be.
+                        description: >
+                          Present only when the policy has any. Facts the server asks a business
+                          system for itself; you need not send them, and a value you send that
+                          differs from the source's is refused.
               examples:
                 refund:
                   summary: The refund capability under customer-refund 1.2.0
