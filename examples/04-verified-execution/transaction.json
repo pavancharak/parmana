@@ -46,7 +46,8 @@
     "paymentApproved": true,
     "sufficientFunds": true,
     "paymentAmount": 5000,
-    "riskScore": 10
+    "riskScore": 10,
+    "vendorId": "vendor/acme-supplies"
   },
 
   "status": "RECEIVED",
