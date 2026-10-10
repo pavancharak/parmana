@@ -367,9 +367,14 @@ async function main(): Promise<void> {
   print("Response body", tampered.body);
 
   //
-  // Scenario 4: no authorization at all.
+  // Scenario 4: no authorization at all. This is an agent that skips
+  // Parmana and calls the downstream system directly (attacker A8 in
+  // THREAT-MODEL.md). Parmana cannot stop that call; a receiver that
+  // accepts only Parmana's signed release refuses it.
   //
-  printHeading("RECEIVING SIDE: Scenario 4 - Missing authorization");
+  printHeading(
+    "RECEIVING SIDE: Scenario 4 - Missing authorization (an agent bypasses Parmana)",
+  );
 
   const requestWithoutAuthorization = {
     ...outgoingWireBody,
@@ -437,7 +442,8 @@ async function main(): Promise<void> {
         "(nonceUnseen: false)",
       `3. Tampered payload         -> HTTP ${tampered.status} ` +
         "(signatureVerified: false)",
-      `4. Missing authorization    -> HTTP ${missing.status}`,
+      `4. Missing authorization    -> HTTP ${missing.status} ` +
+        "(an agent calling directly, bypassing Parmana)",
       "5. Authorized + modified    -> rejected at the Gateway " +
         `(valid: ${gatewayRejection.valid}, ` +
         `businessTransactionHashMatches: ` +

@@ -92,7 +92,9 @@ The [Audit guide](https://docs.parmanasystems.com/evaluation/audit-guide#what-an
 gives the expected outcome for each of A5 to A7. In most cases the attack succeeds. They are
 listed so that a review can state them as assumptions rather than leave them implicit.
 
-A8 and A9 always succeed, and Parmana cannot prevent either. Parmana governs only actions
+A8 and A9 always succeed against Parmana itself, and Parmana cannot prevent either. A8 is
+closed downstream, where a system accepts only Parmana's signed release (E5); see
+[example 04](examples/04-verified-execution/README.md#an-agent-that-bypasses-parmana). Parmana governs only actions
 that are routed through it: an agent with its own credentials to a system is not governed at
 all (assumptions 5 and 6 below). Whoever controls the machine, image or code Parmana runs from
 can change what it enforces or skip it; T17 reduces the chance that the published code or
