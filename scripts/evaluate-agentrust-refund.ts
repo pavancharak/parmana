@@ -2,7 +2,9 @@
  * `npm run evaluate:agentrust-refund`: runs the AgenTrust refund evaluation
  * (packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts),
  * adds the commit and the Node.js version to its report, writes it to
- * evaluations/agentrust-refund/report.json and prints one line per case.
+ * evaluations/agentrust-refund/report.json, writes the full signed records,
+ * the signed approval and both public keys to
+ * evaluations/agentrust-refund/fixtures/ and prints one line per case.
  * Exits 1 if the test fails. See docs/evaluation/agentrust-refund/README.md.
  */
 
@@ -30,7 +32,16 @@ const run = spawnSync("npx", ["vitest", "run", test], {
   cwd: root,
   stdio: "inherit",
   shell: process.platform === "win32",
-  env: { ...process.env, AGENTRUST_REPORT: report },
+  env: {
+    ...process.env,
+    AGENTRUST_REPORT: report,
+    AGENTRUST_FIXTURES: path.join(
+      root,
+      "evaluations",
+      "agentrust-refund",
+      "fixtures",
+    ),
+  },
 });
 
 if (run.status !== 0) {

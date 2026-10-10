@@ -32,7 +32,10 @@ import { createExecutionSystem } from "../../src/bootstrap/createExecutionSystem
  * times the connector was invoked by that case. Every connector result is
  * labelled as a mock result: nothing here confirms a downstream refund.
  *
- * Set AGENTRUST_REPORT to a file path to write the report as JSON.
+ * Set AGENTRUST_REPORT to a file path to write the report as JSON, and
+ * AGENTRUST_FIXTURES to a directory to write the full signed records, the
+ * signed approval and both public keys there, so the records can be checked
+ * offline by someone who does not run Parmana.
  */
 
 const approver = vi.hoisted(() => ({
@@ -64,6 +67,12 @@ interface CaseResult {
   readonly connectorResult: string;
   readonly reason: string | null;
   readonly record: RecordSummary | null;
+}
+
+/** A full signed record as the API returned it, for the fixtures. */
+interface FetchedRecord {
+  readonly summary: RecordSummary;
+  readonly body: unknown;
 }
 
 interface RecordSummary {
@@ -204,14 +213,14 @@ describe("AgenTrust refund evaluation", () => {
     async function fetchRecord(
       businessTransactionId: string,
       approved: boolean,
-    ): Promise<RecordSummary | null> {
+    ): Promise<FetchedRecord | null> {
       if (approved) {
         const got = await request(app).get(
           `/trust-records/${businessTransactionId}`,
         );
         if (got.status !== 200) return null;
         const record: unknown = got.body;
-        return {
+        const summary: RecordSummary = {
           type: "ExecutionTrustRecord",
           id: String(at(record, "trustRecordId")),
           hash: String(at(record, "trustRecordHash")),
@@ -222,12 +231,13 @@ describe("AgenTrust refund evaluation", () => {
           matchedRuleId: null,
           serverVerified: null,
         };
+        return { summary, body: record };
       }
       const got = await request(app).get(`/refusal/${businessTransactionId}`);
       if (got.status !== 200) return null;
       const record: unknown = got.body;
       const verified = await request(app).post("/refusal/verify").send(record);
-      return {
+      const summary: RecordSummary = {
         type: "RefusalRecord",
         id: String(at(record, "refusalRecordId")),
         hash: String(at(record, "refusalRecordHash")),
@@ -237,9 +247,11 @@ describe("AgenTrust refund evaluation", () => {
         serverVerified:
           verified.status === 200 ? at(verified.body, "valid") === true : false,
       };
+      return { summary, body: record };
     }
 
     const results: CaseResult[] = [];
+    const fullRecords: { case: CaseResult["case"]; body: unknown }[] = [];
 
     async function run(
       name: CaseResult["case"],
@@ -253,6 +265,11 @@ describe("AgenTrust refund evaluation", () => {
       const businessTransactionId = (
         transaction as { businessTransactionId: string }
       ).businessTransactionId;
+      const fetched = await fetchRecord(
+        businessTransactionId,
+        response.status === 200,
+      );
+      if (fetched) fullRecords.push({ case: name, body: fetched.body });
       const result: CaseResult = {
         case: name,
         approvalAttached,
@@ -262,10 +279,7 @@ describe("AgenTrust refund evaluation", () => {
         connectorInvocations: invocations,
         connectorResult: invocations > 0 ? MOCK_RESULT : NO_CALL,
         reason: typeof body.error === "string" ? body.error : null,
-        record: await fetchRecord(
-          businessTransactionId,
-          response.status === 200,
-        ),
+        record: fetched?.summary ?? null,
       };
       results.push(result);
       return result;
@@ -324,6 +338,33 @@ describe("AgenTrust refund evaluation", () => {
           2,
         ) + "\n",
       );
+    }
+
+    const fixturesDir = process.env.AGENTRUST_FIXTURES;
+    if (fixturesDir) {
+      mkdirSync(fixturesDir, { recursive: true });
+      const write = (name: string, value: unknown) =>
+        writeFileSync(
+          path.join(fixturesDir, name),
+          JSON.stringify(value, null, 2) + "\n",
+        );
+      const files = {
+        "valid-approval": "01-valid-approval.execution-trust-record.json",
+        refusal: "02-refusal.refusal-record.json",
+        replay: "03-replay.refusal-record.json",
+      } as const;
+      for (const { case: name, body } of fullRecords) write(files[name], body);
+      write("approval.json", approval);
+      const signingKey = await request(app).get("/keys/default");
+      expect(signingKey.status).toBe(200);
+      write("parmana-signing-key.json", signingKey.body);
+      write("approver-key.json", {
+        ...approver,
+        algorithm: "ed25519",
+        publicKeyPem: approverKeys.publicKey
+          .export({ format: "pem", type: "spki" })
+          .toString(),
+      });
     }
   });
 });

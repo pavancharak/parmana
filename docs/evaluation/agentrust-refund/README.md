@@ -33,7 +33,9 @@ npm run evaluate:agentrust-refund
 
 The command runs `packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts`, then writes
 `evaluations/agentrust-refund/report.json` with the commit, whether the working tree was clean, the Node.js version
-and the cases. It needs no network, database, keys or accounts: storage is in memory, the approver key is generated
+and the cases. It also writes the full signed records to `evaluations/agentrust-refund/fixtures/`: the
+Execution Trust Record, both Refusal Records, the signed manager approval, Parmana's signing key as `GET /keys/default`
+serves it and the approver's public key. Each run makes new keys and identifiers, so it replaces every fixture. It needs no network, database, keys or accounts: storage is in memory, the approver key is generated
 for the run, and the connector is the mock.
 
 ## The three cases and the expected outcomes
@@ -85,4 +87,6 @@ Questions for the maintainer before implementing:
 - `packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts`: the three cases.
 - `scripts/evaluate-agentrust-refund.ts`: the runner behind `npm run evaluate:agentrust-refund`.
 - `evaluations/agentrust-refund/report.json`: the report of a run, with the commit it ran on.
+- `evaluations/agentrust-refund/fixtures/`: the full signed records and public keys from the same run, for checking
+  offline.
 - `policies/customer-refund/1.2.0/policy.json`: the policy, including the caller supplied facts.
