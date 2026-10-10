@@ -165,13 +165,26 @@ describe("API reference code samples", () => {
   });
 
   it("writes every cURL sample as valid shell", () => {
-    for (const { operation } of operations) {
-      execFileSync(
-        "bash",
-        ["-n", bashPath(samplePaths(operation.operationId ?? "").curl)],
-        { cwd: root },
-      );
-    }
+    // One bash process checks every sample: starting bash once per sample
+    // is slow on Windows (WSL or Git Bash) and timed the test out there.
+    // bash -n names the file and line of any syntax error. The loop is
+    // read from stdin and the sample paths arrive as its arguments, so no
+    // path is ever part of the command text.
+    execFileSync(
+      "bash",
+      [
+        "-s",
+        "--",
+        ...operations.map(({ operation }) =>
+          bashPath(samplePaths(operation.operationId ?? "").curl),
+        ),
+      ],
+      {
+        cwd: root,
+        input: 'for sample in "$@"; do bash -n "$sample" || exit 1; done\n',
+        stdio: "pipe",
+      },
+    );
   });
 
   it("typechecks every TypeScript sample against the SDK", () => {
