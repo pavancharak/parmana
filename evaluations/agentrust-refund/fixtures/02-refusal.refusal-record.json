@@ -1,0 +1,42 @@
+{
+  "refusalRecordId": "092cd31c-b7aa-4023-80ab-852d654e18d9",
+  "businessTransactionId": "a42bcf13-7d88-4745-842e-b7981c7b132a",
+  "decision": {
+    "decisionId": "11d32737-02f6-4881-a055-2a1fdf40d020",
+    "intentId": "c188154f-c6c9-4e43-86f5-b0ebbfeddf02",
+    "policy": {
+      "name": "customer-refund",
+      "version": "1.2.0",
+      "schemaVersion": "1.0.0"
+    },
+    "signals": {
+      "refundEligible": true,
+      "managerApproved": true,
+      "fraudCheckPassed": true,
+      "refundAmount": 500
+    },
+    "outcome": "REJECTED",
+    "reason": "Rejected: declared signal(s) do not match independently verified state (managerApproved=true != verified managerApproved=false).",
+    "matchedRuleId": "signal-state-verification-violation",
+    "evaluatedRules": 0,
+    "matchedPath": [],
+    "evaluatedAt": "2026-10-10T19:07:31.834Z"
+  },
+  "evaluatedIntent": {
+    "target": "paytm://orders/order-eval-2",
+    "parameters": {
+      "orderId": "order-eval-2",
+      "transactionId": "txn-order-eval-2",
+      "amount": 500
+    }
+  },
+  "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
+  "createdAt": "2026-10-10T19:07:31.834Z",
+  "refusalRecordHash": "9f17f55a4a3b380d375872435bedf01c07e631c2e723b4237fec2018e07a7320",
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "default",
+    "value": "EdzTdV9STxbpbArieSeE8VLisZc4ACyIjsMlHcTuRZc6z+UvY6P+EeaUWrUvg+02kS4E8QtW/yuC1LXa4OqtDQ==",
+    "signedAt": "2026-10-10T19:07:31.835Z"
+  }
+}
