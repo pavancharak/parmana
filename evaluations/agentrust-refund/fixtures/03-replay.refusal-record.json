@@ -1,9 +1,9 @@
 {
-  "refusalRecordId": "7ab18db0-84c0-4372-b13d-fa9bc38e84e2",
-  "businessTransactionId": "2753b4a9-5f63-4681-adaf-6424938562b4",
+  "refusalRecordId": "adecc3fc-268a-4520-9a90-d5f01c2acd24",
+  "businessTransactionId": "cd0e2262-0389-4125-8d97-fd3a67d1f3be",
   "decision": {
-    "decisionId": "c2a567a7-4d23-4b04-832b-0a3632f2de7e",
-    "intentId": "fc780ffb-763b-4901-be90-8722971461a8",
+    "decisionId": "2164c336-403e-4149-861e-d7413983f1cd",
+    "intentId": "34c30cc0-932f-454b-ad6c-d39aef3ea6bd",
     "policy": {
       "name": "customer-refund",
       "version": "1.2.0",
@@ -17,13 +17,13 @@
       "approvalArtifact": {
         "payload": {
           "version": 1,
-          "approvalId": "3d553391-8102-4f91-b01c-7cd5ac6f8416",
+          "approvalId": "f356034c-a000-4094-ae52-29f160901ff7",
           "issuer": {
             "approverId": "manager-eval",
             "keyId": "manager-eval-key-1"
           },
-          "issuedAt": "2026-10-10T19:07:31.732Z",
-          "expiresAt": "2026-10-10T19:22:31.732Z",
+          "issuedAt": "2026-10-10T19:13:30.553Z",
+          "expiresAt": "2026-10-10T19:28:30.553Z",
           "capability": "paytm:refund",
           "resourceId": "order-eval-1",
           "scope": {
@@ -31,13 +31,13 @@
             "comparator": "lte",
             "value": 500
           },
-          "nonce": "cd756e7c-c203-499e-91b0-1d57fe12adf5"
+          "nonce": "ebebaaf9-0a0c-42d1-837b-1559f27f32c3"
         },
         "signature": {
           "algorithm": "ed25519",
           "keyId": "manager-eval-key-1",
-          "value": "wcdSWYsQdcT4EXuy7C/EgVseBjgOZxmAwCFGH5RM8EOsfXTIRp1ls2ygU4lnh58tsoyYdr7dm8Y6uSwFsbsHBA==",
-          "signedAt": "2026-10-10T19:07:31.732Z"
+          "value": "ZqLf0CrNxnQ8ZsYTRpkt1SpK0DirBbNr+gac3PDTkLqe5/vyg8toccOxcsJfLnr/4yHBbkL1eKuryeMpTVpECw==",
+          "signedAt": "2026-10-10T19:13:30.553Z"
         }
       }
     },
@@ -46,7 +46,7 @@
     "matchedRuleId": "signal-state-verification-violation",
     "evaluatedRules": 0,
     "matchedPath": [],
-    "evaluatedAt": "2026-10-10T19:07:31.852Z"
+    "evaluatedAt": "2026-10-10T19:13:30.649Z"
   },
   "evaluatedIntent": {
     "target": "paytm://orders/order-eval-1",
@@ -57,12 +57,12 @@
     }
   },
   "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
-  "createdAt": "2026-10-10T19:07:31.852Z",
-  "refusalRecordHash": "c3fd35035cb8138b3901b6a9acfbb7607be7080de16f145076a1c90ac1e3de20",
+  "createdAt": "2026-10-10T19:13:30.649Z",
+  "refusalRecordHash": "876dcb2f44e76d77664dcb823b7aa6ca80d542eaee4ac6afd020edfa59fa46c6",
   "signature": {
     "algorithm": "ed25519",
     "keyId": "default",
-    "value": "D/c8ADosjK6SmnIQT5ast4rhhdr6ONIwXwOIV3sXn1PPhpch4IQV6OrPGlYMgCgTtSlFpgvnzHJwIRB0RQA2Ag==",
-    "signedAt": "2026-10-10T19:07:31.853Z"
+    "value": "eUUqBBTajfGBiN8GACL/O05mxdJOmKdaPQWUSmzxa3rzh7VYYcf8tba5xTDFFQSVx2C0cyKLkIX+aGVwgZWoCQ==",
+    "signedAt": "2026-10-10T19:13:30.649Z"
   }
 }
