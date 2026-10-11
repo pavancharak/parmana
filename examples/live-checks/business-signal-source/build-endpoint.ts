@@ -80,6 +80,13 @@ async function main(): Promise<void> {
     logLevel: "warning",
   });
 
+  // Its own vercel.json: without one, a deploy can pick up the settings
+  // of the repository's vercel.json (a function api/index.ts) and fail.
+  writeFileSync(
+    path.join(out, "vercel.json"),
+    `${JSON.stringify({ functions: { "api/signals.mjs": { maxDuration: 10 } } }, null, 2)}\n`,
+  );
+
   writeFileSync(
     path.join(out, "package.json"),
     `${JSON.stringify({ name: path.basename(out), private: true, type: "module" }, null, 2)}\n`,
@@ -88,7 +95,9 @@ async function main(): Promise<void> {
   console.log(`Built ${path.join(out, "api", "signals.mjs")}`);
   console.log(`Audience: ${endpointUrl}`);
   console.log(`Key id:   ${keyId}`);
-  console.log("Set SOURCE_PRIVATE_KEY_PEM on the Vercel project, then deploy.");
+  console.log(
+    `Set SOURCE_PRIVATE_KEY_PEM on the Vercel project, then deploy from inside ${out}.`,
+  );
 }
 
 main().catch((error) => {

@@ -5,7 +5,7 @@
 > source or a command actually run, on 2026-09-08, except the test counts
 > and the self hosted deployment section, verified on 2026-09-25, and the
 > connector list, policy reachability and human approval sections, verified
-> on 2026-09-27. Where something is
+> on 2026-09-27, and the business validation section, verified on 2026-10-11. Where something is
 > mentioned elsewhere in this repo's docs/comments but doesn't exist in
 > code, that is stated explicitly, not implied.
 
@@ -227,10 +227,35 @@ is checked when proposed and when approved (`packages/shared/src/network/externa
 `ExternalConnectorAwareRegistry` serves a registered capability from its active registration with
 `GatewayExternalAdapter` (PR #93), the policy is bound from the registration at the version policy
 governance approved, and `GET /policies/in-effect` answers for it. The SDK helpers
-`verifyParmanaRelease` and `verify_parmana_release` (PR #94) are not published yet.
+`verifyParmanaRelease` and `verify_parmana_release` (PR #94) are published in SDK 1.5.0 (2026-10-04).
 `docs/CLAIMS.md` 2.49 claims the registration governance, and 2.50 releasing to an endpoint, after
 the live check (`examples/live-checks/external-connector`). `docs/VERIFICATION-GAPS.md` G-81 fixed;
 G-82, G-83 and G-84 (an approved request takes 24 to 32 seconds in production) open.
+
+## Business validation (RFC-0023, deployed 2026-10-11)
+
+An agent's proposal is never a business fact. Built in four phases (PRs #97 to #100), deployed to production with
+their migrations, and in SDK 1.6.0 on npm and PyPI (2026-10-11). `docs/CLAIMS.md` 2.53 to 2.56.
+
+- **Separate statuses on every decision:** authority, business validation and, for a refusal, execution, signed in
+  the Execution Trust Record and Refusal Record.
+- **Business signal sources:** a business system is registered through maker checker (`/business-signal-sources`);
+  Parmana asks it with a signed query and accepts only answers signed with its registered Ed25519 key. A policy names
+  the source of a fact in `signalSources`.
+- **Authority grants:** which agent may have which action decided, within per request limits, until when, through
+  maker checker (`/authority-grants`). A policy opts in with `requireAuthorityGrant`.
+- **At release:** the facts and the grant are signed into the authorization and re-checked by the gateway; an
+  external connector's release carries the facts as `conditions`.
+
+**Verified in production on 2026-10-11** by two live checks with test policies and endpoints that act on nothing:
+`examples/live-checks/authority-grant` (4 of 4: refused before a grant, approved within it, refused above its limit
+and after its revoke) and `examples/live-checks/business-signal-source` (4 of 4: a deployed demo source's signed
+answer approved a paid invoice; unpaid, contradicted and unknown invoices refused as required).
+
+**Not in effect for real actions yet:** no shipped policy declares a source or requires a grant, so production
+decisions for refunds and the other built in capabilities are unchanged. No real business system is connected
+(G-92); cumulative grant limits are not built (G-93, design in RFC-0023); built in connectors get only the gateway
+re-check at release (G-94). What is left: `docs/REMAINING-WORK.md` section L.
 
 ## Public sandbox (ADR-0014, live 2026-10-02)
 

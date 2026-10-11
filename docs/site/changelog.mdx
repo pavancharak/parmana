@@ -14,7 +14,7 @@ every commit, run `git log` in the repository for the complete record.
 
 **Added: live checks for authority grants, business signal sources and a real refund**
 
-- [`examples/live-checks`](https://github.com/pavancharak/parmana/tree/main/examples/live-checks) gains three procedures for production. The `authority-grant` check passed in production the same day, all four requests as required; the other two are ready, not yet run:
+- [`examples/live-checks`](https://github.com/pavancharak/parmana/tree/main/examples/live-checks) gains three procedures for production. The `authority-grant` and `business-signal-source` checks passed in production the same day, all four requests each as required; the refund check is ready, not yet run:
   `authority-grant` (a grant decides: refused before it, approved within its limit, refused over it and after its
   revoke), `business-signal-source` (a deployed demo source answers, signed; the release carries its answer as a
   condition) and `paytm-refund` (one real 1 INR refund through the rotated credentials, its record verified offline).
