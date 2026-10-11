@@ -12,12 +12,14 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-11
 
-**Prepared: SDK 1.6.0 and connector SDK 0.3.0, not yet published**
+**Published: SDK 1.6.0 and connector SDK 0.3.0**
 
 - `@parmana/sdk` and `parmana` 1.6.0 add the business signal source and authority grant methods, and `conditions`
   on `ParmanaRelease`. `@parmana/connector-sdk` 0.3.0 adds `ReleaseCondition`. `parmana-connector-sdk` is unchanged
   at 0.2.0.
-- Until they are published, the methods stay marked **next release**; call the routes directly.
+- Published on npm and PyPI from the files of release
+  [sdk-v1.6.0](https://github.com/pavancharak/parmana/releases/tag/sdk-v1.6.0), byte for byte: see
+  [New in 1.6.0](/sdks/typescript#new-in-160).
 
 **Added: re-check at release, and execute only if still valid**
 
@@ -53,7 +55,7 @@ every commit, run `git log` in the repository for the complete record.
 - `typescript/examples/08-business-signal-source.ts` is a complete source endpoint.
 - Self managed deployments: apply the new migration with `npm run db:migrate -- apply` before deploying this version.
 - The SDK methods (`proposeBusinessSignalSourceChange()`, `business_signal_sources.propose_register()` and the rest)
-  ship in the next SDK release.
+  are in SDK 1.6.0.
 
 ## 2026-10-10
 
