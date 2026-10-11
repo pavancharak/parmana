@@ -22,9 +22,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@aws-sdk/client-kms": "^3.1145.0",
+    "@aws-sdk/client-kms": "^3.1148.0",
     "@parmana/shared": "0.1.0",
-    "@vercel/oidc-aws-credentials-provider": "^3.3.9",
+    "@vercel/oidc-aws-credentials-provider": "^3.3.11",
     "express": "^5.2.1",
     "vitest": "^5.0.3"
   },
@@ -32,12 +32,12 @@
     "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.6",
     "@types/node": "^24.19.1",
-    "dotenv": "^18.0.5",
-    "eslint": "^10.11.0",
+    "dotenv": "^18.0.6",
+    "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.0"
+    "typescript-eslint": "^8.71.1"
   },
   "engines": {
     "node": ">=24"
