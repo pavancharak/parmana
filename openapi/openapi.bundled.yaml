@@ -10857,12 +10857,29 @@ components:
                     type: object
                 failures:
                   type: array
+                  description: Why business validation did not pass, one entry per signal that
+                    failed.
                   items:
                     type: object
                     required:
                       - signalKey
                       - status
                       - reason
+                    properties:
+                      signalKey:
+                        type: string
+                      status:
+                        type: string
+                        enum:
+                          - VALID
+                          - INVALID
+                          - MISSING_DATA
+                          - CONFLICTING_DATA
+                          - SOURCE_UNAVAILABLE
+                          - VALIDATION_EXPIRED
+                          - NOT_EVALUATED
+                      reason:
+                        type: string
             execution:
               type: object
               required:
