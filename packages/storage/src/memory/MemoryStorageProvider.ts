@@ -2,6 +2,7 @@ import type {
   ApprovalIssuerRepository,
   ExternalConnectorRepository,
   BusinessSignalSourceRepository,
+  AuthorityGrantRepository,
   BusinessTransactionRepository,
   ExecutionIntentRepository,
   ExecutionTrustRecordRepository,
@@ -29,6 +30,7 @@ import { MemoryHandbookDownloadLeadRepository } from "./MemoryHandbookDownloadLe
 import { MemoryApprovalIssuerRepository } from "./MemoryApprovalIssuerRepository.js";
 import { MemoryExternalConnectorRepository } from "./MemoryExternalConnectorRepository.js";
 import { MemoryBusinessSignalSourceRepository } from "./MemoryBusinessSignalSourceRepository.js";
+import { MemoryAuthorityGrantRepository } from "./MemoryAuthorityGrantRepository.js";
 
 /**
  * Memory Storage Provider.
@@ -55,6 +57,7 @@ export class MemoryStorageProvider implements StorageProvider {
 
   readonly externalConnectors: ExternalConnectorRepository;
   readonly businessSignalSources: BusinessSignalSourceRepository;
+  readonly authorityGrants: AuthorityGrantRepository;
 
   constructor() {
     this.businessTransactions = new MemoryBusinessTransactionRepository();
@@ -76,6 +79,7 @@ export class MemoryStorageProvider implements StorageProvider {
 
     this.externalConnectors = new MemoryExternalConnectorRepository();
     this.businessSignalSources = new MemoryBusinessSignalSourceRepository();
+    this.authorityGrants = new MemoryAuthorityGrantRepository();
 
     Object.freeze(this);
   }

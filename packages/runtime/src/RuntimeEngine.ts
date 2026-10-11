@@ -59,6 +59,7 @@ import {
 
 import { RuntimeHookRunner } from "./hooks/RuntimeHookRunner.js";
 import { TrustedSignalResolver } from "./business-validation/TrustedSignalResolver.js";
+import { AuthorityGrantEvaluator } from "./authority/AuthorityGrantEvaluator.js";
 
 import type { RuntimeHook } from "./hooks/RuntimeHook.js";
 
@@ -220,6 +221,14 @@ export class RuntimeEngine {
      * that declares any is refused as SOURCE_UNAVAILABLE: fail closed.
      */
     private readonly trustedSignalResolver: TrustedSignalResolver = new TrustedSignalResolver(
+      undefined,
+    ),
+    /**
+     * Per-agent authority (RFC-0023 phase 3), for policies with
+     * requireAuthorityGrant. The default reads no grants, so such a
+     * policy is refused as AUTHORITY_UNCLEAR: fail closed.
+     */
+    private readonly authorityGrantEvaluator: AuthorityGrantEvaluator = new AuthorityGrantEvaluator(
       undefined,
     ),
   ) {
@@ -391,9 +400,39 @@ export class RuntimeEngine {
           )
         : undefined;
 
-    const bindingViolations =
+    //
+    // Per-agent authority (RFC-0023 phase 3)
+    //
+    // Only for a policy with requireAuthorityGrant, and only once the
+    // governance and capability/policy checks pass: the authenticated
+    // caller (metadata.submittedBy, set by the server) must hold a
+    // current grant for the action, approved through maker checker, and
+    // the request must be within its limits. Anything else refuses the
+    // request before any business system is asked.
+    //
+
+    const grantAuthority =
       policyExecutionViolation === undefined &&
       capabilityBindingViolation === undefined
+        ? await this.authorityGrantEvaluator.evaluate({
+            policy,
+            callerId: transaction.metadata?.submittedBy,
+            capability: transaction.intent.action,
+            intent: {
+              target: transaction.intent.target,
+              parameters: transaction.intent.parameters,
+            },
+          })
+        : undefined;
+
+    const authorityGrantRefused =
+      grantAuthority !== undefined &&
+      grantAuthority.status !== AuthorityStatus.AUTHORIZED;
+
+    const bindingViolations =
+      policyExecutionViolation === undefined &&
+      capabilityBindingViolation === undefined &&
+      !authorityGrantRefused
         ? this.signalIntentBinder.findViolations(policy, signals, {
             target: transaction.intent.target,
             parameters: transaction.intent.parameters,
@@ -406,8 +445,8 @@ export class RuntimeEngine {
     // Two separate answers, recorded separately on the Decision.
     // Authority: may this kind of action be decided here at all. Today
     // that is the governance and capability/policy checks above (and,
-    // at the API, the caller key's capability scope); per-agent grants
-    // are a later phase. Business validation: are the facts the policy
+    // at the API, the caller key's capability scope), and, for a policy
+    // that requires one, the caller's authority grant. Business validation: are the facts the policy
     // needs established by their sources, for this exact business
     // object. It runs only once authority is established and the
     // proposal describes the Intent, so a request that is not
@@ -426,16 +465,24 @@ export class RuntimeEngine {
               status: AuthorityStatus.NOT_AUTHORIZED,
               reason: `Capability "${capabilityBindingViolation.action}" may only be decided under its bound policy, not the one declared.`,
             }
-          : {
-              status: AuthorityStatus.AUTHORIZED,
-              reason:
-                `Capability "${transaction.intent.action}" is decided under its approved, current policy ` +
-                `${policy.policyId} ${policy.policyVersion}` +
-                (transaction.metadata?.submittedBy !== undefined
-                  ? `, for caller ${transaction.metadata.submittedBy}.`
-                  : ".") +
-                " This says the action type may be decided, not that this action is valid or was executed.",
-            };
+          : authorityGrantRefused
+            ? grantAuthority
+            : {
+                status: AuthorityStatus.AUTHORIZED,
+                reason:
+                  `Capability "${transaction.intent.action}" is decided under its approved, current policy ` +
+                  `${policy.policyId} ${policy.policyVersion}` +
+                  (transaction.metadata?.submittedBy !== undefined
+                    ? `, for caller ${transaction.metadata.submittedBy}.`
+                    : ".") +
+                  (grantAuthority !== undefined
+                    ? ` ${grantAuthority.reason}`
+                    : "") +
+                  " This says the action may be decided, not that this action is valid or was executed.",
+                ...(grantAuthority?.grant !== undefined && {
+                  grant: grantAuthority.grant,
+                }),
+              };
 
     const validation =
       authority.status !== AuthorityStatus.AUTHORIZED
@@ -518,35 +565,48 @@ export class RuntimeEngine {
               evaluatedRules: 0,
               matchedPath: [],
             }
-          : bindingViolations.length > 0
+          : authorityGrantRefused
             ? {
                 policyId: policy.policyId,
                 policyVersion: policy.policyVersion,
                 outcome: PolicyOutcome.REJECT,
-                reason:
-                  "Rejected: declared signal(s) do not match the executed intent (" +
-                  bindingViolations
-                    .map(
-                      (violation) =>
-                        `${violation.signalKey}=${JSON.stringify(violation.signalValue)} != intent.${violation.intentPath}=${JSON.stringify(violation.intentValue)}`,
-                    )
-                    .join(", ") +
-                  ").",
-                matchedRuleId: "signal-intent-binding-violation",
+                reason: `Rejected: authority ${authority.status}. ${authority.reason}`,
+                matchedRuleId: `authority-${authority.status
+                  .toLowerCase()
+                  .replace(/^authority_/, "")
+                  .replace(/_/g, "-")}`,
                 evaluatedRules: 0,
                 matchedPath: [],
               }
-            : businessValidationFailed
+            : bindingViolations.length > 0
               ? {
                   policyId: policy.policyId,
                   policyVersion: policy.policyVersion,
                   outcome: PolicyOutcome.REJECT,
-                  reason: `Rejected: business validation ${businessValidation.status}. ${businessValidation.reason}`,
-                  matchedRuleId: `business-validation-${businessValidation.status.toLowerCase().replace(/_/g, "-")}`,
+                  reason:
+                    "Rejected: declared signal(s) do not match the executed intent (" +
+                    bindingViolations
+                      .map(
+                        (violation) =>
+                          `${violation.signalKey}=${JSON.stringify(violation.signalValue)} != intent.${violation.intentPath}=${JSON.stringify(violation.intentValue)}`,
+                      )
+                      .join(", ") +
+                    ").",
+                  matchedRuleId: "signal-intent-binding-violation",
                   evaluatedRules: 0,
                   matchedPath: [],
                 }
-              : this.policyEngine.evaluate(policy, evaluatedSignals);
+              : businessValidationFailed
+                ? {
+                    policyId: policy.policyId,
+                    policyVersion: policy.policyVersion,
+                    outcome: PolicyOutcome.REJECT,
+                    reason: `Rejected: business validation ${businessValidation.status}. ${businessValidation.reason}`,
+                    matchedRuleId: `business-validation-${businessValidation.status.toLowerCase().replace(/_/g, "-")}`,
+                    evaluatedRules: 0,
+                    matchedPath: [],
+                  }
+                : this.policyEngine.evaluate(policy, evaluatedSignals);
 
     //
     // Signal/State verification (G-24 residual closure, RFC-0022)
@@ -685,6 +745,7 @@ export class RuntimeEngine {
       if (
         policyExecutionViolation === undefined &&
         capabilityBindingViolation === undefined &&
+        !authorityGrantRefused &&
         bindingViolations.length === 0 &&
         !businessValidationFailed
       ) {

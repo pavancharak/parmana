@@ -217,8 +217,10 @@ export interface Decision {
 ```
 
 `assessment` records authority, business validation and, for a refusal, execution as separate
-statuses, and the Trusted Signals a policy's `signalSources` established. See
-[Business validation](/concepts/business-validation).
+statuses, the Trusted Signals a policy's `signalSources` established, and, for a policy with
+`requireAuthorityGrant`, the caller's authority grant that was checked. See
+[Business validation](/concepts/business-validation) and
+[Grant an agent authority](/guides/grant-an-agent-authority).
 
 The signals evaluated are captured on the Decision itself, this is what
 [replay](/replay/overview) reconstructs from: given the same recorded signals and the same

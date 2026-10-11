@@ -90,6 +90,9 @@ tags:
   - name: Business Signal Sources
     description: Maker-checker for the business systems Parmana asks for the facts a policy needs, without a deploy (RFC-0023)
 
+  - name: Authority Grants
+    description: Maker-checker for which agent may have which action decided, within which limits, until when (RFC-0023)
+
   - name: Sandbox
     description: Routes that exist only on the public sandbox (ADR-0014), for trying Parmana from a browser
 
@@ -3993,6 +3996,13 @@ paths:
                       - string
                       - "null"
                     description: The policy author's description for people, or null.
+                  authorityGrantRequired:
+                    type: boolean
+                    const: true
+                    description: >
+                      Present only when the policy requires it. Your key needs a current authority
+                      grant for this capability, made through maker checker
+                      (/authority-grants), and each request must be within the grant's limits.
                   signals:
                     type: object
                     description: What a request under this policy must carry.
@@ -6307,6 +6317,651 @@ paths:
                   value:
                     {
                       "error": "Business signal source change '48579135-1b91-4ac1-ade4-245e7ca304a3' is already REJECTED.",
+                      "code": "CONFLICT",
+                    }
+
+  /authority-grants:
+    get:
+      tags:
+        - Authority Grants
+      summary: List authority grants
+      operationId: listAuthorityGrants
+      description: |
+        Lists every authority grant, active and revoked: which caller may have which capability decided,
+        within which limits, from when until when. A grant matters only under a policy with
+        `requireAuthorityGrant`. Revoked grants stay listed, so every decision that rested on one can be
+        explained. Needs a human key. See [Grant an agent authority](/guides/grant-an-agent-authority).
+      responses:
+        "200":
+          description: "The grants."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/responses/authority-grants-list-response.schema.json"
+              examples:
+                active:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "grants":
+                        [
+                          {
+                            "grantId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                            "callerId": "warehouse-agent",
+                            "capability": "erp:release-goods",
+                            "limits":
+                              {
+                                "parameters.amount": { "max": 100000 },
+                                "parameters.currency": { "oneOf": ["INR"] },
+                              },
+                            "validFrom": "2026-10-11T03:29:05.247Z",
+                            "validUntil": "2026-12-30T00:00:00.000Z",
+                            "status": "active",
+                            "grantedAt": "2026-10-11T03:29:05.247Z",
+                          },
+                        ],
+                    }
+                withRevoked:
+                  summary: "Real captured response, after a revoke: the grant stays listed"
+                  value:
+                    {
+                      "grants":
+                        [
+                          {
+                            "grantId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                            "callerId": "warehouse-agent",
+                            "capability": "erp:release-goods",
+                            "limits":
+                              {
+                                "parameters.amount": { "max": 100000 },
+                                "parameters.currency": { "oneOf": ["INR"] },
+                              },
+                            "validFrom": "2026-10-11T03:29:05.247Z",
+                            "validUntil": "2026-12-30T00:00:00.000Z",
+                            "status": "revoked",
+                            "grantedAt": "2026-10-11T03:29:05.247Z",
+                            "revokedByChangeId": "77a3b517-4ae0-4c72-8f0c-5aa6ed913df1",
+                            "revokedAt": "2026-10-11T03:29:05.300Z",
+                          },
+                        ],
+                    }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                service:
+                  summary: "Real captured response, a service credential"
+                  value:
+                    {
+                      "error": "This action requires a caller credential provisioned as a verified human (credentialHolderType: USER).",
+                      "code": "NON_HUMAN_CALLER_DENIED",
+                    }
+
+  /authority-grants/changes:
+    post:
+      tags:
+        - Authority Grants
+      summary: Propose granting or revoking an agent's authority
+      operationId: proposeAuthorityGrantChange
+      description: |
+        Proposes per-agent authority (RFC-0023 phase 3): `grant` says the API key with `callerId` may have
+        requests for `capability` decided, within `limits` on the request, until `validUntil` (at most 366
+        days); `revoke` ends the active grant. Nothing changes until a different person approves it. You
+        may not propose authority for your own key. Under a policy with `requireAuthorityGrant`, a request
+        from a key with no grant in force, or outside its limits, is refused as `NOT_AUTHORIZED`, and one
+        after `validUntil` as `AUTHORITY_EXPIRED`. To change a grant, revoke it, then grant again. Needs a
+        human key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/requests/propose-authority-grant-change-request.schema.json"
+            examples:
+              grant:
+                summary: "Real captured request"
+                value:
+                  {
+                    "action": "grant",
+                    "callerId": "warehouse-agent",
+                    "capability": "erp:release-goods",
+                    "limits":
+                      {
+                        "parameters.amount": { "max": 100000 },
+                        "parameters.currency": { "oneOf": ["INR"] },
+                      },
+                    "validUntil": "2026-12-30T00:00:00.000Z",
+                    "reason": "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+                  }
+              revoke:
+                summary: "Real captured request"
+                value:
+                  {
+                    "action": "revoke",
+                    "callerId": "warehouse-agent",
+                    "capability": "erp:release-goods",
+                    "reason": "The warehouse agent's key is being rotated.",
+                  }
+      responses:
+        "201":
+          description: "Proposed and waiting for a checker. Keep the `changeId`."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/responses/authority-grant-change-response.schema.json"
+              examples:
+                grant:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "changeId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                      "action": "grant",
+                      "callerId": "warehouse-agent",
+                      "capability": "erp:release-goods",
+                      "limits":
+                        {
+                          "parameters.amount": { "max": 100000 },
+                          "parameters.currency": { "oneOf": ["INR"] },
+                        },
+                      "validUntil": "2026-12-30T00:00:00.000Z",
+                      "reason": "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+                      "proposedBy": "grant-maker",
+                      "proposedAt": "2026-10-11T03:29:05.220Z",
+                      "status": "PENDING_APPROVAL",
+                    }
+                revoke:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "changeId": "c7955228-f718-4f21-8ac9-c48ce907b91a",
+                      "action": "revoke",
+                      "callerId": "warehouse-agent",
+                      "capability": "erp:release-goods",
+                      "reason": "The warehouse agent's key is being rotated.",
+                      "proposedBy": "grant-maker",
+                      "proposedAt": "2026-10-11T03:29:05.283Z",
+                      "status": "PENDING_APPROVAL",
+                    }
+        "400":
+          description: "`INVALID_AUTHORITY_GRANT`: a field is missing or malformed, a limit is malformed, validUntil is missing, past, before validFrom or more than 366 days away, or a revoke carries grant fields."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                badCapability:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "capability must be namespace:verb, at most 128 characters, matching ^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*:[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+                badLimitPath:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "limits key 'amount' must be target or parameters.<name>.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+                badLimit:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "limits['parameters.amount'].min must not be above its max.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+                noExpiry:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "validUntil must be an ISO 8601 date and time.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+                tooLong:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "A grant may last at most 366 days. Grant again when it ends.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+                revokeWithGrantFields:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "A revoke takes only action, callerId, capability and reason.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key. `AUTHORITY_SELF_GRANT_DENIED`: the grant is for your own key."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                service:
+                  summary: "Real captured response, a service credential"
+                  value:
+                    {
+                      "error": "This action requires a caller credential provisioned as a verified human (credentialHolderType: USER).",
+                      "code": "NON_HUMAN_CALLER_DENIED",
+                    }
+                selfGrant:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "'grant-maker' may not propose, approve or reject authority for itself.",
+                      "code": "AUTHORITY_SELF_GRANT_DENIED",
+                    }
+        "409":
+          description: "`CONFLICT`: the caller already holds a grant for the capability (to grant) or holds none (to revoke), or another change for it is pending."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                pending:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "A change for the authority of 'warehouse-agent' over 'erp:release-goods' is already pending. It must be approved or rejected first.",
+                      "code": "CONFLICT",
+                    }
+                alreadyActive:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "'warehouse-agent' already holds a grant for 'erp:release-goods'. Revoke it first.",
+                      "code": "CONFLICT",
+                    }
+                revokeUnknown:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "'x-agent' holds no grant for 'erp:release-goods'.",
+                      "code": "CONFLICT",
+                    }
+
+    get:
+      tags:
+        - Authority Grants
+      summary: List authority grant changes
+      operationId: listAuthorityGrantChanges
+      description: |
+        Lists authority grant changes, newest first. A checker uses `status=PENDING_APPROVAL` to find what
+        waits for review. Needs a human key.
+      parameters:
+        - name: status
+          description: "`PENDING_APPROVAL`, `APPROVED` or `REJECTED`. Omit for all."
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [PENDING_APPROVAL, APPROVED, REJECTED]
+      responses:
+        "200":
+          description: "The changes."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/responses/authority-grant-changes-list-response.schema.json"
+              examples:
+                pending:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "changes":
+                        [
+                          {
+                            "changeId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                            "action": "grant",
+                            "callerId": "warehouse-agent",
+                            "capability": "erp:release-goods",
+                            "limits":
+                              {
+                                "parameters.amount": { "max": 100000 },
+                                "parameters.currency": { "oneOf": ["INR"] },
+                              },
+                            "validUntil": "2026-12-30T00:00:00.000Z",
+                            "reason": "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+                            "proposedBy": "grant-maker",
+                            "proposedAt": "2026-10-11T03:29:05.220Z",
+                            "status": "PENDING_APPROVAL",
+                          },
+                        ],
+                    }
+                approved:
+                  summary: "Real captured response, status=APPROVED: a grant and the revoke that ended it"
+                  value:
+                    {
+                      "changes":
+                        [
+                          {
+                            "changeId": "77a3b517-4ae0-4c72-8f0c-5aa6ed913df1",
+                            "action": "revoke",
+                            "callerId": "warehouse-agent",
+                            "capability": "erp:release-goods",
+                            "reason": "The warehouse agent's key is being rotated.",
+                            "proposedBy": "grant-maker",
+                            "proposedAt": "2026-10-11T03:29:05.296Z",
+                            "status": "APPROVED",
+                            "resolvedBy": "grant-checker",
+                            "resolvedAt": "2026-10-11T03:29:05.300Z",
+                          },
+                          {
+                            "changeId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                            "action": "grant",
+                            "callerId": "warehouse-agent",
+                            "capability": "erp:release-goods",
+                            "limits":
+                              {
+                                "parameters.amount": { "max": 100000 },
+                                "parameters.currency": { "oneOf": ["INR"] },
+                              },
+                            "validUntil": "2026-12-30T00:00:00.000Z",
+                            "reason": "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+                            "proposedBy": "grant-maker",
+                            "proposedAt": "2026-10-11T03:29:05.220Z",
+                            "status": "APPROVED",
+                            "resolvedBy": "grant-checker",
+                            "resolvedAt": "2026-10-11T03:29:05.247Z",
+                          },
+                        ],
+                    }
+        "400":
+          description: "`status` is not `PENDING_APPROVAL`, `APPROVED` or `REJECTED`."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                badStatus:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "status must be one of PENDING_APPROVAL, APPROVED, REJECTED.",
+                    }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                service:
+                  summary: "Real captured response, a service credential"
+                  value:
+                    {
+                      "error": "This action requires a caller credential provisioned as a verified human (credentialHolderType: USER).",
+                      "code": "NON_HUMAN_CALLER_DENIED",
+                    }
+
+  /authority-grants/changes/{id}/approve:
+    post:
+      tags:
+        - Authority Grants
+      summary: Approve an authority grant change
+      operationId: approveAuthorityGrantChange
+      description: |
+        Approves an authority grant change and applies it at once: `grant` makes the grant active,
+        starting now unless it names a later `validFrom`; `revoke` ends it, so the caller's next request
+        under a policy with `requireAuthorityGrant` is refused. A grant whose `validUntil` has passed is
+        refused. Checked in order: a human key, not the proposer, not the grantee, and a step up
+        authorization for this change id and action `approve`, valid once, with the change id in
+        `payload.pendingPolicyChangeId`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "The `changeId` from the proposal."
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/requests/approve-policy-change-request.schema.json"
+            examples:
+              stepUp:
+                summary: Real captured request
+                value:
+                  {
+                    "stepUpAuthorization":
+                      {
+                        "payload":
+                          {
+                            "version": 1,
+                            "nonce": "3cc39c28-9ed5-4e7d-ae2e-3f3c2bbc06ba",
+                            "pendingPolicyChangeId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                            "action": "approve",
+                            "authorizedAt": "2026-10-11T03:29:05.244Z",
+                            "expiresAt": "2026-10-11T03:31:05.244Z",
+                          },
+                        "signature": "HCrlwJPXLRR4YNa1RAW7f6mq46l0gNoqPt52vqvIzQv2NWg5EaCuqO0gAkDOgTL6nbUsTy8E0gpyf5PyKVI6Ag==",
+                        "keyId": "checker-step-up-key",
+                        "algorithm": "ed25519",
+                      },
+                  }
+      responses:
+        "200":
+          description: "Approved and applied."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/responses/authority-grant-change-response.schema.json"
+              examples:
+                approved:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "changeId": "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                      "action": "grant",
+                      "callerId": "warehouse-agent",
+                      "capability": "erp:release-goods",
+                      "limits":
+                        {
+                          "parameters.amount": { "max": 100000 },
+                          "parameters.currency": { "oneOf": ["INR"] },
+                        },
+                      "validUntil": "2026-12-30T00:00:00.000Z",
+                      "reason": "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+                      "proposedBy": "grant-maker",
+                      "proposedAt": "2026-10-11T03:29:05.220Z",
+                      "status": "APPROVED",
+                      "resolvedBy": "grant-checker",
+                      "resolvedAt": "2026-10-11T03:29:05.247Z",
+                    }
+                revokeApproved:
+                  summary: "Real captured response, a revoke"
+                  value:
+                    {
+                      "changeId": "77a3b517-4ae0-4c72-8f0c-5aa6ed913df1",
+                      "action": "revoke",
+                      "callerId": "warehouse-agent",
+                      "capability": "erp:release-goods",
+                      "reason": "The warehouse agent's key is being rotated.",
+                      "proposedBy": "grant-maker",
+                      "proposedAt": "2026-10-11T03:29:05.296Z",
+                      "status": "APPROVED",
+                      "resolvedBy": "grant-checker",
+                      "resolvedAt": "2026-10-11T03:29:05.300Z",
+                    }
+        "400":
+          description: "`INVALID_AUTHORITY_GRANT`: the grant's `validUntil` has passed. Reject it and propose a new one."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                expired:
+                  summary: "Real captured response, a grant whose validUntil passed while it waited"
+                  value:
+                    {
+                      "error": "This grant's validUntil has passed. Reject it and propose a new one.",
+                      "code": "INVALID_AUTHORITY_GRANT",
+                    }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`, `SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE`, `AUTHORITY_SELF_GRANT_DENIED` (you are the grantee) or `STEP_UP_AUTHORIZATION_INVALID`."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                sameActor:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "Authority grant change '9f3cf733-a8ed-487c-bb58-a53950388cdf' was proposed by this same caller — the proposer (maker) may not also approve or reject it (checker).",
+                      "code": "SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE",
+                    }
+                grantee:
+                  summary: "Real captured response, the grantee approving its own grant"
+                  value:
+                    {
+                      "error": "'grant-checker' may not propose, approve or reject authority for itself.",
+                      "code": "AUTHORITY_SELF_GRANT_DENIED",
+                    }
+        "404":
+          description: "`AUTHORITY_GRANT_CHANGE_NOT_FOUND`: no authority grant change has this id."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                notFound:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "Authority grant change '00000000-0000-0000-0000-000000000000' not found.",
+                      "code": "AUTHORITY_GRANT_CHANGE_NOT_FOUND",
+                    }
+        "409":
+          description: "`CONFLICT`: the change is already resolved, or the caller now holds a grant (grant) or no longer does (revoke). Nothing was written."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                alreadyResolved:
+                  summary: "Real captured response, the same change approved twice"
+                  value:
+                    {
+                      "error": "Authority grant change '9f3cf733-a8ed-487c-bb58-a53950388cdf' is already APPROVED.",
+                      "code": "CONFLICT",
+                    }
+
+  /authority-grants/changes/{id}/reject:
+    post:
+      tags:
+        - Authority Grants
+      summary: Reject an authority grant change
+      operationId: rejectAuthorityGrantChange
+      description: |
+        Rejects an authority grant change. No grant changes. The same checks as approve, with a step up
+        authorization for action `reject` and a `rejectionReason`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "The `changeId` from the proposal."
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../schemas/requests/reject-policy-change-request.schema.json"
+      responses:
+        "200":
+          description: "Rejected. No grant changed."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/responses/authority-grant-change-response.schema.json"
+              examples:
+                rejected:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "changeId": "c7955228-f718-4f21-8ac9-c48ce907b91a",
+                      "action": "revoke",
+                      "callerId": "warehouse-agent",
+                      "capability": "erp:release-goods",
+                      "reason": "The warehouse agent's key is being rotated.",
+                      "proposedBy": "grant-maker",
+                      "proposedAt": "2026-10-11T03:29:05.283Z",
+                      "status": "REJECTED",
+                      "resolvedBy": "grant-checker",
+                      "resolvedAt": "2026-10-11T03:29:05.285Z",
+                      "rejectionReason": "Keep the grant until the new key is live.",
+                    }
+        "400":
+          description: "`rejectionReason` is missing, empty or over 2000 characters."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                emptyReason:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "rejectionReason is required, at most 2000 characters.",
+                    }
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`, `SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE`, `AUTHORITY_SELF_GRANT_DENIED` or `STEP_UP_AUTHORIZATION_INVALID`, as on approve."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                service:
+                  summary: "Real captured response, a service credential"
+                  value:
+                    {
+                      "error": "This action requires a caller credential provisioned as a verified human (credentialHolderType: USER).",
+                      "code": "NON_HUMAN_CALLER_DENIED",
+                    }
+        "404":
+          description: "`AUTHORITY_GRANT_CHANGE_NOT_FOUND`: no authority grant change has this id."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                unknownChange:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "Authority grant change '00000000-0000-0000-0000-000000000000' not found.",
+                      "code": "AUTHORITY_GRANT_CHANGE_NOT_FOUND",
+                    }
+        "409":
+          description: "`CONFLICT`: the change is already resolved."
+          content:
+            application/json:
+              schema:
+                $ref: "../schemas/common/error.schema.json"
+              examples:
+                alreadyResolved:
+                  summary: "Real captured response"
+                  value:
+                    {
+                      "error": "Authority grant change 'c7955228-f718-4f21-8ac9-c48ce907b91a' is already REJECTED.",
                       "code": "CONFLICT",
                     }
 

@@ -21,6 +21,7 @@ export * from "./pending-policy-change-not-found-error.js";
 export * from "./approval-issuer-change-not-found-error.js";
 export * from "./external-connector-change-not-found-error.js";
 export * from "./business-signal-source-change-not-found-error.js";
+export * from "./authority-grant-change-not-found-error.js";
 export * from "./non-human-caller-denied-error.js";
 export * from "./same-actor-cannot-approve-own-change-error.js";
 export * from "./step-up-authorization-invalid-error.js";

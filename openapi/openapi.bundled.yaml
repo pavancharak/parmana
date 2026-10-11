@@ -128,6 +128,9 @@ tags:
   - name: Business Signal Sources
     description: Maker-checker for the business systems Parmana asks for the facts a
       policy needs, without a deploy (RFC-0023)
+  - name: Authority Grants
+    description: Maker-checker for which agent may have which action decided, within
+      which limits, until when (RFC-0023)
   - name: Sandbox
     description: Routes that exist only on the public sandbox (ADR-0014), for trying
       Parmana from a browser
@@ -5436,6 +5439,14 @@ paths:
                       - string
                       - "null"
                     description: The policy author's description for people, or null.
+                  authorityGrantRequired:
+                    type: boolean
+                    const: true
+                    description: >
+                      Present only when the policy requires it. Your key needs a
+                      current authority grant for this capability, made through
+                      maker checker (/authority-grants), and each request must
+                      be within the grant's limits.
                   signals:
                     type: object
                     description: What a request under this policy must carry.
@@ -8931,6 +8942,925 @@ paths:
             )
 
             print(change.status)
+  /authority-grants:
+    get:
+      tags:
+        - Authority Grants
+      summary: List authority grants
+      operationId: listAuthorityGrants
+      description: >
+        Lists every authority grant, active and revoked: which caller may have
+        which capability decided,
+
+        within which limits, from when until when. A grant matters only under a
+        policy with
+
+        `requireAuthorityGrant`. Revoked grants stay listed, so every decision
+        that rested on one can be
+
+        explained. Needs a human key. See [Grant an agent
+        authority](/guides/grant-an-agent-authority).
+      responses:
+        "200":
+          description: The grants.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authority-grants-list-response.schema"
+              examples:
+                active:
+                  summary: Real captured response
+                  value:
+                    grants:
+                      - grantId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                        callerId: warehouse-agent
+                        capability: erp:release-goods
+                        limits:
+                          parameters.amount:
+                            max: 100000
+                          parameters.currency:
+                            oneOf:
+                              - INR
+                        validFrom: 2026-10-11T03:29:05.247Z
+                        validUntil: 2026-12-30T00:00:00.000Z
+                        status: active
+                        grantedAt: 2026-10-11T03:29:05.247Z
+                withRevoked:
+                  summary: "Real captured response, after a revoke: the grant stays listed"
+                  value:
+                    grants:
+                      - grantId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                        callerId: warehouse-agent
+                        capability: erp:release-goods
+                        limits:
+                          parameters.amount:
+                            max: 100000
+                          parameters.currency:
+                            oneOf:
+                              - INR
+                        validFrom: 2026-10-11T03:29:05.247Z
+                        validUntil: 2026-12-30T00:00:00.000Z
+                        status: revoked
+                        grantedAt: 2026-10-11T03:29:05.247Z
+                        revokedByChangeId: 77a3b517-4ae0-4c72-8f0c-5aa6ed913df1
+                        revokedAt: 2026-10-11T03:29:05.300Z
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            curl https://parmana-api-real.vercel.app/authority-grants \
+              -H "Authorization: Bearer $PARMANA_API_KEY"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient } from "@parmana/sdk";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            for (const grant of await client.authorityGrants()) {
+              console.log(grant.callerId, grant.capability, grant.status, grant.validUntil);
+            }
+        - lang: python
+          label: Python
+          source: >-
+            import os
+
+
+            from parmana import ParmanaClient
+
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+
+            for grant in client.list_authority_grants():
+                print(grant.caller_id, grant.capability, grant.status, grant.valid_until)
+  /authority-grants/changes:
+    post:
+      tags:
+        - Authority Grants
+      summary: Propose granting or revoking an agent's authority
+      operationId: proposeAuthorityGrantChange
+      description: >
+        Proposes per-agent authority (RFC-0023 phase 3): `grant` says the API
+        key with `callerId` may have
+
+        requests for `capability` decided, within `limits` on the request, until
+        `validUntil` (at most 366
+
+        days); `revoke` ends the active grant. Nothing changes until a different
+        person approves it. You
+
+        may not propose authority for your own key. Under a policy with
+        `requireAuthorityGrant`, a request
+
+        from a key with no grant in force, or outside its limits, is refused as
+        `NOT_AUTHORIZED`, and one
+
+        after `validUntil` as `AUTHORITY_EXPIRED`. To change a grant, revoke it,
+        then grant again. Needs a
+
+        human key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/propose-authority-grant-change-request.schema"
+            examples:
+              grant:
+                summary: Real captured request
+                value:
+                  action: grant
+                  callerId: warehouse-agent
+                  capability: erp:release-goods
+                  limits:
+                    parameters.amount:
+                      max: 100000
+                    parameters.currency:
+                      oneOf:
+                        - INR
+                  validUntil: 2026-12-30T00:00:00.000Z
+                  reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+                    this quarter.
+              revoke:
+                summary: Real captured request
+                value:
+                  action: revoke
+                  callerId: warehouse-agent
+                  capability: erp:release-goods
+                  reason: The warehouse agent's key is being rotated.
+      responses:
+        "201":
+          description: Proposed and waiting for a checker. Keep the `changeId`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authority-grant-change-response.schema"
+              examples:
+                grant:
+                  summary: Real captured response
+                  value:
+                    changeId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                    action: grant
+                    callerId: warehouse-agent
+                    capability: erp:release-goods
+                    limits:
+                      parameters.amount:
+                        max: 100000
+                      parameters.currency:
+                        oneOf:
+                          - INR
+                    validUntil: 2026-12-30T00:00:00.000Z
+                    reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+                      this quarter.
+                    proposedBy: grant-maker
+                    proposedAt: 2026-10-11T03:29:05.220Z
+                    status: PENDING_APPROVAL
+                revoke:
+                  summary: Real captured response
+                  value:
+                    changeId: c7955228-f718-4f21-8ac9-c48ce907b91a
+                    action: revoke
+                    callerId: warehouse-agent
+                    capability: erp:release-goods
+                    reason: The warehouse agent's key is being rotated.
+                    proposedBy: grant-maker
+                    proposedAt: 2026-10-11T03:29:05.283Z
+                    status: PENDING_APPROVAL
+        "400":
+          description: "`INVALID_AUTHORITY_GRANT`: a field is missing or malformed, a
+            limit is malformed, validUntil is missing, past, before validFrom or
+            more than 366 days away, or a revoke carries grant fields."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                badCapability:
+                  summary: Real captured response
+                  value:
+                    error: capability must be namespace:verb, at most 128 characters, matching
+                      ^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*:[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$.
+                    code: INVALID_AUTHORITY_GRANT
+                badLimitPath:
+                  summary: Real captured response
+                  value:
+                    error: limits key 'amount' must be target or parameters.<name>.
+                    code: INVALID_AUTHORITY_GRANT
+                badLimit:
+                  summary: Real captured response
+                  value:
+                    error: limits['parameters.amount'].min must not be above its max.
+                    code: INVALID_AUTHORITY_GRANT
+                noExpiry:
+                  summary: Real captured response
+                  value:
+                    error: validUntil must be an ISO 8601 date and time.
+                    code: INVALID_AUTHORITY_GRANT
+                tooLong:
+                  summary: Real captured response
+                  value:
+                    error: A grant may last at most 366 days. Grant again when it ends.
+                    code: INVALID_AUTHORITY_GRANT
+                revokeWithGrantFields:
+                  summary: Real captured response
+                  value:
+                    error: A revoke takes only action, callerId, capability and reason.
+                    code: INVALID_AUTHORITY_GRANT
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key.
+            `AUTHORITY_SELF_GRANT_DENIED`: the grant is for your own key."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+                selfGrant:
+                  summary: Real captured response
+                  value:
+                    error: "'grant-maker' may not propose, approve or reject authority for itself."
+                    code: AUTHORITY_SELF_GRANT_DENIED
+        "409":
+          description: "`CONFLICT`: the caller already holds a grant for the capability
+            (to grant) or holds none (to revoke), or another change for it is
+            pending."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                pending:
+                  summary: Real captured response
+                  value:
+                    error: A change for the authority of 'warehouse-agent' over 'erp:release-goods'
+                      is already pending. It must be approved or rejected first.
+                    code: CONFLICT
+                alreadyActive:
+                  summary: Real captured response
+                  value:
+                    error: "'warehouse-agent' already holds a grant for 'erp:release-goods'. Revoke
+                      it first."
+                    code: CONFLICT
+                revokeUnknown:
+                  summary: Real captured response
+                  value:
+                    error: "'x-agent' holds no grant for 'erp:release-goods'."
+                    code: CONFLICT
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: >-
+            curl -X POST
+            https://parmana-api-real.vercel.app/authority-grants/changes \
+              -H "Authorization: Bearer $PARMANA_API_KEY" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "action": "grant",
+                "callerId": "warehouse-agent",
+                "capability": "erp:release-goods",
+                "limits": {
+                  "parameters.amount": { "max": 100000 },
+                  "parameters.currency": { "oneOf": ["INR"] }
+                },
+                "validUntil": "2026-12-30T00:00:00.000Z",
+                "reason": "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter."
+              }'
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient } from "@parmana/sdk";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            const change = await client.proposeAuthorityGrantChange({
+              action: "grant",
+              callerId: "warehouse-agent",
+              capability: "erp:release-goods",
+              limits: {
+                "parameters.amount": { max: 100000 },
+                "parameters.currency": { oneOf: ["INR"] },
+              },
+              validUntil: "2026-12-30T00:00:00.000Z",
+              reason:
+                "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+            });
+
+
+            console.log(change.changeId);
+        - lang: python
+          label: Python
+          source: >-
+            import os
+
+
+            from parmana import ParmanaClient
+
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+
+            change = client.authority_grants.propose_grant(
+                caller_id="warehouse-agent",
+                capability="erp:release-goods",
+                limits={
+                    "parameters.amount": {"max": 100000},
+                    "parameters.currency": {"oneOf": ["INR"]},
+                },
+                valid_until="2026-12-30T00:00:00.000Z",
+                reason=(
+                    "The warehouse agent releases goods for paid invoices up to 100000 INR "
+                    "this quarter."
+                ),
+            )
+
+
+            print(change.change_id)
+    get:
+      tags:
+        - Authority Grants
+      summary: List authority grant changes
+      operationId: listAuthorityGrantChanges
+      description: >
+        Lists authority grant changes, newest first. A checker uses
+        `status=PENDING_APPROVAL` to find what
+
+        waits for review. Needs a human key.
+      parameters:
+        - name: status
+          description: "`PENDING_APPROVAL`, `APPROVED` or `REJECTED`. Omit for all."
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING_APPROVAL
+              - APPROVED
+              - REJECTED
+      responses:
+        "200":
+          description: The changes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authority-grant-changes-list-response.schema"
+              examples:
+                pending:
+                  summary: Real captured response
+                  value:
+                    changes:
+                      - changeId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                        action: grant
+                        callerId: warehouse-agent
+                        capability: erp:release-goods
+                        limits:
+                          parameters.amount:
+                            max: 100000
+                          parameters.currency:
+                            oneOf:
+                              - INR
+                        validUntil: 2026-12-30T00:00:00.000Z
+                        reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+                          this quarter.
+                        proposedBy: grant-maker
+                        proposedAt: 2026-10-11T03:29:05.220Z
+                        status: PENDING_APPROVAL
+                approved:
+                  summary: "Real captured response, status=APPROVED: a grant and the revoke that
+                    ended it"
+                  value:
+                    changes:
+                      - changeId: 77a3b517-4ae0-4c72-8f0c-5aa6ed913df1
+                        action: revoke
+                        callerId: warehouse-agent
+                        capability: erp:release-goods
+                        reason: The warehouse agent's key is being rotated.
+                        proposedBy: grant-maker
+                        proposedAt: 2026-10-11T03:29:05.296Z
+                        status: APPROVED
+                        resolvedBy: grant-checker
+                        resolvedAt: 2026-10-11T03:29:05.300Z
+                      - changeId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                        action: grant
+                        callerId: warehouse-agent
+                        capability: erp:release-goods
+                        limits:
+                          parameters.amount:
+                            max: 100000
+                          parameters.currency:
+                            oneOf:
+                              - INR
+                        validUntil: 2026-12-30T00:00:00.000Z
+                        reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+                          this quarter.
+                        proposedBy: grant-maker
+                        proposedAt: 2026-10-11T03:29:05.220Z
+                        status: APPROVED
+                        resolvedBy: grant-checker
+                        resolvedAt: 2026-10-11T03:29:05.247Z
+        "400":
+          description: "`status` is not `PENDING_APPROVAL`, `APPROVED` or `REJECTED`."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                badStatus:
+                  summary: Real captured response
+                  value:
+                    error: status must be one of PENDING_APPROVAL, APPROVED, REJECTED.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            curl "https://parmana-api-real.vercel.app/authority-grants/changes?status=PENDING_APPROVAL" \
+              -H "Authorization: Bearer $PARMANA_API_KEY"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient } from "@parmana/sdk";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            for (const change of await
+            client.authorityGrantChanges("PENDING_APPROVAL")) {
+              console.log(
+                change.changeId,
+                change.action,
+                change.callerId,
+                change.capability,
+              );
+            }
+        - lang: python
+          label: Python
+          source: >-
+            import os
+
+
+            from parmana import ParmanaClient
+
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+
+            for change in client.authority_grant_changes("PENDING_APPROVAL"):
+                print(change.change_id, change.action, change.caller_id, change.capability)
+  /authority-grants/changes/{id}/approve:
+    post:
+      tags:
+        - Authority Grants
+      summary: Approve an authority grant change
+      operationId: approveAuthorityGrantChange
+      description: >
+        Approves an authority grant change and applies it at once: `grant` makes
+        the grant active,
+
+        starting now unless it names a later `validFrom`; `revoke` ends it, so
+        the caller's next request
+
+        under a policy with `requireAuthorityGrant` is refused. A grant whose
+        `validUntil` has passed is
+
+        refused. Checked in order: a human key, not the proposer, not the
+        grantee, and a step up
+
+        authorization for this change id and action `approve`, valid once, with
+        the change id in
+
+        `payload.pendingPolicyChangeId`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The `changeId` from the proposal.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/approve-policy-change-request.schema"
+            examples:
+              stepUp:
+                summary: Real captured request
+                value:
+                  stepUpAuthorization:
+                    payload:
+                      version: 1
+                      nonce: 3cc39c28-9ed5-4e7d-ae2e-3f3c2bbc06ba
+                      pendingPolicyChangeId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                      action: approve
+                      authorizedAt: 2026-10-11T03:29:05.244Z
+                      expiresAt: 2026-10-11T03:31:05.244Z
+                    signature: HCrlwJPXLRR4YNa1RAW7f6mq46l0gNoqPt52vqvIzQv2NWg5EaCuqO0gAkDOgTL6nbUsTy8E0gpyf5PyKVI6Ag==
+                    keyId: checker-step-up-key
+                    algorithm: ed25519
+      responses:
+        "200":
+          description: Approved and applied.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authority-grant-change-response.schema"
+              examples:
+                approved:
+                  summary: Real captured response
+                  value:
+                    changeId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+                    action: grant
+                    callerId: warehouse-agent
+                    capability: erp:release-goods
+                    limits:
+                      parameters.amount:
+                        max: 100000
+                      parameters.currency:
+                        oneOf:
+                          - INR
+                    validUntil: 2026-12-30T00:00:00.000Z
+                    reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+                      this quarter.
+                    proposedBy: grant-maker
+                    proposedAt: 2026-10-11T03:29:05.220Z
+                    status: APPROVED
+                    resolvedBy: grant-checker
+                    resolvedAt: 2026-10-11T03:29:05.247Z
+                revokeApproved:
+                  summary: Real captured response, a revoke
+                  value:
+                    changeId: 77a3b517-4ae0-4c72-8f0c-5aa6ed913df1
+                    action: revoke
+                    callerId: warehouse-agent
+                    capability: erp:release-goods
+                    reason: The warehouse agent's key is being rotated.
+                    proposedBy: grant-maker
+                    proposedAt: 2026-10-11T03:29:05.296Z
+                    status: APPROVED
+                    resolvedBy: grant-checker
+                    resolvedAt: 2026-10-11T03:29:05.300Z
+        "400":
+          description: "`INVALID_AUTHORITY_GRANT`: the grant's `validUntil` has passed.
+            Reject it and propose a new one."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                expired:
+                  summary: Real captured response, a grant whose validUntil passed while it waited
+                  value:
+                    error: This grant's validUntil has passed. Reject it and propose a new one.
+                    code: INVALID_AUTHORITY_GRANT
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`, `SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE`,
+            `AUTHORITY_SELF_GRANT_DENIED` (you are the grantee) or
+            `STEP_UP_AUTHORIZATION_INVALID`."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                sameActor:
+                  summary: Real captured response
+                  value:
+                    error: Authority grant change '9f3cf733-a8ed-487c-bb58-a53950388cdf' was
+                      proposed by this same caller — the proposer (maker) may
+                      not also approve or reject it (checker).
+                    code: SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE
+                grantee:
+                  summary: Real captured response, the grantee approving its own grant
+                  value:
+                    error: "'grant-checker' may not propose, approve or reject authority for
+                      itself."
+                    code: AUTHORITY_SELF_GRANT_DENIED
+        "404":
+          description: "`AUTHORITY_GRANT_CHANGE_NOT_FOUND`: no authority grant change has
+            this id."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                notFound:
+                  summary: Real captured response
+                  value:
+                    error: Authority grant change '00000000-0000-0000-0000-000000000000' not found.
+                    code: AUTHORITY_GRANT_CHANGE_NOT_FOUND
+        "409":
+          description: "`CONFLICT`: the change is already resolved, or the caller now
+            holds a grant (grant) or no longer does (revoke). Nothing was
+            written."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                alreadyResolved:
+                  summary: Real captured response, the same change approved twice
+                  value:
+                    error: Authority grant change '9f3cf733-a8ed-487c-bb58-a53950388cdf' is already
+                      APPROVED.
+                    code: CONFLICT
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            # Sign the step up authorization on your own machine first:
+            #   npx tsx scripts/sign-policy-change-step-up.ts --private-key-file step-up.private.pem \
+            #     --key-id checker-step-up-1 --pending-policy-change-id 9f3cf733-a8ed-487c-bb58-a53950388cdf --action approve > step-up.json
+            curl -X POST https://parmana-api-real.vercel.app/authority-grants/changes/9f3cf733-a8ed-487c-bb58-a53950388cdf/approve \
+              -H "Authorization: Bearer $PARMANA_API_KEY" \
+              -H "Content-Type: application/json" \
+              --data "{\"stepUpAuthorization\": $(cat step-up.json)}"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient, signPolicyChangeStepUp } from
+            "@parmana/sdk";
+
+            import { readFileSync } from "node:fs";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            const stepUp = signPolicyChangeStepUp({
+              pendingPolicyChangeId: "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+              action: "approve",
+              privateKeyPem: readFileSync("step-up.private.pem", "utf8"),
+              keyId: "checker-step-up-1",
+            });
+
+
+            const change = await client.approveAuthorityGrantChange(
+              "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+              stepUp,
+            );
+
+
+            console.log(change.status);
+        - lang: python
+          label: Python
+          source: |-
+            import os
+            from pathlib import Path
+
+            from parmana import ParmanaClient
+            from parmana.crypto import sign_policy_change_step_up
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+            step_up = sign_policy_change_step_up(
+                pending_policy_change_id="9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                action="approve",
+                private_key_pem=Path("step-up.private.pem").read_text(),
+                key_id="checker-step-up-1",
+            )
+
+            change = client.approve_authority_grant_change(
+                "9f3cf733-a8ed-487c-bb58-a53950388cdf", step_up
+            )
+
+            print(change.status)
+  /authority-grants/changes/{id}/reject:
+    post:
+      tags:
+        - Authority Grants
+      summary: Reject an authority grant change
+      operationId: rejectAuthorityGrantChange
+      description: >
+        Rejects an authority grant change. No grant changes. The same checks as
+        approve, with a step up
+
+        authorization for action `reject` and a `rejectionReason`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The `changeId` from the proposal.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/reject-policy-change-request.schema"
+      responses:
+        "200":
+          description: Rejected. No grant changed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authority-grant-change-response.schema"
+              examples:
+                rejected:
+                  summary: Real captured response
+                  value:
+                    changeId: c7955228-f718-4f21-8ac9-c48ce907b91a
+                    action: revoke
+                    callerId: warehouse-agent
+                    capability: erp:release-goods
+                    reason: The warehouse agent's key is being rotated.
+                    proposedBy: grant-maker
+                    proposedAt: 2026-10-11T03:29:05.283Z
+                    status: REJECTED
+                    resolvedBy: grant-checker
+                    resolvedAt: 2026-10-11T03:29:05.285Z
+                    rejectionReason: Keep the grant until the new key is live.
+        "400":
+          description: "`rejectionReason` is missing, empty or over 2000 characters."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                emptyReason:
+                  summary: Real captured response
+                  value:
+                    error: rejectionReason is required, at most 2000 characters.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`, `SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE`,
+            `AUTHORITY_SELF_GRANT_DENIED` or `STEP_UP_AUTHORIZATION_INVALID`, as
+            on approve."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+        "404":
+          description: "`AUTHORITY_GRANT_CHANGE_NOT_FOUND`: no authority grant change has
+            this id."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                unknownChange:
+                  summary: Real captured response
+                  value:
+                    error: Authority grant change '00000000-0000-0000-0000-000000000000' not found.
+                    code: AUTHORITY_GRANT_CHANGE_NOT_FOUND
+        "409":
+          description: "`CONFLICT`: the change is already resolved."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                alreadyResolved:
+                  summary: Real captured response
+                  value:
+                    error: Authority grant change 'c7955228-f718-4f21-8ac9-c48ce907b91a' is already
+                      REJECTED.
+                    code: CONFLICT
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            # Sign the step up authorization on your own machine first:
+            #   npx tsx scripts/sign-policy-change-step-up.ts --private-key-file step-up.private.pem \
+            #     --key-id checker-step-up-1 --pending-policy-change-id 9f3cf733-a8ed-487c-bb58-a53950388cdf --action reject > step-up.json
+            curl -X POST https://parmana-api-real.vercel.app/authority-grants/changes/9f3cf733-a8ed-487c-bb58-a53950388cdf/reject \
+              -H "Authorization: Bearer $PARMANA_API_KEY" \
+              -H "Content-Type: application/json" \
+              --data "{\"rejectionReason\": \"Lower the limit to 50000 first.\", \"stepUpAuthorization\": $(cat step-up.json)}"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient, signPolicyChangeStepUp } from
+            "@parmana/sdk";
+
+            import { readFileSync } from "node:fs";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            const stepUp = signPolicyChangeStepUp({
+              pendingPolicyChangeId: "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+              action: "reject",
+              privateKeyPem: readFileSync("step-up.private.pem", "utf8"),
+              keyId: "checker-step-up-1",
+            });
+
+
+            const change = await client.rejectAuthorityGrantChange(
+              "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+              "Lower the limit to 50000 first.",
+              stepUp,
+            );
+
+
+            console.log(change.status);
+        - lang: python
+          label: Python
+          source: |-
+            import os
+            from pathlib import Path
+
+            from parmana import ParmanaClient
+            from parmana.crypto import sign_policy_change_step_up
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+            step_up = sign_policy_change_step_up(
+                pending_policy_change_id="9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                action="reject",
+                private_key_pem=Path("step-up.private.pem").read_text(),
+                key_id="checker-step-up-1",
+            )
+
+            change = client.reject_authority_grant_change(
+                "9f3cf733-a8ed-487c-bb58-a53950388cdf",
+                "Lower the limit to 50000 first.",
+                step_up,
+            )
+
+            print(change.status)
   /sandbox/approvals:
     post:
       tags:
@@ -12195,6 +13125,311 @@ components:
         approve and reject (200). A bare Business Signal Source Change, no
         wrapper.
       $ref: "#/components/schemas/business-signal-source-change.schema"
+    authority-grant.schema:
+      title: Authority Grant
+      description: "Authority granted to one caller for one capability, within limits,
+        until an expiry (RFC-0023 phase 3), made through authority grant
+        changes. A policy with requireAuthorityGrant decides a request only when
+        its authenticated caller holds a grant in force and the request is
+        within its limits. Nothing is deleted: a revoked grant stays listed."
+      type: object
+      additionalProperties: false
+      required:
+        - grantId
+        - callerId
+        - capability
+        - validFrom
+        - validUntil
+        - status
+        - grantedAt
+      properties:
+        grantId:
+          type: string
+          description: The changeId of the approved grant change that created it.
+        callerId:
+          type: string
+          description: The callerId of the API key the grant is for.
+        capability:
+          type: string
+          pattern: ^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*:[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$
+        limits:
+          type: object
+          description: "Limits on the request, by Intent path: target or
+            parameters.<name>. min and max (inclusive) apply to a number there;
+            oneOf lists the only values allowed there. A request whose value is
+            missing, of another type, or outside a limit is NOT_AUTHORIZED."
+          maxProperties: 32
+          propertyNames:
+            pattern: ^(?:target|parameters\.[A-Za-z_][A-Za-z0-9_]{0,63})$
+          additionalProperties:
+            type: object
+            additionalProperties: false
+            minProperties: 1
+            properties:
+              min:
+                type: number
+              max:
+                type: number
+              oneOf:
+                type: array
+                minItems: 1
+                maxItems: 64
+                items:
+                  type:
+                    - string
+                    - number
+        validFrom:
+          type: string
+          format: date-time
+          description: "From when it holds: the proposal's validFrom, or the approval time."
+        validUntil:
+          type: string
+          format: date-time
+          description: Until when it holds. After this, requests are refused as
+            AUTHORITY_EXPIRED.
+        status:
+          type: string
+          enum:
+            - active
+            - revoked
+          description: At most one active grant per caller and capability. Active says not
+            revoked; check validFrom and validUntil for whether it is in force.
+        grantedAt:
+          type: string
+          format: date-time
+        revokedByChangeId:
+          type: string
+          description: "revoked only: the approved change that revoked it."
+        revokedAt:
+          type: string
+          format: date-time
+          description: revoked only.
+    authority-grants-list-response.schema:
+      title: Authority Grants List Response
+      description: "Response of GET /authority-grants: every grant, active and revoked."
+      type: object
+      additionalProperties: false
+      required:
+        - grants
+      properties:
+        grants:
+          type: array
+          items:
+            $ref: "#/components/schemas/authority-grant.schema"
+    authority-grant-change.schema:
+      title: Authority Grant Change
+      description: A proposal to grant a caller authority for a capability, or to
+        revoke the active grant, and its resolution (RFC-0023 phase 3). One
+        person proposes it; a different person approves or rejects it with a
+        step up authorization; neither may be the caller the grant is for.
+      type: object
+      additionalProperties: false
+      required:
+        - changeId
+        - action
+        - callerId
+        - capability
+        - reason
+        - proposedBy
+        - proposedAt
+        - status
+      properties:
+        changeId:
+          type: string
+          description: Unique id of the change, a UUID. The step up authorization for
+            approve or reject names it in payload.pendingPolicyChangeId. An
+            approved grant change's id is also the grantId.
+        action:
+          type: string
+          enum:
+            - grant
+            - revoke
+        callerId:
+          type: string
+        capability:
+          type: string
+          pattern: ^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*:[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$
+        limits:
+          type: object
+          description: "grant only, optional. Limits on the request, by Intent path:
+            target or parameters.<name>. min and max (inclusive) apply to a
+            number there; oneOf lists the only values allowed there. A request
+            whose value is missing, of another type, or outside a limit is
+            NOT_AUTHORIZED."
+          maxProperties: 32
+          propertyNames:
+            pattern: ^(?:target|parameters\.[A-Za-z_][A-Za-z0-9_]{0,63})$
+          additionalProperties:
+            type: object
+            additionalProperties: false
+            minProperties: 1
+            properties:
+              min:
+                type: number
+              max:
+                type: number
+              oneOf:
+                type: array
+                minItems: 1
+                maxItems: 64
+                items:
+                  type:
+                    - string
+                    - number
+        validFrom:
+          type: string
+          format: date-time
+          description: grant only, optional. Without it the grant starts when it is
+            approved.
+        validUntil:
+          type: string
+          format: date-time
+          description: grant only, required. At most 366 days after validFrom (or the
+            proposal).
+        reason:
+          type: string
+          maxLength: 2000
+        proposedBy:
+          type: string
+          description: The proposer's caller id. Always a human credential, never the
+            grantee.
+        proposedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - PENDING_APPROVAL
+            - APPROVED
+            - REJECTED
+        resolvedBy:
+          type: string
+          description: Who approved or rejected it. Never the proposer or the grantee.
+        resolvedAt:
+          type: string
+          format: date-time
+        rejectionReason:
+          type: string
+          description: Present when REJECTED.
+      examples:
+        - changeId: 9f3cf733-a8ed-487c-bb58-a53950388cdf
+          action: grant
+          callerId: warehouse-agent
+          capability: erp:release-goods
+          limits:
+            parameters.amount:
+              max: 100000
+            parameters.currency:
+              oneOf:
+                - INR
+          validUntil: 2026-12-30T00:00:00.000Z
+          reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+            this quarter.
+          proposedBy: grant-maker
+          proposedAt: 2026-10-11T03:29:05.220Z
+          status: APPROVED
+          resolvedBy: grant-checker
+          resolvedAt: 2026-10-11T03:29:05.247Z
+    authority-grant-changes-list-response.schema:
+      title: Authority Grant Changes List Response
+      description: Response of GET /authority-grants/changes, newest first.
+      type: object
+      additionalProperties: false
+      required:
+        - changes
+      properties:
+        changes:
+          type: array
+          items:
+            $ref: "#/components/schemas/authority-grant-change.schema"
+    propose-authority-grant-change-request.schema:
+      title: Propose Authority Grant Change Request
+      description: Request body for POST /authority-grants/changes. A grant carries
+        validUntil and optionally limits and validFrom; a revoke carries none of
+        them.
+      type: object
+      additionalProperties: true
+      required:
+        - action
+        - callerId
+        - capability
+        - reason
+      properties:
+        action:
+          type: string
+          enum:
+            - grant
+            - revoke
+        callerId:
+          type: string
+          pattern: ^\S{1,256}$
+          description: The callerId of the API key the grant is for. Not your own.
+        capability:
+          type: string
+          pattern: ^[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*:[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*$
+          maxLength: 128
+        limits:
+          type: object
+          description: "Optional, grant only. Limits on the request, by Intent path:
+            target or parameters.<name>. min and max (inclusive) apply to a
+            number there; oneOf lists the only values allowed there. A request
+            whose value is missing, of another type, or outside a limit is
+            NOT_AUTHORIZED."
+          maxProperties: 32
+          propertyNames:
+            pattern: ^(?:target|parameters\.[A-Za-z_][A-Za-z0-9_]{0,63})$
+          additionalProperties:
+            type: object
+            additionalProperties: false
+            minProperties: 1
+            properties:
+              min:
+                type: number
+              max:
+                type: number
+              oneOf:
+                type: array
+                minItems: 1
+                maxItems: 64
+                items:
+                  type:
+                    - string
+                    - number
+        validFrom:
+          type: string
+          format: date-time
+          description: Optional, grant only.
+        validUntil:
+          type: string
+          format: date-time
+          description: Required for grant. In the future, after validFrom, and at most 366
+            days after it.
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 2000
+      examples:
+        - action: grant
+          callerId: warehouse-agent
+          capability: erp:release-goods
+          limits:
+            parameters.amount:
+              max: 100000
+            parameters.currency:
+              oneOf:
+                - INR
+          validUntil: 2026-12-30T00:00:00.000Z
+          reason: The warehouse agent releases goods for paid invoices up to 100000 INR
+            this quarter.
+        - action: revoke
+          callerId: warehouse-agent
+          capability: erp:release-goods
+          reason: The warehouse agent's key is being rotated.
+    authority-grant-change-response.schema:
+      title: Authority Grant Change Response
+      description: Response of POST /authority-grants/changes (201) and of approve and
+        reject (200). A bare Authority Grant Change, no wrapper.
+      $ref: "#/components/schemas/authority-grant-change.schema"
     sandbox-approval-request.schema:
       title: Sandbox Approval Request
       description: Asks the sandbox's demo approver to approve one sandbox:receipt request.

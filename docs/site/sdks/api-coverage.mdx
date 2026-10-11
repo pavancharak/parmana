@@ -99,6 +99,18 @@ Sign the step up authorization for approve or reject with `signPolicyChangeStepU
 
 Until the next SDK release, call these routes directly; see [Connect a business signal source](/guides/connect-a-business-signal-source).
 
+## Authority grants
+
+| Operation                                     | TypeScript                                                        | Python                                                                                         |
+| --------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `GET /authority-grants`                       | `authorityGrants()` **next release**                              | `list_authority_grants()`, `authority_grants.list()` **next release**                          |
+| `POST /authority-grants/changes`              | `proposeAuthorityGrantChange({ action, ... })` **next release**   | `authority_grants.propose_grant(...)`, `authority_grants.propose_revoke(...)` **next release** |
+| `GET /authority-grants/changes`               | `authorityGrantChanges(status?)` **next release**                 | `authority_grant_changes(status=None)` **next release**                                        |
+| `POST /authority-grants/changes/{id}/approve` | `approveAuthorityGrantChange(id, stepUp)` **next release**        | `approve_authority_grant_change(id, step_up)` **next release**                                 |
+| `POST /authority-grants/changes/{id}/reject`  | `rejectAuthorityGrantChange(id, reason, stepUp)` **next release** | `reject_authority_grant_change(id, reason, step_up)` **next release**                          |
+
+Until the next SDK release, call these routes directly; see [Grant an agent authority](/guides/grant-an-agent-authority).
+
 ## Caller and service
 
 | Operation         | TypeScript           | Python                                                                                                              |

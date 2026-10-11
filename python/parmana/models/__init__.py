@@ -31,6 +31,8 @@ from .business_validation import (
     TrustedSignalIntegrityProof,
     TrustedSignal,
     BusinessValidationFailure,
+    AuthorityGrantLimit,
+    AuthorityGrantReference,
     AuthorityAssessment,
     BusinessValidationAssessment,
     ExecutionAssessment,
@@ -69,6 +71,8 @@ from .replay_result import ReplayResult
 __all__ = [
     "Authority",
     "AuthorityAssessment",
+    "AuthorityGrantLimit",
+    "AuthorityGrantReference",
     "AuthorityStatus",
     "AuthorityType",
     "Authorization",

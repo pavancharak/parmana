@@ -94,6 +94,7 @@ export { CallerApi } from "./client/CallerApi.js";
 export { ApproverApi } from "./client/ApproverApi.js";
 export { ExternalConnectorApi } from "./client/ExternalConnectorApi.js";
 export { BusinessSignalSourceApi } from "./client/BusinessSignalSourceApi.js";
+export { AuthorityGrantApi } from "./client/AuthorityGrantApi.js";
 
 // -----------------------------------------------------------------------------
 // Offline verification, step up signing and approval signing

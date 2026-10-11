@@ -114,6 +114,7 @@
               "guides/connect-an-agent",
               "guides/connect-any-external-system",
               "guides/connect-a-business-signal-source",
+              "guides/grant-an-agent-authority",
               "guides/session-credentials",
               "guides/choose-a-signature-provider"
             ]
@@ -160,6 +161,7 @@
                   "sdks/reference/typescript/classes/ApproverApi",
                   "sdks/reference/typescript/classes/AuditApi",
                   "sdks/reference/typescript/classes/AuthenticationError",
+                  "sdks/reference/typescript/classes/AuthorityGrantApi",
                   "sdks/reference/typescript/classes/AuthorizationError",
                   "sdks/reference/typescript/classes/BusinessSignalSourceApi",
                   "sdks/reference/typescript/classes/CallerApi",
@@ -199,6 +201,9 @@
                   "sdks/reference/typescript/interfaces/ApprovalScope",
                   "sdks/reference/typescript/interfaces/AuditEvent",
                   "sdks/reference/typescript/interfaces/Authority",
+                  "sdks/reference/typescript/interfaces/AuthorityGrant",
+                  "sdks/reference/typescript/interfaces/AuthorityGrantChange",
+                  "sdks/reference/typescript/interfaces/AuthorityGrantLimit",
                   "sdks/reference/typescript/interfaces/Authorization",
                   "sdks/reference/typescript/interfaces/BusinessSignalSource",
                   "sdks/reference/typescript/interfaces/BusinessSignalSourceChange",
@@ -265,6 +270,7 @@
                 "group": "Type Aliases",
                 "pages": [
                   "sdks/reference/typescript/type-aliases/ApprovalScopeComparator",
+                  "sdks/reference/typescript/type-aliases/AuthorityGrantLimits",
                   "sdks/reference/typescript/type-aliases/BusinessTransactionStatus",
                   "sdks/reference/typescript/type-aliases/DecisionOutcome",
                   "sdks/reference/typescript/type-aliases/ExecutionIntentFinalizationMode",
@@ -277,6 +283,7 @@
                   "sdks/reference/typescript/type-aliases/PendingPolicyChangeStatus",
                   "sdks/reference/typescript/type-aliases/PolicyGovernanceAnchorStatus",
                   "sdks/reference/typescript/type-aliases/ProposeApproverChangeInput",
+                  "sdks/reference/typescript/type-aliases/ProposeAuthorityGrantChangeInput",
                   "sdks/reference/typescript/type-aliases/ProposeBusinessSignalSourceChangeInput",
                   "sdks/reference/typescript/type-aliases/ProposeExternalConnectorChangeInput",
                   "sdks/reference/typescript/type-aliases/PublicKeys",
@@ -334,6 +341,7 @@
             "pages": [
               "sdks/reference/python/api/approver_api",
               "sdks/reference/python/api/audit_api",
+              "sdks/reference/python/api/authority_grant_api",
               "sdks/reference/python/api/business_signal_source_api",
               "sdks/reference/python/api/caller_api",
               "sdks/reference/python/api/execution_api",
@@ -362,6 +370,7 @@
               "sdks/reference/python/errors/replay_error",
               "sdks/reference/python/errors/verification_error",
               "sdks/reference/python/models/approval_issuer",
+              "sdks/reference/python/models/authority_grant",
               "sdks/reference/python/models/business_signal_source",
               "sdks/reference/python/models/caller",
               "sdks/reference/python/models/execution_intent_results",
@@ -519,6 +528,16 @@
               "api-reference/endpoints/propose-business-signal-source-change",
               "api-reference/endpoints/approve-business-signal-source-change",
               "api-reference/endpoints/reject-business-signal-source-change"
+            ]
+          },
+          {
+            "group": "Authority Grants",
+            "pages": [
+              "api-reference/endpoints/list-authority-grants",
+              "api-reference/endpoints/list-authority-grant-changes",
+              "api-reference/endpoints/propose-authority-grant-change",
+              "api-reference/endpoints/approve-authority-grant-change",
+              "api-reference/endpoints/reject-authority-grant-change"
             ]
           },
           {

@@ -342,6 +342,18 @@ export interface Policy {
   signalSources?: Record<string, SignalSourceDeclaration>;
 
   /**
+   * Per-agent authority (RFC-0023 phase 3). When true, a request is
+   * decided only when its authenticated caller holds a current authority
+   * grant for the action, approved through maker checker, and the
+   * request is within the grant's limits. No grant, a revoked one, one
+   * not yet begun or a request outside its limits is NOT_AUTHORIZED; an
+   * expired one is AUTHORITY_EXPIRED; a grant that cannot be read is
+   * AUTHORITY_UNCLEAR. Each refuses the request before any business
+   * system is asked. Absent or false: authority is the existing checks.
+   */
+  requireAuthorityGrant?: boolean;
+
+  /**
    * Ordered evaluation rules.
    *
    * Rules are evaluated sequentially.

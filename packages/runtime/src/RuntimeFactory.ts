@@ -1,4 +1,5 @@
 import type { BusinessSignalSourceRegistry } from "./business-validation/BusinessSignalSource.js";
+import type { AuthorityGrantSource } from "./authority/AuthorityGrantEvaluator.js";
 import type { SigningReadiness } from "./SigningReadiness.js";
 import type {
   CurrentPolicyVersionSource,
@@ -60,6 +61,7 @@ export class RuntimeFactory {
     approvalNeededNotifier?: ApprovalNeededNotifier,
     externalPolicyBindings?: ExternalPolicyBindingSource,
     businessSignalSources?: BusinessSignalSourceRegistry,
+    authorityGrants?: AuthorityGrantSource,
   ): ExecutionTrustApplication {
     //
     // Application Services
@@ -116,6 +118,10 @@ export class RuntimeFactory {
 
     if (businessSignalSources) {
       builder.withBusinessSignalSources(businessSignalSources);
+    }
+
+    if (authorityGrants) {
+      builder.withAuthorityGrants(authorityGrants);
     }
 
     //

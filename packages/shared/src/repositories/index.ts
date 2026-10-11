@@ -8,5 +8,6 @@ export * from "./pending-policy-change-repository.js";
 export * from "./approval-issuer-repository.js";
 export * from "./external-connector-repository.js";
 export * from "./business-signal-source-repository.js";
+export * from "./authority-grant-repository.js";
 export * from "./policy-change-approval-record-repository.js";
 export * from "./handbook-download-lead-repository.js";

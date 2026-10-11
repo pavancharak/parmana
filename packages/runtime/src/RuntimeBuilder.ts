@@ -1,5 +1,9 @@
 import type { BusinessSignalSourceRegistry } from "./business-validation/BusinessSignalSource.js";
 import { TrustedSignalResolver } from "./business-validation/TrustedSignalResolver.js";
+import {
+  AuthorityGrantEvaluator,
+  type AuthorityGrantSource,
+} from "./authority/AuthorityGrantEvaluator.js";
 import type { SigningReadiness } from "./SigningReadiness.js";
 import type { ExecutionIntentService } from "./ExecutionIntentService.js";
 import {
@@ -69,6 +73,7 @@ export class RuntimeBuilder {
   private approvalNeededNotifier?: ApprovalNeededNotifier;
 
   private businessSignalSources?: BusinessSignalSourceRegistry;
+  private authorityGrants?: AuthorityGrantSource;
 
   /**
    * Configure policy directory.
@@ -173,6 +178,16 @@ export class RuntimeBuilder {
     registry: BusinessSignalSourceRegistry,
   ): this {
     this.businessSignalSources = registry;
+    return this;
+  }
+
+  /**
+   * Configure where per-agent authority grants are read (RFC-0023 phase
+   * 3). Without it, a policy with requireAuthorityGrant is refused as
+   * AUTHORITY_UNCLEAR.
+   */
+  public withAuthorityGrants(source: AuthorityGrantSource): this {
+    this.authorityGrants = source;
     return this;
   }
 
@@ -306,6 +321,7 @@ export class RuntimeBuilder {
       this.executionIntents,
       this.approvalNeededNotifier,
       new TrustedSignalResolver(this.businessSignalSources),
+      new AuthorityGrantEvaluator(this.authorityGrants),
     );
 
     //

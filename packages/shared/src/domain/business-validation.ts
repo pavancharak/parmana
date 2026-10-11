@@ -136,9 +136,44 @@ export interface BusinessValidationFailure {
   readonly reason: string;
 }
 
+/**
+ * A limit an authority grant sets on one place in the Intent (RFC-0023
+ * phase 3). `min` and `max` apply to a number there, inclusive; `oneOf`
+ * lists the only values allowed there. A request whose value is missing,
+ * of another type, or outside the limit is NOT_AUTHORIZED.
+ */
+export interface AuthorityGrantLimit {
+  readonly min?: number;
+  readonly max?: number;
+  readonly oneOf?: readonly (string | number)[];
+}
+
+/**
+ * The grant a decision's authority rests on, as it stood when the
+ * request was decided: who it was granted to, for which capability,
+ * within which limits, and for how long.
+ */
+export interface AuthorityGrantReference {
+  readonly grantId: string;
+  /** The authenticated caller the grant was made to. */
+  readonly callerId: string;
+  readonly capability: string;
+  readonly validFrom: Date;
+  readonly validUntil: Date;
+  /** By Intent path: "target" or "parameters.<name>". */
+  readonly limits?: Readonly<Record<string, AuthorityGrantLimit>>;
+}
+
 export interface AuthorityAssessment {
   readonly status: AuthorityStatus;
   readonly reason: string;
+
+  /**
+   * The grant checked, when the policy requires one (phase 3): the grant
+   * that authorized the request, or the one that had expired or whose
+   * limit the request exceeded. Absent when no grant was found.
+   */
+  readonly grant?: AuthorityGrantReference;
 }
 
 export interface BusinessValidationAssessment {
