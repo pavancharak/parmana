@@ -12,19 +12,20 @@ description: "Real client code, bearer-key authentication, and a typed error tax
   Bearer-key authentication, a real thrown error taxonomy, and full test
   coverage are all in place, along with corrected model types (see below),
   `client.verify()`/`client.version()`, and `client.createTransaction()`.
-  v1.5.0, published 2026-10-04, is the current version. It adds the external
-  connector methods, `policyInEffect()` and `verifyParmanaRelease()`, and is
-  licensed under the Apache License 2.0: see [New in 1.5.0](#new-in-150).
-  v1.4.0, published 2026-09-29, added `signApproval()` and the approver methods:
-  see [New in 1.4.0](#new-in-140). v1.3.0, published 2026-09-25, added policy
-  governance with step up signing, offline verification, `caller()`,
-  `publicKey()`, `trustRecords()`, `latestReceipt()` and `statusCode` on errors:
-  see [New in 1.3.0](#new-in-130). v1.2.0, published 2026-09-21, added the
-  Execution Intent methods. v1.1.6, published 2026-09-20, builds a default
-  `HttpTransport` when you omit `transport`, and sends `userAgent`. v1.1.3 added
-  `serverCode` on `InternalServerError` (see below). v1.1.2, published
-  2026-09-14, added `createBusinessTransaction()`. See the fix history at the
-  bottom of this page.
+  v1.6.0, published 2026-10-11, is the current version. It adds the business
+  signal source and authority grant methods, and `conditions` on a release: see
+  [New in 1.6.0](#new-in-160). v1.5.0, published 2026-10-04, added the external
+  connector methods, `policyInEffect()` and `verifyParmanaRelease()`, and the
+  Apache License 2.0: see [New in 1.5.0](#new-in-150). v1.4.0, published
+  2026-09-29, added `signApproval()` and the approver methods: see [New in
+  1.4.0](#new-in-140). v1.3.0, published 2026-09-25, added policy governance
+  with step up signing, offline verification, `caller()`, `publicKey()`,
+  `trustRecords()`, `latestReceipt()` and `statusCode` on errors: see [New in
+  1.3.0](#new-in-130). v1.2.0, published 2026-09-21, added the Execution Intent
+  methods. v1.1.6, published 2026-09-20, builds a default `HttpTransport` when
+  you omit `transport`, and sends `userAgent`. v1.1.3 added `serverCode` on
+  `InternalServerError` (see below). v1.1.2, published 2026-09-14, added
+  `createBusinessTransaction()`. See the fix history at the bottom of this page.
 </Info>
 
 <Note>
@@ -276,6 +277,76 @@ doubles as the server's idempotency key. `authorityType` defaults to `"SERVICE"`
 `typescript/test/createBusinessTransaction.test.ts` (11 unit tests) /
 `typescript/test/integration/examples.integration.test.ts` (proves the generated ids round-trip
 correctly through a real running server, not just in isolation).
+
+## New in 1.6.0
+
+### Register a business signal source
+
+Register the business system that owns a fact a policy needs, an ERP, an order system, a CRM, so Parmana asks it
+instead of trusting the agent. One person proposes, a different person approves with a step up authorization; both
+need a human key.
+
+```typescript
+const change = await maker.proposeBusinessSignalSourceChange({
+  action: "register",
+  name: "erp",
+  endpointUrl: "https://orders.example.com/parmana/signals",
+  publicKeyPem: readFileSync("erp-answers.public.pem", "utf8"),
+  keyId: "erp-2026-10",
+  reason: "Release goods only against invoices the ERP says are paid.",
+});
+
+await checker.approveBusinessSignalSourceChange(
+  change.changeId,
+  signPolicyChangeStepUp({
+    pendingPolicyChangeId: change.changeId,
+    action: "approve",
+    privateKeyPem: readFileSync("step-up.private.pem", "utf8"),
+    keyId: "checker-step-up-1",
+  }),
+);
+
+await checker.businessSignalSources(); // [{ name: "erp", status: "active", ... }]
+```
+
+`businessSignalSourceChanges(status?)` lists proposals and `rejectBusinessSignalSourceChange(changeId, reason, stepUp)`
+rejects one. To end a registration, propose `{ action: "revoke", name, reason }` and approve it the same way. The
+endpoint and the signed protocol are in [Connect a business signal source](/guides/connect-a-business-signal-source).
+
+### Grant an agent authority
+
+Say which agent may have which action decided, within which limits, until when. A policy with `requireAuthorityGrant`
+decides a request only for a caller holding a grant in force.
+
+```typescript
+const change = await maker.proposeAuthorityGrantChange({
+  action: "grant",
+  callerId: "warehouse-agent",
+  capability: "erp:release-goods",
+  limits: {
+    "parameters.amount": { max: 100000 },
+    "parameters.currency": { oneOf: ["INR"] },
+  },
+  validUntil: "2026-12-30T00:00:00.000Z",
+  reason:
+    "The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+});
+
+await checker.approveAuthorityGrantChange(change.changeId, stepUp); // signed as above
+
+await checker.authorityGrants(); // [{ callerId: "warehouse-agent", status: "active", ... }]
+```
+
+`authorityGrantChanges(status?)` and `rejectAuthorityGrantChange(changeId, reason, stepUp)` work as for sources. To
+end a grant, propose `{ action: "revoke", callerId, capability, reason }`. No one grants authority to themselves. See
+[Grant an agent authority](/guides/grant-an-agent-authority).
+
+### Conditions on a release
+
+A release to an external connector now carries `conditions`, typed `ParmanaReleaseCondition[]`: the business facts the
+decision rests on, each with `signalKey`, `source`, `claim`, `subject`, `value` and `validUntil`. They are covered by
+the signature. Act only if each still holds in your records; otherwise answer `success: false` with
+`conditionsNotMet: true`. `typescript/examples/07-external-connector-endpoint.ts` takes a `conditionsHold` check.
 
 ## New in 1.5.0
 

@@ -204,21 +204,22 @@ workflow, recording the commit, the workflow and each file's SHA-256. To check a
 package with [slsa-verifier](https://github.com/slsa-framework/slsa-verifier):
 
 ```bash
-slsa-verifier verify-artifact parmana-sdk-1.5.0.tgz \
+slsa-verifier verify-artifact parmana-sdk-1.6.0.tgz \
   --provenance-path multiple.intoto.jsonl \
   --source-uri github.com/pavancharak/parmana \
-  --source-tag sdk-v1.5.0-r1
+  --source-tag sdk-v1.6.0
 ```
 
-The provenance covers the files attached to the release. From the next SDK versions on, the files
-published to npm and PyPI are the release's own files, so a registry download has the same SHA-256
-as the release file and the provenance covers it too. The versions on npm and PyPI today
-(`@parmana/sdk` and `parmana` 1.5.0, the connector SDKs 0.2.0) were built before this workflow
-existed, so they are not byte for byte the files in release `sdk-v1.5.0-r1`, although they come
-from the same source.
+The provenance covers the files attached to the release. From 1.6.0 on, the files published to npm
+and PyPI are the release's own files, so a registry download has the same hash as the release file
+and the provenance covers it too: `@parmana/sdk` 1.6.0, `@parmana/connector-sdk` 0.3.0 and `parmana`
+1.6.0 are the files of release `sdk-v1.6.0`. Earlier versions (`@parmana/sdk` and `parmana` 1.5.0
+and before, and `parmana-connector-sdk` 0.2.0, still the current version) were built before this
+workflow existed, so they are not byte for byte the files in a release, although they come from the
+same source.
 
 Each npm package and each wheel also has a [CycloneDX](https://cyclonedx.org) 1.5 SBOM beside it,
-named after it (for example `parmana-sdk-1.5.0.tgz.cdx.json`): the package, and every dependency
+named after it (for example `parmana-sdk-1.6.0.tgz.cdx.json`): the package, and every dependency
 installed with it, with versions and package URLs. For the npm packages it lists runtime
 dependencies only; for `parmana` it includes the optional `verify` extra (`cryptography`). The
 versions are the ones resolved when the release was built; a later install can resolve newer

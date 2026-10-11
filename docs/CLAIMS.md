@@ -586,8 +586,8 @@ Scope, stated plainly:
 - **Rule conditions are not returned.** The answer carries the policy's `description`, the author's own text, which may mention a limit; the server decides with the rules.
 - **Same authorization as before.** Only a caller whose key may invoke the capability, or a human caller.
 - **Fails closed.** If the policy in effect cannot be read, the answer is `503 POLICY_VERSION_UNAVAILABLE`, never a partial answer.
-- **SDKs:** `policyInEffect()` in TypeScript and `policy_in_effect()` in Python are in the repository, not yet published (1.4.0 on the registries does not have them).
-- **Not deployed** until this change is merged and deployed.
+- **SDKs:** `policyInEffect()` in TypeScript and `policy_in_effect()` in Python are in the repository, not yet published (1.4.0 on the registries does not have them). **Update:** published in SDK 1.5.0 (2026-10-04).
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed; production runs `main` at `4fdc2c2` (#100) and answers `GET /health` `UP` and `GET /ready` `READY`.
 
 Verification
 
@@ -688,7 +688,7 @@ Scope, stated plainly:
 
 - **Only declared signals are checked.** A signal the policy does not list in `signalsSchema` is not, and a policy with no `signalsSchema` is evaluated as before.
 - **An absent signal is not a type violation.** It is left to the rules, where a missing fact satisfies no condition (`PolicyEngine`).
-- **Not deployed** until this change is merged and deployed.
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed; production runs `main` at `4fdc2c2` (#100) and answers `GET /health` `UP` and `GET /ready` `READY`.
 
 Verification
 
@@ -711,7 +711,7 @@ Scope, stated plainly:
 - **Policies without sources are unchanged.** Their validation status is `NOT_EVALUATED`, never `VALID`, and they still need a signed human approval to approve (2.47).
 - **The digest proves what Parmana observed, not what the source said.** A source's own proof is carried verbatim in `integrityProof.sourceProof` but not yet verified.
 - **Execution statuses for approved actions** remain the Trust Record's executions; `EXECUTION_UNKNOWN` and conditional execution are phase 4. **Update (2026-10-11):** built, see 2.56.
-- **Not deployed** until this change is merged and deployed.
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed; production runs `main` at `4fdc2c2` (#100) and answers `GET /health` `UP` and `GET /ready` `READY`.
 
 Verification
 
@@ -736,12 +736,12 @@ Evidence
 
 Scope, stated plainly:
 
-- **Not deployed** until this change is merged and deployed, and **no real business system has been connected.** Every test runs against in-process endpoints, including the example endpoint the docs give operators.
+- **Not deployed** until this change is merged and deployed, and **no real business system has been connected.** Every test runs against in-process endpoints, including the example endpoint the docs give operators. **Update (2026-10-11):** deployed; `GET /business-signal-sources` answers in production. Still no real business system connected and no source registered there.
 - **Parmana proves the source said it, not that it is right.** A source answers for its own records.
 - **A source registered without a key** is trusted on the pinned HTTPS connection alone; its Trusted Signal has no `sourceProof`. Registering a key is recommended, not required.
 - **Checked once, at decision time.** `validUntil` is not re-checked at release; conditional execution is phase 4. **Update (2026-10-11):** re-checked at release, and carried to external connectors as conditions, since 2.56.
 - **Authority is unchanged** from 2.53: per-agent grants with limits and expiry are phase 3. **Update (2026-10-11):** built, see 2.55.
-- **The SDK methods** (`proposeBusinessSignalSourceChange`, `business_signal_sources.propose_register` and the rest) ship in the next SDK release.
+- **The SDK methods** (`proposeBusinessSignalSourceChange`, `business_signal_sources.propose_register` and the rest) ship in the next SDK release. **Update (2026-10-11):** published in SDK 1.6.0.
 
 Verification
 
@@ -766,11 +766,11 @@ Evidence
 Scope, stated plainly:
 
 - **Opt in per policy, and no shipped policy opts in.** A policy without `requireAuthorityGrant` keeps the authority of 2.53.
-- **Not deployed** until this change is merged and deployed.
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed; `GET /authority-grants` answers in production. No grant has been made there and no production policy requires one.
 - **Limits are per request.** Cumulative limits ("100000 per day") are not built.
 - **The grantee is a caller id the server does not check exists.** A grant to a key that does not exist has no effect.
 - **Checked at decision time.** Not re-checked at release (phase 4); the authorization's short TTL bounds the window. **Update (2026-10-11):** re-checked at release since 2.56.
-- **The SDK methods** ship in the next SDK release.
+- **The SDK methods** ship in the next SDK release. **Update (2026-10-11):** published in SDK 1.6.0.
 
 Verification
 
@@ -801,7 +801,7 @@ Scope, stated plainly:
 - **"Execute only if still valid" at the system is the endpoint's to implement.** Parmana sends the signed conditions; it cannot make an endpoint check them. The SDK verifier covers them with the signature and the example endpoints check them through `conditionsHold`. Built in connectors (Paytm, HubSpot, GitHub, Slack) get the gateway re-check only.
 - **A release refused at release leaves the Execution Intent `ERRORED`**, as a refused connector registration already does; the response says `NOT_EXECUTED`, and the intent is closed as `NOT_EXECUTED`.
 - **The Trust Record format is unchanged.** Execution statuses are how its executions (completed, failed, `conditionsNotMet`) and the intents are read, not a new field.
-- **Not deployed** until this change is merged and deployed.
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed. Not yet exercised in production: no production decision carries conditions or a grant until a policy uses `signalSources` or `requireAuthorityGrant`.
 
 Verification
 
