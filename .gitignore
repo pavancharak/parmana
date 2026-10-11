@@ -100,3 +100,8 @@ evaluation-report.json
 reports/
 .stryker-tmp/
 stryker.log
+
+# Local credential recovery runbook: steps only, but kept off this public
+# repository on purpose. Lives on the operator's machine.
+PARMANA-CREDENTIAL-RECOVERY.md
+*-RECOVERY.local.md
