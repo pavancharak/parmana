@@ -1,4 +1,4 @@
-# Live check: a business signal source in production (not yet run)
+# Live check: a business signal source in production
 
 RFC-0023 phase 2 lets an operator register any business system as a source of facts, so Parmana asks it, never the
 agent (`docs/CLAIMS.md` 2.54); phase 4 carries what the decision rests on to the system that acts, as signed
@@ -15,16 +15,24 @@ that change nothing anywhere:
 
 ## Status
 
-| Date | Result      |
-| ---- | ----------- |
-| —    | Not run yet |
+**Passed in production on 2026-10-11**, against `https://parmana-api-real.vercel.app`, with the demo source
+`livecheck-erp` at `https://parmana-signal-check.vercel.app/api/signals` (key id `livecheck-erp-1`), policy
+`livecheck-signal` 1.0.0 and capability `livecheck:signal`. The three registrations were proposed by `checker-pavan`
+and approved by `maker-pavan` with a step up authorization; the maker checker rule holds either way round.
 
-Checked locally on 2026-10-11, before any deployment: the bundle `build-endpoint.ts` makes, run as Vercel runs it,
-answered Parmana's own query client (`HttpBusinessSignalSource`) with `true` for `INV-LC-PAID` and `false` for
-`INV-LC-UNPAID`, both `sourceProofVerified: true`, and `not_found` for `INV-LC-NONE`.
+| #   | Request                                               | Transaction                            | Answer                                                                                                                                                                     |
+| --- | ----------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Invoice `INV-LC-PAID`, the agent declares nothing     | `d736681f-8d86-4e24-bcf3-66debfa6ac23` | `APPROVED` in 29.4 s, released once (receipt `RC-d736681f`), `VALID`; Trusted Signal: livecheck-erp says INV-LC-PAID = true, `sourceProofVerified: true`; verifies offline |
+| 2   | Invoice `INV-LC-UNPAID`                               | `266278b4-7683-43fd-97e7-aa724c6cca9a` | Refused in 10.8 s by rule `reject-otherwise`; `VALID`: the source answered `false`, signed and verified                                                                    |
+| 3   | `INV-LC-UNPAID`, the agent claims `invoicePaid: true` | `1fd2274c-65e2-47c4-bda5-4dd57b198277` | Refused in 9.2 s, `INVALID`: "the request proposed true, but source livecheck-erp reports false"                                                                           |
+| 4   | Invoice `INV-LC-NONE`                                 | `173c6f4f-f9d7-46e0-a712-9d9f39a274cd` | Refused in 9.2 s, `MISSING_DATA`: "no invoice INV-LC-NONE"                                                                                                                 |
 
-When it has run in production: record the four transactions and their answers here, keep the record files and the two
-endpoints' log lines as evidence, and update `docs/VERIFICATION-GAPS.md` G-92 and `docs/REMAINING-WORK.md` section L.
+Each request carried a valid signed approval from `manager-pavan-key-1`. The four records are kept by the operator
+(`record-*.json`, no secret). Not checked in this run: the `release_acted` log line of the release check endpoint
+for request 1, which shows the `conditions` the release carried.
+
+Before deployment, the bundle `build-endpoint.ts` makes answered Parmana's own query client
+(`HttpBusinessSignalSource`) locally, run as Vercel runs it.
 
 ## What it uses
 
@@ -58,7 +66,7 @@ $g = "examples/live-checks/governance.ts"
 $here = "examples/live-checks/business-signal-source"
 $sourceUrl = "https://parmana-signal-check.vercel.app/api/signals"
 $keyDir = "$env:USERPROFILE\parmana-signal-check-key"
-$deployDir = "$env:USERPROFILE\parmana-signal-check"
+$deployDir = Join-Path (Split-Path (Get-Location)) "parmana-signal-check"   # next to the repository, not inside it
 $stepUp = "$env:USERPROFILE\parmana-checker\step-up.private.pem"
 $stepUpId = "checker-pavan"
 $approver = "$env:USERPROFILE\parmana-approver\manager-pavan__manager-pavan-key-1.private.pem"
@@ -72,22 +80,28 @@ New-Item -ItemType Directory -Force $keyDir | Out-Null
 node -e "const c=require('crypto');const k=c.generateKeyPairSync('ed25519');const f=require('fs');f.writeFileSync(process.argv[1]+'/private.pem',k.privateKey.export({format:'pem',type:'pkcs8'}));f.writeFileSync(process.argv[1]+'/public.pem',k.publicKey.export({format:'pem',type:'spki'}))" $keyDir
 
 npx tsx "$here/build-endpoint.ts" --parmana-url $env:PARMANA_URL --endpoint-url $sourceUrl --key-id livecheck-erp-1 --out $deployDir
-vercel link --yes --project parmana-signal-check --scope pavan-dev-singh-charaks-projects --cwd $deployDir
-Get-Content "$keyDir\private.pem" -Raw | vercel env add SOURCE_PRIVATE_KEY_PEM production --sensitive --cwd $deployDir
-vercel deploy --prod --yes --cwd $deployDir
+$repo = Get-Location
+Set-Location $deployDir   # deploy from inside the folder: run from the repository, Vercel applies its vercel.json
+vercel link --yes --project parmana-signal-check --scope pavan-dev-singh-charaks-projects
+Remove-Item .env.local -ErrorAction SilentlyContinue
+Get-Content "$keyDir\private.pem" -Raw | vercel env add SOURCE_PRIVATE_KEY_PEM production --sensitive
+vercel deploy --prod --yes --scope pavan-dev-singh-charaks-projects
+Set-Location $repo
 
-try { Invoke-WebRequest -Method Post $sourceUrl -Body "{}" -ContentType "application/json" -UseBasicParsing } catch { $_.Exception.Response.StatusCode.value__ }
+try { Invoke-WebRequest -Method Get $sourceUrl -UseBasicParsing | Out-Null; "source: 2xx (WRONG)" } catch { "source: $($_.Exception.Response.StatusCode.value__)" }
 ```
 
 **Expect:** `Built ...`, `Audience: https://parmana-signal-check.vercel.app/api/signals`, the project linked (it is
-created if new), the variable added, a production deployment `✓ Ready`, then `401`: the source refuses anything not
-signed by Parmana.
+created if new), the variable added, a production deployment `✓ Ready`, then `source: 405`: the function itself
+answers (a `401` there would be Vercel's own login protection, not the source).
 
 **If not:** if `vercel link` says the project does not exist, create it with
 `vercel project add parmana-signal-check --scope pavan-dev-singh-charaks-projects` and link again. If the source is
 built for one address and Parmana signs for another, it refuses every query; read `signal_refused` lines in its logs.
 If Vercel gives the project another address, build again with that address as `--endpoint-url` and use it
-from here on. If the last line is not `401`, stop: do not register it.
+from here on. If the last line is `401`, turn off Vercel Authentication under the project's Settings, Deployment Protection. If it
+is `404` or the deploy says `api/index.ts` does not match, the deploy ran from the repository folder: run it from
+inside `$deployDir`. Anything but `405`: stop, do not register it.
 
 `private.pem` is a secret: keep `$keyDir` out of the repository, and delete it after the check (the copy in Vercel is
 enough). It signs only this demo source's answers.
@@ -98,8 +112,11 @@ The release check endpoint (`../external-connector`) now logs the `conditions` a
 2026-10-01 does not; rebuild and deploy it once:
 
 ```powershell
-npx tsx examples/live-checks/external-connector/build-endpoint.ts --parmana-url $env:PARMANA_URL --endpoint-url https://parmana-release-check.vercel.app/api/release --out "$env:USERPROFILE\parmana-release-check"
-vercel deploy --prod --yes --cwd "$env:USERPROFILE\parmana-release-check" --scope pavan-dev-singh-charaks-projects
+$releaseDir = Join-Path (Split-Path (Get-Location)) "parmana-release-check"
+npx tsx examples/live-checks/external-connector/build-endpoint.ts --parmana-url $env:PARMANA_URL --endpoint-url https://parmana-release-check.vercel.app/api/release --out $releaseDir
+$repo = Get-Location; Set-Location $releaseDir
+vercel deploy --prod --yes --scope pavan-dev-singh-charaks-projects
+Set-Location $repo
 ```
 
 **Expect:** `✓ Ready`. (If the folder was never linked, Vercel asks; choose the existing project

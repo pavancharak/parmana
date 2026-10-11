@@ -1557,11 +1557,12 @@ every Decision (CLAIMS.md 2.53). Phase 2 added registering any business system a
 (`/business-signal-sources`), the HTTP source with signed queries, and answers verified against the source's
 registered Ed25519 key (CLAIMS.md 2.54). What is still open:
 
-- **No real business system connected.** Deployed 2026-10-11 (`main` at `4fdc2c2`); `GET /business-signal-sources`
-  answers in production, and no source is registered there. Every test uses in-process endpoints, including the
-  example endpoint the guide gives operators (`typescript/examples/08-business-signal-source.ts`). No shipped policy
-  declares a source, so G-51 and G-76 are unchanged in practice. Closing this needs a deployed source answering a
-  production decision, recorded with the request id. The procedure is ready, not yet run: `examples/live-checks/business-signal-source` (2026-10-11).
+- **Verified in production with a demo source; no real business system connected.** The live check
+  `examples/live-checks/business-signal-source` passed on 2026-10-11: a deployed source registered through maker
+  checker with an Ed25519 key answered four production decisions under test policy `livecheck-signal`, signed and
+  verified: paid approved on its answer, unpaid refused by the policy, the agent's contradicted value refused as
+  `INVALID`, an unknown invoice as `MISSING_DATA` (`d736681f-8d86-4e24-bcf3-66debfa6ac23`, `266278b4-7683-43fd-97e7-aa724c6cca9a`, `1fd2274c-65e2-47c4-bda5-4dd57b198277` and `173c6f4f-f9d7-46e0-a712-9d9f39a274cd`). No shipped policy declares a source, so G-51 and G-76 are
+  unchanged in practice until a real system (for refunds, the order system) is connected and a policy names it.
 - **A source registered without a key is trusted on TLS alone.** Its answers carry no `sourceProof`, so the Trusted
   Signal proves what Parmana received over the pinned HTTPS connection, not that the source said it. A key is
   recommended, not required.
