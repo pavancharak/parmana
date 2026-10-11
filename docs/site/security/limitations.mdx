@@ -81,7 +81,8 @@ not claim them:
   not as proof that it acted. Releasing to a registered endpoint was checked live in production on
   2026-10-01, with an endpoint that acts on nothing.
 - **Approval notifications are best effort.** One attempt, 3 seconds, no retry. A lost event
-  changes nothing about the refusal, and the Refusal Records stay the complete list.
+  changes nothing about the refusal, and the Refusal Records stay the list to review (a Refusal
+  Record whose write fails is logged, not retried; see [Refusal Records](/concepts/refusal-records)).
 - **Mocks are labeled as mocks.** `SapConnector`, `OracleConnector`, `WorkdayConnector`, and
   `SalesforceConnector` are explicit, self-documented reference mocks. None calls a real
   system, and none is wired into the default server.
@@ -152,9 +153,10 @@ it's a manual operator procedure today, not automatic rotation.
 No `delete` method exists on any trust record, refusal record, or audit event repository.
 Every caller-authentication event is signed (`AuditEventCrypto`) and chained to the caller's
 own immediately-preceding event, a deleted row breaks the chain, provable standalone with no
-server or database required. An execution outcome is always recorded through one of three
-mechanisms (trust record, refusal record, or audit event), there's no code path where an
-outcome goes unrecorded.
+server or database required. Every execution outcome has a record path (trust record, refusal record, or audit event). One
+path fails open by design: if a Refusal Record write fails, the refusal still happens and the
+failure is logged (`refusal_record_write_failed`), but that record can be missing (CLAIMS.md 3.11,
+[Refusal Records](/concepts/refusal-records)).
 
 **Honest gap:** deleting an entire caller's history at once, or reordering audit rows across
 different callers, isn't caught by the per-caller chain. Verification tools are ordinary,
