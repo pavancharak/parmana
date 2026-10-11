@@ -180,7 +180,7 @@ business system is connected, no policy opts in and no grant exists.
 | Check                                         | Proves                                                                                              | Closes, when run                                                 |
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `examples/live-checks/authority-grant`        | A grant decides: refused before it, approved within its limit, refused over it and after its revoke | **Passed 2026-10-11** (4 of 4); G-93 verified with a test policy |
-| `examples/live-checks/business-signal-source` | A source answers a production decision, signed; the release carries it as a condition               | Not run yet; G-92's first item                                   |
+| `examples/live-checks/business-signal-source` | A source answers a production decision, signed; the release carries it as a condition               | **Passed 2026-10-11** (4 of 4); G-92 verified with a demo source |
 | `examples/live-checks/paytm-refund`           | One real refund through the rotated credentials; the record verifies offline                        | Not run yet; step 4 above                                        |
 
 They use test policies and endpoints that act on nothing (except the refund), so they can run before steps 1 to 3.

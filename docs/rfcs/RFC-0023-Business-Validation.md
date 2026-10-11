@@ -380,14 +380,18 @@ updates.
 2. **Implemented.** Source registry through maker checker (`/business-signal-sources`), the generic
    HTTP source with signed queries, and answers verified against the source's registered Ed25519 key.
    Built in sources (HubSpot, approvals) are not added: a system becomes a source by answering the
-   protocol, and the approval stays the signed human approval (2.47).
+   protocol, and the approval stays the signed human approval (2.47). Verified in production on 2026-10-11 with a
+   demo source (`examples/live-checks/business-signal-source`, 4 of 4).
 3. **Implemented.** Per-agent authority grants (action, limits, expiry) through maker checker
    (`/authority-grants`), required per policy by `requireAuthorityGrant`, making `AUTHORITY_EXPIRED`
    reachable. Limits are per request; cumulative limits (per day, per month) are not built.
-   Their design is recorded above, under "Cumulative grant limits".
+   Their design is recorded above, under "Cumulative grant limits". Verified in production on 2026-10-11 with a test
+   policy (`examples/live-checks/authority-grant`, 4 of 4).
 4. **Implemented.** Business conditions and the grant signed into the authorization and re-checked by
    the gateway at release; conditions carried to external connectors so they execute only if still
-   valid; `EXECUTION_UNKNOWN` and `NOT_EXECUTED` on the responses that mean them.
+   valid; `EXECUTION_UNKNOWN` and `NOT_EXECUTED` on the responses that mean them. In production on 2026-10-11 an
+   approved request under a sourced fact was released with it (`d736681f-8d86-4e24-bcf3-66debfa6ac23`); a grant
+   revoked between decision and release has not been timed in production (G-94).
 5. **Not built.** Cumulative grant limits (per day, week or month), counted by Parmana from its own
    decisions; the design is under "Cumulative grant limits".
 
