@@ -163,17 +163,25 @@ The sandbox is live and documented (ADR-0014 steps 1 to 4, `docs/CLAIMS.md` 2.51
 ## L. Business validation (RFC-0023, added 2026-10-11)
 
 All four phases are merged (PRs #97 to #100), deployed (`main` at `4fdc2c2`, migrations applied) and in SDK 1.6.0,
-published on npm and PyPI on 2026-10-11 (`docs/CLAIMS.md` 2.53 to 2.56). Still open:
+published on npm and PyPI on 2026-10-11 (`docs/CLAIMS.md` 2.53 to 2.56). Production decisions do not change yet: no
+business system is connected, no policy opts in and no grant exists.
 
-| Item                                                                                                | State                                                                                                                                                  |
-| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Connect a real business system as a signal source (`docs/VERIFICATION-GAPS.md` G-92)                | Needs the operator: run an endpoint like `typescript/examples/08-business-signal-source.ts` in front of the system, register it through maker checker. |
-| A production policy that uses `signalSources` or `requireAuthorityGrant` (G-92, G-93)               | Needs the operator: a policy change through policy governance. Until then production decisions are unchanged.                                          |
-| The first authority grant in production (G-93)                                                      | Needs the operator: propose and approve through `/authority-grants/changes`.                                                                           |
-| A production decision recorded under each, with its request id (closes G-92 and G-93's first items) | Waits on the three items above.                                                                                                                        |
-| Cumulative grant limits ("100000 per day") (G-93)                                                   | Not built.                                                                                                                                             |
-| Built in connectors asking the business system again at release (G-94)                              | Not built; external endpoints check `conditions` themselves.                                                                                           |
-| A release refused at release leaves the Execution Intent `ERRORED` (G-94)                           | Not built; a person closes it as `NOT_EXECUTED`.                                                                                                       |
+**To make the new features affect real decisions, four steps are left, in this order:**
+
+| Step | What                                                                                                                                                                         | Who                                                                     | Closes                        |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------- |
+| 1    | Connect a real business system as a signal source: run an endpoint like `typescript/examples/08-business-signal-source.ts` in front of it, register it through maker checker | The operator; the endpoint for a given system can be written on request | G-92, first item              |
+| 2    | Change a policy to use `signalSources` or `requireAuthorityGrant`, through policy governance                                                                                 | The operator approves; the change can be drafted on request             | G-92 and G-93, with step 4    |
+| 3    | Make the first authority grant, for example `paytm-refund-agent` for `paytm:refund` up to an amount the operator chooses, through `/authority-grants/changes`                | The operator approves; the commands can be given on request             | G-93, first item, with step 4 |
+| 4    | Do one real refund end to end, recorded with its request id, to prove the new keys (rotated 2026-10-11) and the new features work together                                   | The operator                                                            | G-92 and G-93 first items     |
+
+**Not built yet:**
+
+| Item                                                                      | State                                                        |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Daily or cumulative grant limits ("100000 per day") (G-93)                | Not built; a grant limits each request on its own.           |
+| Built in connectors asking the business system again at release (G-94)    | Not built; external endpoints check `conditions` themselves. |
+| A release refused at release leaves the Execution Intent `ERRORED` (G-94) | Not built; a person closes it as `NOT_EXECUTED`.             |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
