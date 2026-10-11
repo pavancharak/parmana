@@ -1583,7 +1583,7 @@ open:
   governance. Closing this needs a policy in production with `requireAuthorityGrant` and a request decided under it,
   recorded with the request id.
 - **Limits are per request.** A grant can cap one request at 100000, not the total per day. Cumulative limits need a
-  counter written atomically with the decision, as the earlier Razorpay daily refund ledger did; not built.
+  counter written atomically with the decision, as the earlier Razorpay daily refund ledger did; not built. The design for building them is in RFC-0023, "Cumulative grant limits".
 - **The grantee's caller id is not checked to exist.** API keys live in configuration (`PARMANA_API_KEYS`), not in a
   repository the route can read. A grant to a key that does not exist has no effect, but is listed.
 - **Re-checked at release** since phase 4 (CLAIMS.md 2.56): a grant that expires or is revoked between the decision and
