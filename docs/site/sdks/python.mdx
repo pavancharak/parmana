@@ -17,20 +17,22 @@ description: "Generated models, bearer-key authentication, and a typed error tax
   and the `offline_verifier.py` fix. Two quick follow-up releases, v1.1.3 and
   v1.1.4, corrected the published package metadata (repo name, docs domain,
   added a `Website` URL); v1.1.5 and v1.1.6, both published 2026-09-20, follow;
-  v1.5.0, published 2026-10-04, is the current version. It adds the external
-  connector methods, `policy_in_effect()` and `verify_parmana_release()`, fixes
-  offline verification of a decoded record, and is licensed under the Apache
-  License 2.0: see [New in 1.5.0](#new-in-150). v1.4.0, published 2026-09-29,
-  added `sign_approval()` and the approver methods: see [New in
-  1.4.0](#new-in-140). v1.3.0, published 2026-09-25, added policy governance,
-  step up signing, `caller()`, `public_key()`, `trust_records.list()` and
-  `latest_receipt()`, and lets the offline verifiers take the SDK's own models:
-  see [New in 1.3.0](#new-in-130). v1.2.0, published 2026-09-21, added the
-  Execution Intent methods and an offline intent verifier. v1.1.6 adds
-  `server_code` to `InternalServerError`. v1.1.5 lets the offline verifier
-  accept records over 4096 bytes that AWS KMS signed as a fixed size commitment,
-  and declares its `cryptography` dependency as the optional `verify` extra
-  (`pip install "parmana[verify]"`). v1.1.4 was published 2026-09-14. See
+  v1.6.0, published 2026-10-11, is the current version. It adds the business
+  signal source and authority grant methods, and `conditions` on a release: see
+  [New in 1.6.0](#new-in-160). v1.5.0, published 2026-10-04, added the external
+  connector methods, `policy_in_effect()` and `verify_parmana_release()`, fixed
+  offline verification of a decoded record, and moved to the Apache License 2.0:
+  see [New in 1.5.0](#new-in-150). v1.4.0, published 2026-09-29, added
+  `sign_approval()` and the approver methods: see [New in 1.4.0](#new-in-140).
+  v1.3.0, published 2026-09-25, added policy governance, step up signing,
+  `caller()`, `public_key()`, `trust_records.list()` and `latest_receipt()`, and
+  lets the offline verifiers take the SDK's own models: see [New in
+  1.3.0](#new-in-130). v1.2.0, published 2026-09-21, added the Execution Intent
+  methods and an offline intent verifier. v1.1.6 adds `server_code` to
+  `InternalServerError`. v1.1.5 lets the offline verifier accept records over
+  4096 bytes that AWS KMS signed as a fixed size commitment, and declares its
+  `cryptography` dependency as the optional `verify` extra (`pip install
+  "parmana[verify]"`). v1.1.4 was published 2026-09-14. See
   [Changelog](/changelog) and the fix history at the bottom of this page.
 </Info>
 
@@ -250,6 +252,72 @@ server's idempotency key. `authority_type` defaults to `AuthorityType.SERVICE` (
 `examples/quickstart/run.py`, side by side, for direct comparison) and
 `tests/test_builders.py` (9 unit tests) / `tests/test_builder_example.py` (proves the
 generated ids round-trip correctly through a real running server, not just in isolation).
+
+## New in 1.6.0
+
+### Register a business signal source
+
+Register the business system that owns a fact a policy needs, an ERP, an order system, a CRM, so Parmana asks it
+instead of trusting the agent. One person proposes, a different person approves with a step up authorization; both
+need a human key.
+
+```python
+change = maker.business_signal_sources.propose_register(
+    name="erp",
+    endpoint_url="https://orders.example.com/parmana/signals",
+    public_key_pem=Path("erp-answers.public.pem").read_text(),
+    key_id="erp-2026-10",
+    reason="Release goods only against invoices the ERP says are paid.",
+)
+
+checker.approve_business_signal_source_change(
+    change.change_id,
+    sign_policy_change_step_up(
+        pending_policy_change_id=change.change_id,
+        action="approve",
+        private_key_pem=Path("step-up.private.pem").read_text(),
+        key_id="checker-step-up-1",
+    ),
+)
+
+checker.list_business_signal_sources()  # [BusinessSignalSource(name="erp", status="active", ...)]
+```
+
+`business_signal_source_changes(status=None)` lists proposals and `reject_business_signal_source_change(change_id,
+reason, step_up)` rejects one. To end a registration, call `business_signal_sources.propose_revoke(name=...,
+reason=...)` and approve it the same way. The endpoint and the signed protocol are in
+[Connect a business signal source](/guides/connect-a-business-signal-source).
+
+### Grant an agent authority
+
+Say which agent may have which action decided, within which limits, until when. A policy with `requireAuthorityGrant`
+decides a request only for a caller holding a grant in force.
+
+```python
+change = maker.authority_grants.propose_grant(
+    caller_id="warehouse-agent",
+    capability="erp:release-goods",
+    limits={"parameters.amount": {"max": 100000}, "parameters.currency": {"oneOf": ["INR"]}},
+    valid_until="2026-12-30T00:00:00.000Z",
+    reason="The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.",
+)
+
+checker.approve_authority_grant_change(change.change_id, step_up)  # signed as above
+
+checker.list_authority_grants()  # [AuthorityGrant(caller_id="warehouse-agent", status="active", ...)]
+```
+
+`authority_grant_changes(status=None)` and `reject_authority_grant_change(change_id, reason, step_up)` work as for
+sources. To end a grant, call `authority_grants.propose_revoke(caller_id=..., capability=..., reason=...)`. No one
+grants authority to themselves. See [Grant an agent authority](/guides/grant-an-agent-authority).
+
+### Conditions on a release
+
+A release to an external connector now carries `conditions`: the business facts the decision rests on, each with
+`signalKey`, `source`, `claim`, `subject`, `value` and `validUntil`, covered by the signature. After
+`verify_parmana_release`, read them from `result.release["conditions"]`. Act only if each still holds in your records;
+otherwise answer `success: false` with `conditionsNotMet: true`. `python/examples/13_external_connector_endpoint.py`
+takes a `conditions_hold` check.
 
 ## New in 1.5.0
 

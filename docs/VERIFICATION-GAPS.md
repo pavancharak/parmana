@@ -42,8 +42,8 @@ Everything not listed here is closed, with its evidence in its own entry below.
 | G-82       | What an external endpoint answers is its claim, not proof that it acted.                                                                                                                                                                                                                                                                                                                                                           | pre-production                | A property of the design, documented                                                    |
 | G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01; not measured since.                                                                                                                                                                                                                                                                                                                                         | pre-production                | Open; agents are told to use a 120 second timeout and read the record after a timeout   |
 | G-86       | All visitor data in the public sandbox was deleted around the retention job's first run; cause not established.                                                                                                                                                                                                                                                                                                                    | pre-production (sandbox only) | Open; the job is paused. Check made unable to delete (2026-10-06); cause still unproven |
-| G-92       | Business validation (RFC-0023) phases 1 and 2: sources can be registered and their signed answers are verified, but not deployed and no real business system connected yet; a source registered without a key is trusted on TLS alone; validity is checked once, at decision; authority is the existing checks, with no per-agent limits or expiry.                                                                                | pre-production                | Open; phases 3 and 4 of RFC-0023, and a first connected source                          |
-| G-93       | Per-agent authority grants (RFC-0023 phase 3): opt in per policy and no shipped policy opts in; limits are per request, not cumulative; the grantee's caller id is not checked to exist; not re-checked at release.                                                                                                                                                                                                                | pre-production                | Open; cumulative limits and phase 4                                                     |
+| G-92       | Business validation (RFC-0023): sources can be registered and their signed answers are verified, deployed 2026-10-11, but no real business system is connected yet; a source registered without a key is trusted on TLS alone; Parmana proves the source said it, not that it is right.                                                                                                                                            |
+| G-93       | Per-agent authority grants (RFC-0023 phase 3): opt in per policy and no shipped policy opts in; limits are per request, not cumulative; the grantee's caller id is not checked to exist.                                                                                                                                                                                                                                           | pre-production                | Open; cumulative limits and phase 4                                                     |
 | G-94       | Execution (RFC-0023 phase 4): an external endpoint must itself check the signed conditions to execute only if still valid; built in connectors get only the gateway re-check; a release refused at release leaves the intent ERRORED.                                                                                                                                                                                              | pre-production                | Open                                                                                    |
 
 Closed on 2026-10-06: G-83 (the release tries the next checked address), G-87 (an incomplete
@@ -1422,7 +1422,7 @@ twice. Until this is fixed, agents should set a longer timeout and, after a time
 (`GET /trust-records/{id}`) before anything else. The refund flow takes the same path.
 
 **G-85. The Python SDK cannot verify its own decoded record when `previousChainHash` is `null`.
-FIXED IN CODE 2026-10-02, not yet published (next Python release); 1.4.0 has it. FOUND 2026-10-02 while writing the sandbox Playground, `pre-production` (verification tooling, not
+FIXED IN CODE 2026-10-02, published in the Python SDK 1.5.0 (2026-10-04); 1.4.0 and earlier have it. FOUND 2026-10-02 while writing the sandbox Playground, `pre-production` (verification tooling, not
 authorization).** `verify_execution_trust_record_offline(record, keys)` accepts the decoded
 `ExecutionTrustRecord` model (`python/parmana/crypto/offline_verifier.py`, `_as_json`), and encodes it again
 with `parmana.serialization.encode`, which leaves out every field whose value is `None`. The server
@@ -1557,7 +1557,8 @@ every Decision (CLAIMS.md 2.53). Phase 2 added registering any business system a
 (`/business-signal-sources`), the HTTP source with signed queries, and answers verified against the source's
 registered Ed25519 key (CLAIMS.md 2.54). What is still open:
 
-- **Not deployed, and no real business system connected.** Every test uses in-process endpoints, including the
+- **No real business system connected.** Deployed 2026-10-11 (`main` at `4fdc2c2`); `GET /business-signal-sources`
+  answers in production, and no source is registered there. Every test uses in-process endpoints, including the
   example endpoint the guide gives operators (`typescript/examples/08-business-signal-source.ts`). No shipped policy
   declares a source, so G-51 and G-76 are unchanged in practice. Closing this needs a deployed source answering a
   production decision, recorded with the request id.
@@ -1587,7 +1588,8 @@ open:
   repository the route can read. A grant to a key that does not exist has no effect, but is listed.
 - **Re-checked at release** since phase 4 (CLAIMS.md 2.56): a grant that expires or is revoked between the decision and
   the release stops that release.
-- **Not deployed** until this change is merged and deployed.
+- **Deployed 2026-10-11** (`main` at `4fdc2c2`); `GET /authority-grants` answers in production, and no grant has been
+  made there. The SDK methods are in SDK 1.6.0.
 
 **G-94. What a decision rests on is re-checked at release, but "execute only if still valid" at the system is the
 endpoint's to implement. OPENED 2026-10-11, `pre-production`.** Phase 4 signs the business conditions and the authority
@@ -1604,7 +1606,8 @@ release carries the conditions (CLAIMS.md 2.56). What is open:
 - **No end to end test through `POST /execute` with the production gateway.** The gateway checks, the adapter and the
   runtime are each tested; a request whose grant is revoked between decision and release cannot be timed through one
   `execute` call without a test hook.
-- **Not deployed** until this change is merged and deployed.
+- **Deployed 2026-10-11** (`main` at `4fdc2c2`), not yet exercised in production: no production decision carries
+  conditions or a grant until a policy uses `signalSources` or `requireAuthorityGrant`.
 
 ---
 

@@ -144,7 +144,7 @@ Goal: connect any external system with no change to Parmana's code (ADR-0013). B
 | ---- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1    | Registrations and their changes, `/external-connectors` with maker checker                                  | **Live** (PR #92, migration applied 2026-09-30).                                                                                                                   |
 | 2    | `GatewayExternalAdapter`: signed release, address checks at release, answer validation                      | Merged (PR #93) and deployed with `7608be6`; not used until step 4.                                                                                                |
-| 3    | SDK helpers `verifyParmanaRelease` and `verify_parmana_release`                                             | Merged (PR #94) and deployed; not published, comes with the next SDK release.                                                                                      |
+| 3    | SDK helpers `verifyParmanaRelease` and `verify_parmana_release`                                             | Merged (PR #94) and deployed; published in SDK 1.5.0 (2026-10-04).                                                                                                 |
 | 4    | Build the adapter for each active registration, and answer `GET /policies/in-effect` for it                 | Merged (PR #97) and deployed: the registry wrapper, the policy binding and `GET /policies/in-effect` (G-81).                                                       |
 | 5    | Docs page "Connect any external system", example endpoints in TypeScript and Python, tutorial, CLAIMS entry | Done: examples and Tutorial 123 (PR #98), the guide (PR #99). The CLAIMS entry waits for step 6.                                                                   |
 | 6    | A live check against a deployed example endpoint before the claim                                           | **Passed** in production on 2026-10-01 (`examples/live-checks/external-connector`, `docs/CLAIMS.md` 2.50). Found G-84: an approved request takes 24 to 32 seconds. |
@@ -158,7 +158,22 @@ The sandbox is live and documented (ADR-0014 steps 1 to 4, `docs/CLAIMS.md` 2.51
 | Retention: delete sandbox records older than 7 days, daily (ADR-0014 open question 3) | Built 2026-10-02. Paused the same day after all visitor data was deleted (`docs/VERIFICATION-GAPS.md` G-86); guard and run log added; reinstall and check the first run's log. |
 | `sandbox.parmanasystems.com` (ADR-0014 open question 1)                               | Not set up; `parmana-sandbox.vercel.app` is used.                                                                                                                              |
 | An in browser record check on the Playground (ADR-0014 section 5)                     | Not built; the page shows the offline check in each SDK.                                                                                                                       |
-| Python SDK verifies its own decoded record (`docs/VERIFICATION-GAPS.md` G-85)         | Fixed in code 2026-10-02; reaches users with the next Python release.                                                                                                          |
+| Python SDK verifies its own decoded record (`docs/VERIFICATION-GAPS.md` G-85)         | Fixed in code 2026-10-02; published in the Python SDK 1.5.0 (2026-10-04).                                                                                                      |
+
+## L. Business validation (RFC-0023, added 2026-10-11)
+
+All four phases are merged (PRs #97 to #100), deployed (`main` at `4fdc2c2`, migrations applied) and in SDK 1.6.0,
+published on npm and PyPI on 2026-10-11 (`docs/CLAIMS.md` 2.53 to 2.56). Still open:
+
+| Item                                                                                                | State                                                                                                                                                  |
+| --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Connect a real business system as a signal source (`docs/VERIFICATION-GAPS.md` G-92)                | Needs the operator: run an endpoint like `typescript/examples/08-business-signal-source.ts` in front of the system, register it through maker checker. |
+| A production policy that uses `signalSources` or `requireAuthorityGrant` (G-92, G-93)               | Needs the operator: a policy change through policy governance. Until then production decisions are unchanged.                                          |
+| The first authority grant in production (G-93)                                                      | Needs the operator: propose and approve through `/authority-grants/changes`.                                                                           |
+| A production decision recorded under each, with its request id (closes G-92 and G-93's first items) | Waits on the three items above.                                                                                                                        |
+| Cumulative grant limits ("100000 per day") (G-93)                                                   | Not built.                                                                                                                                             |
+| Built in connectors asking the business system again at release (G-94)                              | Not built; external endpoints check `conditions` themselves.                                                                                           |
+| A release refused at release leaves the Execution Intent `ERRORED` (G-94)                           | Not built; a person closes it as `NOT_EXECUTED`.                                                                                                       |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 

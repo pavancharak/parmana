@@ -11,15 +11,15 @@ fact. Parmana answers two questions separately, and an action runs only when bot
 - **Business validity.** Is this exact action valid for this exact business object, according to
   the system that owns the facts?
 
-| What                                                                     | Status                            |
-| ------------------------------------------------------------------------ | --------------------------------- |
-| Separate authority, validation and execution statuses on every decision  | **[AVAILABLE]**                   |
-| A policy naming the source of each fact (`signalSources`)                | **[AVAILABLE]**                   |
-| Parmana asking the source and recording a Trusted Signal                 | **[AVAILABLE]** in the runtime    |
-| Business systems registered as sources through maker checker             | **[AVAILABLE]**, not yet deployed |
-| Signed queries, and answers verified against the source's registered key | **[AVAILABLE]**, not yet deployed |
-| Per-agent authority grants with limits and expiry                        | **[AVAILABLE]**, not yet deployed |
-| Re-checked at release, and execute only if still valid at the system     | **[AVAILABLE]**, not yet deployed |
+| What                                                                     | Status                         |
+| ------------------------------------------------------------------------ | ------------------------------ |
+| Separate authority, validation and execution statuses on every decision  | **[AVAILABLE]**                |
+| A policy naming the source of each fact (`signalSources`)                | **[AVAILABLE]**                |
+| Parmana asking the source and recording a Trusted Signal                 | **[AVAILABLE]** in the runtime |
+| Business systems registered as sources through maker checker             | **[AVAILABLE]**                |
+| Signed queries, and answers verified against the source's registered key | **[AVAILABLE]**                |
+| Per-agent authority grants with limits and expiry                        | **[AVAILABLE]**                |
+| Re-checked at release, and execute only if still valid at the system     | **[AVAILABLE]**                |
 
 The design and its phases are in
 [RFC-0023](https://github.com/pavancharak/parmana/blob/main/docs/rfcs/RFC-0023-Business-Validation.md);
@@ -177,8 +177,8 @@ verification. Records made before this change have no `assessment` and still ver
 
 ## Limits today
 
-- **Not deployed yet.** Registering sources and asking them is in the repository and tested, but
-  no real business system has been connected. No shipped policy declares a source.
+- **No real business system connected yet.** Registering sources and asking them is deployed and
+  tested, but no business system has been connected. No shipped policy declares a source.
 - **Conditions at the system are opt in.** The gateway always re-checks `validUntil` and the grant at
   release. An external endpoint must check the release's `conditions` itself to execute only if they
   still hold; built in connectors get only the gateway re-check.
