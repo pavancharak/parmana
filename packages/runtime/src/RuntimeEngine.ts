@@ -791,6 +791,27 @@ export class RuntimeEngine {
         ...(transaction.metadata?.tenantId !== undefined && {
           tenantId: transaction.metadata.tenantId,
         }),
+        // RFC-0023 phase 4: what the authorization rests on, signed, so
+        // the release can be refused, and the endpoint can decline, once
+        // a fact or the grant no longer holds.
+        ...(businessValidation.status === BusinessValidationStatus.VALID &&
+          businessValidation.signals !== undefined && {
+            businessConditions: businessValidation.signals.map((signal) => ({
+              signalId: signal.signalId,
+              signalKey: signal.signalKey,
+              source: signal.source,
+              claim: signal.claim,
+              subject: signal.subject,
+              value: signal.observedValue,
+              validUntil: signal.validUntil.toISOString(),
+            })),
+          }),
+        ...(authority.grant !== undefined && {
+          authorityGrant: {
+            grantId: authority.grant.grantId,
+            validUntil: authority.grant.validUntil.toISOString(),
+          },
+        }),
         executableContent,
       },
       this.authorizationTtlSeconds,

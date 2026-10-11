@@ -72,6 +72,8 @@ describe("Execution Failure", () => {
     //
     expect(response.status).toBe(502);
     expect(response.body.code).toBe("EXECUTION_OUTCOME_UNKNOWN");
+    // RFC-0023 phase 4: never reported as failed, the action may have run.
+    expect(response.body.executionStatus).toBe("EXECUTION_UNKNOWN");
     expect(response.body.error).toContain(transaction.businessTransactionId);
     expect(response.body.error).toContain("Do not retry as a new transaction");
 

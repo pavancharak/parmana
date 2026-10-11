@@ -214,6 +214,13 @@ describe("per-agent authority (RFC-0023 phase 3)", () => {
 
     const authority = result.context.decision.assessment?.authority;
     expect(authority?.status).toBe(AuthorityStatus.AUTHORIZED);
+
+    // Phase 4: the grant is signed into the authorization, so the gateway
+    // can refuse the release once it expires or is revoked.
+    expect(result.context.authorization?.payload.authorityGrant).toEqual({
+      grantId: "grant-1",
+      validUntil: authority?.grant?.validUntil.toISOString(),
+    });
     expect(authority?.reason).toMatch(/holds authority grant grant-1/);
     expect(
       trust.created[0]?.executions[0]?.decision.assessment?.authority.grant,

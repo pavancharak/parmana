@@ -9,7 +9,31 @@ generate:python-models" to regenerate.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
+
+
+@dataclass(frozen=True)
+class AuthorizationBusinessCondition:
+    signal_id: str
+
+    signal_key: str
+
+    source: str
+
+    claim: str
+
+    subject: str
+
+    value: Any
+
+    valid_until: str
+
+
+@dataclass(frozen=True)
+class AuthorizationGrantBound:
+    grant_id: str
+
+    valid_until: str
 
 
 @dataclass(frozen=True)
@@ -41,6 +65,10 @@ class ExecutionAuthorizationPayload:
     submitted_by: str | None = None
 
     granted_capability: str | None = None
+
+    business_conditions: list[AuthorizationBusinessCondition] | None = None
+
+    authority_grant: AuthorizationGrantBound | None = None
 
 
 @dataclass(frozen=True)

@@ -449,7 +449,12 @@ const MODULES: ModuleSpec[] = [
   },
   {
     file: "execution_authorization",
-    types: ["ExecutionAuthorizationPayload", "SignedExecutionAuthorization"],
+    types: [
+      "AuthorizationBusinessCondition",
+      "AuthorizationGrantBound",
+      "ExecutionAuthorizationPayload",
+      "SignedExecutionAuthorization",
+    ],
     docSource: "domain/execution-authorization.ts",
   },
   {

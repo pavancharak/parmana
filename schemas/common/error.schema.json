@@ -31,8 +31,15 @@
         "EXECUTION_INTENTS_NOT_ENABLED",
         "EXECUTION_INTENT_NOT_RESOLVABLE",
         "EXECUTION_INTENT_RESOLUTION_INVALID",
-        "NON_HUMAN_CALLER_DENIED"
+        "NON_HUMAN_CALLER_DENIED",
+        "EXECUTION_OUTCOME_UNKNOWN",
+        "AUTHORIZATION_NO_LONGER_VALID"
       ]
+    },
+    "executionStatus": {
+      "type": "string",
+      "enum": ["EXECUTION_UNKNOWN", "NOT_EXECUTED"],
+      "description": "RFC-0023 phase 4. EXECUTION_UNKNOWN with EXECUTION_OUTCOME_UNKNOWN: the action was released and the call failed, so whether it ran is unknown; never reported as failed, and the Execution Intent stays ERRORED until a person resolves it. NOT_EXECUTED with AUTHORIZATION_NO_LONGER_VALID: the release was refused because a business condition or the authority grant it rested on no longer held, and nothing was sent."
     }
   },
   "examples": [

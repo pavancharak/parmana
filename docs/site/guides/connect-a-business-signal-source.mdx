@@ -209,8 +209,9 @@ register again. The revoked registration stays listed.
 
 ## Limits
 
-- An answer is checked once, when the request is decided. It is not re-checked when the action is released (RFC-0023
-  phase 4).
+- An answer is checked when the request is decided, and its `validUntil` again at release. An external connector also
+  receives it as a signed `condition`, so its endpoint can act only if it still holds
+  ([Connect any external system](/guides/connect-any-external-system)).
 - Parmana checks the source signed the answer. It cannot check the source's records are right: a source answers for its
   own data.
 - See [Limitations](/security/limitations), G-92.

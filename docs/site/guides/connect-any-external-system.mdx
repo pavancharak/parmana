@@ -293,6 +293,30 @@ once. The endpoint's answer is recorded in the record as its claim.
    `POST /execution-intents/{businessTransactionId}/resolve`.
 3. Any refusal before release (`403`, `400`): as in [Integrate Parmana](/agents/integrate), step 6.
 
+## Execute only if still valid
+
+When the policy sources facts from a business system ([Business validation](/concepts/business-validation)),
+the release carries them as `conditions`, signed with the rest:
+
+```json
+"conditions": [
+  {
+    "signalKey": "invoicePaid",
+    "source": "erp",
+    "claim": "invoice.paid",
+    "subject": "INV-1001",
+    "value": true,
+    "validUntil": "2026-10-11T12:01:00.000Z"
+  }
+]
+```
+
+The release expires no later than the earliest `validUntil`. Check each condition in your own records in
+the same transaction as the action, and act only if every one still holds. If one does not, do not act,
+and answer `200` with `"success": false`, `"conditionsNotMet": true` and a `result`; Parmana records that
+nothing was done. The example endpoints take this check as `conditionsHold` (TypeScript) and
+`conditions_hold` (Python). An endpoint that ignores `conditions` still works, without the guarantee.
+
 ## Change or remove a connector
 
 - **Move to a new endpoint:** propose `{"action":"revoke","capability":"...","reason":"..."}`, approve it (step 7), then

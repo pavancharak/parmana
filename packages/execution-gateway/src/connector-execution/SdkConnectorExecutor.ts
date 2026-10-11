@@ -123,6 +123,23 @@ export class SdkConnectorExecutor implements ConnectorExecutor {
                   Object.freeze({ ...approval }),
                 ),
               ),
+              // Taken from the signed authorization, never the request.
+              ...(release.authorization.payload.businessConditions !==
+                undefined && {
+                conditions: Object.freeze(
+                  release.authorization.payload.businessConditions.map(
+                    (condition) =>
+                      Object.freeze({
+                        signalKey: condition.signalKey,
+                        source: condition.source,
+                        claim: condition.claim,
+                        subject: condition.subject,
+                        value: condition.value,
+                        validUntil: condition.validUntil,
+                      }),
+                  ),
+                ),
+              }),
             }),
           }
         : {}),

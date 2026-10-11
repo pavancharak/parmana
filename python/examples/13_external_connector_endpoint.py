@@ -43,6 +43,9 @@ def create_release_handler(
     audience: str,
     act: Callable[[dict[str, Any]], dict[str, Any]],
     answers: dict[str, dict[str, Any]] | None = None,
+    conditions_hold: (
+        Callable[[list[dict[str, Any]], dict[str, Any]], bool] | None
+    ) = None,
     now: Callable[[], datetime] | None = None,
 ) -> Callable[[Any], Answer]:
     """
@@ -54,6 +57,12 @@ def create_release_handler(
     result. ``answers`` keeps first answers by businessTransactionId; the
     default lives in memory for this example. Use your database, so a
     restart cannot make the endpoint act twice.
+
+    ``conditions_hold`` (RFC-0023 phase 4) says whether every business
+    fact the release rests on still holds in your records. It is called
+    only when the release carries conditions. Check them in the same
+    transaction as the action; when one no longer holds, the endpoint
+    does not act and answers ``conditionsNotMet``.
     """
 
     stored: dict[str, dict[str, Any]] = answers if answers is not None else {}
@@ -79,6 +88,27 @@ def create_release_handler(
 
         if verification.already_executed and first is not None:
             return 200, first
+
+        conditions = release.get("conditions") or []
+
+        if (
+            conditions
+            and conditions_hold is not None
+            and not conditions_hold(conditions, release)
+        ):
+            # Not acted on. Kept as the first answer, so a repeat of this
+            # release gets the same one.
+            declined = {
+                "businessTransactionId": release["businessTransactionId"],
+                "capability": release["capability"],
+                "success": False,
+                "conditionsNotMet": True,
+                "result": {
+                    "reason": "A condition the release rests on no longer holds."
+                },
+            }
+            stored[release["businessTransactionId"]] = declined
+            return 200, declined
 
         answer = {
             "businessTransactionId": release["businessTransactionId"],

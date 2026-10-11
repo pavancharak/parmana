@@ -27,8 +27,10 @@ import type {
 
 import {
   toExecutableContent,
+  AuthorizationNoLongerValidError,
   NonceAlreadyConsumedError,
   type ExecutableContent,
+  type AuthorityGrantRepository,
   type ExecutionResult,
   type ReleaseApproval,
 } from "@parmana/shared";
@@ -162,6 +164,14 @@ export interface ExecutionGatewayOptions {
    * Defaults to 300 seconds.
    */
   readonly maxTtlSeconds?: number;
+
+  /**
+   * RFC-0023 phase 4: where the authority grants approved through maker
+   * checker are read, to confirm at release that the grant an
+   * authorization rests on is still the active one. Without it, an
+   * authorization that rests on a grant is refused: fail closed.
+   */
+  readonly authorityGrants?: Pick<AuthorityGrantRepository, "findActive">;
 }
 
 /**
@@ -202,6 +212,10 @@ export interface ExecutionGatewayOptions {
  *     -> policyStillCurrent recompute-and-compare (required; fails closed)
  *     -> policyGovernanceVerified approval-record check (required; fails closed)
  *     -> signalsStillCurrent recompute-and-verify (when wired)
+ *     -> businessConditionsCurrent: each signed business condition
+ *        within its validUntil (RFC-0023 phase 4, when present)
+ *     -> authorityGrantInForce: the signed grant unexpired and still
+ *        the active one (RFC-0023 phase 4, when present; fails closed)
  *     -> nonce
  *
  * Stateless and deterministic: there is no pause/resume state.
@@ -219,6 +233,8 @@ export class ExecutionGateway implements ExecutionSystem {
   private readonly signalStateVerifier: SignalStateVerifier | undefined;
   private readonly connector: Connector | undefined;
   private readonly executionControl: ExecutionControlOptions | undefined;
+  private readonly authorityGrants:
+    Pick<AuthorityGrantRepository, "findActive"> | undefined;
 
   constructor(options: ExecutionGatewayOptions) {
     this.envelopeVerifier = new EnvelopeVerifier({
@@ -244,6 +260,7 @@ export class ExecutionGateway implements ExecutionSystem {
     this.policyRepository = options.policyRepository;
     this.policyApprovalVerifier = options.policyApprovalVerifier;
     this.signalStateVerifier = options.signalStateVerifier;
+    this.authorityGrants = options.authorityGrants;
     this.requirePolicyBinding = options.allowUnverifiedPolicy !== true;
 
     if (
@@ -473,11 +490,54 @@ export class ExecutionGateway implements ExecutionSystem {
       ? policyStillCurrent === true && policyGovernanceVerified === true
       : policyStillCurrent !== false && policyGovernanceVerified !== false;
 
+    //
+    // RFC-0023 phase 4: what the authorization rests on must still hold
+    // at release, not only when the request was decided. Each business
+    // condition must be within its signed validUntil, and the authority
+    // grant, when there is one, must be unexpired and still the active
+    // grant for the caller and capability (not revoked or replaced).
+    //
+    const { businessConditions, authorityGrant, submittedBy } =
+      request.authorization.payload;
+
+    let businessConditionsCurrent: boolean | undefined;
+    let expiredConditions: string[] | undefined;
+
+    if (businessConditions !== undefined && businessConditions.length > 0) {
+      expiredConditions = businessConditions
+        .filter((condition) => {
+          const until = Date.parse(condition.validUntil);
+          return Number.isNaN(until) || until <= now.getTime();
+        })
+        .map((condition) => condition.signalKey);
+      businessConditionsCurrent = expiredConditions.length === 0;
+    }
+
+    let authorityGrantInForce: boolean | undefined;
+    let authorityGrantViolation: GatewayVerificationResult["authorityGrantViolation"];
+
+    if (authorityGrant !== undefined) {
+      const reason = await this.checkAuthorityGrant(
+        authorityGrant,
+        submittedBy,
+        executableContent.action,
+        now,
+      );
+
+      authorityGrantInForce = reason === undefined;
+
+      if (reason !== undefined) {
+        authorityGrantViolation = { reason };
+      }
+    }
+
     const priorChecksPassed =
       passed &&
       businessTransactionHashMatches &&
       policyBindingOk &&
-      signalsStillCurrent !== false;
+      signalsStillCurrent !== false &&
+      businessConditionsCurrent !== false &&
+      authorityGrantInForce !== false;
 
     //
     // The nonce check is the only check with a side effect,
@@ -500,6 +560,12 @@ export class ExecutionGateway implements ExecutionSystem {
           ? {}
           : { policyGovernanceVerified }),
         ...(signalsStillCurrent === undefined ? {} : { signalsStillCurrent }),
+        ...(businessConditionsCurrent === undefined
+          ? {}
+          : { businessConditionsCurrent }),
+        ...(authorityGrantInForce === undefined
+          ? {}
+          : { authorityGrantInForce }),
         nonceUnseen,
       },
 
@@ -508,9 +574,58 @@ export class ExecutionGateway implements ExecutionSystem {
       ...(policyGovernanceViolation ? { policyGovernanceViolation } : {}),
       ...(signalsHashMismatch ? { signalsHashMismatch } : {}),
       ...(signalDivergence ? { signalDivergence } : {}),
+      ...(expiredConditions !== undefined && expiredConditions.length > 0
+        ? { expiredConditions }
+        : {}),
+      ...(authorityGrantViolation ? { authorityGrantViolation } : {}),
     };
 
     return { result, executableContent };
+  }
+
+  /**
+   * Why the grant an authorization rests on no longer holds at release,
+   * or undefined when it still does.
+   */
+  private async checkAuthorityGrant(
+    bound: { readonly grantId: string; readonly validUntil: string },
+    callerId: string | undefined,
+    capability: string,
+    now: Date,
+  ): Promise<string | undefined> {
+    const until = Date.parse(bound.validUntil);
+
+    if (Number.isNaN(until) || until <= now.getTime()) {
+      return `authority grant ${bound.grantId} expired at ${bound.validUntil}`;
+    }
+
+    if (this.authorityGrants === undefined) {
+      return `authority grant ${bound.grantId} cannot be checked: no grant registry is configured`;
+    }
+
+    if (callerId === undefined) {
+      return `authority grant ${bound.grantId} cannot be checked: the authorization names no caller`;
+    }
+
+    let active;
+
+    try {
+      active = await this.authorityGrants.findActive(callerId, capability);
+    } catch (error) {
+      return `authority grant ${bound.grantId} could not be read: ${
+        error instanceof Error ? error.message : String(error)
+      }`;
+    }
+
+    if (active === null || active.grantId !== bound.grantId) {
+      return `authority grant ${bound.grantId} is no longer the active grant of "${callerId}" for "${capability}" (revoked or replaced)`;
+    }
+
+    if (active.validUntil.getTime() <= now.getTime()) {
+      return `authority grant ${bound.grantId} expired at ${active.validUntil.toISOString()}`;
+    }
+
+    return undefined;
   }
 
   /**
@@ -527,6 +642,22 @@ export class ExecutionGateway implements ExecutionSystem {
       if (this.isSoleFailureNonceReplay(result)) {
         throw new NonceAlreadyConsumedError(
           executableContent.businessTransactionId,
+        );
+      }
+
+      if (this.isOnlyNoLongerValid(result)) {
+        throw new AuthorizationNoLongerValidError(
+          executableContent.businessTransactionId,
+          [
+            ...(result.expiredConditions?.length
+              ? [
+                  `business condition(s) past their validUntil: ${result.expiredConditions.join(", ")}`,
+                ]
+              : []),
+            ...(result.authorityGrantViolation
+              ? [result.authorityGrantViolation.reason]
+              : []),
+          ],
         );
       }
       throw new Error(this.describeFailure(result));
@@ -611,6 +742,35 @@ export class ExecutionGateway implements ExecutionSystem {
     );
   }
 
+  /**
+   * True only when every check passed except the RFC-0023 phase 4 checks
+   * (and the nonce, which is not consumed when an earlier check fails):
+   * the authorization is genuine and untampered, but a business condition
+   * or the authority grant it rests on no longer holds. A forged or
+   * tampered request never qualifies, and stays a plain Error.
+   */
+  private isOnlyNoLongerValid(result: GatewayVerificationResult): boolean {
+    const {
+      nonceUnseen: _nonce,
+      businessConditionsCurrent,
+      authorityGrantInForce,
+      ...otherChecks
+    } = result.checks;
+
+    const policyBound =
+      result.policyContentMismatch === undefined &&
+      result.policyGovernanceViolation === undefined;
+
+    return (
+      (businessConditionsCurrent === false ||
+        authorityGrantInForce === false) &&
+      policyBound &&
+      Object.values(otherChecks).every(
+        (checkPassed) => checkPassed === true || checkPassed === undefined,
+      )
+    );
+  }
+
   private describeFailure(result: GatewayVerificationResult): string {
     const failedChecks = Object.entries(result.checks)
       .filter(([, checkPassed]) => checkPassed === false)
@@ -647,9 +807,17 @@ export class ExecutionGateway implements ExecutionSystem {
         "."
       : "";
 
+    const conditionsDetail = result.expiredConditions?.length
+      ? ` Business condition(s) past their validUntil: ${result.expiredConditions.join(", ")}.`
+      : "";
+
+    const grantDetail = result.authorityGrantViolation
+      ? ` ${result.authorityGrantViolation.reason}.`
+      : "";
+
     return (
       `Execution Gateway rejected request: failed checks ` +
-      `[${failedChecks.join(", ")}].${hashDetail}${policyDetail}${governanceDetail}${signalsHashDetail}${signalDivergenceDetail}`
+      `[${failedChecks.join(", ")}].${hashDetail}${policyDetail}${governanceDetail}${signalsHashDetail}${signalDivergenceDetail}${conditionsDetail}${grantDetail}`
     );
   }
 }
