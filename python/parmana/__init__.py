@@ -13,6 +13,7 @@ from .errors import __all__ as _error_exports
 from .models import *  # noqa: F401,F403
 from .models import __all__ as _model_exports
 from .models.approval_issuer import ApprovalIssuer, ApprovalIssuerChange
+from .models.authority_grant import AuthorityGrant, AuthorityGrantChange
 from .models.business_signal_source import (
     BusinessSignalSource,
     BusinessSignalSourceChange,
@@ -55,5 +56,7 @@ __all__ = [
     "ExternalConnectorChange",
     "BusinessSignalSource",
     "BusinessSignalSourceChange",
+    "AuthorityGrant",
+    "AuthorityGrantChange",
     *_error_exports,
 ]

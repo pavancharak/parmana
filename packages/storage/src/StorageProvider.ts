@@ -2,6 +2,7 @@ import type {
   ApprovalIssuerRepository,
   ExternalConnectorRepository,
   BusinessSignalSourceRepository,
+  AuthorityGrantRepository,
   BusinessTransactionRepository,
   ExecutionIntentRepository,
   ExecutionTrustRecordRepository,
@@ -63,4 +64,7 @@ export interface StorageProvider {
   readonly externalConnectors: ExternalConnectorRepository;
 
   readonly businessSignalSources: BusinessSignalSourceRepository;
+
+  /** Authority grants (RFC-0023 phase 3). */
+  readonly authorityGrants: AuthorityGrantRepository;
 }

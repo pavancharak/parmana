@@ -1,6 +1,7 @@
 export * from "./approval-issuer.js";
 export * from "./external-connector.js";
 export * from "./business-signal-source.js";
+export * from "./authority-grant.js";
 export * from "./audit-event.js";
 export * from "./authority.js";
 export * from "./authorization.js";

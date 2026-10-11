@@ -1264,6 +1264,201 @@
       ]
     },
     {
+      "name": "Authority Grants",
+      "description": "Maker-checker for which agent may have which action decided, within which limits, until when (RFC-0023)",
+      "item": [
+        {
+          "name": "List authority grants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/authority-grants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authority-grants"
+              ]
+            },
+            "description": "operationId: listAuthorityGrants\n\nLists every authority grant, active and revoked: which caller may have which capability decided,\nwithin which limits, from when until when. A grant matters only under a policy with\n`requireAuthorityGrant`. Revoked grants stay listed, so every decision that rested on one can be\nexplained. Needs a human key. See [Grant an agent authority](/guides/grant-an-agent-authority)."
+          }
+        },
+        {
+          "name": "List authority grant changes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/authority-grants/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authority-grants",
+                "changes"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "`PENDING_APPROVAL`, `APPROVED` or `REJECTED`. Omit for all.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "operationId: listAuthorityGrantChanges\n\nLists authority grant changes, newest first. A checker uses `status=PENDING_APPROVAL` to find what\nwaits for review. Needs a human key."
+          }
+        },
+        {
+          "name": "Propose granting or revoking an agent's authority (grant)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"grant\",\n  \"callerId\": \"warehouse-agent\",\n  \"capability\": \"erp:release-goods\",\n  \"limits\": {\n    \"parameters.amount\": {\n      \"max\": 100000\n    },\n    \"parameters.currency\": {\n      \"oneOf\": [\n        \"INR\"\n      ]\n    }\n  },\n  \"validUntil\": \"2026-12-30T00:00:00.000Z\",\n  \"reason\": \"The warehouse agent releases goods for paid invoices up to 100000 INR this quarter.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/authority-grants/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authority-grants",
+                "changes"
+              ]
+            },
+            "description": "Real captured request\n\noperationId: proposeAuthorityGrantChange\n\nProposes per-agent authority (RFC-0023 phase 3): `grant` says the API key with `callerId` may have\nrequests for `capability` decided, within `limits` on the request, until `validUntil` (at most 366\ndays); `revoke` ends the active grant. Nothing changes until a different person approves it. You\nmay not propose authority for your own key. Under a policy with `requireAuthorityGrant`, a request\nfrom a key with no grant in force, or outside its limits, is refused as `NOT_AUTHORIZED`, and one\nafter `validUntil` as `AUTHORITY_EXPIRED`. To change a grant, revoke it, then grant again. Needs a\nhuman key."
+          }
+        },
+        {
+          "name": "Propose granting or revoking an agent's authority (revoke)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"revoke\",\n  \"callerId\": \"warehouse-agent\",\n  \"capability\": \"erp:release-goods\",\n  \"reason\": \"The warehouse agent's key is being rotated.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/authority-grants/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authority-grants",
+                "changes"
+              ]
+            },
+            "description": "Real captured request\n\noperationId: proposeAuthorityGrantChange\n\nProposes per-agent authority (RFC-0023 phase 3): `grant` says the API key with `callerId` may have\nrequests for `capability` decided, within `limits` on the request, until `validUntil` (at most 366\ndays); `revoke` ends the active grant. Nothing changes until a different person approves it. You\nmay not propose authority for your own key. Under a policy with `requireAuthorityGrant`, a request\nfrom a key with no grant in force, or outside its limits, is refused as `NOT_AUTHORIZED`, and one\nafter `validUntil` as `AUTHORITY_EXPIRED`. To change a grant, revoke it, then grant again. Needs a\nhuman key."
+          }
+        },
+        {
+          "name": "Approve an authority grant change",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stepUpAuthorization\": {\n    \"payload\": {\n      \"version\": 1,\n      \"nonce\": \"3cc39c28-9ed5-4e7d-ae2e-3f3c2bbc06ba\",\n      \"pendingPolicyChangeId\": \"9f3cf733-a8ed-487c-bb58-a53950388cdf\",\n      \"action\": \"approve\",\n      \"authorizedAt\": \"2026-10-11T03:29:05.244Z\",\n      \"expiresAt\": \"2026-10-11T03:31:05.244Z\"\n    },\n    \"signature\": \"HCrlwJPXLRR4YNa1RAW7f6mq46l0gNoqPt52vqvIzQv2NWg5EaCuqO0gAkDOgTL6nbUsTy8E0gpyf5PyKVI6Ag==\",\n    \"keyId\": \"checker-step-up-key\",\n    \"algorithm\": \"ed25519\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/authority-grants/changes/:id/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authority-grants",
+                "changes",
+                ":id",
+                "approve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "The `changeId` from the proposal."
+                }
+              ]
+            },
+            "description": "Real captured request\n\noperationId: approveAuthorityGrantChange\n\nApproves an authority grant change and applies it at once: `grant` makes the grant active,\nstarting now unless it names a later `validFrom`; `revoke` ends it, so the caller's next request\nunder a policy with `requireAuthorityGrant` is refused. A grant whose `validUntil` has passed is\nrefused. Checked in order: a human key, not the proposer, not the grantee, and a step up\nauthorization for this change id and action `approve`, valid once, with the change id in\n`payload.pendingPolicyChangeId`."
+          }
+        },
+        {
+          "name": "Reject an authority grant change",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Does not meet the bar for this fixture\",\n  \"stepUpAuthorization\": {\n    \"payload\": {\n      \"version\": 1,\n      \"nonce\": \"4807fe45-0379-415b-9455-b8cb84eb5554\",\n      \"pendingPolicyChangeId\": \"5617ba3c-fb07-437d-9131-232b84bbb863\",\n      \"action\": \"reject\",\n      \"authorizedAt\": \"2026-09-15T03:48:16.755Z\",\n      \"expiresAt\": \"2026-09-15T03:50:16.755Z\"\n    },\n    \"signature\": \"Wu5/oibGCjvkTklGQPiDMDemqxCVbSyuoVT7WHW63rGq8Av5KFTW6vMkUCP03pANv8bDu60bZVuVcTDVmLXpDA==\",\n    \"keyId\": \"human-checker-step-up-key\",\n    \"algorithm\": \"ed25519\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/authority-grants/changes/:id/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "authority-grants",
+                "changes",
+                ":id",
+                "reject"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "The `changeId` from the proposal."
+                }
+              ]
+            },
+            "description": "operationId: rejectAuthorityGrantChange\n\nRejects an authority grant change. No grant changes. The same checks as approve, with a step up\nauthorization for action `reject` and a `rejectionReason`."
+          }
+        }
+      ]
+    },
+    {
       "name": "Sandbox",
       "description": "Routes that exist only on the public sandbox (ADR-0014), for trying Parmana from a browser",
       "item": [

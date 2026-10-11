@@ -18,21 +18,24 @@ fact. Parmana answers two questions separately, and an action runs only when bot
 | Parmana asking the source and recording a Trusted Signal                 | **[AVAILABLE]** in the runtime    |
 | Business systems registered as sources through maker checker             | **[AVAILABLE]**, not yet deployed |
 | Signed queries, and answers verified against the source's registered key | **[AVAILABLE]**, not yet deployed |
-| Per-agent limits and expiry as authority                                 | **[NOT AVAILABLE]**               |
+| Per-agent authority grants with limits and expiry                        | **[AVAILABLE]**, not yet deployed |
 | Execute only if still valid, in one call to the system                   | **[NOT AVAILABLE]**               |
 
 The design and its phases are in
 [RFC-0023](https://github.com/pavancharak/parmana/blob/main/docs/rfcs/RFC-0023-Business-Validation.md);
-the claims are [CLAIMS.md 2.53 and 2.54](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). To
-connect a system, see [Connect a business signal source](/guides/connect-a-business-signal-source).
+the claims are [CLAIMS.md 2.53 to 2.55](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). To
+connect a system, see [Connect a business signal source](/guides/connect-a-business-signal-source); to give an agent
+authority, see [Grant an agent authority](/guides/grant-an-agent-authority).
 
 ## The flow
 
 1. The agent proposes an action and facts.
 2. The facts must describe the action being executed (`boundSignals`).
 3. **Authority.** The policy in force must be the approved, current one, and the capability must
-   be decided under its bound policy. At the API, the caller's key must allow the capability. If
-   authority is not established the request is refused, and no business system is asked.
+   be decided under its bound policy. At the API, the caller's key must allow the capability. Under
+   a policy with `requireAuthorityGrant`, the caller must also hold a grant in force for the action,
+   and the request must be within its limits. If authority is not established the request is
+   refused, and no business system is asked.
 4. **Business validation.** For each fact the policy declares a source for, Parmana asks that
    source about the business object it reads from the request, never using the agent's value. If
    the agent proposed a value, it must equal the source's.
@@ -107,8 +110,14 @@ without one has no `sourceProof`; its answer is trusted on the pinned HTTPS conn
 | Business validation | `VALID`, `INVALID`, `MISSING_DATA`, `CONFLICTING_DATA`, `SOURCE_UNAVAILABLE`, `VALIDATION_EXPIRED`, `NOT_EVALUATED` |
 | Execution           | `EXECUTED`, `NOT_EXECUTED`, `EXECUTION_FAILED`, `EXECUTION_UNKNOWN`                                                 |
 
-- **`AUTHORIZED`** means the action type may be decided. It does not mean this action is valid or
-  was executed.
+- **`AUTHORIZED`** means the action may be decided: the action type, and, under a policy that
+  requires a grant, this request within the caller's grant. It does not mean this action is valid
+  or was executed.
+- **`NOT_AUTHORIZED`**: the capability is decided under the wrong policy, or, under a policy that
+  requires a grant, the caller holds none in force or the request is outside its limits.
+- **`AUTHORITY_EXPIRED`**: the caller's grant has passed its `validUntil`.
+- **`AUTHORITY_UNCLEAR`**: the policy in force could not be established as the approved one, or the
+  caller's grants could not be read.
 - **`INVALID`**: the agent proposed a value the source contradicts, or proposed facts that do not
   describe the action.
 - **`MISSING_DATA`**: the request names no business object, the source has no such fact, or it
@@ -154,8 +163,9 @@ verification. Records made before this change have no `assessment` and still ver
   no real business system has been connected. No shipped policy declares a source.
 - **Checked once.** An answer is checked when the request is decided, not again when the action is
   released (phase 4).
-- **Authority is the existing checks.** Per-agent limits ("Agent X: refunds up to ₹1,00,000") and
-  expiry come later, so `AUTHORITY_EXPIRED` is not yet produced.
+- **Grants are opt in, per policy.** A policy without `requireAuthorityGrant` keeps today's
+  authority checks. No shipped policy requires a grant yet. Grant limits are per request, not per
+  day.
 - **Refund eligibility has no source yet.** `refundEligible` and `fraudCheckPassed` in
   `customer-refund` are still declared by the caller and can only refuse (see
   [Limitations](/security/limitations)).

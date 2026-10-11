@@ -2,6 +2,7 @@ import type {
   ApprovalIssuerRepository,
   ExternalConnectorRepository,
   BusinessSignalSourceRepository,
+  AuthorityGrantRepository,
   BusinessTransactionRepository,
   ExecutionIntentRepository,
   ExecutionTrustRecordRepository,
@@ -31,6 +32,7 @@ import { SupabaseHandbookDownloadLeadRepository } from "./SupabaseHandbookDownlo
 import { SupabaseApprovalIssuerRepository } from "./SupabaseApprovalIssuerRepository.js";
 import { SupabaseExternalConnectorRepository } from "./SupabaseExternalConnectorRepository.js";
 import { SupabaseBusinessSignalSourceRepository } from "./SupabaseBusinessSignalSourceRepository.js";
+import { SupabaseAuthorityGrantRepository } from "./SupabaseAuthorityGrantRepository.js";
 
 /**
  * Supabase Storage Provider.
@@ -54,6 +56,7 @@ export class SupabaseStorageProvider implements StorageProvider {
   readonly approvalIssuers: ApprovalIssuerRepository;
   readonly externalConnectors: ExternalConnectorRepository;
   readonly businessSignalSources: BusinessSignalSourceRepository;
+  readonly authorityGrants: AuthorityGrantRepository;
 
   constructor() {
     const pool = PostgresPoolFactory.create();
@@ -81,6 +84,7 @@ export class SupabaseStorageProvider implements StorageProvider {
     this.businessSignalSources = new SupabaseBusinessSignalSourceRepository(
       pool,
     );
+    this.authorityGrants = new SupabaseAuthorityGrantRepository(pool);
 
     Object.freeze(this);
   }

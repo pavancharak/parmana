@@ -30,6 +30,7 @@ export * from "./memory/MemoryHandbookDownloadLeadRepository.js";
 export * from "./memory/MemoryApprovalIssuerRepository.js";
 export * from "./memory/MemoryExternalConnectorRepository.js";
 export * from "./memory/MemoryBusinessSignalSourceRepository.js";
+export * from "./memory/MemoryAuthorityGrantRepository.js";
 
 // -----------------------------------------------------------------------------
 // Errors
@@ -49,6 +50,7 @@ export * from "./supabase/SupabaseHandbookDownloadLeadRepository.js";
 export * from "./supabase/SupabaseApprovalIssuerRepository.js";
 export * from "./supabase/SupabaseExternalConnectorRepository.js";
 export * from "./supabase/SupabaseBusinessSignalSourceRepository.js";
+export * from "./supabase/SupabaseAuthorityGrantRepository.js";
 export * from "./supabase/SupabaseNonceStore.js";
 export * from "./supabase/SupabaseApprovalNonceStore.js";
 export * from "./supabase/SupabasePolicyChangeStepUpNonceStore.js";

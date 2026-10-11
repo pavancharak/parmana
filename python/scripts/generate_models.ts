@@ -407,6 +407,8 @@ const MODULES: ModuleSpec[] = [
       "TrustedSignalIntegrityProof",
       "TrustedSignal",
       "BusinessValidationFailure",
+      "AuthorityGrantLimit",
+      "AuthorityGrantReference",
       "AuthorityAssessment",
       "BusinessValidationAssessment",
       "ExecutionAssessment",
