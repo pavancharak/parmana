@@ -225,7 +225,7 @@ describe("Business signal source changes (HTTP boundary)", () => {
       const app = governanceApp();
       const name = uniqueName();
       const valid = registration(name);
-      const rsa = generateKeyPairSync("rsa", { modulusLength: 1024 })
+      const rsa = generateKeyPairSync("rsa", { modulusLength: 2048 })
         .publicKey.export({ format: "pem", type: "spki" })
         .toString();
 
