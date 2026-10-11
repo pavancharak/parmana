@@ -227,6 +227,7 @@
                   "sdks/reference/typescript/interfaces/Override",
                   "sdks/reference/typescript/interfaces/ParmanaErrorOptions",
                   "sdks/reference/typescript/interfaces/ParmanaRelease",
+                  "sdks/reference/typescript/interfaces/ParmanaReleaseCondition",
                   "sdks/reference/typescript/interfaces/PendingPolicyChange",
                   "sdks/reference/typescript/interfaces/PolicyChangeForReview",
                   "sdks/reference/typescript/interfaces/PolicyChangeStepUpAuthorization",

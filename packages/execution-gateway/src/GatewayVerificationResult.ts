@@ -56,6 +56,19 @@ export interface GatewayVerificationResult {
      */
     readonly signalsStillCurrent?: boolean;
 
+    /**
+     * RFC-0023 phase 4. Present when the authorization carries business
+     * conditions: false once any is past its signed validUntil.
+     */
+    readonly businessConditionsCurrent?: boolean;
+
+    /**
+     * RFC-0023 phase 4. Present when the authorization rests on an
+     * authority grant: false once the grant has expired, was revoked or
+     * replaced, or cannot be checked.
+     */
+    readonly authorityGrantInForce?: boolean;
+
     readonly nonceUnseen: boolean;
   };
 
@@ -106,4 +119,11 @@ export interface GatewayVerificationResult {
    * signalsStillCurrent is true or undefined.
    */
   readonly signalDivergence?: readonly SignalStateViolation[];
+
+  /** The signal keys of business conditions past their validUntil. */
+  readonly expiredConditions?: readonly string[];
+
+  readonly authorityGrantViolation?: {
+    readonly reason: string;
+  };
 }

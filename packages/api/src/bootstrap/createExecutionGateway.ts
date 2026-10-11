@@ -15,6 +15,7 @@ import {
 import type { ExecutionSystem } from "@parmana/execution-system";
 
 import { policyRepository } from "../application.js";
+import { authorityGrantRepository } from "../repositories.js";
 
 import { createExecutionControl } from "./createExecutionControl.js";
 import { createGatewayIdentity } from "./createGatewayIdentity.js";
@@ -108,6 +109,10 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
       ? { allowUnverifiedPolicy: true }
       : { policyApprovalVerifier }),
     signalStateVerifier: executionGatewaySignalStateVerifier,
+
+    // RFC-0023 phase 4: an authorization that rests on an authority
+    // grant is released only while that grant is still the active one.
+    authorityGrants: authorityGrantRepository,
 
     executionControl: {
       service: executionControl,

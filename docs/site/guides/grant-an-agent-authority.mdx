@@ -122,5 +122,6 @@ have a second person approve it. The agent's next request is refused. The revoke
 
 - A grant limits each request on its own. It does not count: "100000 per day" is not expressible yet.
 - A grant names a caller id that the server does not check exists; a grant to a key that does not exist has no effect.
-- Authority is checked when the request is decided, not again when the action is released (RFC-0023 phase 4).
+- The grant is checked when the request is decided and again at release: a grant that expires or is revoked in
+  between stops the release (`409 AUTHORIZATION_NO_LONGER_VALID`).
 - See [Limitations](/security/limitations), G-93.

@@ -50,6 +50,8 @@ from .receipt import Receipt
 from .verification import VerificationStatus, Verification
 from .trust_record import EvidenceAnchor, ExecutionTrustRecord
 from .execution_authorization import (
+    AuthorizationBusinessCondition,
+    AuthorizationGrantBound,
     ExecutionAuthorizationPayload,
     SignedExecutionAuthorization,
 )
@@ -76,6 +78,8 @@ __all__ = [
     "AuthorityStatus",
     "AuthorityType",
     "Authorization",
+    "AuthorizationBusinessCondition",
+    "AuthorizationGrantBound",
     "BusinessTransaction",
     "BusinessTransactionMetadata",
     "BusinessTransactionStatus",

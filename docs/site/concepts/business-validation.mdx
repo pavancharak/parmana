@@ -19,11 +19,11 @@ fact. Parmana answers two questions separately, and an action runs only when bot
 | Business systems registered as sources through maker checker             | **[AVAILABLE]**, not yet deployed |
 | Signed queries, and answers verified against the source's registered key | **[AVAILABLE]**, not yet deployed |
 | Per-agent authority grants with limits and expiry                        | **[AVAILABLE]**, not yet deployed |
-| Execute only if still valid, in one call to the system                   | **[NOT AVAILABLE]**               |
+| Re-checked at release, and execute only if still valid at the system     | **[AVAILABLE]**, not yet deployed |
 
 The design and its phases are in
 [RFC-0023](https://github.com/pavancharak/parmana/blob/main/docs/rfcs/RFC-0023-Business-Validation.md);
-the claims are [CLAIMS.md 2.53 to 2.55](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). To
+the claims are [CLAIMS.md 2.53 to 2.56](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). To
 connect a system, see [Connect a business signal source](/guides/connect-a-business-signal-source); to give an agent
 authority, see [Grant an agent authority](/guides/grant-an-agent-authority).
 
@@ -135,6 +135,24 @@ Every status other than `VALID` refuses the request, with one exception: `NOT_EV
 policy that declares no sources. Such a policy decides as it did before, and still needs a signed
 approval to approve. No status is ever turned into another.
 
+## At release
+
+A decision is not the end. The authorization Parmana signs carries the facts it rests on and the agent's
+grant, each with its `validUntil`. The gateway checks them again just before it releases the action: if a
+fact has expired, or the grant has expired or been revoked, nothing is sent and the request gets
+`409 AUTHORIZATION_NO_LONGER_VALID` with `executionStatus: NOT_EXECUTED`.
+
+An [external connector](/guides/connect-any-external-system) receives the facts as `conditions` in its
+signed release, which expires no later than the earliest of them. Its endpoint acts only if they still
+hold in its own records, in the same transaction, and otherwise answers `conditionsNotMet`.
+
+| Execution           | Means                                                                                          |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| `NOT_EXECUTED`      | Refused at decision or at release, or the endpoint declined because a condition no longer held |
+| `EXECUTED`          | Released and performed                                                                         |
+| `EXECUTION_FAILED`  | Released, and the system reported a failure                                                    |
+| `EXECUTION_UNKNOWN` | Released, and the call failed, so whether it ran is unknown (`EXECUTION_OUTCOME_UNKNOWN`)      |
+
 ## In the record
 
 Every decision carries `assessment`, inside the signed Execution Trust Record or
@@ -161,8 +179,9 @@ verification. Records made before this change have no `assessment` and still ver
 
 - **Not deployed yet.** Registering sources and asking them is in the repository and tested, but
   no real business system has been connected. No shipped policy declares a source.
-- **Checked once.** An answer is checked when the request is decided, not again when the action is
-  released (phase 4).
+- **Conditions at the system are opt in.** The gateway always re-checks `validUntil` and the grant at
+  release. An external endpoint must check the release's `conditions` itself to execute only if they
+  still hold; built in connectors get only the gateway re-check.
 - **Grants are opt in, per policy.** A policy without `requireAuthorityGrant` keeps today's
   authority checks. No shipped policy requires a grant yet. Grant limits are per request, not per
   day.

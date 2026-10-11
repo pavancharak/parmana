@@ -1,3 +1,5 @@
+import { ExecutionAssessmentStatus } from "@parmana/shared";
+
 import { RuntimeError } from "./RuntimeError.js";
 
 /**
@@ -24,8 +26,14 @@ import { RuntimeError } from "./RuntimeError.js";
  * is scoped to the caller that submitted the transaction, as before).
  *
  * 502: the failure is in the system behind Parmana, not in Parmana.
+ *
+ * RFC-0023 phase 4: the response also says `executionStatus:
+ * EXECUTION_UNKNOWN`, the execution status of RFC-0023 for exactly this
+ * case. It is never reported as failed: the action may have run.
  */
 export class ExecutionOutcomeUnknownError extends RuntimeError {
+  readonly executionStatus = ExecutionAssessmentStatus.EXECUTION_UNKNOWN;
+
   constructor(
     public readonly businessTransactionId: string,
     public readonly authorizationId: string | undefined,
