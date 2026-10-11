@@ -31,6 +31,10 @@ Each request carried a valid signed approval from `manager-pavan-key-1`. The fou
 (`record-*.json`, no secret). Not checked in this run: the `release_acted` log line of the release check endpoint
 for request 1, which shows the `conditions` the release carried.
 
+Cleaned up the same day: `livecheck:signal` and the source `livecheck-erp` revoked through maker checker (proposed by
+`checker-pavan`, approved by `maker-pavan`), and the source's private key deleted from the operator's machine. The
+Vercel project stays; without a registration Parmana no longer asks it.
+
 Before deployment, the bundle `build-endpoint.ts` makes answered Parmana's own query client
 (`HttpBusinessSignalSource`) locally, run as Vercel runs it.
 

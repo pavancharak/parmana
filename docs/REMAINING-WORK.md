@@ -1,6 +1,6 @@
 # Remaining work
 
-Snapshot: 2026-09-21, with section F added and updated on 2026-09-25, and section G added on 2026-09-27. This is the current list of what is left. It replaces `02-REMAINING.md` (a July 5 snapshot) for current status.
+Snapshot: 2026-09-21, with section F added and updated on 2026-09-25, section G added on 2026-09-27, and section L added and updated on 2026-10-11. This is the current list of what is left. It replaces `02-REMAINING.md` (a July 5 snapshot) for current status.
 
 Every item says how it was verified. Items marked **not re audited** are copied from `docs/VERIFICATION-GAPS.md` as written there, and were not checked again on this date. The full record of what was found and closed stays in `docs/VERIFICATION-GAPS.md` and `docs/CLAIMS.md`.
 
@@ -160,38 +160,64 @@ The sandbox is live and documented (ADR-0014 steps 1 to 4, `docs/CLAIMS.md` 2.51
 | An in browser record check on the Playground (ADR-0014 section 5)                     | Not built; the page shows the offline check in each SDK.                                                                                                                       |
 | Python SDK verifies its own decoded record (`docs/VERIFICATION-GAPS.md` G-85)         | Fixed in code 2026-10-02; published in the Python SDK 1.5.0 (2026-10-04).                                                                                                      |
 
-## L. Business validation (RFC-0023, added 2026-10-11)
+## L. Business validation (RFC-0023, added 2026-10-11, updated the same evening)
 
-All four phases are merged (PRs #97 to #100), deployed (`main` at `4fdc2c2`, migrations applied) and in SDK 1.6.0,
-published on npm and PyPI on 2026-10-11 (`docs/CLAIMS.md` 2.53 to 2.56). Production decisions do not change yet: no
-business system is connected, no policy opts in and no grant exists.
+**Where it stands.** All four phases are merged (PRs #97 to #100), deployed with their migrations, and in SDK 1.6.0
+on npm and PyPI (`docs/CLAIMS.md` 2.53 to 2.56). Two live checks passed in production on 2026-10-11, with test
+policies and endpoints that act on nothing: `examples/live-checks/authority-grant` (4 of 4) and
+`examples/live-checks/business-signal-source` (4 of 4). Both were cleaned up afterwards: their capabilities and the
+demo source are revoked. **Production decisions for real actions are unchanged**: no shipped policy declares a source
+or requires a grant, no real business system is connected and no real grant exists.
 
-**To make the new features affect real decisions, four steps are left, in this order:**
+### L.1 Needs the operator, in this order
 
-| Step | What                                                                                                                                                                                                                    | Who                                                                     | Closes                        |
-| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------- |
-| 1    | Connect a real business system as a signal source: run an endpoint like `typescript/examples/08-business-signal-source.ts` in front of it, register it through maker checker                                            | The operator; the endpoint for a given system can be written on request | G-92, first item              |
-| 2    | Change a policy to use `signalSources` or `requireAuthorityGrant`, through policy governance                                                                                                                            | The operator approves; the change can be drafted on request             | G-92 and G-93, with step 4    |
-| 3    | Make the first authority grant, for example `paytm-refund-agent` for `paytm:refund` up to an amount the operator chooses, through `/authority-grants/changes`                                                           | The operator approves; the commands can be given on request             | G-93, first item, with step 4 |
-| 4    | Do one real refund end to end, recorded with its request id, to prove the new keys (rotated 2026-10-11) and the new features work together. The commands are ready in `examples/live-checks/paytm-refund` (not run yet) | The operator                                                            | G-92 and G-93 first items     |
+| #   | What                                                                                                                                               | Why                                                                                                                  | Ready                                                                           |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1   | Run the refund live check: one real 1 INR refund through `paytm-refund-agent`, an approval from `manager-pavan-key-1`, the record verified offline | Every credential was rotated on 2026-10-11; none has been used together on a real action                             | `examples/live-checks/paytm-refund`; needs a paid Paytm order                   |
+| 2   | Name the system that owns refund eligibility (the merchant's order system, not Paytm) and connect it as a signal source                            | RFC-0023 open question 1; until then `refundEligible` and `fraudCheckPassed` are the agent's word (G-51, G-76, G-92) | `typescript/examples/08-business-signal-source.ts`; endpoint written on request |
+| 3   | Make the first real grant, for example `paytm-refund-agent` for `paytm:refund`, with an amount limit and an end date                               | Caps what a leaked or misbehaving agent key can do (G-93)                                                            | `examples/live-checks/governance.ts propose-grant`; commands on request         |
+| 4   | Change `customer-refund` through policy governance to use `requireAuthorityGrant` (after 3, or refunds stop) and, after 2, `signalSources`         | Only then do the new features decide real refunds                                                                    | Policy change drafted on request                                                |
+| 5   | Run one real refund under the changed policy and record it with its request id                                                                     | Closes the first items of G-92 and G-93 for a real action                                                            | Same as 1                                                                       |
 
-**Live checks** (each with its steps, expected output and failures in its README):
+### L.2 Evidence not yet collected
 
-| Check                                         | Proves                                                                                              | Closes, when run                                                 |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `examples/live-checks/authority-grant`        | A grant decides: refused before it, approved within its limit, refused over it and after its revoke | **Passed 2026-10-11** (4 of 4); G-93 verified with a test policy |
-| `examples/live-checks/business-signal-source` | A source answers a production decision, signed; the release carries it as a condition               | **Passed 2026-10-11** (4 of 4); G-92 verified with a demo source |
-| `examples/live-checks/paytm-refund`           | One real refund through the rotated credentials; the record verifies offline                        | Not run yet; step 4 above                                        |
+| Item                                                                                                                                                                                        | How                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| The release check endpoint's `release_acted` log lines for `da96002b-66ec-44cf-88da-0f29997e4711` and `d736681f-8d86-4e24-bcf3-66debfa6ac23`, the second showing the release's `conditions` | Vercel logs of `parmana-release-check`; record them in the two live check READMEs |
+| A grant revoked, or a fact expiring, between decision and release, refused at release in production (`409 AUTHORIZATION_NO_LONGER_VALID`)                                                   | Not reachable through one `POST /execute` without a test hook (G-94)              |
+| `GET /ready` after the database password reset the operator reported on 2026-10-11                                                                                                          | `Invoke-RestMethod https://parmana-api-real.vercel.app/ready`                     |
 
-They use test policies and endpoints that act on nothing (except the refund), so they can run before steps 1 to 3.
+### L.3 Not built (engineering, when wanted)
 
-**Not built yet:**
+| Item                                                                                            | Gap  | State                                                                                         |
+| ----------------------------------------------------------------------------------------------- | ---- | --------------------------------------------------------------------------------------------- |
+| Daily or cumulative grant limits ("50000 or 20 refunds per day")                                | G-93 | Design recorded in RFC-0023, "Cumulative grant limits"; four open questions there             |
+| Built in connectors (Paytm, HubSpot, GitHub, Slack) asking the business system again at release | G-94 | External endpoints check `conditions` themselves; built in ones get only the gateway re-check |
+| A "not released" state for an Execution Intent refused at release                               | G-94 | It is left `ERRORED`; a person closes it as `NOT_EXECUTED`                                    |
+| An end to end test of a refusal at release through `POST /execute`                              | G-94 | The gateway, adapter and runtime are each tested; the timing needs a test hook                |
+| Checking that a grant's caller id exists                                                        | G-93 | A grant to an unknown key is accepted and has no effect                                       |
+| Limiting which claims a source may answer, for which policies                                   | G-92 | Any registered source can answer any claim a policy asks it                                   |
 
-| Item                                                                      | State                                                                                                      |
-| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Daily or cumulative grant limits ("100000 per day") (G-93)                | Not built; a grant limits each request on its own. Design recorded in RFC-0023, "Cumulative grant limits". |
-| Built in connectors asking the business system again at release (G-94)    | Not built; external endpoints check `conditions` themselves.                                               |
-| A release refused at release leaves the Execution Intent `ERRORED` (G-94) | Not built; a person closes it as `NOT_EXECUTED`.                                                           |
+By design, not planned: a source registered without a key is trusted on TLS alone (G-92; registering a key is
+recommended), and nonce reuse is the source's to refuse (G-92; the example endpoint does).
+
+### L.4 Open questions (RFC-0023)
+
+1. The source of truth for refund eligibility must be named before `customer-refund` can declare a source (L.1, 2).
+2. Whether a sourced fact can ever replace the signed human approval, or always adds to it. Today `PolicyValidator`
+   requires a signed approval on every approve rule.
+3. For cumulative limits: calendar or rolling periods, limits across capabilities, whether an approval may exceed a
+   limit, and storage without a database.
+
+### L.5 Housekeeping
+
+| Item                                                                                                                                    | State                                                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `livecheck-agent` key                                                                                                                   | Still in `PARMANA_API_KEYS`; harmless (both its capabilities are revoked); remove when not needed     |
+| Vercel projects `parmana-signal-check` and `parmana-release-check`                                                                      | Can stay: they act on nothing and accept only releases or queries signed by Parmana for their address |
+| Step up keys: `maker-pavan` now has one too (2026-10-11), so either person can approve the other's change                               | Back up `%USERPROFILE%\parmana-maker\step-up.private.pem` and the checker's, with the approver key    |
+| Keys rotated several times on 2026-10-11 (checker twice after one was exposed in chat, maker once after the saved copy was found wrong) | The saved copies of `maker-pavan` and `checker-pavan` were each checked against production            |
+| Deploying an endpoint to Vercel from the repository folder applies the repository's `vercel.json` and fails                             | The live check READMEs deploy from inside the endpoint's folder; recorded there                       |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
