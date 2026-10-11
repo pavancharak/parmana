@@ -31,6 +31,9 @@ valid until 2026-10-18), proposed by `maker-pavan` and approved by `checker-pava
 Each request carried a valid signed approval from `manager-pavan-key-1`. The four records are kept by the operator
 (`record-*.json`, no secret). Not checked in this run: the endpoint's Vercel log line for request 2.
 
+Cleaned up the same day: grant `4b60507f-adb8-4fe0-82b3-a83c41e09022` revoked (request 4) and the capability
+`livecheck:grant` revoked through maker checker; the policy version stays approved, unused.
+
 ## What it uses
 
 | Part         | What                                                                                                                          |
