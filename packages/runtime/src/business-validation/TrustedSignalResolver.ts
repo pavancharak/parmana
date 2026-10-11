@@ -169,7 +169,18 @@ export class TrustedSignalResolver {
     }
 
     const subject = String(rawSubject);
-    const source = this.registry?.get(declaration.source);
+    let source;
+
+    try {
+      source = await this.registry?.get(declaration.source);
+    } catch (error) {
+      return fail(
+        BusinessValidationStatus.SOURCE_UNAVAILABLE,
+        `${signalKey}: source "${declaration.source}" could not be looked up (${
+          error instanceof Error ? error.message : String(error)
+        }).`,
+      );
+    }
 
     if (source === undefined) {
       return fail(
@@ -296,6 +307,10 @@ export class TrustedSignalResolver {
         digest: await this.hasher.hash(unsigned),
         ...(answer.sourceProof !== undefined && {
           sourceProof: answer.sourceProof,
+          ...(answer.sourceKeyId !== undefined && {
+            sourceKeyId: answer.sourceKeyId,
+          }),
+          sourceProofVerified: answer.sourceProofVerified === true,
         }),
       },
     };

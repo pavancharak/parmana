@@ -46,6 +46,10 @@ class TrustedSignalIntegrityProof:
 
     source_proof: str | None = None
 
+    source_key_id: str | None = None
+
+    source_proof_verified: bool | None = None
+
 
 @dataclass(frozen=True)
 class TrustedSignal:

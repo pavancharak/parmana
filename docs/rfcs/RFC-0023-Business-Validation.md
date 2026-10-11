@@ -1,12 +1,12 @@
 # RFC-0023 — Business validation: an agent's proposal is never a business fact
 
-Status: Phase 1 implemented
+Status: Phases 1 and 2 implemented
 
 Author: Pavan Dev Singh Charak (requirement); implementation session
 
 Created: 2026-10-10
 
-Updated: 2026-10-10
+Updated: 2026-10-11
 
 ---
 
@@ -86,7 +86,9 @@ Agent proposes action and facts
   "integrityProof": {
     "algorithm": "sha256",
     "digest": "...",
-    "sourceProof": "..."
+    "sourceProof": "...",
+    "sourceKeyId": "...",
+    "sourceProofVerified": true
   },
   "verificationStatus": "VERIFIED"
 }
@@ -94,9 +96,11 @@ Agent proposes action and facts
 
 `integrityProof.digest` is the SHA-256 of the canonical signal without its proof. It is signed by
 Parmana as part of the Decision in the Execution Trust Record or Refusal Record. That proves what
-Parmana observed, not that the source said it. `sourceProof` carries the source's own proof, such as
-a response signature, verbatim, when the source has one. Verifying a source's own proof is per-source
-work for later phases.
+Parmana observed, not that the source said it. Since phase 2, a source registered with an Ed25519
+key must sign its answer; Parmana verifies the signature before trusting the answer and records it as
+`sourceProof`, with `sourceKeyId` and `sourceProofVerified: true`. That proves the source said it. An
+unsigned or wrongly signed answer from such a source is `SOURCE_UNAVAILABLE`. A source registered
+without a key has no `sourceProof`.
 
 `validUntil` is the earlier of the source's own `validUntil` and `observedAt + maxAgeSeconds`
 (default 300 s).
@@ -143,13 +147,99 @@ Each `Decision` carries `assessment`:
 The Decision is inside the signed canonical form of both records, so changing any status fails
 verification. Records made before this RFC have no `assessment` and still verify.
 
+# Business signal sources (phase 2)
+
+Any business system can be a source. It is registered under a name, the one policies use in
+`signalSources[*].source`, through maker checker, the same rules as an external connector (ADR-0013):
+
+- `POST /business-signal-sources/changes` proposes `register` (`name`, `endpointUrl`, optional
+  `timeoutMs` 1000 to 30000, default 10000, optional Ed25519 `publicKeyPem` and `keyId`) or `revoke`.
+  Human callers only.
+- A different human approves or rejects it with a step up authorization for that change id
+  (`/changes/{id}/approve`, `/changes/{id}/reject`). Only an approved change touches
+  `business_signal_sources`; one active registration and one pending change per name.
+- The endpoint must be `https`, name a domain, carry no credentials or fragment, and resolve only to
+  public addresses. That is checked on proposal, on approval and at every query, and each query is sent
+  to the checked address with redirects refused and the answer limited to 16 KiB.
+- A revoked registration stays listed. Revoking makes every policy that names the source refuse as
+  `SOURCE_UNAVAILABLE` from the next request.
+
+The runtime reads the registry on every lookup (`RepositoryBusinessSignalSourceRegistry`), so a
+revoke takes effect immediately. A registry that cannot be read is `SOURCE_UNAVAILABLE`.
+
+## Wire protocol
+
+Parmana `POST`s `{ query, signature }`:
+
+```json
+{
+  "query": {
+    "version": 1,
+    "source": "erp",
+    "audience": "https://orders.example.com/parmana/signals",
+    "signalKey": "invoicePaid",
+    "claim": "invoice.paid",
+    "subject": "INV-1001",
+    "action": "erp:release-goods",
+    "businessTransactionId": "...",
+    "nonce": "...",
+    "issuedAt": "...",
+    "expiresAt": "..."
+  },
+  "signature": { "algorithm": "ed25519", "keyId": "default", "value": "..." }
+}
+```
+
+`signature` is Parmana's default key (`GET /keys/default`) over the canonical JSON of `query`. The
+query lives 60 seconds. `audience` is the endpoint as registered, so a query for one source cannot be
+replayed to another.
+
+The source answers HTTP 200 with `{ answer, signature? }`:
+
+```json
+{
+  "answer": {
+    "version": 1,
+    "source": "erp",
+    "nonce": "...",
+    "signalKey": "invoicePaid",
+    "claim": "invoice.paid",
+    "subject": "INV-1001",
+    "status": "observed",
+    "value": true,
+    "observedAt": "...",
+    "validUntil": "..."
+  },
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "erp-2026-10",
+    "value": "..."
+  }
+}
+```
+
+`answer` must echo `source`, `nonce`, `signalKey`, `claim` and `subject`, so a signed answer cannot be
+replayed to another query. `status` is `observed` (with `value`, `observedAt`, optionally
+`validUntil`), `not_found` or `conflicting` (with `reason`). With a registered key, `signature` is
+required and is Ed25519 over the canonical JSON of `answer`; a `keyId` that differs from the
+registered one is refused. Anything else (not 200, not JSON, no echo, another version or status, a
+bad signature) throws in `HttpBusinessSignalSource`, which the resolver records as
+`SOURCE_UNAVAILABLE`. The resolver then applies the phase 1 checks to an accepted answer (type,
+freshness, the proposed value).
+
+`typescript/examples/08-business-signal-source.ts` is a complete source endpoint, tested against the
+real client.
+
 # Phases
 
 1. **This change.** Statuses, the Trusted Signal, `signalSources`, the source port
    (`BusinessSignalSource`) with a static registry, the resolver, the runtime step, and the
    assessment on every Decision. No source is registered in the server, so a policy that declares one
    is refused as `SOURCE_UNAVAILABLE`, failing closed. No shipped policy declares one.
-2. Source registry through maker checker; a generic HTTP source; HubSpot and approvals as sources.
+2. **Implemented.** Source registry through maker checker (`/business-signal-sources`), the generic
+   HTTP source with signed queries, and answers verified against the source's registered Ed25519 key.
+   Built in sources (HubSpot, approvals) are not added: a system becomes a source by answering the
+   protocol, and the approval stays the signed human approval (2.47).
 3. Per-agent authority grants (action type, limits, expiry), making `AUTHORITY_EXPIRED` reachable.
 4. Conditional execution ("execute only if still valid") through connectors, re-checking `validUntil`
    at release, and execution statuses on the Trust Record.

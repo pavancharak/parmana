@@ -160,7 +160,11 @@ agent can achieve:
   match the action executed (EV-06).
 - A fact a policy sources from a business system (`signalSources`, 2.53, RFC-0023) is asked of
   that system by Parmana, never taken from the agent; an agent that proposes a different value
-  is refused as `INVALID`. No business source is registered in the server yet (G-92).
+  is refused as `INVALID`. A source is registered only through maker checker, is asked with a
+  query signed by Parmana, and, when registered with a key, must sign its answer; an unsigned,
+  wrongly signed or non-echoing answer is refused as `SOURCE_UNAVAILABLE` (2.54). An agent cannot
+  register, change or impersonate a source. A compromised source can still answer wrongly: Parmana
+  proves the source said it, not that it is right (G-92).
 - What remains: within an approved action and resource, any parameter the approval does not
   fix is the agent's choice, and a person can be persuaded to approve a request they did not
   read closely.
