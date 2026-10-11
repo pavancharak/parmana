@@ -1561,7 +1561,7 @@ registered Ed25519 key (CLAIMS.md 2.54). What is still open:
   answers in production, and no source is registered there. Every test uses in-process endpoints, including the
   example endpoint the guide gives operators (`typescript/examples/08-business-signal-source.ts`). No shipped policy
   declares a source, so G-51 and G-76 are unchanged in practice. Closing this needs a deployed source answering a
-  production decision, recorded with the request id.
+  production decision, recorded with the request id. The procedure is ready, not yet run: `examples/live-checks/business-signal-source` (2026-10-11).
 - **A source registered without a key is trusted on TLS alone.** Its answers carry no `sourceProof`, so the Trusted
   Signal proves what Parmana received over the pinned HTTPS connection, not that the source said it. A key is
   recommended, not required.
@@ -1581,7 +1581,7 @@ open:
 
 - **No shipped policy requires a grant**, so production authority is unchanged until a policy opts in through policy
   governance. Closing this needs a policy in production with `requireAuthorityGrant` and a request decided under it,
-  recorded with the request id.
+  recorded with the request id. The procedure is ready, not yet run: `examples/live-checks/authority-grant` (2026-10-11).
 - **Limits are per request.** A grant can cap one request at 100000, not the total per day. Cumulative limits need a
   counter written atomically with the decision, as the earlier Razorpay daily refund ledger did; not built. The design for building them is in RFC-0023, "Cumulative grant limits".
 - **The grantee's caller id is not checked to exist.** API keys live in configuration (`PARMANA_API_KEYS`), not in a

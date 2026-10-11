@@ -736,7 +736,7 @@ Evidence
 
 Scope, stated plainly:
 
-- **Not deployed** until this change is merged and deployed, and **no real business system has been connected.** Every test runs against in-process endpoints, including the example endpoint the docs give operators. **Update (2026-10-11):** deployed; `GET /business-signal-sources` answers in production. Still no real business system connected and no source registered there.
+- **Not deployed** until this change is merged and deployed, and **no real business system has been connected.** Every test runs against in-process endpoints, including the example endpoint the docs give operators. **Update (2026-10-11):** deployed; `GET /business-signal-sources` answers in production. Still no real business system connected and no source registered there. **Live check (2026-10-11):** written, not yet run: `examples/live-checks/business-signal-source` registers a demo source and sends four requests (paid, unpaid, the agent's value differing from the source's, unknown invoice), with the release's `conditions` logged by the receiving endpoint. Its deployable bundle answered Parmana's own `HttpBusinessSignalSource` locally, signed and verified.
 - **Parmana proves the source said it, not that it is right.** A source answers for its own records.
 - **A source registered without a key** is trusted on the pinned HTTPS connection alone; its Trusted Signal has no `sourceProof`. Registering a key is recommended, not required.
 - **Checked once, at decision time.** `validUntil` is not re-checked at release; conditional execution is phase 4. **Update (2026-10-11):** re-checked at release, and carried to external connectors as conditions, since 2.56.
@@ -766,7 +766,7 @@ Evidence
 Scope, stated plainly:
 
 - **Opt in per policy, and no shipped policy opts in.** A policy without `requireAuthorityGrant` keeps the authority of 2.53.
-- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed; `GET /authority-grants` answers in production. No grant has been made there and no production policy requires one.
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed; `GET /authority-grants` answers in production. No grant has been made there and no production policy requires one. **Live check (2026-10-11):** written, not yet run: `examples/live-checks/authority-grant` sends four requests under a policy with `requireAuthorityGrant` (before a grant, within its limit, over it, after its revoke), each with a valid signed approval.
 - **Limits are per request.** Cumulative limits ("100000 per day") are not built.
 - **The grantee is a caller id the server does not check exists.** A grant to a key that does not exist has no effect.
 - **Checked at decision time.** Not re-checked at release (phase 4); the authorization's short TTL bounds the window. **Update (2026-10-11):** re-checked at release since 2.56.
@@ -801,7 +801,7 @@ Scope, stated plainly:
 - **"Execute only if still valid" at the system is the endpoint's to implement.** Parmana sends the signed conditions; it cannot make an endpoint check them. The SDK verifier covers them with the signature and the example endpoints check them through `conditionsHold`. Built in connectors (Paytm, HubSpot, GitHub, Slack) get the gateway re-check only.
 - **A release refused at release leaves the Execution Intent `ERRORED`**, as a refused connector registration already does; the response says `NOT_EXECUTED`, and the intent is closed as `NOT_EXECUTED`.
 - **The Trust Record format is unchanged.** Execution statuses are how its executions (completed, failed, `conditionsNotMet`) and the intents are read, not a new field.
-- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed. Not yet exercised in production: no production decision carries conditions or a grant until a policy uses `signalSources` or `requireAuthorityGrant`.
+- **Not deployed** until this change is merged and deployed. **Update (2026-10-11):** deployed. Not yet exercised in production: no production decision carries conditions or a grant until a policy uses `signalSources` or `requireAuthorityGrant`. **Live check (2026-10-11):** the two checks above exercise it in production with test policies and an endpoint that acts on nothing; written, not yet run.
 
 Verification
 

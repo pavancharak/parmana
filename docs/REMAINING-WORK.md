@@ -175,6 +175,16 @@ business system is connected, no policy opts in and no grant exists.
 | 3    | Make the first authority grant, for example `paytm-refund-agent` for `paytm:refund` up to an amount the operator chooses, through `/authority-grants/changes`                                                           | The operator approves; the commands can be given on request             | G-93, first item, with step 4 |
 | 4    | Do one real refund end to end, recorded with its request id, to prove the new keys (rotated 2026-10-11) and the new features work together. The commands are ready in `examples/live-checks/paytm-refund` (not run yet) | The operator                                                            | G-92 and G-93 first items     |
 
+**Live checks, written and ready, not yet run** (each with its steps, expected output and failures in its README):
+
+| Check                                         | Proves                                                                                              | Closes, when run  |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------- |
+| `examples/live-checks/authority-grant`        | A grant decides: refused before it, approved within its limit, refused over it and after its revoke | G-93's first item |
+| `examples/live-checks/business-signal-source` | A source answers a production decision, signed; the release carries it as a condition               | G-92's first item |
+| `examples/live-checks/paytm-refund`           | One real refund through the rotated credentials; the record verifies offline                        | Step 4 above      |
+
+They use test policies and endpoints that act on nothing (except the refund), so they can run before steps 1 to 3.
+
 **Not built yet:**
 
 | Item                                                                      | State                                                                                                      |

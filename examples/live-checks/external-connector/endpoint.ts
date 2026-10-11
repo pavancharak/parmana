@@ -31,6 +31,9 @@ const handle = createReleaseHandler({
         target: release.target,
         policy: release.policy,
         approvedBy: release.approvedBy,
+        // RFC-0023 phase 4: the business facts the release rests on,
+        // absent when the decision sourced none.
+        conditions: release.conditions,
       }),
     );
 
