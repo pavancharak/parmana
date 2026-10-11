@@ -1579,9 +1579,11 @@ OPENED 2026-10-11, `pre-production`.** A policy with `requireAuthorityGrant` dec
 authenticated caller holds a grant in force, within its limits, made through maker checker (CLAIMS.md 2.55). What is
 open:
 
-- **No shipped policy requires a grant**, so production authority is unchanged until a policy opts in through policy
-  governance. Closing this needs a policy in production with `requireAuthorityGrant` and a request decided under it,
-  recorded with the request id. The procedure is ready, not yet run: `examples/live-checks/authority-grant` (2026-10-11).
+- **Verified in production with a test policy; no shipped policy requires a grant.** The live check
+  `examples/live-checks/authority-grant` passed on 2026-10-11: under `livecheck-grant` (`requireAuthorityGrant`), a
+  request was refused before a grant, approved within it (the grant in the signed record), refused above its limit and
+  refused after its revoke (`8a75374c-150d-4cea-b57a-abb3a92bcac6`, `da96002b-66ec-44cf-88da-0f29997e4711`, `87770ab4-ac7c-4768-94a9-46df2367782b` and `41ec047d-bf64-48f4-b718-a419c7575e8d`). Production authority for real actions is unchanged until a policy for one opts in
+  through policy governance.
 - **Limits are per request.** A grant can cap one request at 100000, not the total per day. Cumulative limits need a
   counter written atomically with the decision, as the earlier Razorpay daily refund ledger did; not built. The design for building them is in RFC-0023, "Cumulative grant limits".
 - **The grantee's caller id is not checked to exist.** API keys live in configuration (`PARMANA_API_KEYS`), not in a
