@@ -1,4 +1,4 @@
-# Live check: authority grants in production (not yet run)
+# Live check: authority grants in production
 
 RFC-0023 phase 3 lets an operator say which agent may have which action decided, within which limits, until when
 (`docs/CLAIMS.md` 2.55). It is built, tested and deployed, but no grant has been made in production and no production
@@ -17,12 +17,19 @@ approval cannot cure missing authority.
 
 ## Status
 
-| Date | Result      |
-| ---- | ----------- |
-| —    | Not run yet |
+**Passed in production on 2026-10-11**, against `https://parmana-api-real.vercel.app`, with
+grant `4b60507f-adb8-4fe0-82b3-a83c41e09022` (`livecheck-agent`, `livecheck:grant`, `parameters.amount` max 100,
+valid until 2026-10-18), proposed by `maker-pavan` and approved by `checker-pavan`, then revoked the same way:
 
-When it has run: record the four transactions and their answers here, keep the record files as evidence, and update
-`docs/VERIFICATION-GAPS.md` G-93 and `docs/REMAINING-WORK.md` section L.
+| #   | Request              | Transaction                            | Answer                                                                                                                          |
+| --- | -------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Before any grant, 50 | `8a75374c-150d-4cea-b57a-abb3a92bcac6` | Refused in 8.5 s, `authority-not-authorized`: "livecheck-agent" holds no authority grant for "livecheck:grant".                 |
+| 2   | Within the grant, 50 | `da96002b-66ec-44cf-88da-0f29997e4711` | `APPROVED` in 28.5 s, released once (receipt `RC-da96002b`), `AUTHORIZED` with the grant in the signed record, verifies offline |
+| 3   | Over the grant, 500  | `87770ab4-ac7c-4768-94a9-46df2367782b` | Refused in 8.6 s, `NOT_AUTHORIZED`: "parameters.amount is 500, above the granted maximum 100."                                  |
+| 4   | After the revoke, 50 | `41ec047d-bf64-48f4-b718-a419c7575e8d` | Refused in 8.9 s, `authority-not-authorized`: "livecheck-agent" holds no authority grant for "livecheck:grant".                 |
+
+Each request carried a valid signed approval from `manager-pavan-key-1`. The four records are kept by the operator
+(`record-*.json`, no secret). Not checked in this run: the endpoint's Vercel log line for request 2.
 
 ## What it uses
 
