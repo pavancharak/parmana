@@ -12,6 +12,13 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-11
 
+**Prepared: SDK 1.6.0 and connector SDK 0.3.0, not yet published**
+
+- `@parmana/sdk` and `parmana` 1.6.0 add the business signal source and authority grant methods, and `conditions`
+  on `ParmanaRelease`. `@parmana/connector-sdk` 0.3.0 adds `ReleaseCondition`. `parmana-connector-sdk` is unchanged
+  at 0.2.0.
+- Until they are published, the methods stay marked **next release**; call the routes directly.
+
 **Added: re-check at release, and execute only if still valid**
 
 - The authorization Parmana signs now carries what the decision rests on: the business facts with their `validUntil`,
