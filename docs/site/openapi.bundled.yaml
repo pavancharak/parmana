@@ -125,6 +125,9 @@ tags:
   - name: External Connectors
     description: Maker-checker for binding a capability to an operator's HTTPS
       endpoint and its policy, without a deploy (ADR-0013)
+  - name: Business Signal Sources
+    description: Maker-checker for the business systems Parmana asks for the facts a
+      policy needs, without a deploy (RFC-0023)
   - name: Sandbox
     description: Routes that exist only on the public sandbox (ADR-0014), for trying
       Parmana from a browser
@@ -8033,6 +8036,901 @@ paths:
             )
 
             print(change.status)
+  /business-signal-sources:
+    get:
+      tags:
+        - Business Signal Sources
+      summary: List business signal sources
+      operationId: listBusinessSignalSources
+      description: >
+        Lists every business signal source registration, active and revoked: the
+        name a policy's
+
+        `signalSources` uses, the HTTPS endpoint Parmana asks, and the Ed25519
+        key its answers must be
+
+        signed with, if one is registered. Revoked registrations stay listed, so
+        every Trusted Signal ever
+
+        recorded can be traced to the registration that produced it. Needs a
+        human key. See
+
+        [Connect a business system as a signal
+        source](/guides/connect-a-business-signal-source).
+      responses:
+        "200":
+          description: The registrations.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/business-signal-sources-list-response.schema"
+              examples:
+                active:
+                  summary: Real captured response
+                  value:
+                    sources:
+                      - registrationId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                        name: erp
+                        endpointUrl: https://orders.example.com/parmana/signals
+                        timeoutMs: 5000
+                        publicKeyPem: |
+                          -----BEGIN PUBLIC KEY-----
+                          MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                          -----END PUBLIC KEY-----
+                        keyId: erp-2026-10
+                        status: active
+                        registeredAt: 2026-10-11T02:58:24.745Z
+                withRevoked:
+                  summary: "Real captured response, after a revoke: the registration stays listed"
+                  value:
+                    sources:
+                      - registrationId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                        name: erp
+                        endpointUrl: https://orders.example.com/parmana/signals
+                        timeoutMs: 5000
+                        publicKeyPem: |
+                          -----BEGIN PUBLIC KEY-----
+                          MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                          -----END PUBLIC KEY-----
+                        keyId: erp-2026-10
+                        status: revoked
+                        registeredAt: 2026-10-11T02:58:24.745Z
+                        revokedByChangeId: 92ba551c-02bb-4089-9762-6d2d3a89392e
+                        revokedAt: 2026-10-11T02:58:24.800Z
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            curl https://parmana-api-real.vercel.app/business-signal-sources \
+              -H "Authorization: Bearer $PARMANA_API_KEY"
+        - lang: typescript
+          label: TypeScript
+          source: |-
+            import { ParmanaClient } from "@parmana/sdk";
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+            for (const source of await client.businessSignalSources()) {
+              console.log(source.name, source.status, source.endpointUrl);
+            }
+        - lang: python
+          label: Python
+          source: |-
+            import os
+
+            from parmana import ParmanaClient
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+            for source in client.list_business_signal_sources():
+                print(source.name, source.status, source.endpoint_url)
+  /business-signal-sources/changes:
+    post:
+      tags:
+        - Business Signal Sources
+      summary: Propose registering or revoking a business signal source
+      operationId: proposeBusinessSignalSourceChange
+      description: >
+        Proposes connecting a business system, any system that owns facts a
+        policy needs (an ERP, an
+
+        order system, a CRM, a ledger), so Parmana can ask it instead of
+        trusting the agent's claim.
+
+        `register` names the source, the HTTPS endpoint Parmana asks, optionally
+        a timeout, and optionally
+
+        the Ed25519 public key the source signs its answers with; `revoke` ends
+        the active registration
+
+        for a name. Nothing changes until a different person approves it. The
+        endpoint must be `https`,
+
+        name a domain (not an IP address or localhost), carry no user name,
+        password or fragment, and
+
+        resolve only to public addresses; the address is checked again on
+        approval and at every query.
+
+        To move a source, revoke it, then register the new endpoint. Needs a
+        human key.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/propose-business-signal-source-change-request.schem\
+                a"
+            examples:
+              register:
+                summary: Real captured request
+                value:
+                  action: register
+                  name: erp
+                  endpointUrl: https://orders.example.com/parmana/signals
+                  timeoutMs: 5000
+                  publicKeyPem: |
+                    -----BEGIN PUBLIC KEY-----
+                    MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                    -----END PUBLIC KEY-----
+                  keyId: erp-2026-10
+                  reason: Release goods only against invoices the ERP says are paid.
+              revoke:
+                summary: Real captured request
+                value:
+                  action: revoke
+                  name: erp
+                  reason: The ERP moves to a new host.
+      responses:
+        "201":
+          description: Proposed and waiting for a checker. Keep the `changeId`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/business-signal-source-change-response.schema"
+              examples:
+                register:
+                  summary: Real captured response
+                  value:
+                    changeId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                    action: register
+                    name: erp
+                    endpointUrl: https://orders.example.com/parmana/signals
+                    timeoutMs: 5000
+                    publicKeyPem: |
+                      -----BEGIN PUBLIC KEY-----
+                      MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                      -----END PUBLIC KEY-----
+                    keyId: erp-2026-10
+                    reason: Release goods only against invoices the ERP says are paid.
+                    proposedBy: source-maker
+                    proposedAt: 2026-10-11T02:58:24.725Z
+                    status: PENDING_APPROVAL
+                revoke:
+                  summary: Real captured response
+                  value:
+                    changeId: 48579135-1b91-4ac1-ade4-245e7ca304a3
+                    action: revoke
+                    name: erp
+                    reason: The ERP moves to a new host.
+                    proposedBy: source-maker
+                    proposedAt: 2026-10-11T02:58:24.789Z
+                    status: PENDING_APPROVAL
+        "400":
+          description: "`INVALID_BUSINESS_SIGNAL_SOURCE`: a field is missing or malformed,
+            the key is not Ed25519, a keyId comes without a key, or a revoke
+            carries registration fields. `EXTERNAL_ENDPOINT_ADDRESS_REFUSED`:
+            the endpoint is not https, names an IP address or localhost,
+            resolves to an address that is not public, or does not resolve."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                badName:
+                  summary: Real captured response
+                  value:
+                    error: name must match ^[a-z0-9][a-z0-9-]{0,62}$, the form a policy's
+                      signalSources uses.
+                    code: INVALID_BUSINESS_SIGNAL_SOURCE
+                notEd25519:
+                  summary: Real captured response
+                  value:
+                    error: publicKeyPem must be an Ed25519 key.
+                    code: INVALID_BUSINESS_SIGNAL_SOURCE
+                keyIdWithoutKey:
+                  summary: Real captured response
+                  value:
+                    error: keyId labels a publicKeyPem; give the key too, or leave keyId out.
+                    code: INVALID_BUSINESS_SIGNAL_SOURCE
+                badTimeout:
+                  summary: Real captured response
+                  value:
+                    error: timeoutMs must be an integer from 1000 to 30000; it defaults to 10000.
+                    code: INVALID_BUSINESS_SIGNAL_SOURCE
+                revokeWithRegistrationFields:
+                  summary: Real captured response
+                  value:
+                    error: A revoke takes only action, name and reason.
+                    code: INVALID_BUSINESS_SIGNAL_SOURCE
+                plainHttp:
+                  summary: Real captured response
+                  value:
+                    error: endpointUrl must use https.
+                    code: EXTERNAL_ENDPOINT_ADDRESS_REFUSED
+                privateAddress:
+                  summary: Real captured response
+                  value:
+                    error: The endpoint host 'internal.example.com' resolves to an address that is
+                      not public (10.0.0.7).
+                    code: EXTERNAL_ENDPOINT_ADDRESS_REFUSED
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+        "409":
+          description: "`CONFLICT`: the name already has an active registration (to
+            register) or has none (to revoke), or another change for it is
+            pending."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                pending:
+                  summary: Real captured response
+                  value:
+                    error: A change for business signal source 'erp' is already pending. It must be
+                      approved or rejected first.
+                    code: CONFLICT
+                alreadyActive:
+                  summary: Real captured response
+                  value:
+                    error: Business signal source 'erp' is already registered. Revoke it first.
+                    code: CONFLICT
+                revokeUnregistered:
+                  summary: Real captured response
+                  value:
+                    error: Business signal source 'crm' is not registered.
+                    code: CONFLICT
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: >-
+            # erp-answers.public.pem: the Ed25519 public key the ERP signs its
+            answers with.
+
+            curl -X POST
+            https://parmana-api-real.vercel.app/business-signal-sources/changes
+            \
+              -H "Authorization: Bearer $PARMANA_API_KEY" \
+              -H "Content-Type: application/json" \
+              --data "$(jq -n --rawfile key erp-answers.public.pem '{
+                action: "register",
+                name: "erp",
+                endpointUrl: "https://orders.example.com/parmana/signals",
+                timeoutMs: 5000,
+                publicKeyPem: $key,
+                keyId: "erp-2026-10",
+                reason: "Release goods only against invoices the ERP says are paid."
+              }')"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient } from "@parmana/sdk";
+
+            import { readFileSync } from "node:fs";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            const change = await client.proposeBusinessSignalSourceChange({
+              action: "register",
+              name: "erp",
+              endpointUrl: "https://orders.example.com/parmana/signals",
+              timeoutMs: 5000,
+              publicKeyPem: readFileSync("erp-answers.public.pem", "utf8"),
+              keyId: "erp-2026-10",
+              reason: "Release goods only against invoices the ERP says are paid.",
+            });
+
+
+            console.log(change.changeId);
+        - lang: python
+          label: Python
+          source: >-
+            import os
+
+            from pathlib import Path
+
+
+            from parmana import ParmanaClient
+
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+
+            change = client.business_signal_sources.propose_register(
+                name="erp",
+                endpoint_url="https://orders.example.com/parmana/signals",
+                timeout_ms=5000,
+                public_key_pem=Path("erp-answers.public.pem").read_text(),
+                key_id="erp-2026-10",
+                reason="Release goods only against invoices the ERP says are paid.",
+            )
+
+
+            print(change.change_id)
+    get:
+      tags:
+        - Business Signal Sources
+      summary: List business signal source changes
+      operationId: listBusinessSignalSourceChanges
+      description: >
+        Lists business signal source changes, newest first. A checker uses
+        `status=PENDING_APPROVAL` to
+
+        find what waits for review. Needs a human key.
+      parameters:
+        - name: status
+          description: "`PENDING_APPROVAL`, `APPROVED` or `REJECTED`. Omit for all."
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING_APPROVAL
+              - APPROVED
+              - REJECTED
+      responses:
+        "200":
+          description: The changes.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/business-signal-source-changes-list-response.schema"
+              examples:
+                pending:
+                  summary: Real captured response
+                  value:
+                    changes:
+                      - changeId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                        action: register
+                        name: erp
+                        endpointUrl: https://orders.example.com/parmana/signals
+                        timeoutMs: 5000
+                        publicKeyPem: |
+                          -----BEGIN PUBLIC KEY-----
+                          MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                          -----END PUBLIC KEY-----
+                        keyId: erp-2026-10
+                        reason: Release goods only against invoices the ERP says are paid.
+                        proposedBy: source-maker
+                        proposedAt: 2026-10-11T02:58:24.725Z
+                        status: PENDING_APPROVAL
+                approved:
+                  summary: "Real captured response, status=APPROVED: a register and the revoke
+                    that ended it"
+                  value:
+                    changes:
+                      - changeId: 92ba551c-02bb-4089-9762-6d2d3a89392e
+                        action: revoke
+                        name: erp
+                        reason: The ERP moves to a new host.
+                        proposedBy: source-maker
+                        proposedAt: 2026-10-11T02:58:24.798Z
+                        status: APPROVED
+                        resolvedBy: source-checker
+                        resolvedAt: 2026-10-11T02:58:24.800Z
+                      - changeId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                        action: register
+                        name: erp
+                        endpointUrl: https://orders.example.com/parmana/signals
+                        timeoutMs: 5000
+                        publicKeyPem: |
+                          -----BEGIN PUBLIC KEY-----
+                          MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                          -----END PUBLIC KEY-----
+                        keyId: erp-2026-10
+                        reason: Release goods only against invoices the ERP says are paid.
+                        proposedBy: source-maker
+                        proposedAt: 2026-10-11T02:58:24.725Z
+                        status: APPROVED
+                        resolvedBy: source-checker
+                        resolvedAt: 2026-10-11T02:58:24.745Z
+        "400":
+          description: "`status` is not `PENDING_APPROVAL`, `APPROVED` or `REJECTED`."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                badStatus:
+                  summary: Real captured response
+                  value:
+                    error: status must be one of PENDING_APPROVAL, APPROVED, REJECTED.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`: this needs a human key."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            curl "https://parmana-api-real.vercel.app/business-signal-sources/changes?status=PENDING_APPROVAL" \
+              -H "Authorization: Bearer $PARMANA_API_KEY"
+        - lang: typescript
+          label: TypeScript
+          source: |-
+            import { ParmanaClient } from "@parmana/sdk";
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+            for (const change of await client.businessSignalSourceChanges(
+              "PENDING_APPROVAL",
+            )) {
+              console.log(change.changeId, change.action, change.name);
+            }
+        - lang: python
+          label: Python
+          source: >-
+            import os
+
+
+            from parmana import ParmanaClient
+
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+
+            for change in
+            client.business_signal_source_changes("PENDING_APPROVAL"):
+                print(change.change_id, change.action, change.name)
+  /business-signal-sources/changes/{id}/approve:
+    post:
+      tags:
+        - Business Signal Sources
+      summary: Approve a business signal source change
+      operationId: approveBusinessSignalSourceChange
+      description: >
+        Approves a business signal source change and applies it at once:
+        `register` makes the
+
+        registration active, so policies that name it can be evaluated; `revoke`
+        ends it, so they are
+
+        refused as `SOURCE_UNAVAILABLE`. For a register, the endpoint's address
+        is checked again first.
+
+        Checked in order: a human key, not the proposer, and a step up
+        authorization for this change id
+
+        and action `approve`, valid once, with the change id in
+        `payload.pendingPolicyChangeId`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The `changeId` from the proposal.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/approve-policy-change-request.schema"
+            examples:
+              stepUp:
+                summary: Real captured request
+                value:
+                  stepUpAuthorization:
+                    payload:
+                      version: 1
+                      nonce: 7fd4e45b-1bda-4224-83d0-c8676cff2180
+                      pendingPolicyChangeId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                      action: approve
+                      authorizedAt: 2026-10-11T02:58:24.742Z
+                      expiresAt: 2026-10-11T03:00:24.742Z
+                    signature: hP3qDu2ZHNasz1zFZBHlkxqTKT6wiP6IHgFishmbTM7P56w7Jwel5DSx8xSvxynFDDO0sART/xxFxVFFBx8hAw==
+                    keyId: checker-step-up-key
+                    algorithm: ed25519
+      responses:
+        "200":
+          description: Approved and applied.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/business-signal-source-change-response.schema"
+              examples:
+                approved:
+                  summary: Real captured response
+                  value:
+                    changeId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+                    action: register
+                    name: erp
+                    endpointUrl: https://orders.example.com/parmana/signals
+                    timeoutMs: 5000
+                    publicKeyPem: |
+                      -----BEGIN PUBLIC KEY-----
+                      MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+                      -----END PUBLIC KEY-----
+                    keyId: erp-2026-10
+                    reason: Release goods only against invoices the ERP says are paid.
+                    proposedBy: source-maker
+                    proposedAt: 2026-10-11T02:58:24.725Z
+                    status: APPROVED
+                    resolvedBy: source-checker
+                    resolvedAt: 2026-10-11T02:58:24.745Z
+                revokeApproved:
+                  summary: Real captured response, a revoke
+                  value:
+                    changeId: 92ba551c-02bb-4089-9762-6d2d3a89392e
+                    action: revoke
+                    name: erp
+                    reason: The ERP moves to a new host.
+                    proposedBy: source-maker
+                    proposedAt: 2026-10-11T02:58:24.798Z
+                    status: APPROVED
+                    resolvedBy: source-checker
+                    resolvedAt: 2026-10-11T02:58:24.800Z
+        "400":
+          description: "`EXTERNAL_ENDPOINT_ADDRESS_REFUSED`: the endpoint now resolves to
+            an address that is not public, or does not resolve. The change stays
+            pending; fix the DNS and approve with a new step up authorization,
+            or reject it."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                addressChanged:
+                  summary: Real captured response, the host moved to a private address after the
+                    proposal
+                  value:
+                    error: The endpoint host 'moving.example.com' resolves to an address that is not
+                      public (10.0.0.7).
+                    code: EXTERNAL_ENDPOINT_ADDRESS_REFUSED
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`, `SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE`
+            or `STEP_UP_AUTHORIZATION_INVALID`. Sign a new step up authorization
+            for this change and action."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                sameActor:
+                  summary: Real captured response
+                  value:
+                    error: Business signal source change '5ba7d3a6-d56d-4e90-b588-402d44aeee0c' was
+                      proposed by this same caller — the proposer (maker) may
+                      not also approve or reject it (checker).
+                    code: SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE
+        "404":
+          description: "`BUSINESS_SIGNAL_SOURCE_CHANGE_NOT_FOUND`: no business signal
+            source change has this id."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                notFound:
+                  summary: Real captured response
+                  value:
+                    error: Business signal source change '00000000-0000-0000-0000-000000000000' not
+                      found.
+                    code: BUSINESS_SIGNAL_SOURCE_CHANGE_NOT_FOUND
+        "409":
+          description: "`CONFLICT`: the change is already resolved, the name now has an
+            active registration (register) or no longer has one (revoke).
+            Nothing was written."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                alreadyResolved:
+                  summary: Real captured response, the same change approved twice
+                  value:
+                    error: Business signal source change '5ba7d3a6-d56d-4e90-b588-402d44aeee0c' is
+                      already APPROVED.
+                    code: CONFLICT
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            # Sign the step up authorization on your own machine first:
+            #   npx tsx scripts/sign-policy-change-step-up.ts --private-key-file step-up.private.pem \
+            #     --key-id checker-step-up-1 --pending-policy-change-id 5ba7d3a6-d56d-4e90-b588-402d44aeee0c --action approve > step-up.json
+            curl -X POST https://parmana-api-real.vercel.app/business-signal-sources/changes/5ba7d3a6-d56d-4e90-b588-402d44aeee0c/approve \
+              -H "Authorization: Bearer $PARMANA_API_KEY" \
+              -H "Content-Type: application/json" \
+              --data "{\"stepUpAuthorization\": $(cat step-up.json)}"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient, signPolicyChangeStepUp } from
+            "@parmana/sdk";
+
+            import { readFileSync } from "node:fs";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            const stepUp = signPolicyChangeStepUp({
+              pendingPolicyChangeId: "5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+              action: "approve",
+              privateKeyPem: readFileSync("step-up.private.pem", "utf8"),
+              keyId: "checker-step-up-1",
+            });
+
+
+            const change = await client.approveBusinessSignalSourceChange(
+              "5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+              stepUp,
+            );
+
+
+            console.log(change.status);
+        - lang: python
+          label: Python
+          source: |-
+            import os
+            from pathlib import Path
+
+            from parmana import ParmanaClient
+            from parmana.crypto import sign_policy_change_step_up
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+            step_up = sign_policy_change_step_up(
+                pending_policy_change_id="5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+                action="approve",
+                private_key_pem=Path("step-up.private.pem").read_text(),
+                key_id="checker-step-up-1",
+            )
+
+            change = client.approve_business_signal_source_change(
+                "5ba7d3a6-d56d-4e90-b588-402d44aeee0c", step_up
+            )
+
+            print(change.status)
+  /business-signal-sources/changes/{id}/reject:
+    post:
+      tags:
+        - Business Signal Sources
+      summary: Reject a business signal source change
+      operationId: rejectBusinessSignalSourceChange
+      description: >
+        Rejects a business signal source change. No registration changes. The
+        same checks as approve,
+
+        with a step up authorization for action `reject` and a
+        `rejectionReason`.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The `changeId` from the proposal.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/reject-policy-change-request.schema"
+      responses:
+        "200":
+          description: Rejected. No registration changed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/business-signal-source-change-response.schema"
+              examples:
+                rejected:
+                  summary: Real captured response
+                  value:
+                    changeId: 48579135-1b91-4ac1-ade4-245e7ca304a3
+                    action: revoke
+                    name: erp
+                    reason: The ERP moves to a new host.
+                    proposedBy: source-maker
+                    proposedAt: 2026-10-11T02:58:24.789Z
+                    status: REJECTED
+                    resolvedBy: source-checker
+                    resolvedAt: 2026-10-11T02:58:24.792Z
+                    rejectionReason: Keep the current host until the new one is live.
+        "400":
+          description: "`rejectionReason` is missing, empty or over 2000 characters."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                emptyReason:
+                  summary: Real captured response
+                  value:
+                    error: rejectionReason is required, at most 2000 characters.
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: "`NON_HUMAN_CALLER_DENIED`, `SAME_ACTOR_CANNOT_APPROVE_OWN_CHANGE`
+            or `STEP_UP_AUTHORIZATION_INVALID`, as on approve."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                service:
+                  summary: Real captured response, a service credential
+                  value:
+                    error: "This action requires a caller credential provisioned as a verified human
+                      (credentialHolderType: USER)."
+                    code: NON_HUMAN_CALLER_DENIED
+        "404":
+          description: "`BUSINESS_SIGNAL_SOURCE_CHANGE_NOT_FOUND`: no business signal
+            source change has this id."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                unknownChange:
+                  summary: Real captured response
+                  value:
+                    error: Business signal source change '00000000-0000-0000-0000-000000000000' not
+                      found.
+                    code: BUSINESS_SIGNAL_SOURCE_CHANGE_NOT_FOUND
+        "409":
+          description: "`CONFLICT`: the change is already resolved."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error.schema"
+              examples:
+                alreadyResolved:
+                  summary: Real captured response
+                  value:
+                    error: Business signal source change '48579135-1b91-4ac1-ade4-245e7ca304a3' is
+                      already REJECTED.
+                    code: CONFLICT
+      x-codeSamples:
+        - lang: bash
+          label: cURL
+          source: |-
+            # Sign the step up authorization on your own machine first:
+            #   npx tsx scripts/sign-policy-change-step-up.ts --private-key-file step-up.private.pem \
+            #     --key-id checker-step-up-1 --pending-policy-change-id 5ba7d3a6-d56d-4e90-b588-402d44aeee0c --action reject > step-up.json
+            curl -X POST https://parmana-api-real.vercel.app/business-signal-sources/changes/5ba7d3a6-d56d-4e90-b588-402d44aeee0c/reject \
+              -H "Authorization: Bearer $PARMANA_API_KEY" \
+              -H "Content-Type: application/json" \
+              --data "{\"rejectionReason\": \"Register the ERP with its signing key.\", \"stepUpAuthorization\": $(cat step-up.json)}"
+        - lang: typescript
+          label: TypeScript
+          source: >-
+            import { ParmanaClient, signPolicyChangeStepUp } from
+            "@parmana/sdk";
+
+            import { readFileSync } from "node:fs";
+
+
+            const client = new ParmanaClient({
+              endpoint: "https://parmana-api-real.vercel.app",
+              apiKey: process.env.PARMANA_API_KEY!,
+            });
+
+
+            const stepUp = signPolicyChangeStepUp({
+              pendingPolicyChangeId: "5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+              action: "reject",
+              privateKeyPem: readFileSync("step-up.private.pem", "utf8"),
+              keyId: "checker-step-up-1",
+            });
+
+
+            const change = await client.rejectBusinessSignalSourceChange(
+              "5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+              "Register the ERP with its signing key.",
+              stepUp,
+            );
+
+
+            console.log(change.status);
+        - lang: python
+          label: Python
+          source: |-
+            import os
+            from pathlib import Path
+
+            from parmana import ParmanaClient
+            from parmana.crypto import sign_policy_change_step_up
+
+            client = ParmanaClient(
+                endpoint="https://parmana-api-real.vercel.app",
+                api_key=os.environ["PARMANA_API_KEY"],
+            )
+
+            step_up = sign_policy_change_step_up(
+                pending_policy_change_id="5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+                action="reject",
+                private_key_pem=Path("step-up.private.pem").read_text(),
+                key_id="checker-step-up-1",
+            )
+
+            change = client.reject_business_signal_source_change(
+                "5ba7d3a6-d56d-4e90-b588-402d44aeee0c",
+                "Register the ERP with its signing key.",
+                step_up,
+            )
+
+            print(change.status)
   /sandbox/approvals:
     post:
       tags:
@@ -11057,6 +11955,246 @@ components:
       description: Response of POST /external-connectors/changes (201) and of approve
         and reject (200). A bare External Connector Change, no wrapper.
       $ref: "#/components/schemas/external-connector-change.schema"
+    business-signal-source.schema:
+      title: Business Signal Source
+      description: "A business system Parmana asks for the facts a policy declares in
+        signalSources (RFC-0023), registered through business signal source
+        changes. Nothing is deleted: a revoked registration stays listed."
+      type: object
+      additionalProperties: false
+      required:
+        - registrationId
+        - name
+        - endpointUrl
+        - timeoutMs
+        - status
+        - registeredAt
+      properties:
+        registrationId:
+          type: string
+          description: The changeId of the approved register change that created it.
+        name:
+          type: string
+          pattern: ^[a-z0-9][a-z0-9-]{0,62}$
+          description: The name a policy's signalSources uses in `source`.
+        endpointUrl:
+          type: string
+          description: The HTTPS endpoint Parmana posts each signed query to. It is the
+            query's audience.
+        timeoutMs:
+          type: integer
+        publicKeyPem:
+          type: string
+          description: The Ed25519 public key, SPKI PEM, the source signs its answers
+            with. When present, an answer without a valid signature is refused
+            as SOURCE_UNAVAILABLE.
+        keyId:
+          type: string
+          pattern: ^[A-Za-z0-9._-]{1,128}$
+          description: A label for publicKeyPem. When present, an answer signed under
+            another keyId is refused.
+        status:
+          type: string
+          enum:
+            - active
+            - revoked
+          description: At most one active registration per name.
+        registeredAt:
+          type: string
+          format: date-time
+        revokedByChangeId:
+          type: string
+          description: "revoked only: the approved change that revoked it."
+        revokedAt:
+          type: string
+          format: date-time
+          description: revoked only.
+    business-signal-sources-list-response.schema:
+      title: Business Signal Sources List Response
+      description: "Response of GET /business-signal-sources: every registration,
+        active and revoked."
+      type: object
+      additionalProperties: false
+      required:
+        - sources
+      properties:
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/business-signal-source.schema"
+    business-signal-source-change.schema:
+      title: Business Signal Source Change
+      description: A proposal to register a business signal source, or to revoke the
+        active one for a name, and its resolution (RFC-0023 phase 2). One person
+        proposes it; a different person approves or rejects it with a step up
+        authorization. Only an approved change affects which sources Parmana
+        asks.
+      type: object
+      additionalProperties: false
+      required:
+        - changeId
+        - action
+        - name
+        - reason
+        - proposedBy
+        - proposedAt
+        - status
+      properties:
+        changeId:
+          type: string
+          description: Unique id of the change, a UUID. The step up authorization for
+            approve or reject names it in payload.pendingPolicyChangeId. An
+            approved register change's id is also the registrationId.
+        action:
+          type: string
+          enum:
+            - register
+            - revoke
+          description: register names a source and its endpoint; revoke ends the active
+            registration for the name.
+        name:
+          type: string
+          pattern: ^[a-z0-9][a-z0-9-]{0,62}$
+          description: The name a policy's signalSources uses in `source`.
+        endpointUrl:
+          type: string
+          description: "register only. The endpoint as the server stored it, normalized by
+            URL parsing: https, a host name with a domain, no IP literal, no
+            localhost, no user name, password or fragment, resolving only to
+            public addresses."
+        timeoutMs:
+          type: integer
+          minimum: 1000
+          maximum: 30000
+          description: register only. How long Parmana waits for the source's answer.
+            Defaults to 10000.
+        publicKeyPem:
+          type: string
+          description: register only, optional. The Ed25519 public key the source signs
+            its answers with, as the server stored it (SPKI PEM).
+        keyId:
+          type: string
+          pattern: ^[A-Za-z0-9._-]{1,128}$
+          description: register only, optional, and only with publicKeyPem.
+        reason:
+          type: string
+          maxLength: 2000
+          description: Why, from the proposer.
+        proposedBy:
+          type: string
+          description: The proposer's caller id. Always a human credential.
+        proposedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - PENDING_APPROVAL
+            - APPROVED
+            - REJECTED
+          description: PENDING_APPROVAL until a second person approves or rejects it; then
+            APPROVED or REJECTED, once.
+        resolvedBy:
+          type: string
+          description: Who approved or rejected it. Never the proposer.
+        resolvedAt:
+          type: string
+          format: date-time
+        rejectionReason:
+          type: string
+          description: Present when REJECTED.
+      examples:
+        - changeId: 5ba7d3a6-d56d-4e90-b588-402d44aeee0c
+          action: register
+          name: erp
+          endpointUrl: https://orders.example.com/parmana/signals
+          timeoutMs: 5000
+          publicKeyPem: |
+            -----BEGIN PUBLIC KEY-----
+            MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+            -----END PUBLIC KEY-----
+          keyId: erp-2026-10
+          reason: Release goods only against invoices the ERP says are paid.
+          proposedBy: source-maker
+          proposedAt: 2026-10-11T02:58:24.725Z
+          status: APPROVED
+          resolvedBy: source-checker
+          resolvedAt: 2026-10-11T02:58:24.745Z
+    business-signal-source-changes-list-response.schema:
+      title: Business Signal Source Changes List Response
+      description: Response of GET /business-signal-sources/changes, newest first.
+      type: object
+      additionalProperties: false
+      required:
+        - changes
+      properties:
+        changes:
+          type: array
+          items:
+            $ref: "#/components/schemas/business-signal-source-change.schema"
+    propose-business-signal-source-change-request.schema:
+      title: Propose Business Signal Source Change Request
+      description: Request body for POST /business-signal-sources/changes. A register
+        carries endpointUrl and optionally timeoutMs, publicKeyPem and keyId; a
+        revoke carries none of them.
+      type: object
+      additionalProperties: true
+      required:
+        - action
+        - name
+        - reason
+      properties:
+        action:
+          type: string
+          enum:
+            - register
+            - revoke
+        name:
+          type: string
+          pattern: ^[a-z0-9][a-z0-9-]{0,62}$
+        endpointUrl:
+          type: string
+          maxLength: 2048
+          description: Required for register. https only, a public host name.
+        timeoutMs:
+          type: integer
+          minimum: 1000
+          maximum: 30000
+          default: 10000
+        publicKeyPem:
+          type: string
+          maxLength: 1000
+          description: "Optional, register only. An Ed25519 public key in PEM.
+            Recommended: without it, Parmana trusts the answer on the strength
+            of the pinned HTTPS connection alone."
+        keyId:
+          type: string
+          pattern: ^[A-Za-z0-9._-]{1,128}$
+          description: Optional, register only, and only with publicKeyPem.
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 2000
+      examples:
+        - action: register
+          name: erp
+          endpointUrl: https://orders.example.com/parmana/signals
+          timeoutMs: 5000
+          publicKeyPem: |
+            -----BEGIN PUBLIC KEY-----
+            MCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=
+            -----END PUBLIC KEY-----
+          keyId: erp-2026-10
+          reason: Release goods only against invoices the ERP says are paid.
+        - action: revoke
+          name: erp
+          reason: The ERP moves to a new host.
+    business-signal-source-change-response.schema:
+      title: Business Signal Source Change Response
+      description: Response of POST /business-signal-sources/changes (201) and of
+        approve and reject (200). A bare Business Signal Source Change, no
+        wrapper.
+      $ref: "#/components/schemas/business-signal-source-change.schema"
     sandbox-approval-request.schema:
       title: Sandbox Approval Request
       description: Asks the sandbox's demo approver to approve one sandbox:receipt request.

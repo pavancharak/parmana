@@ -10,6 +10,21 @@ product version). The SDKs are versioned independently on their own registries, 
 and per-version notes. This page covers changes that affect what you can build against, not
 every commit, run `git log` in the repository for the complete record.
 
+## 2026-10-11
+
+**Added: any business system as a trusted signal source**
+
+- Register a business system that owns facts a policy needs, an ERP, an order system, a CRM, a ledger, under a name,
+  through maker checker: `POST /business-signal-sources/changes`, approved by a second person with a step up
+  authorization. See [Connect a business signal source](/guides/connect-a-business-signal-source).
+- Parmana asks it with a query signed by its default key, and, when the source is registered with an Ed25519 key,
+  accepts only answers signed with that key. The Trusted Signal records `sourceProof`, `sourceKeyId` and
+  `sourceProofVerified`. An answer Parmana cannot trust refuses the request as `SOURCE_UNAVAILABLE`.
+- `typescript/examples/08-business-signal-source.ts` is a complete source endpoint.
+- Self managed deployments: apply the new migration with `npm run db:migrate -- apply` before deploying this version.
+- The SDK methods (`proposeBusinessSignalSourceChange()`, `business_signal_sources.propose_register()` and the rest)
+  ship in the next SDK release.
+
 ## 2026-10-10
 
 **Added: business validation, in the runtime**

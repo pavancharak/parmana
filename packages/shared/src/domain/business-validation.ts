@@ -64,14 +64,29 @@ export enum ExecutionAssessmentStatus {
  * How a TrustedSignal's content is bound. `digest` is the SHA-256 of
  * the canonical form of the signal without its integrityProof. It is
  * signed by Parmana as part of the record that carries the signal; it
- * proves what Parmana observed, not that the source said it.
- * `sourceProof` is whatever the source itself returned as proof of its
- * answer (a response signature, a checksum), verbatim, when it has one.
+ * proves what Parmana observed. `sourceProof` is the source's own
+ * signature over its answer, when the source is registered with a key;
+ * `sourceProofVerified` says Parmana checked it.
  */
 export interface TrustedSignalIntegrityProof {
   readonly algorithm: "sha256";
   readonly digest: string;
   readonly sourceProof?: string;
+
+  /**
+   * The key the source signed its answer with, as registered (RFC-0023
+   * phase 2). Present only with a sourceProof.
+   */
+  readonly sourceKeyId?: string;
+
+  /**
+   * True when Parmana verified sourceProof against the source's
+   * registered public key before trusting the answer. A source registered
+   * with a key cannot give an answer without one: it is refused as
+   * SOURCE_UNAVAILABLE. So a Trusted Signal from such a source proves the
+   * source said it, not only that Parmana observed it.
+   */
+  readonly sourceProofVerified?: boolean;
 }
 
 /**

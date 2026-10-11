@@ -28,6 +28,7 @@ export * from "./unsigned-execution-trust-record.js";
 export * from "./pending-policy-change.js";
 export * from "./approval-issuer.js";
 export * from "./external-connector.js";
+export * from "./business-signal-source.js";
 export * from "./policy-change-approval-record.js";
 export * from "./policy-change-step-up-authorization.js";
 export * from "./execution-audit-event.js";

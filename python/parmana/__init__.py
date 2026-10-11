@@ -13,6 +13,10 @@ from .errors import __all__ as _error_exports
 from .models import *  # noqa: F401,F403
 from .models import __all__ as _model_exports
 from .models.approval_issuer import ApprovalIssuer, ApprovalIssuerChange
+from .models.business_signal_source import (
+    BusinessSignalSource,
+    BusinessSignalSourceChange,
+)
 from .models.caller import CallerIdentity, PublicKeyInfo
 from .models.execution_intent_results import (
     ExecutionIntentView,
@@ -49,5 +53,7 @@ __all__ = [
     "ApprovalIssuerChange",
     "ExternalConnector",
     "ExternalConnectorChange",
+    "BusinessSignalSource",
+    "BusinessSignalSourceChange",
     *_error_exports,
 ]

@@ -17,6 +17,7 @@ import policyRoutes from "./routes/policies.js";
 import { createPendingPolicyChangesRouter } from "./routes/pending-policy-changes.js";
 import { createApprovalIssuersRouter } from "./routes/approval-issuers.js";
 import { createExternalConnectorsRouter } from "./routes/external-connectors.js";
+import { createBusinessSignalSourcesRouter } from "./routes/business-signal-sources.js";
 import type { EndpointAddressLookup } from "@parmana/shared";
 import type { ExecutionTrustApplication } from "@parmana/runtime";
 
@@ -168,8 +169,8 @@ export interface CreateAppOptions {
   readonly policyChangeApprovalService?: PolicyChangeApprovalService;
 
   /**
-   * How /external-connectors resolves an endpoint's host to check its
-   * address (ADR-0013). Defaults to the system resolver; tests pass
+   * How /external-connectors and /business-signal-sources resolve an
+   * endpoint's host to check its address (ADR-0013, RFC-0023). Defaults to the system resolver; tests pass
    * their own so they need no network.
    */
   readonly externalEndpointLookup?: EndpointAddressLookup;
@@ -471,6 +472,21 @@ export function createApp(
   app.use(
     "/external-connectors",
     createExternalConnectorsRouter(
+      options.callerAuth !== "disabled"
+        ? options.callerAuth.auditSink
+        : undefined,
+      options.stepUpVerifier,
+      undefined,
+      options.externalEndpointLookup,
+    ),
+  );
+
+  /**
+   * Business signal sources (RFC-0023 phase 2), maker checker.
+   */
+  app.use(
+    "/business-signal-sources",
+    createBusinessSignalSourcesRouter(
       options.callerAuth !== "disabled"
         ? options.callerAuth.auditSink
         : undefined,

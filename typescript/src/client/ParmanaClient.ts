@@ -50,6 +50,11 @@ import type {
   ProposeExternalConnectorChangeInput,
 } from "../models/external-connector.js";
 import type {
+  BusinessSignalSource,
+  BusinessSignalSourceChange,
+  ProposeBusinessSignalSourceChangeInput,
+} from "../models/business-signal-source.js";
+import type {
   PendingPolicyChange,
   PendingPolicyChangeStatus,
   PolicyChangeForReview,
@@ -83,6 +88,7 @@ import { TrustRecordApi } from "./TrustRecordApi.js";
 import { PolicyApi, type PolicyValidationResult } from "./PolicyApi.js";
 import { ApproverApi } from "./ApproverApi.js";
 import { ExternalConnectorApi } from "./ExternalConnectorApi.js";
+import { BusinessSignalSourceApi } from "./BusinessSignalSourceApi.js";
 
 import { RefusalApi } from "./RefusalApi.js";
 import { ExecutionIntentApi } from "./ExecutionIntentApi.js";
@@ -148,6 +154,8 @@ export class ParmanaClient {
 
   private readonly externalConnectorApi: ExternalConnectorApi;
 
+  private readonly businessSignalSourceApi: BusinessSignalSourceApi;
+
   /**
    * Runtime Refusal Record API.
    */
@@ -199,6 +207,7 @@ export class ParmanaClient {
     this.approverApi = new ApproverApi(this.transport);
 
     this.externalConnectorApi = new ExternalConnectorApi(this.transport);
+    this.businessSignalSourceApi = new BusinessSignalSourceApi(this.transport);
 
     this.refusalApi = new RefusalApi(this.transport);
 
@@ -590,6 +599,64 @@ export class ParmanaClient {
     stepUpAuthorization: PolicyChangeStepUpAuthorization,
   ): Promise<ExternalConnectorChange> {
     return this.externalConnectorApi.rejectChange(
+      changeId,
+      rejectionReason,
+      stepUpAuthorization,
+    );
+  }
+
+  /**
+   * Every business signal source registration, active and revoked. See
+   * BusinessSignalSourceApi.list.
+   */
+  public businessSignalSources(): Promise<BusinessSignalSource[]> {
+    return this.businessSignalSourceApi.list();
+  }
+
+  /**
+   * Proposes registering or revoking a business signal source. See
+   * BusinessSignalSourceApi.proposeChange.
+   */
+  public proposeBusinessSignalSourceChange(
+    input: ProposeBusinessSignalSourceChangeInput,
+  ): Promise<BusinessSignalSourceChange> {
+    return this.businessSignalSourceApi.proposeChange(input);
+  }
+
+  /**
+   * Lists business signal source changes. See
+   * BusinessSignalSourceApi.listChanges.
+   */
+  public businessSignalSourceChanges(
+    status?: PendingPolicyChangeStatus,
+  ): Promise<BusinessSignalSourceChange[]> {
+    return this.businessSignalSourceApi.listChanges(status);
+  }
+
+  /**
+   * Approves and applies a business signal source change. See
+   * BusinessSignalSourceApi.approveChange.
+   */
+  public approveBusinessSignalSourceChange(
+    changeId: string,
+    stepUpAuthorization: PolicyChangeStepUpAuthorization,
+  ): Promise<BusinessSignalSourceChange> {
+    return this.businessSignalSourceApi.approveChange(
+      changeId,
+      stepUpAuthorization,
+    );
+  }
+
+  /**
+   * Rejects a business signal source change. See
+   * BusinessSignalSourceApi.rejectChange.
+   */
+  public rejectBusinessSignalSourceChange(
+    changeId: string,
+    rejectionReason: string,
+    stepUpAuthorization: PolicyChangeStepUpAuthorization,
+  ): Promise<BusinessSignalSourceChange> {
+    return this.businessSignalSourceApi.rejectChange(
       changeId,
       rejectionReason,
       stepUpAuthorization,
