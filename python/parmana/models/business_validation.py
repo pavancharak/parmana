@@ -92,10 +92,36 @@ class BusinessValidationFailure:
 
 
 @dataclass(frozen=True)
+class AuthorityGrantLimit:
+    min: float | None = None
+
+    max: float | None = None
+
+    one_of: list[Any] | None = None
+
+
+@dataclass(frozen=True)
+class AuthorityGrantReference:
+    grant_id: str
+
+    caller_id: str
+
+    capability: str
+
+    valid_from: datetime
+
+    valid_until: datetime
+
+    limits: dict[str, Any] | None = None
+
+
+@dataclass(frozen=True)
 class AuthorityAssessment:
     status: AuthorityStatus
 
     reason: str
+
+    grant: AuthorityGrantReference | None = None
 
 
 @dataclass(frozen=True)

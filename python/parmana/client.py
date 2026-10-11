@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from parmana.api.approver_api import ApproverApi
 from parmana.api.audit_api import AuditApi
+from parmana.api.authority_grant_api import AuthorityGrantApi
 from parmana.api.business_signal_source_api import BusinessSignalSourceApi
 from parmana.api.caller_api import CallerApi
 from parmana.api.execution_api import ExecutionApi
@@ -30,6 +31,10 @@ if TYPE_CHECKING:
     from parmana.models.approval_issuer import (
         ApprovalIssuer,
         ApprovalIssuerChange,
+    )
+    from parmana.models.authority_grant import (
+        AuthorityGrant,
+        AuthorityGrantChange,
     )
     from parmana.models.business_signal_source import (
         BusinessSignalSource,
@@ -209,6 +214,10 @@ class ParmanaClient:
         )
 
         self.business_signal_sources = BusinessSignalSourceApi(
+            self._transport,
+        )
+
+        self.authority_grants = AuthorityGrantApi(
             self._transport,
         )
 
@@ -582,5 +591,47 @@ class ParmanaClient:
         """
 
         return self.business_signal_sources.reject_change(
+            change_id, rejection_reason, step_up_authorization
+        )
+
+    def list_authority_grants(self) -> list[AuthorityGrant]:
+        """
+        Every authority grant, active and revoked. See AuthorityGrantApi.list.
+        """
+
+        return self.authority_grants.list()
+
+    def authority_grant_changes(
+        self, status: str | None = None
+    ) -> list[AuthorityGrantChange]:
+        """
+        List authority grant changes. See AuthorityGrantApi.list_changes.
+        """
+
+        return self.authority_grants.list_changes(status)
+
+    def approve_authority_grant_change(
+        self,
+        change_id: str,
+        step_up_authorization: dict[str, Any],
+    ) -> AuthorityGrantChange:
+        """
+        Approve and apply an authority grant change. See
+        AuthorityGrantApi.approve_change.
+        """
+
+        return self.authority_grants.approve_change(change_id, step_up_authorization)
+
+    def reject_authority_grant_change(
+        self,
+        change_id: str,
+        rejection_reason: str,
+        step_up_authorization: dict[str, Any],
+    ) -> AuthorityGrantChange:
+        """
+        Reject an authority grant change. See AuthorityGrantApi.reject_change.
+        """
+
+        return self.authority_grants.reject_change(
             change_id, rejection_reason, step_up_authorization
         )

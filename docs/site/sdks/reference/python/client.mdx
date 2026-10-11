@@ -439,3 +439,41 @@ def reject_business_signal_source_change(
 
 Reject a business signal source change. See
 BusinessSignalSourceApi.reject_change.
+
+#### list_authority_grants
+
+```python
+def list_authority_grants() -> list[AuthorityGrant]
+```
+
+Every authority grant, active and revoked. See AuthorityGrantApi.list.
+
+#### authority_grant_changes
+
+```python
+def authority_grant_changes(
+        status: str | None = None) -> list[AuthorityGrantChange]
+```
+
+List authority grant changes. See AuthorityGrantApi.list_changes.
+
+#### approve_authority_grant_change
+
+```python
+def approve_authority_grant_change(
+        change_id: str,
+        step_up_authorization: dict[str, Any]) -> AuthorityGrantChange
+```
+
+Approve and apply an authority grant change. See
+AuthorityGrantApi.approve_change.
+
+#### reject_authority_grant_change
+
+```python
+def reject_authority_grant_change(
+        change_id: str, rejection_reason: str,
+        step_up_authorization: dict[str, Any]) -> AuthorityGrantChange
+```
+
+Reject an authority grant change. See AuthorityGrantApi.reject_change.

@@ -18,6 +18,7 @@ import { createPendingPolicyChangesRouter } from "./routes/pending-policy-change
 import { createApprovalIssuersRouter } from "./routes/approval-issuers.js";
 import { createExternalConnectorsRouter } from "./routes/external-connectors.js";
 import { createBusinessSignalSourcesRouter } from "./routes/business-signal-sources.js";
+import { createAuthorityGrantsRouter } from "./routes/authority-grants.js";
 import type { EndpointAddressLookup } from "@parmana/shared";
 import type { ExecutionTrustApplication } from "@parmana/runtime";
 
@@ -493,6 +494,21 @@ export function createApp(
       options.stepUpVerifier,
       undefined,
       options.externalEndpointLookup,
+    ),
+  );
+
+  /**
+   * Per-agent authority grants (RFC-0023 phase 3): maker checker for
+   * which caller may have which capability decided, within which limits,
+   * until when.
+   */
+  app.use(
+    "/authority-grants",
+    createAuthorityGrantsRouter(
+      options.callerAuth !== "disabled"
+        ? options.callerAuth.auditSink
+        : undefined,
+      options.stepUpVerifier,
     ),
   );
 

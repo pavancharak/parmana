@@ -12,6 +12,18 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-11
 
+**Added: per-agent authority grants**
+
+- Say which agent may have which action decided, within limits on each request (`min`, `max`, `oneOf` by Intent
+  path), until when: `POST /authority-grants/changes`, approved by a second person with a step up authorization. No
+  one grants authority to themselves. See [Grant an agent authority](/guides/grant-an-agent-authority).
+- A policy opts in with `requireAuthorityGrant`. A request from a key with no grant in force, or outside its limits,
+  is refused as `NOT_AUTHORIZED`; after the grant's expiry, as `AUTHORITY_EXPIRED`. The grant checked is in the
+  signed record, under `assessment.authority.grant`.
+- `GET /policies/in-effect` answers `authorityGrantRequired: true` for such a policy.
+- Self managed deployments: apply the new migration with `npm run db:migrate -- apply` before deploying this version.
+- No shipped policy requires a grant; decisions are otherwise unchanged.
+
 **Added: any business system as a trusted signal source**
 
 - Register a business system that owns facts a policy needs, an ERP, an order system, a CRM, a ledger, under a name,

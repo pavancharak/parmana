@@ -21,6 +21,7 @@ export * from "./ExecutionTrustApplication.js";
 export * from "./RuntimeEngine.js";
 export * from "./business-validation/BusinessSignalSource.js";
 export * from "./business-validation/TrustedSignalResolver.js";
+export * from "./authority/AuthorityGrantEvaluator.js";
 export * from "./SigningReadiness.js";
 export * from "./BusinessTrustPipeline.js";
 export * from "./RefusalRecordBuilder.js";

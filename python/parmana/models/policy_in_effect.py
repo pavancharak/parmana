@@ -61,3 +61,8 @@ class PolicyInEffect:
     description: str | None
 
     signals: PolicySignalRequirements
+
+    #: True when the policy requires it: your key needs a current
+    #: authority grant for this capability, and each request must be
+    #: within the grant's limits. None otherwise.
+    authority_grant_required: bool | None = None

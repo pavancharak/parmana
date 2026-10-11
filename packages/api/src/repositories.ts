@@ -80,3 +80,7 @@ export const externalConnectorRepository = lazyRepository(
 export const businessSignalSourceRepository = lazyRepository(
   (provider) => provider.businessSignalSources,
 );
+
+export const authorityGrantRepository = lazyRepository(
+  (provider) => provider.authorityGrants,
+);

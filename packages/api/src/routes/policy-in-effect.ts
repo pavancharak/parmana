@@ -150,6 +150,9 @@ export function createPolicyInEffectRouter(
           capability,
           policy: inEffect.policy,
           description: policy.description ?? null,
+          ...(policy.requireAuthorityGrant === true && {
+            authorityGrantRequired: true,
+          }),
           signals: describePolicySignalRequirements(policy),
         });
         return;

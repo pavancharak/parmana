@@ -20,6 +20,13 @@ export interface PolicyInEffect {
    */
   readonly description: string | null;
 
+  /**
+   * Present only when the policy requires it: your key needs a current
+   * authority grant for this capability, and each request must be within
+   * the grant's limits (RFC-0023 phase 3).
+   */
+  readonly authorityGrantRequired?: true;
+
   readonly signals: PolicySignalRequirements;
 }
 

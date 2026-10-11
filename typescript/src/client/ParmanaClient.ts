@@ -55,6 +55,11 @@ import type {
   ProposeBusinessSignalSourceChangeInput,
 } from "../models/business-signal-source.js";
 import type {
+  AuthorityGrant,
+  AuthorityGrantChange,
+  ProposeAuthorityGrantChangeInput,
+} from "../models/authority-grant.js";
+import type {
   PendingPolicyChange,
   PendingPolicyChangeStatus,
   PolicyChangeForReview,
@@ -89,6 +94,7 @@ import { PolicyApi, type PolicyValidationResult } from "./PolicyApi.js";
 import { ApproverApi } from "./ApproverApi.js";
 import { ExternalConnectorApi } from "./ExternalConnectorApi.js";
 import { BusinessSignalSourceApi } from "./BusinessSignalSourceApi.js";
+import { AuthorityGrantApi } from "./AuthorityGrantApi.js";
 
 import { RefusalApi } from "./RefusalApi.js";
 import { ExecutionIntentApi } from "./ExecutionIntentApi.js";
@@ -156,6 +162,8 @@ export class ParmanaClient {
 
   private readonly businessSignalSourceApi: BusinessSignalSourceApi;
 
+  private readonly authorityGrantApi: AuthorityGrantApi;
+
   /**
    * Runtime Refusal Record API.
    */
@@ -208,6 +216,7 @@ export class ParmanaClient {
 
     this.externalConnectorApi = new ExternalConnectorApi(this.transport);
     this.businessSignalSourceApi = new BusinessSignalSourceApi(this.transport);
+    this.authorityGrantApi = new AuthorityGrantApi(this.transport);
 
     this.refusalApi = new RefusalApi(this.transport);
 
@@ -657,6 +666,58 @@ export class ParmanaClient {
     stepUpAuthorization: PolicyChangeStepUpAuthorization,
   ): Promise<BusinessSignalSourceChange> {
     return this.businessSignalSourceApi.rejectChange(
+      changeId,
+      rejectionReason,
+      stepUpAuthorization,
+    );
+  }
+
+  /**
+   * Every authority grant, active and revoked. See AuthorityGrantApi.list.
+   */
+  public authorityGrants(): Promise<AuthorityGrant[]> {
+    return this.authorityGrantApi.list();
+  }
+
+  /**
+   * Proposes granting or revoking an agent's authority. See
+   * AuthorityGrantApi.proposeChange.
+   */
+  public proposeAuthorityGrantChange(
+    input: ProposeAuthorityGrantChangeInput,
+  ): Promise<AuthorityGrantChange> {
+    return this.authorityGrantApi.proposeChange(input);
+  }
+
+  /**
+   * Lists authority grant changes. See AuthorityGrantApi.listChanges.
+   */
+  public authorityGrantChanges(
+    status?: PendingPolicyChangeStatus,
+  ): Promise<AuthorityGrantChange[]> {
+    return this.authorityGrantApi.listChanges(status);
+  }
+
+  /**
+   * Approves and applies an authority grant change. See
+   * AuthorityGrantApi.approveChange.
+   */
+  public approveAuthorityGrantChange(
+    changeId: string,
+    stepUpAuthorization: PolicyChangeStepUpAuthorization,
+  ): Promise<AuthorityGrantChange> {
+    return this.authorityGrantApi.approveChange(changeId, stepUpAuthorization);
+  }
+
+  /**
+   * Rejects an authority grant change. See AuthorityGrantApi.rejectChange.
+   */
+  public rejectAuthorityGrantChange(
+    changeId: string,
+    rejectionReason: string,
+    stepUpAuthorization: PolicyChangeStepUpAuthorization,
+  ): Promise<AuthorityGrantChange> {
+    return this.authorityGrantApi.rejectChange(
       changeId,
       rejectionReason,
       stepUpAuthorization,

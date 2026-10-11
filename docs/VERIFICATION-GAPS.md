@@ -43,6 +43,7 @@ Everything not listed here is closed, with its evidence in its own entry below.
 | G-84       | An approved request took 24 to 32 seconds in production on 2026-10-01; not measured since.                                                                                                                                                                                                                                                                                                                                         | pre-production                | Open; agents are told to use a 120 second timeout and read the record after a timeout   |
 | G-86       | All visitor data in the public sandbox was deleted around the retention job's first run; cause not established.                                                                                                                                                                                                                                                                                                                    | pre-production (sandbox only) | Open; the job is paused. Check made unable to delete (2026-10-06); cause still unproven |
 | G-92       | Business validation (RFC-0023) phases 1 and 2: sources can be registered and their signed answers are verified, but not deployed and no real business system connected yet; a source registered without a key is trusted on TLS alone; validity is checked once, at decision; authority is the existing checks, with no per-agent limits or expiry.                                                                                | pre-production                | Open; phases 3 and 4 of RFC-0023, and a first connected source                          |
+| G-93       | Per-agent authority grants (RFC-0023 phase 3): opt in per policy and no shipped policy opts in; limits are per request, not cumulative; the grantee's caller id is not checked to exist; not re-checked at release.                                                                                                                                                                                                                | pre-production                | Open; cumulative limits and phase 4                                                     |
 
 Closed on 2026-10-06: G-83 (the release tries the next checked address), G-87 (an incomplete
 request body is a `400`, not a `500`), G-11 (environment variables on the docs site), and G-90
@@ -1567,11 +1568,27 @@ registered Ed25519 key (CLAIMS.md 2.54). What is still open:
 - **Validity is checked once, at decision time.** The gateway does not re-check `validUntil` at release, and there is
   no conditional "execute only if still valid" call to the business system (phase 4). The authorization's short TTL
   bounds the window.
-- **Authority is the existing checks.** Per-agent grants with limits and expiry are phase 3; until then
-  `AUTHORITY_EXPIRED` is never produced, and amount limits stay in policy rules.
+- **Authority is the existing checks,** except under a policy with `requireAuthorityGrant`, which also needs
+  the caller's grant (phase 3, CLAIMS.md 2.55; what is open there is G-93).
 - **Nonce reuse is the source's to refuse.** Parmana sends a fresh nonce and a 60 second expiry with each query; the
   example endpoint refuses a nonce it has answered, in memory. A source that keeps no record of nonces would answer a
   replayed query again; the answer still names the replayed query's nonce, so it cannot be used for another one.
+
+**G-93. Per-agent authority grants (RFC-0023 phase 3) are opt in, and their limits are per request.
+OPENED 2026-10-11, `pre-production`.** A policy with `requireAuthorityGrant` decides a request only when the
+authenticated caller holds a grant in force, within its limits, made through maker checker (CLAIMS.md 2.55). What is
+open:
+
+- **No shipped policy requires a grant**, so production authority is unchanged until a policy opts in through policy
+  governance. Closing this needs a policy in production with `requireAuthorityGrant` and a request decided under it,
+  recorded with the request id.
+- **Limits are per request.** A grant can cap one request at 100000, not the total per day. Cumulative limits need a
+  counter written atomically with the decision, as the earlier Razorpay daily refund ledger did; not built.
+- **The grantee's caller id is not checked to exist.** API keys live in configuration (`PARMANA_API_KEYS`), not in a
+  repository the route can read. A grant to a key that does not exist has no effect, but is listed.
+- **Checked at decision time only.** A grant that expires or is revoked between the decision and the release does not
+  stop that release (phase 4). The authorization's short TTL bounds the window.
+- **Not deployed** until this change is merged and deployed.
 
 ---
 

@@ -726,7 +726,7 @@ Evidence
 - `packages/policy/src/types/Policy.ts` (`signalSources`), `packages/policy/src/PolicyValidator.ts` (`validateSignalSources`)
 - `docs/rfcs/RFC-0023-Business-Validation.md`
 
-**Update (2026-10-11):** the first scope bullet is superseded by 2.54: business systems can now be registered as sources through maker checker, and a source registered with a key must sign its answers, which Parmana verifies (`sourceProofVerified`). The fourth bullet holds only for sources registered without a key.
+**Update (2026-10-11):** the first scope bullet is superseded by 2.54: business systems can now be registered as sources through maker checker, and a source registered with a key must sign its answers, which Parmana verifies (`sourceProofVerified`). The fourth bullet holds only for sources registered without a key. The second bullet is superseded by 2.55 for a policy with `requireAuthorityGrant`: authority then also needs the caller's grant, and `AUTHORITY_EXPIRED` is produced.
 
 ---
 
@@ -740,7 +740,7 @@ Scope, stated plainly:
 - **Parmana proves the source said it, not that it is right.** A source answers for its own records.
 - **A source registered without a key** is trusted on the pinned HTTPS connection alone; its Trusted Signal has no `sourceProof`. Registering a key is recommended, not required.
 - **Checked once, at decision time.** `validUntil` is not re-checked at release; conditional execution is phase 4.
-- **Authority is unchanged** from 2.53: per-agent grants with limits and expiry are phase 3.
+- **Authority is unchanged** from 2.53: per-agent grants with limits and expiry are phase 3. **Update (2026-10-11):** built, see 2.55.
 - **The SDK methods** (`proposeBusinessSignalSourceChange`, `business_signal_sources.propose_register` and the rest) ship in the next SDK release.
 
 Verification
@@ -756,6 +756,39 @@ Evidence
 - `packages/api/src/routes/business-signal-sources.ts`, `packages/api/src/business-sources/HttpBusinessSignalSource.ts`, `packages/api/src/application.ts`
 - `packages/shared/src/domain/business-signal-source.ts`, `packages/storage/src/{memory,supabase}/*BusinessSignalSourceRepository.ts`, `supabase/migrations/20261010120000_add_business_signal_sources.sql`
 - `docs/rfcs/RFC-0023-Business-Validation.md` (Business signal sources, Wire protocol), `docs/site/guides/connect-a-business-signal-source.mdx`
+
+---
+
+## 2.55 Per-Agent Authority: Grants With Limits and Expiry, Made Through Maker Checker, Checked Before Anything Is Asked (Scoped, 2026-10-11)
+
+**Claim:** a policy with `requireAuthorityGrant` decides a request only when its authenticated caller (`metadata.submittedBy`, which the server sets from the API key) holds an authority grant in force for the action and the request is within the grant's limits. A grant names one caller, one capability, optional limits by Intent path (`min` and `max` for a number, `oneOf` for allowed values), and an expiry at most 366 days away; it is made and revoked through maker checker (`/authority-grants`): a human proposes, a different human approves with a step up authorization, and neither may be the grantee. No grant, a revoked one, one not yet in force, a request outside a limit (or with the limited value missing or of another type), or no authenticated caller is `NOT_AUTHORIZED`; a grant past its `validUntil` is `AUTHORITY_EXPIRED`; grants that cannot be read, or no grant registry, are `AUTHORITY_UNCLEAR`. Each refuses the request before business validation, so no business system is asked, with a Refusal Record (`authority-not-authorized`, `authority-expired`, `authority-unclear`) that a signed approval cannot cure. The grant checked is recorded in `assessment.authority.grant`, signed in the record. `GET /policies/in-effect` answers `authorityGrantRequired: true` for such a policy.
+
+Scope, stated plainly:
+
+- **Opt in per policy, and no shipped policy opts in.** A policy without `requireAuthorityGrant` keeps the authority of 2.53.
+- **Not deployed** until this change is merged and deployed.
+- **Limits are per request.** Cumulative limits ("100000 per day") are not built.
+- **The grantee is a caller id the server does not check exists.** A grant to a key that does not exist has no effect.
+- **Checked at decision time.** Not re-checked at release (phase 4); the authorization's short TTL bounds the window.
+- **The SDK methods** ship in the next SDK release.
+
+Verification
+
+- `packages/runtime/tests/unit/authority-grant-evaluator.test.ts` (14): no effect without `requireAuthorityGrant`; a current grant within limits is `AUTHORIZED` with the grant recorded; no caller (asking nothing), no grant, before `validFrom`, above a maximum, below a minimum, not in `oneOf`, a string where a number is limited and a missing value are `NOT_AUTHORIZED`; at and after `validUntil` is `AUTHORITY_EXPIRED`; the bounds themselves are allowed; the target can be limited; no registry and a failing one are `AUTHORITY_UNCLEAR`.
+- `packages/runtime/tests/unit/authority-grants-runtime.test.ts` (9), through the real `RuntimeEngine` with a signed approval: execution with the grant in the Trust Record; refusals for no grant, an expired grant, a request above the limit, another caller's grant and no registry, each with business validation `NOT_EVALUATED` and nothing executed; no caller asks no registry; the expired grant signed into the Refusal Record, which verifies after a JSON round trip and fails when the status is changed; a policy without the flag reads no grant.
+- `packages/api/tests/integration/authority-grants-governance.integration.test.ts` (11), through the real app: no credential 401, a service credential 403; a self grant, the grantee as checker and the maker as checker are refused; no step up is refused; an unknown change is 404; malformed fields, limits and expiry (missing, past, before `validFrom`, beyond 366 days) are 400; one pending change and one active grant per caller and capability; nothing is granted before approval; a grant starts at approval unless `validFrom` is later; a revoke keeps the row; reject needs a reason and resolves once.
+- `packages/api/tests/unit/authority-grants-route-clock.test.ts` (1): a grant whose `validUntil` passed while it waited is refused on approval, granting nothing.
+- `packages/api/tests/integration/authority-grant-runtime.integration.test.ts` (1): a grant made and revoked through the API is what the runtime reads: refused before it, executed within it, refused above its limit and after the revoke.
+- `packages/api/tests/integration/policy-in-effect-authority-grant.integration.test.ts` (3) and `packages/policy/tests/unit/PolicyValidator-requireAuthorityGrant.test.ts` (7).
+- `packages/storage/tests/integration/supabase-authority-grant-repository.integration.test.ts` (6), against Postgres 16 with every migration, run 2026-10-11: limits and expiry stored; a grant starts at approval or its `validFrom`; one pending change and one active grant per caller and capability; no double resolution; one of two simultaneous approvals applies; the database refuses a self grant, maker or grantee as checker, a grant without expiry and a revoke with limits.
+- `python/tests/test_authority_grant_api.py` (7): the Python SDK's requests and decoding.
+
+Evidence
+
+- `packages/runtime/src/authority/AuthorityGrantEvaluator.ts`, `packages/runtime/src/RuntimeEngine.ts`
+- `packages/api/src/routes/authority-grants.ts`, `packages/api/src/application.ts`
+- `packages/shared/src/domain/authority-grant.ts`, `packages/storage/src/{memory,supabase}/*AuthorityGrantRepository.ts`, `supabase/migrations/20261011120000_add_authority_grants.sql`
+- `docs/rfcs/RFC-0023-Business-Validation.md` (Authority grants), `docs/site/guides/grant-an-agent-authority.mdx`
 
 ---
 

@@ -165,6 +165,11 @@ agent can achieve:
   wrongly signed or non-echoing answer is refused as `SOURCE_UNAVAILABLE` (2.54). An agent cannot
   register, change or impersonate a source. A compromised source can still answer wrongly: Parmana
   proves the source said it, not that it is right (G-92).
+- Under a policy with `requireAuthorityGrant`, an agent's key gets only the authority a grant gives
+  it: one capability, within limits on each request, until an expiry (2.55). Grants are made only
+  through maker checker, and never by or for the person approving, so an agent cannot widen its own
+  authority. An expired grant refuses as `AUTHORITY_EXPIRED`. Limits are per request, not per day
+  (G-93).
 - What remains: within an approved action and resource, any parameter the approval does not
   fix is the agent's choice, and a person can be persuaded to approve a request they did not
   read closely.

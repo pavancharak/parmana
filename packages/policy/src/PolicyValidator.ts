@@ -275,6 +275,15 @@ export class PolicyValidator {
 
     this.validateSignalSources(policy);
 
+    if (
+      policy.requireAuthorityGrant !== undefined &&
+      typeof policy.requireAuthorityGrant !== "boolean"
+    ) {
+      throw new PolicyValidationError(
+        "Policy requireAuthorityGrant must be true or false.",
+      );
+    }
+
     this.validateEveryApprovalNeedsSignedApproval(policy);
 
     //

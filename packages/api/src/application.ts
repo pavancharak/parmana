@@ -25,6 +25,7 @@ import {
   executionTrustRecordRepository,
   refusalRecordRepository,
   businessSignalSourceRepository,
+  authorityGrantRepository,
 } from "./repositories.js";
 import { RepositoryBusinessSignalSourceRegistry } from "./business-sources/HttpBusinessSignalSource.js";
 
@@ -133,5 +134,8 @@ export function createApplication(
     // RFC-0023 phase 2: the business systems registered through maker
     // checker answer policies' signalSources.
     new RepositoryBusinessSignalSourceRegistry(businessSignalSourceRepository),
+    // RFC-0023 phase 3: the authority grants approved through maker
+    // checker, for policies with requireAuthorityGrant.
+    authorityGrantRepository,
   );
 }

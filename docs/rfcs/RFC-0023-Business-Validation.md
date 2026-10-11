@@ -1,6 +1,6 @@
 # RFC-0023 — Business validation: an agent's proposal is never a business fact
 
-Status: Phases 1 and 2 implemented
+Status: Phases 1 to 3 implemented
 
 Author: Pavan Dev Singh Charak (requirement); implementation session
 
@@ -57,8 +57,9 @@ Agent proposes action and facts
 | Business validation | `VALID`, `INVALID`, `MISSING_DATA`, `CONFLICTING_DATA`, `SOURCE_UNAVAILABLE`, `VALIDATION_EXPIRED`, `NOT_EVALUATED` |
 | Execution           | `EXECUTED`, `NOT_EXECUTED`, `EXECUTION_FAILED`, `EXECUTION_UNKNOWN`                                                 |
 
-- `AUTHORIZED` means the action type may be decided. It does not mean this action is valid or was
-  executed.
+- `AUTHORIZED` means the action may be decided: the action type, and, under a policy that requires a
+  grant (phase 3), this request within the caller's grant. It does not mean this action is valid or
+  was executed.
 - `NOT_EVALUATED` is added to the requested set. It means validation did not run: authority was not
   established, or the policy declares no sourced facts. It is never `VALID`.
 - `EXECUTION_UNKNOWN` is added: a release whose outcome cannot be established, such as a connector
@@ -230,6 +231,36 @@ freshness, the proposed value).
 `typescript/examples/08-business-signal-source.ts` is a complete source endpoint, tested against the
 real client.
 
+# Authority grants (phase 3)
+
+A policy opts in with `"requireAuthorityGrant": true`. A request under it is decided only when the
+authenticated caller, `metadata.submittedBy` as the server sets it from the API key, holds a grant in
+force for the action, and the request is within the grant's limits.
+
+A grant names a caller id, a capability (`namespace:verb`), optional limits by Intent path (`target`
+or `parameters.<name>`: `min` and `max` for a number, `oneOf` for allowed values), an optional
+`validFrom` (default: the approval time) and a required `validUntil`, at most 366 days later. Grants
+are made and revoked through maker checker (`/authority-grants`), the same rules as sources, plus one:
+neither the proposer nor the approver may be the grantee, so no one grants authority to themselves.
+One active grant and one pending change per caller and capability.
+
+| Check, in order                                      | Authority           |
+| ---------------------------------------------------- | ------------------- |
+| No authenticated caller                              | `NOT_AUTHORIZED`    |
+| No grant registry, or it cannot be read              | `AUTHORITY_UNCLEAR` |
+| No active grant for the caller and capability        | `NOT_AUTHORIZED`    |
+| Before `validFrom`                                   | `NOT_AUTHORIZED`    |
+| At or after `validUntil`                             | `AUTHORITY_EXPIRED` |
+| A value outside a limit, missing, or of another type | `NOT_AUTHORIZED`    |
+| Otherwise                                            | `AUTHORIZED`        |
+
+The check runs after the governance and capability/policy checks and before business validation, so a
+request without authority asks no business system. A refusal is a Refusal Record with `matchedRuleId`
+`authority-not-authorized`, `authority-expired` or `authority-unclear`; a signed approval cannot cure
+it. `assessment.authority.grant` records the grant checked (id, caller, capability, `validFrom`,
+`validUntil`, limits), signed in the record. `GET /policies/in-effect` answers
+`authorityGrantRequired: true` for such a policy.
+
 # Phases
 
 1. **This change.** Statuses, the Trusted Signal, `signalSources`, the source port
@@ -240,7 +271,9 @@ real client.
    HTTP source with signed queries, and answers verified against the source's registered Ed25519 key.
    Built in sources (HubSpot, approvals) are not added: a system becomes a source by answering the
    protocol, and the approval stays the signed human approval (2.47).
-3. Per-agent authority grants (action type, limits, expiry), making `AUTHORITY_EXPIRED` reachable.
+3. **Implemented.** Per-agent authority grants (action, limits, expiry) through maker checker
+   (`/authority-grants`), required per policy by `requireAuthorityGrant`, making `AUTHORITY_EXPIRED`
+   reachable. Limits are per request; cumulative limits (per day, per month) are not built.
 4. Conditional execution ("execute only if still valid") through connectors, re-checking `validUntil`
    at release, and execution statuses on the Trust Record.
 
