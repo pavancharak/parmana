@@ -12,6 +12,15 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-11
 
+**Added: live checks for authority grants, business signal sources and a real refund**
+
+- [`examples/live-checks`](https://github.com/pavancharak/parmana/tree/main/examples/live-checks) gains three procedures for production, each written and ready, not yet run:
+  `authority-grant` (a grant decides: refused before it, approved within its limit, refused over it and after its
+  revoke), `business-signal-source` (a deployed demo source answers, signed; the release carries its answer as a
+  condition) and `paytm-refund` (one real 1 INR refund through the rotated credentials, its record verified offline).
+- `examples/live-checks/governance.ts` runs the maker checker steps for policies, connectors, sources and grants with
+  the SDK, showing each change and asking the checker to type `APPROVE` before signing the step up.
+
 **Published: SDK 1.6.0 and connector SDK 0.3.0**
 
 - `@parmana/sdk` and `parmana` 1.6.0 add the business signal source and authority grant methods, and `conditions`
