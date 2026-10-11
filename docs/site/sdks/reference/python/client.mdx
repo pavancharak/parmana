@@ -398,3 +398,44 @@ def reject_external_connector_change(
 
 Reject an external connector change. See
 ExternalConnectorApi.reject_change.
+
+#### list_business_signal_sources
+
+```python
+def list_business_signal_sources() -> list[BusinessSignalSource]
+```
+
+Every business signal source registration, active and revoked. See
+BusinessSignalSourceApi.list.
+
+#### business_signal_source_changes
+
+```python
+def business_signal_source_changes(
+        status: str | None = None) -> list[BusinessSignalSourceChange]
+```
+
+List business signal source changes. See
+BusinessSignalSourceApi.list_changes.
+
+#### approve_business_signal_source_change
+
+```python
+def approve_business_signal_source_change(
+        change_id: str,
+        step_up_authorization: dict[str, Any]) -> BusinessSignalSourceChange
+```
+
+Approve and apply a business signal source change. See
+BusinessSignalSourceApi.approve_change.
+
+#### reject_business_signal_source_change
+
+```python
+def reject_business_signal_source_change(
+        change_id: str, rejection_reason: str,
+        step_up_authorization: dict[str, Any]) -> BusinessSignalSourceChange
+```
+
+Reject a business signal source change. See
+BusinessSignalSourceApi.reject_change.

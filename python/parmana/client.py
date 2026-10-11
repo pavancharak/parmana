@@ -14,6 +14,7 @@ from parmana.api.caller_api import CallerApi
 from parmana.api.execution_api import ExecutionApi
 from parmana.api.execution_intent_api import ExecutionIntentApi
 from parmana.api.external_connector_api import ExternalConnectorApi
+from parmana.api.business_signal_source_api import BusinessSignalSourceApi
 from parmana.api.policy_api import PolicyApi
 from parmana.api.receipt_api import ReceiptApi
 from parmana.api.refusal_api import RefusalApi
@@ -29,6 +30,10 @@ if TYPE_CHECKING:
     from parmana.models.approval_issuer import (
         ApprovalIssuer,
         ApprovalIssuerChange,
+    )
+    from parmana.models.business_signal_source import (
+        BusinessSignalSource,
+        BusinessSignalSourceChange,
     )
     from parmana.models.business_transaction import BusinessTransaction
     from parmana.models.caller import CallerIdentity, PublicKeyInfo
@@ -200,6 +205,10 @@ class ParmanaClient:
         )
 
         self.external_connectors = ExternalConnectorApi(
+            self._transport,
+        )
+
+        self.business_signal_sources = BusinessSignalSourceApi(
             self._transport,
         )
 
@@ -526,5 +535,52 @@ class ParmanaClient:
         """
 
         return self.external_connectors.reject_change(
+            change_id, rejection_reason, step_up_authorization
+        )
+
+    def list_business_signal_sources(self) -> list[BusinessSignalSource]:
+        """
+        Every business signal source registration, active and revoked. See
+        BusinessSignalSourceApi.list.
+        """
+
+        return self.business_signal_sources.list()
+
+    def business_signal_source_changes(
+        self, status: str | None = None
+    ) -> list[BusinessSignalSourceChange]:
+        """
+        List business signal source changes. See
+        BusinessSignalSourceApi.list_changes.
+        """
+
+        return self.business_signal_sources.list_changes(status)
+
+    def approve_business_signal_source_change(
+        self,
+        change_id: str,
+        step_up_authorization: dict[str, Any],
+    ) -> BusinessSignalSourceChange:
+        """
+        Approve and apply a business signal source change. See
+        BusinessSignalSourceApi.approve_change.
+        """
+
+        return self.business_signal_sources.approve_change(
+            change_id, step_up_authorization
+        )
+
+    def reject_business_signal_source_change(
+        self,
+        change_id: str,
+        rejection_reason: str,
+        step_up_authorization: dict[str, Any],
+    ) -> BusinessSignalSourceChange:
+        """
+        Reject a business signal source change. See
+        BusinessSignalSourceApi.reject_change.
+        """
+
+        return self.business_signal_sources.reject_change(
             change_id, rejection_reason, step_up_authorization
         )

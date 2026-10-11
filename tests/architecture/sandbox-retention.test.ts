@@ -85,6 +85,8 @@ describe("the sandbox retention job", () => {
       "approval_issuer_changes",
       "external_connectors",
       "external_connector_changes",
+      "business_signal_sources",
+      "business_signal_source_changes",
       "consumed_policy_change_step_up_nonces",
     ]) {
       expect(deleteIndex(table)).toBe(-1);

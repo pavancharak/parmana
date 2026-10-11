@@ -87,6 +87,18 @@ The offline verifiers make no network call. Get the public key once with `public
 
 Sign the step up authorization for approve or reject with `signPolicyChangeStepUp()` or `sign_policy_change_step_up()`, with the `changeId` as `pendingPolicyChangeId`. With an SDK older than 1.5.0, call these routes directly; see [Connect any external system](/guides/connect-any-external-system).
 
+## Business signal sources
+
+| Operation                                            | TypeScript                                                              | Python                                                                                                          |
+| ---------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `GET /business-signal-sources`                       | `businessSignalSources()` **next release**                              | `list_business_signal_sources()`, `business_signal_sources.list()` **next release**                             |
+| `POST /business-signal-sources/changes`              | `proposeBusinessSignalSourceChange({ action, ... })` **next release**   | `business_signal_sources.propose_register(...)`, `business_signal_sources.propose_revoke(...)` **next release** |
+| `GET /business-signal-sources/changes`               | `businessSignalSourceChanges(status?)` **next release**                 | `business_signal_source_changes(status=None)` **next release**                                                  |
+| `POST /business-signal-sources/changes/{id}/approve` | `approveBusinessSignalSourceChange(id, stepUp)` **next release**        | `approve_business_signal_source_change(id, step_up)` **next release**                                           |
+| `POST /business-signal-sources/changes/{id}/reject`  | `rejectBusinessSignalSourceChange(id, reason, stepUp)` **next release** | `reject_business_signal_source_change(id, reason, step_up)` **next release**                                    |
+
+Until the next SDK release, call these routes directly; see [Connect a business signal source](/guides/connect-a-business-signal-source).
+
 ## Caller and service
 
 | Operation         | TypeScript           | Python                                                                                                              |

@@ -20,6 +20,10 @@ from .models.execution_intent_results import (
     ResolveExecutionIntentResult,
     UnfinalizedExecutionIntents,
 )
+from .models.business_signal_source import (
+    BusinessSignalSource,
+    BusinessSignalSourceChange,
+)
 from .models.external_connector import ExternalConnector, ExternalConnectorChange
 from .models.policy_change_results import (
     PolicyChangeDiff,
@@ -49,5 +53,7 @@ __all__ = [
     "ApprovalIssuerChange",
     "ExternalConnector",
     "ExternalConnectorChange",
+    "BusinessSignalSource",
+    "BusinessSignalSourceChange",
     *_error_exports,
 ]

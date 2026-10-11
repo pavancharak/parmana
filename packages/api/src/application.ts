@@ -24,7 +24,9 @@ import {
   businessTransactionRepository,
   executionTrustRecordRepository,
   refusalRecordRepository,
+  businessSignalSourceRepository,
 } from "./repositories.js";
+import { RepositoryBusinessSignalSourceRegistry } from "./business-sources/HttpBusinessSignalSource.js";
 
 import type { ApprovalVerifier } from "@parmana/approval";
 
@@ -128,5 +130,8 @@ export function createApplication(
     createCurrentPolicyVersionSource(),
     createApprovalNeededNotifier(),
     createExternalPolicyBindingSource(),
+    // RFC-0023 phase 2: the business systems registered through maker
+    // checker answer policies' signalSources.
+    new RepositoryBusinessSignalSourceRegistry(businessSignalSourceRepository),
   );
 }

@@ -1,3 +1,4 @@
+import type { BusinessSignalSourceRegistry } from "./business-validation/BusinessSignalSource.js";
 import type { SigningReadiness } from "./SigningReadiness.js";
 import type {
   CurrentPolicyVersionSource,
@@ -58,6 +59,7 @@ export class RuntimeFactory {
     currentPolicyVersions?: CurrentPolicyVersionSource,
     approvalNeededNotifier?: ApprovalNeededNotifier,
     externalPolicyBindings?: ExternalPolicyBindingSource,
+    businessSignalSources?: BusinessSignalSourceRegistry,
   ): ExecutionTrustApplication {
     //
     // Application Services
@@ -110,6 +112,10 @@ export class RuntimeFactory {
 
     if (signingReadiness) {
       builder.withSigningReadiness(signingReadiness);
+    }
+
+    if (businessSignalSources) {
+      builder.withBusinessSignalSources(businessSignalSources);
     }
 
     //

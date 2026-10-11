@@ -76,3 +76,7 @@ export const approvalIssuerRepository = lazyRepository(
 export const externalConnectorRepository = lazyRepository(
   (provider) => provider.externalConnectors,
 );
+
+export const businessSignalSourceRepository = lazyRepository(
+  (provider) => provider.businessSignalSources,
+);

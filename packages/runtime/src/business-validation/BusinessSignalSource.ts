@@ -38,6 +38,13 @@ export type BusinessSignalSourceAnswer =
       readonly validUntil?: Date;
       /** The source's own proof of its answer, verbatim, if it has one. */
       readonly sourceProof?: string;
+      /** The registered key the source signed with. */
+      readonly sourceKeyId?: string;
+      /**
+       * True only when the implementation verified sourceProof against
+       * the source's registered key. Never set it for an unchecked proof.
+       */
+      readonly sourceProofVerified?: boolean;
     }
   | {
       /** The source has no such fact for this subject. */
@@ -66,7 +73,17 @@ export interface BusinessSignalSource {
  * uses.
  */
 export interface BusinessSignalSourceRegistry {
-  get(name: string): BusinessSignalSource | undefined;
+  /**
+   * The source registered under this name, or undefined. May be async,
+   * for a registry read from storage; a lookup that throws is treated as
+   * SOURCE_UNAVAILABLE.
+   */
+  get(
+    name: string,
+  ):
+    | BusinessSignalSource
+    | undefined
+    | Promise<BusinessSignalSource | undefined>;
 }
 
 /**

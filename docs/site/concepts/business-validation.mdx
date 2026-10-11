@@ -11,18 +11,20 @@ fact. Parmana answers two questions separately, and an action runs only when bot
 - **Business validity.** Is this exact action valid for this exact business object, according to
   the system that owns the facts?
 
-| What                                                                    | Status                                                     |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Separate authority, validation and execution statuses on every decision | **[AVAILABLE]**                                            |
-| A policy naming the source of each fact (`signalSources`)               | **[AVAILABLE]**                                            |
-| Parmana asking the source and recording a Trusted Signal                | **[AVAILABLE]** in the runtime                             |
-| Business sources registered in the server                               | **[NOT AVAILABLE]**: a policy that declares one is refused |
-| Per-agent limits and expiry as authority                                | **[NOT AVAILABLE]**                                        |
-| Execute only if still valid, in one call to the system                  | **[NOT AVAILABLE]**                                        |
+| What                                                                     | Status                            |
+| ------------------------------------------------------------------------ | --------------------------------- |
+| Separate authority, validation and execution statuses on every decision  | **[AVAILABLE]**                   |
+| A policy naming the source of each fact (`signalSources`)                | **[AVAILABLE]**                   |
+| Parmana asking the source and recording a Trusted Signal                 | **[AVAILABLE]** in the runtime    |
+| Business systems registered as sources through maker checker             | **[AVAILABLE]**, not yet deployed |
+| Signed queries, and answers verified against the source's registered key | **[AVAILABLE]**, not yet deployed |
+| Per-agent limits and expiry as authority                                 | **[NOT AVAILABLE]**               |
+| Execute only if still valid, in one call to the system                   | **[NOT AVAILABLE]**               |
 
 The design and its phases are in
 [RFC-0023](https://github.com/pavancharak/parmana/blob/main/docs/rfcs/RFC-0023-Business-Validation.md);
-the claim is [CLAIMS.md 2.53](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md).
+the claims are [CLAIMS.md 2.53 and 2.54](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). To
+connect a system, see [Connect a business signal source](/guides/connect-a-business-signal-source).
 
 ## The flow
 
@@ -51,7 +53,9 @@ the claim is [CLAIMS.md 2.53](https://github.com/pavancharak/parmana/blob/main/d
 }
 ```
 
-- `source`: the registered business system to ask.
+- `source`: the business system to ask, as registered through
+  [maker checker](/guides/connect-a-business-signal-source). Any system that answers the protocol can be one: an ERP,
+  an order system, a CRM, a ledger.
 - `claim`: what to ask it.
 - `subject`: where the business object is in the request, `target` or a `parameters` path.
 - `maxAgeSeconds`: how old the answer may be, from 1 to 86400, default 300.
@@ -69,7 +73,7 @@ Each answer is recorded as a Trusted Signal, bound to the business object and th
 {
   "signalKey": "refundEligible",
   "source": "orders-system",
-  "sourceIdentity": "orders.example.internal",
+  "sourceIdentity": "https://orders.example.com/parmana/signals",
   "claim": "refund.eligible",
   "subject": "123",
   "observedValue": true,
@@ -77,14 +81,23 @@ Each answer is recorded as a Trusted Signal, bound to the business object and th
   "validUntil": "2026-10-10T12:01:00.000Z",
   "action": "refund",
   "businessTransactionId": "…",
-  "integrityProof": { "algorithm": "sha256", "digest": "…" },
+  "integrityProof": {
+    "algorithm": "sha256",
+    "digest": "…",
+    "sourceProof": "…",
+    "sourceKeyId": "orders-2026-10",
+    "sourceProofVerified": true
+  },
   "verificationStatus": "VERIFIED"
 }
 ```
 
 The digest is the SHA-256 of the signal without its proof, and the decision that carries it is
-signed. That proves what Parmana observed. It does not prove the source said it. A source's own
-proof, when it has one, is kept in `integrityProof.sourceProof`, but it is not yet checked.
+signed. That proves what Parmana observed. When the source is registered with a key,
+`sourceProof` is the source's own Ed25519 signature over its answer, which Parmana verified before
+trusting it (`sourceProofVerified: true`). That proves the source said it. A source registered with
+a key cannot give an unsigned answer: it is refused as `SOURCE_UNAVAILABLE`. A source registered
+without one has no `sourceProof`; its answer is trusted on the pinned HTTPS connection alone.
 
 ## Statuses
 
@@ -101,8 +114,9 @@ proof, when it has one, is kept in `integrityProof.sourceProof`, but it is not y
 - **`MISSING_DATA`**: the request names no business object, the source has no such fact, or it
   answered with the wrong type.
 - **`CONFLICTING_DATA`**: the source holds contradictory facts.
-- **`SOURCE_UNAVAILABLE`**: the source is not registered, failed, took longer than 10 seconds, or
-  gave an incomplete answer.
+- **`SOURCE_UNAVAILABLE`**: the source is not registered or was revoked, failed, took longer than
+  10 seconds (or its registered timeout), or gave an answer Parmana cannot trust: incomplete, not
+  echoing the query, or not signed by its registered key.
 - **`VALIDATION_EXPIRED`**: the answer is older than `maxAgeSeconds`, or past the source's own
   `validUntil`.
 - **`NOT_EVALUATED`**: validation did not run, because authority was not established or the policy
@@ -136,9 +150,10 @@ verification. Records made before this change have no `assessment` and still ver
 
 ## Limits today
 
-- **No source is registered in the server yet,** so a policy that declares one is refused as
-  `SOURCE_UNAVAILABLE`. No shipped policy declares one. Registering sources through maker checker
-  is the next phase.
+- **Not deployed yet.** Registering sources and asking them is in the repository and tested, but
+  no real business system has been connected. No shipped policy declares a source.
+- **Checked once.** An answer is checked when the request is decided, not again when the action is
+  released (phase 4).
 - **Authority is the existing checks.** Per-agent limits ("Agent X: refunds up to ₹1,00,000") and
   expiry come later, so `AUTHORITY_EXPIRED` is not yet produced.
 - **Refund eligibility has no source yet.** `refundEligible` and `fraudCheckPassed` in

@@ -113,6 +113,7 @@
               "guides/authorize-and-execute",
               "guides/connect-an-agent",
               "guides/connect-any-external-system",
+              "guides/connect-a-business-signal-source",
               "guides/session-credentials",
               "guides/choose-a-signature-provider"
             ]
@@ -160,6 +161,7 @@
                   "sdks/reference/typescript/classes/AuditApi",
                   "sdks/reference/typescript/classes/AuthenticationError",
                   "sdks/reference/typescript/classes/AuthorizationError",
+                  "sdks/reference/typescript/classes/BusinessSignalSourceApi",
                   "sdks/reference/typescript/classes/CallerApi",
                   "sdks/reference/typescript/classes/ConfigurationError",
                   "sdks/reference/typescript/classes/ConflictError",
@@ -198,6 +200,8 @@
                   "sdks/reference/typescript/interfaces/AuditEvent",
                   "sdks/reference/typescript/interfaces/Authority",
                   "sdks/reference/typescript/interfaces/Authorization",
+                  "sdks/reference/typescript/interfaces/BusinessSignalSource",
+                  "sdks/reference/typescript/interfaces/BusinessSignalSourceChange",
                   "sdks/reference/typescript/interfaces/BusinessTransaction",
                   "sdks/reference/typescript/interfaces/BusinessTransactionMetadata",
                   "sdks/reference/typescript/interfaces/CallerIdentity",
@@ -273,6 +277,7 @@
                   "sdks/reference/typescript/type-aliases/PendingPolicyChangeStatus",
                   "sdks/reference/typescript/type-aliases/PolicyGovernanceAnchorStatus",
                   "sdks/reference/typescript/type-aliases/ProposeApproverChangeInput",
+                  "sdks/reference/typescript/type-aliases/ProposeBusinessSignalSourceChangeInput",
                   "sdks/reference/typescript/type-aliases/ProposeExternalConnectorChangeInput",
                   "sdks/reference/typescript/type-aliases/PublicKeys",
                   "sdks/reference/typescript/type-aliases/ResolveExecutionIntentOutcome",
@@ -329,6 +334,7 @@
             "pages": [
               "sdks/reference/python/api/approver_api",
               "sdks/reference/python/api/audit_api",
+              "sdks/reference/python/api/business_signal_source_api",
               "sdks/reference/python/api/caller_api",
               "sdks/reference/python/api/execution_api",
               "sdks/reference/python/api/execution_intent_api",
@@ -356,6 +362,7 @@
               "sdks/reference/python/errors/replay_error",
               "sdks/reference/python/errors/verification_error",
               "sdks/reference/python/models/approval_issuer",
+              "sdks/reference/python/models/business_signal_source",
               "sdks/reference/python/models/caller",
               "sdks/reference/python/models/execution_intent_results",
               "sdks/reference/python/models/external_connector",
@@ -502,6 +509,16 @@
               "api-reference/endpoints/propose-external-connector-change",
               "api-reference/endpoints/approve-external-connector-change",
               "api-reference/endpoints/reject-external-connector-change"
+            ]
+          },
+          {
+            "group": "Business Signal Sources",
+            "pages": [
+              "api-reference/endpoints/list-business-signal-sources",
+              "api-reference/endpoints/list-business-signal-source-changes",
+              "api-reference/endpoints/propose-business-signal-source-change",
+              "api-reference/endpoints/approve-business-signal-source-change",
+              "api-reference/endpoints/reject-business-signal-source-change"
             ]
           },
           {

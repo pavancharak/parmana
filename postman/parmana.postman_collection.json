@@ -1069,6 +1069,201 @@
       ]
     },
     {
+      "name": "Business Signal Sources",
+      "description": "Maker-checker for the business systems Parmana asks for the facts a policy needs, without a deploy (RFC-0023)",
+      "item": [
+        {
+          "name": "List business signal sources",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/business-signal-sources",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business-signal-sources"
+              ]
+            },
+            "description": "operationId: listBusinessSignalSources\n\nLists every business signal source registration, active and revoked: the name a policy's\n`signalSources` uses, the HTTPS endpoint Parmana asks, and the Ed25519 key its answers must be\nsigned with, if one is registered. Revoked registrations stay listed, so every Trusted Signal ever\nrecorded can be traced to the registration that produced it. Needs a human key. See\n[Connect a business system as a signal source](/guides/connect-a-business-signal-source)."
+          }
+        },
+        {
+          "name": "List business signal source changes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/business-signal-sources/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business-signal-sources",
+                "changes"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "`PENDING_APPROVAL`, `APPROVED` or `REJECTED`. Omit for all.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "operationId: listBusinessSignalSourceChanges\n\nLists business signal source changes, newest first. A checker uses `status=PENDING_APPROVAL` to\nfind what waits for review. Needs a human key."
+          }
+        },
+        {
+          "name": "Propose registering or revoking a business signal source (register)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"register\",\n  \"name\": \"erp\",\n  \"endpointUrl\": \"https://orders.example.com/parmana/signals\",\n  \"timeoutMs\": 5000,\n  \"publicKeyPem\": \"-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEAsgWd/PtRf9OsENif9bgJegghUpmEOOZN5NROxc3zpPc=\\n-----END PUBLIC KEY-----\\n\",\n  \"keyId\": \"erp-2026-10\",\n  \"reason\": \"Release goods only against invoices the ERP says are paid.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business-signal-sources/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business-signal-sources",
+                "changes"
+              ]
+            },
+            "description": "Real captured request\n\noperationId: proposeBusinessSignalSourceChange\n\nProposes connecting a business system, any system that owns facts a policy needs (an ERP, an\norder system, a CRM, a ledger), so Parmana can ask it instead of trusting the agent's claim.\n`register` names the source, the HTTPS endpoint Parmana asks, optionally a timeout, and optionally\nthe Ed25519 public key the source signs its answers with; `revoke` ends the active registration\nfor a name. Nothing changes until a different person approves it. The endpoint must be `https`,\nname a domain (not an IP address or localhost), carry no user name, password or fragment, and\nresolve only to public addresses; the address is checked again on approval and at every query.\nTo move a source, revoke it, then register the new endpoint. Needs a human key."
+          }
+        },
+        {
+          "name": "Propose registering or revoking a business signal source (revoke)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"revoke\",\n  \"name\": \"erp\",\n  \"reason\": \"The ERP moves to a new host.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business-signal-sources/changes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business-signal-sources",
+                "changes"
+              ]
+            },
+            "description": "Real captured request\n\noperationId: proposeBusinessSignalSourceChange\n\nProposes connecting a business system, any system that owns facts a policy needs (an ERP, an\norder system, a CRM, a ledger), so Parmana can ask it instead of trusting the agent's claim.\n`register` names the source, the HTTPS endpoint Parmana asks, optionally a timeout, and optionally\nthe Ed25519 public key the source signs its answers with; `revoke` ends the active registration\nfor a name. Nothing changes until a different person approves it. The endpoint must be `https`,\nname a domain (not an IP address or localhost), carry no user name, password or fragment, and\nresolve only to public addresses; the address is checked again on approval and at every query.\nTo move a source, revoke it, then register the new endpoint. Needs a human key."
+          }
+        },
+        {
+          "name": "Approve a business signal source change",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stepUpAuthorization\": {\n    \"payload\": {\n      \"version\": 1,\n      \"nonce\": \"7fd4e45b-1bda-4224-83d0-c8676cff2180\",\n      \"pendingPolicyChangeId\": \"5ba7d3a6-d56d-4e90-b588-402d44aeee0c\",\n      \"action\": \"approve\",\n      \"authorizedAt\": \"2026-10-11T02:58:24.742Z\",\n      \"expiresAt\": \"2026-10-11T03:00:24.742Z\"\n    },\n    \"signature\": \"hP3qDu2ZHNasz1zFZBHlkxqTKT6wiP6IHgFishmbTM7P56w7Jwel5DSx8xSvxynFDDO0sART/xxFxVFFBx8hAw==\",\n    \"keyId\": \"checker-step-up-key\",\n    \"algorithm\": \"ed25519\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business-signal-sources/changes/:id/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business-signal-sources",
+                "changes",
+                ":id",
+                "approve"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "The `changeId` from the proposal."
+                }
+              ]
+            },
+            "description": "Real captured request\n\noperationId: approveBusinessSignalSourceChange\n\nApproves a business signal source change and applies it at once: `register` makes the\nregistration active, so policies that name it can be evaluated; `revoke` ends it, so they are\nrefused as `SOURCE_UNAVAILABLE`. For a register, the endpoint's address is checked again first.\nChecked in order: a human key, not the proposer, and a step up authorization for this change id\nand action `approve`, valid once, with the change id in `payload.pendingPolicyChangeId`."
+          }
+        },
+        {
+          "name": "Reject a business signal source change",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Does not meet the bar for this fixture\",\n  \"stepUpAuthorization\": {\n    \"payload\": {\n      \"version\": 1,\n      \"nonce\": \"4807fe45-0379-415b-9455-b8cb84eb5554\",\n      \"pendingPolicyChangeId\": \"5617ba3c-fb07-437d-9131-232b84bbb863\",\n      \"action\": \"reject\",\n      \"authorizedAt\": \"2026-09-15T03:48:16.755Z\",\n      \"expiresAt\": \"2026-09-15T03:50:16.755Z\"\n    },\n    \"signature\": \"Wu5/oibGCjvkTklGQPiDMDemqxCVbSyuoVT7WHW63rGq8Av5KFTW6vMkUCP03pANv8bDu60bZVuVcTDVmLXpDA==\",\n    \"keyId\": \"human-checker-step-up-key\",\n    \"algorithm\": \"ed25519\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/business-signal-sources/changes/:id/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "business-signal-sources",
+                "changes",
+                ":id",
+                "reject"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "",
+                  "description": "The `changeId` from the proposal."
+                }
+              ]
+            },
+            "description": "operationId: rejectBusinessSignalSourceChange\n\nRejects a business signal source change. No registration changes. The same checks as approve,\nwith a step up authorization for action `reject` and a `rejectionReason`."
+          }
+        }
+      ]
+    },
+    {
       "name": "Sandbox",
       "description": "Routes that exist only on the public sandbox (ADR-0014), for trying Parmana from a browser",
       "item": [
