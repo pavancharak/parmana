@@ -177,11 +177,11 @@ business system is connected, no policy opts in and no grant exists.
 
 **Not built yet:**
 
-| Item                                                                      | State                                                        |
-| ------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Daily or cumulative grant limits ("100000 per day") (G-93)                | Not built; a grant limits each request on its own.           |
-| Built in connectors asking the business system again at release (G-94)    | Not built; external endpoints check `conditions` themselves. |
-| A release refused at release leaves the Execution Intent `ERRORED` (G-94) | Not built; a person closes it as `NOT_EXECUTED`.             |
+| Item                                                                      | State                                                                                                      |
+| ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Daily or cumulative grant limits ("100000 per day") (G-93)                | Not built; a grant limits each request on its own. Design recorded in RFC-0023, "Cumulative grant limits". |
+| Built in connectors asking the business system again at release (G-94)    | Not built; external endpoints check `conditions` themselves.                                               |
+| A release refused at release leaves the Execution Intent `ERRORED` (G-94) | Not built; a person closes it as `NOT_EXECUTED`.                                                           |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 

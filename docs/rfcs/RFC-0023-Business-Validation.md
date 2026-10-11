@@ -303,6 +303,74 @@ re-check, not the conditions.
 `EXECUTION_UNKNOWN` is never reported as failed: the action may have run. The Trust Record's format is
 unchanged; the statuses are how its executions and the intents are read.
 
+# Cumulative grant limits (not built; design for a later phase)
+
+**Status: not built.** Recorded so it can be built later without re-deriving the design. A grant's limits
+today apply to each request on its own: `"parameters.amount": { "max": 5000 }` caps one refund at 5000,
+but 20 refunds of 5000 in a day all pass. A cumulative limit caps the total over a period: "at most 50000
+INR, or 20 refunds, per day".
+
+**The rule it must keep.** The running total is Parmana's own, counted from its own decisions. It is never
+declared by the agent or read from the request. The removed Razorpay connector first took a
+caller-declared daily total (`dailyCumulativeAfterThisRefundPaise`), which the authorization
+certification named an exception to "AI cannot execute what the business has not authorized"
+(CLAIMS.md, the closing certification section). TD-23 Phase 3B replaced it with a server-side
+`RazorpayDailyRefundLedger` with `reserve()` and `release()`, atomic in Postgres by `INSERT ... ON CONFLICT
+... DO UPDATE ... RETURNING` and proven with 50 concurrent reservations (VERIFICATION-GAPS.md, the entry
+extending G-24). It was deleted with the connector on 2026-08-12 and is in git history; it is the
+precedent to start from, generalised from one connector to every grant.
+
+**Declaration.** A grant gains optional `cumulativeLimits`, made and changed through the same maker checker:
+
+```json
+"cumulativeLimits": [
+  { "sum": "parameters.amount", "max": 50000, "period": "day", "timeZone": "Asia/Kolkata" },
+  { "count": true, "max": 20, "period": "day", "timeZone": "Asia/Kolkata" }
+]
+```
+
+- `sum` names a numeric Intent path (as the per-request limits do); `count: true` counts requests.
+- `period` is `day`, `week` or `month`, calendar periods in the named IANA `timeZone` (default UTC).
+  Rolling windows ("the last 24 hours") are an open question below.
+- A request whose `sum` path is missing or not a number is refused, as for the per-request limits.
+
+**Counting.** A table, for example `authority_grant_usage (caller_id, capability, metric, period_start,
+total, count)`, keyed by caller and capability, **not by grant id**: revoking a grant and granting it
+again must not reset the day's total.
+
+1. At decision time, after the per-request limits pass and before business validation, the runtime
+   reserves the request's amount with one atomic conditional update: add it only if the new total stays
+   within `max`, in the same database transaction for every `cumulativeLimits` entry. Two requests at the
+   same moment cannot both pass under the cap. Postgres: `UPDATE ... SET total = total + $amount WHERE
+... AND total + $amount <= $max RETURNING total`, with the row created on first use.
+2. Over the cap: `NOT_AUTHORIZED`, `matchedRuleId` `authority-cumulative-limit`, a Refusal Record, nothing
+   asked or executed. The counter cannot be read or written: `AUTHORITY_UNCLEAR`, failing closed.
+3. Only an approved decision keeps its reservation. A request refused later in the same decision
+   (business validation, a policy rule, a missing approval) releases it in the same transaction.
+4. A release refused at release (`NOT_EXECUTED`, `AUTHORIZATION_NO_LONGER_VALID`) releases it.
+   `EXECUTION_UNKNOWN` keeps it: the action may have run, so it counts until a person resolves the
+   Execution Intent.
+5. `assessment.authority.usage` records, signed in the decision, the period, the total before and after
+   and the cap, so a reader sees how close to the limit each decision was.
+
+**Not needed at release.** The amount is reserved at decision time, so the gateway's re-check (phase 4)
+does not need to recount.
+
+**Tests to write.** Concurrent requests at the cap (exactly one passes); period rollover in the named time
+zone, including a day boundary between decision and release; revoke and re-grant keeps the total; a
+refusal after reservation releases it; `EXECUTION_UNKNOWN` keeps it; the counter unavailable gives
+`AUTHORITY_UNCLEAR`; a live Postgres test of the conditional update; the memory repository serialises
+updates.
+
+**Open questions.**
+
+1. Calendar periods or rolling windows. Calendar periods are one row per period and match how businesses
+   state limits; rolling windows need per-request rows and a sum over them.
+2. Whether a limit can span several capabilities (for example all `paytm:*` refunds together).
+3. Whether a human-signed approval may exceed a cumulative limit, or the limit always holds. The
+   per-request grant check today cannot be cured by an approval; the default should be the same.
+4. Where the total lives for a deployment without a database (the memory repository restarts at zero).
+
 # Phases
 
 1. **This change.** Statuses, the Trusted Signal, `signalSources`, the source port
@@ -316,9 +384,12 @@ unchanged; the statuses are how its executions and the intents are read.
 3. **Implemented.** Per-agent authority grants (action, limits, expiry) through maker checker
    (`/authority-grants`), required per policy by `requireAuthorityGrant`, making `AUTHORITY_EXPIRED`
    reachable. Limits are per request; cumulative limits (per day, per month) are not built.
+   Their design is recorded above, under "Cumulative grant limits".
 4. **Implemented.** Business conditions and the grant signed into the authorization and re-checked by
    the gateway at release; conditions carried to external connectors so they execute only if still
    valid; `EXECUTION_UNKNOWN` and `NOT_EXECUTED` on the responses that mean them.
+5. **Not built.** Cumulative grant limits (per day, week or month), counted by Parmana from its own
+   decisions; the design is under "Cumulative grant limits".
 
 # Open questions
 
