@@ -24,7 +24,11 @@
 import { createServer } from "node:http";
 import { pathToFileURL } from "node:url";
 
-import { verifyParmanaRelease, type ParmanaRelease } from "@parmana/sdk";
+import {
+  verifyParmanaRelease,
+  type ParmanaRelease,
+  type ParmanaReleaseCondition,
+} from "@parmana/sdk";
 
 /**
  * What the endpoint answers: status and JSON body.
@@ -58,6 +62,18 @@ export interface ReleaseHandlerOptions {
    */
   readonly answers?: Map<string, Record<string, unknown>>;
 
+  /**
+   * RFC-0023 phase 4: whether every business fact the release rests on
+   * still holds in your records. Called only when the release carries
+   * conditions. Check them in the same transaction as the action, so
+   * nothing can change in between; when one no longer holds, the
+   * endpoint does not act and answers conditionsNotMet.
+   */
+  readonly conditionsHold?: (
+    conditions: readonly ParmanaReleaseCondition[],
+    release: ParmanaRelease,
+  ) => Promise<boolean>;
+
   readonly now?: () => Date;
 }
 
@@ -88,6 +104,27 @@ export function createReleaseHandler(options: ReleaseHandlerOptions) {
 
     if (verification.alreadyExecuted && first !== undefined) {
       return { status: 200, body: first };
+    }
+
+    if (
+      release.conditions !== undefined &&
+      release.conditions.length > 0 &&
+      options.conditionsHold !== undefined &&
+      !(await options.conditionsHold(release.conditions, release))
+    ) {
+      // Not acted on. Kept as the first answer, so a repeat of this
+      // release gets the same one.
+      const declined = {
+        businessTransactionId: release.businessTransactionId,
+        capability: release.capability,
+        success: false,
+        conditionsNotMet: true,
+        result: { reason: "A condition the release rests on no longer holds." },
+      };
+
+      answers.set(release.businessTransactionId, declined);
+
+      return { status: 200, body: declined };
     }
 
     const result = await options.act(release);

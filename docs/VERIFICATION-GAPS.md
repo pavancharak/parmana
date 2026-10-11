@@ -44,6 +44,7 @@ Everything not listed here is closed, with its evidence in its own entry below.
 | G-86       | All visitor data in the public sandbox was deleted around the retention job's first run; cause not established.                                                                                                                                                                                                                                                                                                                    | pre-production (sandbox only) | Open; the job is paused. Check made unable to delete (2026-10-06); cause still unproven |
 | G-92       | Business validation (RFC-0023) phases 1 and 2: sources can be registered and their signed answers are verified, but not deployed and no real business system connected yet; a source registered without a key is trusted on TLS alone; validity is checked once, at decision; authority is the existing checks, with no per-agent limits or expiry.                                                                                | pre-production                | Open; phases 3 and 4 of RFC-0023, and a first connected source                          |
 | G-93       | Per-agent authority grants (RFC-0023 phase 3): opt in per policy and no shipped policy opts in; limits are per request, not cumulative; the grantee's caller id is not checked to exist; not re-checked at release.                                                                                                                                                                                                                | pre-production                | Open; cumulative limits and phase 4                                                     |
+| G-94       | Execution (RFC-0023 phase 4): an external endpoint must itself check the signed conditions to execute only if still valid; built in connectors get only the gateway re-check; a release refused at release leaves the intent ERRORED.                                                                                                                                                                                              | pre-production                | Open                                                                                    |
 
 Closed on 2026-10-06: G-83 (the release tries the next checked address), G-87 (an incomplete
 request body is a `400`, not a `500`), G-11 (environment variables on the docs site), and G-90
@@ -1565,9 +1566,7 @@ registered Ed25519 key (CLAIMS.md 2.54). What is still open:
   recommended, not required.
 - **Parmana proves the source said it, not that it is right.** A compromised or mistaken source gives verified wrong
   answers. Limiting what a source may answer (which claims, for which policies) is not built.
-- **Validity is checked once, at decision time.** The gateway does not re-check `validUntil` at release, and there is
-  no conditional "execute only if still valid" call to the business system (phase 4). The authorization's short TTL
-  bounds the window.
+- **Validity at release** is re-checked by the gateway since phase 4 (CLAIMS.md 2.56); what is open there is G-94.
 - **Authority is the existing checks,** except under a policy with `requireAuthorityGrant`, which also needs
   the caller's grant (phase 3, CLAIMS.md 2.55; what is open there is G-93).
 - **Nonce reuse is the source's to refuse.** Parmana sends a fresh nonce and a 60 second expiry with each query; the
@@ -1586,8 +1585,25 @@ open:
   counter written atomically with the decision, as the earlier Razorpay daily refund ledger did; not built.
 - **The grantee's caller id is not checked to exist.** API keys live in configuration (`PARMANA_API_KEYS`), not in a
   repository the route can read. A grant to a key that does not exist has no effect, but is listed.
-- **Checked at decision time only.** A grant that expires or is revoked between the decision and the release does not
-  stop that release (phase 4). The authorization's short TTL bounds the window.
+- **Re-checked at release** since phase 4 (CLAIMS.md 2.56): a grant that expires or is revoked between the decision and
+  the release stops that release.
+- **Not deployed** until this change is merged and deployed.
+
+**G-94. What a decision rests on is re-checked at release, but "execute only if still valid" at the system is the
+endpoint's to implement. OPENED 2026-10-11, `pre-production`.** Phase 4 signs the business conditions and the authority
+grant into the authorization, the gateway refuses a release once either no longer holds, and an external connector's
+release carries the conditions (CLAIMS.md 2.56). What is open:
+
+- **The endpoint decides whether to check the conditions.** Parmana signs them and the SDK verifies them, but only an
+  endpoint that checks them in the same transaction as the action executes only if they still hold. One that ignores
+  them still works, without the guarantee.
+- **Built in connectors get only the gateway re-check.** Paytm, HubSpot, GitHub and Slack are called by Parmana's own
+  adapters, which do not ask the business system again between the gateway check and the call.
+- **A release refused at release leaves the Execution Intent `ERRORED`.** The response says `NOT_EXECUTED`; the intent
+  has no "not released" state, so a person closes it as `NOT_EXECUTED`, as for a connector that is not registered.
+- **No end to end test through `POST /execute` with the production gateway.** The gateway checks, the adapter and the
+  runtime are each tested; a request whose grant is revoked between decision and release cannot be timed through one
+  `execute` call without a test hook.
 - **Not deployed** until this change is merged and deployed.
 
 ---

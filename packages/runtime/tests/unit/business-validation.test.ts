@@ -249,6 +249,21 @@ describe("business validation (RFC-0023)", () => {
     expect(assessment?.execution).toBeUndefined();
     expect(orders.calls).toBe(1);
 
+    // Phase 4: the fact is signed into the authorization as a condition,
+    // with the value the source gave and until when it holds.
+    expect(result.context.authorization?.payload.businessConditions).toEqual([
+      {
+        signalId: assessment?.businessValidation.signals?.[0]?.signalId,
+        signalKey: "refundEligible",
+        source: "orders-system",
+        claim: "refund.eligible",
+        subject: "123",
+        value: true,
+        validUntil:
+          assessment?.businessValidation.signals?.[0]?.validUntil.toISOString(),
+      },
+    ]);
+
     // The assessment is inside the signed Trust Record.
     expect(
       trust.created[0]?.executions[0]?.decision.assessment?.businessValidation

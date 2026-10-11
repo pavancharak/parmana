@@ -57,6 +57,25 @@ export interface ParmanaRelease {
   }[];
   readonly issuedAt: string;
   readonly expiresAt: string;
+
+  /**
+   * The business facts the release rests on (RFC-0023 phase 4), each
+   * with the value its source gave and until when it holds. Act only if
+   * each still holds in your records, in the same transaction as the
+   * action; otherwise answer `success: false` with
+   * `conditionsNotMet: true`. Absent when the decision sourced no facts.
+   * Covered by the signature, like every other field.
+   */
+  readonly conditions?: readonly ParmanaReleaseCondition[];
+}
+
+export interface ParmanaReleaseCondition {
+  readonly signalKey: string;
+  readonly source: string;
+  readonly claim: string;
+  readonly subject: string;
+  readonly value: unknown;
+  readonly validUntil: string;
 }
 
 export interface VerifyParmanaReleaseOptions {

@@ -1,3 +1,5 @@
+import type { JsonValue } from "../types/Json.js";
+
 /**
  * Execution Authorization
  *
@@ -165,6 +167,46 @@ export interface ExecutionAuthorizationPayload {
    * disabled), not "any capability is granted."
    */
   readonly grantedCapability?: string;
+
+  /**
+   * The business facts this authorization rests on (RFC-0023 phase 4):
+   * each Trusted Signal the decision established, with the value its
+   * source gave and until when it holds. Present only when the policy
+   * sourced facts. Signed, so a gateway can refuse to release once any
+   * is past its validUntil, and an endpoint can execute only if each
+   * still holds in its own records.
+   */
+  readonly businessConditions?: readonly AuthorizationBusinessCondition[];
+
+  /**
+   * The authority grant this authorization rests on (RFC-0023 phase 3),
+   * when the policy required one. Signed, so a gateway can refuse to
+   * release once the grant has expired or been revoked.
+   */
+  readonly authorityGrant?: AuthorizationGrantBound;
+}
+
+/**
+ * One Trusted Signal, as the authorization carries it.
+ */
+export interface AuthorizationBusinessCondition {
+  readonly signalId: string;
+  readonly signalKey: string;
+  readonly source: string;
+  readonly claim: string;
+  readonly subject: string;
+  readonly value: JsonValue;
+  /** ISO-8601 UTC. After this, the fact may no longer hold. */
+  readonly validUntil: string;
+}
+
+/**
+ * The grant an authorization rests on, as the authorization carries it.
+ */
+export interface AuthorizationGrantBound {
+  readonly grantId: string;
+  /** ISO-8601 UTC. After this, the grant no longer holds. */
+  readonly validUntil: string;
 }
 
 /**

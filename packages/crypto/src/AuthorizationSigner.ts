@@ -22,6 +22,8 @@ type AuthorizationInput = {
   readonly signalsHash?: string;
   readonly submittedBy?: string;
   readonly grantedCapability?: string;
+  readonly businessConditions?: ExecutionAuthorizationPayload["businessConditions"];
+  readonly authorityGrant?: ExecutionAuthorizationPayload["authorityGrant"];
   readonly executableContent: ExecutableContent;
 };
 
@@ -142,6 +144,15 @@ export class AuthorizationSigner {
 
       ...(input.grantedCapability !== undefined && {
         grantedCapability: input.grantedCapability,
+      }),
+
+      ...(input.businessConditions !== undefined &&
+        input.businessConditions.length > 0 && {
+          businessConditions: input.businessConditions,
+        }),
+
+      ...(input.authorityGrant !== undefined && {
+        authorityGrant: input.authorityGrant,
       }),
 
       authorizedAt: issuedAt.toISOString(),

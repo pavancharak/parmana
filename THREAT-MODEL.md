@@ -170,6 +170,10 @@ agent can achieve:
   through maker checker, and never by or for the person approving, so an agent cannot widen its own
   authority. An expired grant refuses as `AUTHORITY_EXPIRED`. Limits are per request, not per day
   (G-93).
+- What a decision rests on is signed into its authorization and re-checked by the gateway at release:
+  a fact past its `validUntil`, or a grant expired or revoked since the decision, stops the release
+  (2.56). An external endpoint receives the facts as signed conditions and can act only if they
+  still hold (G-94).
 - What remains: within an approved action and resource, any parameter the approval does not
   fix is the agent's choice, and a person can be persuaded to approve a request they did not
   read closely.

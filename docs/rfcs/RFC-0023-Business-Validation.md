@@ -1,6 +1,6 @@
 # RFC-0023 — Business validation: an agent's proposal is never a business fact
 
-Status: Phases 1 to 3 implemented
+Status: Implemented (phases 1 to 4)
 
 Author: Pavan Dev Singh Charak (requirement); implementation session
 
@@ -261,6 +261,48 @@ it. `assessment.authority.grant` records the grant checked (id, caller, capabili
 `validUntil`, limits), signed in the record. `GET /policies/in-effect` answers
 `authorityGrantRequired: true` for such a policy.
 
+# Execution (phase 4)
+
+What a decision rests on must still hold when the action runs, not only when it was decided.
+
+**Signed into the authorization.** The Execution Authorization carries, signed:
+
+- `businessConditions`: each Trusted Signal of a `VALID` decision (signal, source, claim, subject, the
+  value the source gave, `validUntil`);
+- `authorityGrant`: the grant id and its `validUntil`, when a grant authorized the request.
+
+Both are optional fields of the signed payload; an authorization without them verifies as before.
+
+**Re-checked at release.** The Execution Gateway, which already re-verifies an authorization before
+releasing it, refuses the release when any business condition is past its `validUntil`
+(`businessConditionsCurrent`), or when the grant has expired or is no longer the caller's active grant
+for the capability, revoked or replaced (`authorityGrantInForce`, read from the grant store; without a
+grant store, fail closed). Nothing is sent and the nonce is not consumed. When these are the only failed
+checks, the refusal is `409 AUTHORIZATION_NO_LONGER_VALID` with `executionStatus: NOT_EXECUTED`; a
+forged or tampered request stays a generic refusal.
+
+**Execute only if still valid.** A signed release to an external connector (ADR-0013) carries the
+conditions, and expires no later than the earliest `validUntil`. The endpoint checks them in the same
+transaction as the action and, if one no longer holds, does not act and answers `success: false` with
+`conditionsNotMet: true`, recorded as such. The SDK's `verifyParmanaRelease` covers the conditions with
+the signature; the example endpoints take a `conditionsHold` check. An endpoint that ignores conditions
+still works, without the guarantee. Built in connectors (Paytm, HubSpot, GitHub, Slack) get the gateway
+re-check, not the conditions.
+
+**Execution statuses.**
+
+| What happened                                              | Status              | Where                                                              |
+| ---------------------------------------------------------- | ------------------- | ------------------------------------------------------------------ |
+| Refused at decision                                        | `NOT_EXECUTED`      | `assessment.execution` in the Refusal Record                       |
+| Refused at release (`AUTHORIZATION_NO_LONGER_VALID`)       | `NOT_EXECUTED`      | the 409 response; the intent is `ERRORED`, close it `NOT_EXECUTED` |
+| The endpoint declined (`conditionsNotMet`)                 | `NOT_EXECUTED`      | the Trust Record's execution, failed, with `conditionsNotMet`      |
+| Released and performed                                     | `EXECUTED`          | the Trust Record's execution, completed                            |
+| Released and the system reported failure                   | `EXECUTION_FAILED`  | the Trust Record's execution, failed                               |
+| Released and the call failed (`EXECUTION_OUTCOME_UNKNOWN`) | `EXECUTION_UNKNOWN` | the 502 response; the intent is `ERRORED` until resolved           |
+
+`EXECUTION_UNKNOWN` is never reported as failed: the action may have run. The Trust Record's format is
+unchanged; the statuses are how its executions and the intents are read.
+
 # Phases
 
 1. **This change.** Statuses, the Trusted Signal, `signalSources`, the source port
@@ -274,8 +316,9 @@ it. `assessment.authority.grant` records the grant checked (id, caller, capabili
 3. **Implemented.** Per-agent authority grants (action, limits, expiry) through maker checker
    (`/authority-grants`), required per policy by `requireAuthorityGrant`, making `AUTHORITY_EXPIRED`
    reachable. Limits are per request; cumulative limits (per day, per month) are not built.
-4. Conditional execution ("execute only if still valid") through connectors, re-checking `validUntil`
-   at release, and execution statuses on the Trust Record.
+4. **Implemented.** Business conditions and the grant signed into the authorization and re-checked by
+   the gateway at release; conditions carried to external connectors so they execute only if still
+   valid; `EXECUTION_UNKNOWN` and `NOT_EXECUTED` on the responses that mean them.
 
 # Open questions
 

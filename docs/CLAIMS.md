@@ -710,7 +710,7 @@ Scope, stated plainly:
 - **Authority is today's checks, named.** `AUTHORIZED` means the governance verification and capability/policy binding passed (and, at the API, the caller key's capability scope). Per-agent limits and expiry are phase 3, so `AUTHORITY_EXPIRED` is not yet produced.
 - **Policies without sources are unchanged.** Their validation status is `NOT_EVALUATED`, never `VALID`, and they still need a signed human approval to approve (2.47).
 - **The digest proves what Parmana observed, not what the source said.** A source's own proof is carried verbatim in `integrityProof.sourceProof` but not yet verified.
-- **Execution statuses for approved actions** remain the Trust Record's executions; `EXECUTION_UNKNOWN` and conditional execution are phase 4.
+- **Execution statuses for approved actions** remain the Trust Record's executions; `EXECUTION_UNKNOWN` and conditional execution are phase 4. **Update (2026-10-11):** built, see 2.56.
 - **Not deployed** until this change is merged and deployed.
 
 Verification
@@ -739,7 +739,7 @@ Scope, stated plainly:
 - **Not deployed** until this change is merged and deployed, and **no real business system has been connected.** Every test runs against in-process endpoints, including the example endpoint the docs give operators.
 - **Parmana proves the source said it, not that it is right.** A source answers for its own records.
 - **A source registered without a key** is trusted on the pinned HTTPS connection alone; its Trusted Signal has no `sourceProof`. Registering a key is recommended, not required.
-- **Checked once, at decision time.** `validUntil` is not re-checked at release; conditional execution is phase 4.
+- **Checked once, at decision time.** `validUntil` is not re-checked at release; conditional execution is phase 4. **Update (2026-10-11):** re-checked at release, and carried to external connectors as conditions, since 2.56.
 - **Authority is unchanged** from 2.53: per-agent grants with limits and expiry are phase 3. **Update (2026-10-11):** built, see 2.55.
 - **The SDK methods** (`proposeBusinessSignalSourceChange`, `business_signal_sources.propose_register` and the rest) ship in the next SDK release.
 
@@ -769,7 +769,7 @@ Scope, stated plainly:
 - **Not deployed** until this change is merged and deployed.
 - **Limits are per request.** Cumulative limits ("100000 per day") are not built.
 - **The grantee is a caller id the server does not check exists.** A grant to a key that does not exist has no effect.
-- **Checked at decision time.** Not re-checked at release (phase 4); the authorization's short TTL bounds the window.
+- **Checked at decision time.** Not re-checked at release (phase 4); the authorization's short TTL bounds the window. **Update (2026-10-11):** re-checked at release since 2.56.
 - **The SDK methods** ship in the next SDK release.
 
 Verification
@@ -789,6 +789,34 @@ Evidence
 - `packages/api/src/routes/authority-grants.ts`, `packages/api/src/application.ts`
 - `packages/shared/src/domain/authority-grant.ts`, `packages/storage/src/{memory,supabase}/*AuthorityGrantRepository.ts`, `supabase/migrations/20261011120000_add_authority_grants.sql`
 - `docs/rfcs/RFC-0023-Business-Validation.md` (Authority grants), `docs/site/guides/grant-an-agent-authority.mdx`
+
+---
+
+## 2.56 What a Decision Rests On Is Re-Checked at Release, and an External System Can Execute Only If It Still Holds (Scoped, 2026-10-11)
+
+**Claim:** the Execution Authorization Parmana signs for an approved request carries what the decision rests on: each Trusted Signal of a `VALID` business validation as a `businessConditions` entry (source, claim, subject, value, `validUntil`), and, when an authority grant authorized it, the grant's id and `validUntil` (`authorityGrant`). The Execution Gateway re-checks both before it releases the action: a condition past its `validUntil`, or a grant that has expired, been revoked or replaced, or cannot be read (or with no grant store configured), refuses the release before any connector is called and without consuming the nonce. When those are the only failed checks the request gets `409 AUTHORIZATION_NO_LONGER_VALID` with `executionStatus: NOT_EXECUTED`; a forged or tampered request stays a generic refusal. A signed release to an external connector carries the conditions, covered by its signature, and expires no later than the earliest `validUntil`; an endpoint that finds a condition no longer holds answers `success: false, conditionsNotMet: true`, recorded in the Trust Record's execution evidence as not acted on. A release whose call fails after it was sent answers `502 EXECUTION_OUTCOME_UNKNOWN` with `executionStatus: EXECUTION_UNKNOWN`, never as failed.
+
+Scope, stated plainly:
+
+- **"Execute only if still valid" at the system is the endpoint's to implement.** Parmana sends the signed conditions; it cannot make an endpoint check them. The SDK verifier covers them with the signature and the example endpoints check them through `conditionsHold`. Built in connectors (Paytm, HubSpot, GitHub, Slack) get the gateway re-check only.
+- **A release refused at release leaves the Execution Intent `ERRORED`**, as a refused connector registration already does; the response says `NOT_EXECUTED`, and the intent is closed as `NOT_EXECUTED`.
+- **The Trust Record format is unchanged.** Execution statuses are how its executions (completed, failed, `conditionsNotMet`) and the intents are read, not a new field.
+- **Not deployed** until this change is merged and deployed.
+
+Verification
+
+- `packages/execution-gateway/tests/unit/release-recheck.test.ts` (12): a current condition releases and is recorded as checked; a condition past `validUntil` refuses, names the fact, calls no connector, consumes no nonce, and is `AUTHORIZATION_NO_LONGER_VALID` / `NOT_EXECUTED`; no new check without conditions or grant; a grant still active releases; a grant revoked, replaced, expired, shortened since the decision, unreadable, or with no registry refuses; a grant with no caller refuses; a forged authorization with an expired condition stays a generic refusal.
+- `packages/execution-gateway/tests/unit/external-adapter-conditions.test.ts` (7): the conditions are signed into the release, which expires at the earliest `validUntil` (and otherwise after 60 seconds); the SDK's `verifyParmanaRelease` accepts it, refuses it after that time, and refuses a changed condition; `conditionsNotMet` is recorded and malformed variants are refused; through the documented endpoint (`typescript/examples/07`), it acts when the conditions hold and does not act when one does not.
+- `python/tests/test_external_connector_endpoint_conditions.py` (2): the Python example endpoint acts only when `conditions_hold` says so, and answers a repeat with its first answer.
+- `packages/runtime/tests/unit/business-validation.test.ts` and `authority-grants-runtime.test.ts`: the engine signs the Trusted Signal and the grant into the authorization.
+- `packages/api/tests/integration/execution-failure.integration.test.ts`: `EXECUTION_OUTCOME_UNKNOWN` answers `executionStatus: EXECUTION_UNKNOWN`.
+
+Evidence
+
+- `packages/shared/src/domain/execution-authorization.ts` (`businessConditions`, `authorityGrant`), `packages/crypto/src/AuthorizationSigner.ts`, `packages/runtime/src/RuntimeEngine.ts`
+- `packages/execution-gateway/src/ExecutionGateway.ts` (`businessConditionsCurrent`, `authorityGrantInForce`), `packages/shared/src/errors/authorization-no-longer-valid-error.ts`, `packages/api/src/bootstrap/createExecutionGateway.ts`
+- `packages/execution-gateway/src/connector-execution/GatewayExternalAdapter.ts` (`conditions`, `conditionsNotMet`), `typescript/src/crypto/release.ts`, `typescript/examples/07-external-connector-endpoint.ts`, `python/examples/13_external_connector_endpoint.py`
+- `docs/rfcs/RFC-0023-Business-Validation.md` (Execution)
 
 ---
 

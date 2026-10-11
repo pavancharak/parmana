@@ -12,6 +12,17 @@ every commit, run `git log` in the repository for the complete record.
 
 ## 2026-10-11
 
+**Added: re-check at release, and execute only if still valid**
+
+- The authorization Parmana signs now carries what the decision rests on: the business facts with their `validUntil`,
+  and the agent's authority grant. The gateway checks them again at release; if one no longer holds, nothing is sent
+  and the request gets `409 AUTHORIZATION_NO_LONGER_VALID` with `executionStatus: NOT_EXECUTED`.
+- A release to an external connector carries the facts as signed `conditions` and expires no later than the earliest
+  one. An endpoint that finds one no longer holds answers `conditionsNotMet` and does not act. See
+  [Connect any external system](/guides/connect-any-external-system).
+- `502 EXECUTION_OUTCOME_UNKNOWN` now also says `executionStatus: EXECUTION_UNKNOWN`.
+- The SDKs' `ParmanaRelease` type has `conditions`; the example endpoints take a `conditionsHold` check.
+
 **Added: per-agent authority grants**
 
 - Say which agent may have which action decided, within limits on each request (`min`, `max`, `oneOf` by Intent

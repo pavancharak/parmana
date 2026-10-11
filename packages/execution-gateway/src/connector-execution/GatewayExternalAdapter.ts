@@ -72,6 +72,23 @@ export interface ExternalRelease {
   }[];
   readonly issuedAt: string;
   readonly expiresAt: string;
+
+  /**
+   * RFC-0023 phase 4: the business facts the authorization rests on,
+   * each with the value its source gave and until when it holds. The
+   * endpoint executes only if each still holds in its own records, in
+   * the same transaction as the action, and otherwise answers with
+   * success false and conditionsNotMet true. Absent when the decision
+   * sourced no facts.
+   */
+  readonly conditions?: readonly {
+    readonly signalKey: string;
+    readonly source: string;
+    readonly claim: string;
+    readonly subject: string;
+    readonly value: unknown;
+    readonly validUntil: string;
+  }[];
 }
 
 export interface SignedExternalRelease {
@@ -153,6 +170,11 @@ export interface GatewayExternalAdapterOptions {
  * businessTransactionId and capability, with a boolean success and a
  * result object of at most 16 KB. Anything else throws, and the Gateway
  * records the outcome as unknown: the endpoint may have acted.
+ *
+ * RFC-0023 phase 4: a release carries the business conditions of its
+ * signed authorization, and expires no later than the earliest one. An
+ * endpoint that finds a condition no longer holds answers success false
+ * with conditionsNotMet true, recorded as such: it did not act.
  */
 export class GatewayExternalAdapter implements Connector {
   readonly connectorId: string;
@@ -245,6 +267,16 @@ export class GatewayExternalAdapter implements Connector {
     release: NonNullable<ConnectorExecutionContext["release"]>,
   ): Promise<SignedExternalRelease> {
     const issuedAt = this.now();
+    const conditions = release.conditions ?? [];
+
+    // The release never outlives the facts it rests on: it expires at
+    // the earliest condition's validUntil when that is sooner than the
+    // usual 60 seconds.
+    const expiresAt = Math.min(
+      issuedAt.getTime() + EXTERNAL_RELEASE_TTL_MS,
+      ...conditions.map((condition) => Date.parse(condition.validUntil)),
+    );
+
     const body: ExternalRelease = {
       version: 1,
       connectorId: this.connectorId,
@@ -267,9 +299,17 @@ export class GatewayExternalAdapter implements Connector {
         approvalId: approval.approvalId,
       })),
       issuedAt: issuedAt.toISOString(),
-      expiresAt: new Date(
-        issuedAt.getTime() + EXTERNAL_RELEASE_TTL_MS,
-      ).toISOString(),
+      expiresAt: new Date(expiresAt).toISOString(),
+      ...(conditions.length > 0 && {
+        conditions: conditions.map((condition) => ({
+          signalKey: condition.signalKey,
+          source: condition.source,
+          claim: condition.claim,
+          subject: condition.subject,
+          value: condition.value,
+          validUntil: condition.validUntil,
+        })),
+      }),
     };
 
     const signer = this.options.signer ?? (await SignerBootstrap.create());
@@ -339,6 +379,15 @@ export class GatewayExternalAdapter implements Connector {
       problems.push("executedAt is not a string");
     }
 
+    if (
+      body.conditionsNotMet !== undefined &&
+      (body.conditionsNotMet !== true || body.success !== false)
+    ) {
+      problems.push(
+        "conditionsNotMet, when present, must be true with success false",
+      );
+    }
+
     if (problems.length > 0) {
       throw new Error(
         `External connector "${this.connectorId}" refuses the endpoint's answer: ${problems.join("; ")}.`,
@@ -354,6 +403,9 @@ export class GatewayExternalAdapter implements Connector {
         ...(typeof body.executedAt === "string"
           ? { executedAt: body.executedAt }
           : {}),
+        // RFC-0023 phase 4: the endpoint did not act, because a condition
+        // the release rests on no longer held in its records.
+        ...(body.conditionsNotMet === true ? { conditionsNotMet: true } : {}),
         // ADR-0013, open question 3: the endpoint may sign its answer.
         // Recorded as sent, not verified in version 1.
         ...(isPlainObject(body.signature)

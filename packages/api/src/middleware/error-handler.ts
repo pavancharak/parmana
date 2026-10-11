@@ -15,6 +15,7 @@ import {
 import {
   ConnectorNotRegisteredError,
   NonceAlreadyConsumedError,
+  AuthorizationNoLongerValidError,
 } from "@parmana/shared";
 
 import type { CallerAuditSink } from "../auth/CallerAuditSink.js";
@@ -192,11 +193,17 @@ export function createErrorHandler(auditSink?: CallerAuditSink) {
     //
     if (
       error instanceof NonceAlreadyConsumedError ||
-      error instanceof ConnectorNotRegisteredError
+      error instanceof ConnectorNotRegisteredError ||
+      error instanceof AuthorizationNoLongerValidError
     ) {
       res.status(error.status).json({
         error: error.message,
         code: error.code,
+        // RFC-0023 phase 4: a release refused because what it rested on
+        // no longer holds was not executed.
+        ...(error instanceof AuthorizationNoLongerValidError && {
+          executionStatus: error.executionStatus,
+        }),
       });
 
       return;
@@ -206,9 +213,15 @@ export function createErrorHandler(auditSink?: CallerAuditSink) {
     // Any Runtime exception
     //
     if (error instanceof RuntimeError) {
+      // RFC-0023 phase 4: an error that knows the execution status (for
+      // EXECUTION_OUTCOME_UNKNOWN, EXECUTION_UNKNOWN) says it.
+      const executionStatus = (error as { executionStatus?: unknown })
+        .executionStatus;
+
       res.status(error.status).json({
         error: error.message,
         code: error.code,
+        ...(typeof executionStatus === "string" && { executionStatus }),
       });
 
       return;

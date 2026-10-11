@@ -6,6 +6,7 @@ import {
 
 import type {
   ExecutableContent,
+  ExecutionAuthorizationPayload,
   SignedExecutionAuthorization,
 } from "@parmana/shared";
 
@@ -54,6 +55,8 @@ export class RuntimeAuthorizationSigner {
       readonly submittedBy?: string;
       readonly grantedCapability?: string;
       readonly tenantId?: string;
+      readonly businessConditions?: ExecutionAuthorizationPayload["businessConditions"];
+      readonly authorityGrant?: ExecutionAuthorizationPayload["authorityGrant"];
       readonly executableContent: ExecutableContent;
     },
     ttlSeconds: number,

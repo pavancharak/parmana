@@ -971,11 +971,15 @@ paths:
         4. `503`: refused before release; nothing was executed. See the codes on
         that response.
 
-        5. `502` `EXECUTION_OUTCOME_UNKNOWN`: released, then the connector call
-        failed, so the outcome is
-           unknown. Do not resend under a new id. Check the target system, then close the intent with
-           `POST /execution-intents/{businessTransactionId}/resolve`.
-        6. `500` `EXECUTION_RECORD_INCOMPLETE`: released, but the signed record
+        5. `502` `EXECUTION_OUTCOME_UNKNOWN`, `executionStatus:
+        EXECUTION_UNKNOWN`: released, then the
+           connector call failed, so the outcome is unknown. Do not resend under a new id. Check the target
+           system, then close the intent with `POST /execution-intents/{businessTransactionId}/resolve`.
+        6. `409` `AUTHORIZATION_NO_LONGER_VALID`, `executionStatus:
+        NOT_EXECUTED`: decided, but at release a
+           business fact it rested on was past its `validUntil`, or the authority grant had expired or been
+           revoked (RFC-0023 phase 4). Nothing was sent. Send a new request.
+        7. `500` `EXECUTION_RECORD_INCOMPLETE`: released, but the signed record
         could not be produced. Do not
            resend. An operator rebuilds it with `POST /execution-intents/{businessTransactionId}/finalize`.
 
@@ -1429,15 +1433,32 @@ paths:
                   value:
                     error: Policy 'does-not-exist' version '9.9.9' was not found.
         "409":
-          description: This `businessTransactionId` was already used. Nothing ran again.
-            Read the existing result with `GET
+          description: "This `businessTransactionId` was already used: nothing ran again;
+            read the existing result with `GET
             /trust-records/{businessTransactionId}` or `GET
-            /execution-intents/{businessTransactionId}`.
+            /execution-intents/{businessTransactionId}`. Or
+            `AUTHORIZATION_NO_LONGER_VALID` (RFC-0023 phase 4): decided, but at
+            release a business fact it rested on was past its `validUntil`, or
+            the authority grant had expired or been revoked; nothing was sent
+            (`executionStatus: NOT_EXECUTED`), so send a new request."
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/error.schema"
               examples:
+                noLongerValid:
+                  summary: "The response's exact form, from AuthorizationNoLongerValidError: the
+                    grant was revoked between the decision and the release"
+                  value:
+                    error: "Not released: what the authorization for business transaction
+                      '38dcf000-99ed-43af-8666-46c63c8ada74' rests on no longer
+                      holds (authority grant
+                      9f3cf733-a8ed-487c-bb58-a53950388cdf is no longer the
+                      active grant of \"warehouse-agent\" for
+                      \"erp:release-goods\" (revoked or replaced)). Nothing was
+                      executed. Send a new request to be decided again."
+                    code: AUTHORIZATION_NO_LONGER_VALID
+                    executionStatus: NOT_EXECUTED
                 duplicate:
                   summary: Real captured response
                   value:
@@ -1478,8 +1499,9 @@ paths:
           description: "`EXECUTION_OUTCOME_UNKNOWN`: the action was released and the
             connector call failed (unreachable, timed out, or answered with an
             error), so whether it was performed is unknown. The Execution Intent
-            is `ERRORED`. Do not resend under a new id: check the target system,
-            then close the intent with `POST
+            is `ERRORED`, and the response says `executionStatus:
+            EXECUTION_UNKNOWN`. Do not resend under a new id: check the target
+            system, then close the intent with `POST
             /execution-intents/{businessTransactionId}/resolve`. The message
             carries the ids, never the connector's own error."
           content:
@@ -1500,6 +1522,7 @@ paths:
                       esolve. authorizationId:
                       4d291c90-9e93-4a8a-b214-8cc6526fe2e3."
                     code: EXECUTION_OUTCOME_UNKNOWN
+                    executionStatus: EXECUTION_UNKNOWN
         "503":
           $ref: "#/components/responses/SigningUnavailable"
       x-codeSamples:
@@ -10100,6 +10123,20 @@ components:
             - EXECUTION_INTENT_NOT_RESOLVABLE
             - EXECUTION_INTENT_RESOLUTION_INVALID
             - NON_HUMAN_CALLER_DENIED
+            - EXECUTION_OUTCOME_UNKNOWN
+            - AUTHORIZATION_NO_LONGER_VALID
+        executionStatus:
+          type: string
+          enum:
+            - EXECUTION_UNKNOWN
+            - NOT_EXECUTED
+          description: "RFC-0023 phase 4. EXECUTION_UNKNOWN with
+            EXECUTION_OUTCOME_UNKNOWN: the action was released and the call
+            failed, so whether it ran is unknown; never reported as failed, and
+            the Execution Intent stays ERRORED until a person resolves it.
+            NOT_EXECUTED with AUTHORIZATION_NO_LONGER_VALID: the release was
+            refused because a business condition or the authority grant it
+            rested on no longer held, and nothing was sent."
       examples:
         - error: businessTransactionId must be a valid UUID.
         - error: Business Transaction 'eed2a972-1bf5-4166-8472-761f76fbf1b2' already

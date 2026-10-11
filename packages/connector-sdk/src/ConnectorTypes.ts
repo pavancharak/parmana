@@ -117,6 +117,28 @@ export interface ConnectorReleaseContext {
     readonly keyId: string;
     readonly approvalId: string;
   }[];
+
+  /**
+   * The business facts the signed authorization rests on (RFC-0023
+   * phase 4), each with the value its source gave and until when it
+   * holds. A connector that forwards the action outside Parmana passes
+   * them on, so the system can execute only if each still holds.
+   * Absent when the decision sourced no facts.
+   */
+  readonly conditions?: readonly ReleaseCondition[];
+}
+
+/**
+ * One business fact a release rests on.
+ */
+export interface ReleaseCondition {
+  readonly signalKey: string;
+  readonly source: string;
+  readonly claim: string;
+  readonly subject: string;
+  readonly value: unknown;
+  /** ISO-8601 UTC. */
+  readonly validUntil: string;
 }
 
 /**

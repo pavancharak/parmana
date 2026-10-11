@@ -129,6 +129,7 @@ export {
   verifyParmanaRelease,
   DEFAULT_RELEASE_CLOCK_SKEW_SECONDS,
   type ParmanaRelease,
+  type ParmanaReleaseCondition,
   type ParmanaReleaseVerification,
   type VerifyParmanaReleaseOptions,
 } from "./crypto/release.js";
