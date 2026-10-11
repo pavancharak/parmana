@@ -2199,7 +2199,7 @@ The following claims are planned but are intentionally withheld until supported 
 
 - [FUTURE] Workday connector: no implementation exists.
 
-- [FUTURE] Slack connector: no implementation exists.
+- [FUTURE] Slack connector: **superseded (2026-10-11):** a Slack connector exists and is claimed in 2.44 and 2.47. What stays future: its use configured and observed in production.
 
 - [FUTURE] Jira connector: no implementation exists.
 

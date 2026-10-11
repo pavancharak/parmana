@@ -98,6 +98,81 @@
         ]
       },
       {
+        "tab": "Essays",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": ["essays/overview"]
+          },
+          {
+            "group": "Why Parmana exists",
+            "pages": [
+              "essays/01-claim-is-not-a-fact",
+              "essays/02-guardrails-are-advice",
+              "essays/03-agents-will-rewrite-themselves",
+              "essays/04-how-parmana-works"
+            ]
+          },
+          {
+            "group": "The decision",
+            "pages": [
+              "essays/05-policies-as-data",
+              "essays/06-signed-human-approval",
+              "essays/07-authority-grants",
+              "essays/08-per-request-limits-are-not-enough"
+            ]
+          },
+          {
+            "group": "The release",
+            "pages": [
+              "essays/09-the-gateway",
+              "essays/10-execution-authorization",
+              "essays/11-binding-approval-to-content",
+              "essays/12-write-it-down-first",
+              "essays/13-proving-the-gateway"
+            ]
+          },
+          {
+            "group": "The evidence",
+            "pages": [
+              "essays/14-verify-without-trusting-me",
+              "essays/15-proving-what-didnt-happen",
+              "essays/16-who-asked",
+              "essays/17-replay",
+              "essays/18-verify-it-yourself",
+              "essays/19-choosing-signatures"
+            ]
+          },
+          {
+            "group": "Governance and operations",
+            "pages": [
+              "essays/20-maker-checker-for-one-person",
+              "essays/21-governing-the-rules",
+              "essays/22-rotating-every-key",
+              "essays/23-running-parmana-yourself"
+            ]
+          },
+          {
+            "group": "Connecting agents and systems",
+            "pages": [
+              "essays/24-connecting-an-agent",
+              "essays/25-connecting-any-system",
+              "essays/26-before-a-refund-agent-touches-razorpay"
+            ]
+          },
+          {
+            "group": "Proof and honesty",
+            "pages": [
+              "essays/27-testing-in-production-without-moving-money",
+              "essays/28-what-done-means",
+              "essays/29-what-parmana-cant-stop",
+              "essays/30-mapping-to-regulation",
+              "essays/31-how-parmana-compares"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Guides",
         "groups": [
           {
