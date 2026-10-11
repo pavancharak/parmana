@@ -207,6 +207,13 @@ Propose `{ "action": "revoke", "name": "erp", "reason": "…" }` and have a seco
 policies that name `erp` are refused as `SOURCE_UNAVAILABLE`. To move the endpoint or rotate the key, revoke, then
 register again. The revoked registration stays listed.
 
+## Prove it in production
+
+Before relying on it, run the live check in the repository,
+[`examples/live-checks/business-signal-source`](https://github.com/pavancharak/parmana/tree/main/examples/live-checks/business-signal-source): a demo source answering from a fixed table, deployed on Vercel and registered through maker checker, a test policy that sources `invoicePaid` from it, and four requests: a paid invoice, an unpaid one, the agent claiming a value the source contradicts, and an unknown invoice. The receiving endpoint logs the `conditions` the release carries. The actions change nothing anywhere. It is written and
+ready, not yet run in production (2026-10-11); the steps, what each prints, and what to do when it does not are in its
+README.
+
 ## Limits
 
 - An answer is checked when the request is decided, and its `validUntil` again at release. An external connector also

@@ -117,6 +117,13 @@ see which grant authorized an action, or which one had expired.
 Propose `{ "action": "revoke", "callerId": "warehouse-agent", "capability": "erp:release-goods", "reason": "…" }` and
 have a second person approve it. The agent's next request is refused. The revoked grant stays listed.
 
+## Prove it in production
+
+Before relying on it, run the live check in the repository,
+[`examples/live-checks/authority-grant`](https://github.com/pavancharak/parmana/tree/main/examples/live-checks/authority-grant): a test policy with `requireAuthorityGrant`, a grant up to 100 for a test agent, and four requests: before the grant, within its limit, over it, and after its revoke. Each carries a valid signed approval, so every refusal shows the grant decides it. The actions change nothing anywhere. It is written and
+ready, not yet run in production (2026-10-11); the steps, what each prints, and what to do when it does not are in its
+README.
+
 ## Limits
 
 - A grant limits each request on its own. It does not count: "100000 per day" is not expressible yet.
