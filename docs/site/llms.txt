@@ -71,6 +71,7 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [Your agent's claim is not a business fact](https://docs.parmanasystems.com/essays/01-claim-is-not-a-fact): Why an AI agent saying 'the refund is eligible' should never be enough to move money, and how Parmana asks the system that owns the fact instead.
 * [Prompt guardrails are advice. Authorization is a gate.](https://docs.parmanasystems.com/essays/02-guardrails-are-advice): Why 'the agent was told not to' is not a control, and what a check outside the agent looks like instead.
 * [Agents will rewrite themselves. Their authority should not move when they do.](https://docs.parmanasystems.com/essays/03-agents-will-rewrite-themselves): A Google research paper shows agents improving their own harness. What that means for where the limits on agents must live.
+* [Models as insider risks: what Parmana already does, and what it does not](https://docs.parmanasystems.com/essays/models-as-insider-risks): Satya Nadella argues that frontier models should be treated as insider risks, with controls outside the model. A principle-by-principle look at where Parmana meets that bar and where it does not.
 * [How Parmana works, end to end](https://docs.parmanasystems.com/essays/04-how-parmana-works): The whole system on one page: who proposes, who decides, who releases, and what is left behind.
 ## Essays: The decision
 
