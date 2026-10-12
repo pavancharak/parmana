@@ -2157,6 +2157,27 @@ Evidence
 
 **Correction (2026-09-28, G-70):** this section's claim holds for Parmana's side, and it does not make "Parmana calls Paytm once" true end to end. `parmana-paytm-agent` also exposes `/agent/refunds`, where an agent asks that service, which asks Parmana `POST /execute`. When Parmana approved, it released the refund through the path above, and then `/agent/refunds` called Paytm itself as well, with a different refId, so an approved refund could be paid twice. Possible before 2026-09-27 wherever `PAYTM_CONNECTOR_URL` pointed at the agent; dormant after, because the agent declared 1.0.0 and every refund was refused. Fixed in `parmana-paytm-agent` PR #6: `/agent/refunds` has no Paytm client and returns the Paytm result from the Trust Record's execution evidence. PR #6 was merged and deployed on 2026-09-28 (`8504b57`), and a refusal through the agent was verified in production. **Not claimed yet:** an approved refund observed live making exactly one Paytm call; that is covered by the agent's tests only. Also found (G-71): one refund per Paytm transaction can go through Parmana (the refId is derived from `orderId` and `transactionId` only), and `refundReason`, although allowed, is not sent to the connector service. **Fixed and deployed (G-71, 2026-09-28, Parmana #59 and agent #7; the agent sends its `refId` as the reference):** an optional `refundReference` Intent parameter makes the refId per refund (`deriveDeterministicPaytmRefId(orderId, transactionId, refundReference)`), with the old derivation unchanged when it is absent, and `refundReason` is sent to the connector service as `reason`, which passes it to Paytm. Verified by tests through `POST /execute` against the mock connector service; how Paytm itself answers a second refund of one transaction was not checked.
 
+## 3.23 Listed as a TRACE External Evidence Source in the AgenTrust Integrations Repository (Scoped, 2026-10-12)
+
+Parmana's signed records can be mapped to TRACE, AgenTrust's format for evidence about an agent execution, and that
+mapping is listed in the AgenTrust integrations repository. [agentrust-io/integrations#294](https://github.com/agentrust-io/integrations/pull/294),
+"Add Parmana as a TRACE external evidence source", was approved by an AgenTrust maintainer and merged into that
+repository's `main` (merge commit `6de4cb9`) on 2026-10-12. It adds `integrations/parmana-server` (tier `community`,
+integrates with `trace`) and a Parmana row to that repository's integration index.
+
+**What was reviewed:** the maintainer re-ran the integration's 18 tests in a clean environment at `b5d91ec`, reproduced
+the committed `fixtures/references.json` exactly with `examples/emit_references.py`, and checked that both key
+fixtures are public keys only. The mapping follows the maintainer's answers in the review: Parmana is an external
+evidence source with no TRACE conformance level; its own signatures are the evidence; `authorized-intent` and
+`approval-outcome` references; refusals as their own unit. The evidence package on this side is
+`docs/evaluation/agentrust-refund/README.md` (`npm run evaluate:agentrust-refund`).
+
+**Scope, precisely:** a community listing of an evidence mapping, not a certification and not a conformance level.
+The maintainer did not run `slsa-verifier` against an image. The fixtures come from the evaluation package, where
+every connector result is a mock result and `refundEligible` and `fraudCheckPassed` are declared by the caller. The
+integration code lives in the AgenTrust repository, not in this one; this repository holds the evaluation package that
+produced its fixtures.
+
 ---
 
 # Maturity Assessment (TRL)
