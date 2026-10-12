@@ -4,6 +4,19 @@ A test package for one scenario, `paytm:refund` under the policy `customer-refun
 to the AgenTrust integrations repository. It runs three cases through Parmana's real `POST /execute` path and
 records, for each one, the decision, the signed record and how many times the connector was invoked.
 
+## Status: listed in AgenTrust (2026-10-12)
+
+The proposal was accepted. [agentrust-io/integrations#294](https://github.com/agentrust-io/integrations/pull/294),
+"Add Parmana as a TRACE external evidence source", was approved by an AgenTrust maintainer and merged into `main`
+(merge commit `6de4cb9`) on 2026-10-12. It adds `integrations/parmana-server` (tier `community`, integrates with
+`trace`) and a Parmana row to that repository's integration index.
+
+As agreed in the review, Parmana is an external evidence source with no TRACE conformance level: it maps its own
+signed records (the `authorized-intent` and `approval-outcome` references, with refusals as their own unit) to TRACE,
+and the fixtures there carry public keys only. The maintainer ran the integration's 18 tests and reproduced its
+committed `references.json`; they did not run `slsa-verifier` against an image. The listing does not certify
+Parmana, and the limits below still apply.
+
 ## What it shows, and what it does not
 
 - **Connector invocations are counted per case.** A refused request must reach the connector zero times.
@@ -52,8 +65,8 @@ The test fails if any of these does not hold, including if the connector is invo
 
 TRACE v0.2 (`agentrust-trace` 0.11.0, `TrustRecord`) asks for evidence about one agent execution. Parmana produces
 evidence about one decision and, when approved, one connector invocation. The mapping below says, field by field,
-what Parmana can supply, and marks what it cannot. It is a proposal to agree with a maintainer, not an
-implementation.
+what Parmana can supply, and marks what it cannot. It was written as a proposal to agree with a maintainer; the
+implementation that was merged is `integrations/parmana-server` in the AgenTrust repository (see Status above).
 
 | TRACE field                  | From Parmana                                                                                                                                | Status                                                        |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
