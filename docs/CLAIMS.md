@@ -2178,6 +2178,12 @@ every connector result is a mock result and `refundEligible` and `fraudCheckPass
 integration code lives in the AgenTrust repository, not in this one; this repository holds the evaluation package that
 produced its fixtures.
 
+**Update (2026-10-13): Verified tier requested, not granted.** A follow-up PR from branch `parmana-verified` asks the
+AgenTrust maintainers for the Verified tier, which they grant only after running an integration end to end against
+released packages. It pins the released `parmana` SDK 1.6.0 (was 1.5.0) and adds exact reproduction steps; no code
+changed. Run by us on a clean environment with released packages only: `references.json` reproduced byte for byte,
+18 tests passed. Until a maintainer sets the tier, the listing stays `community`, and nothing here claims Verified.
+
 ---
 
 # Maturity Assessment (TRL)
