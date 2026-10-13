@@ -211,14 +211,14 @@ recommended), and nonce reuse is the source's to refuse (G-92; the example endpo
 
 ### L.5 Housekeeping
 
-| Item                                                                                                                                    | State                                                                                                    |
-| --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `livecheck-agent` key                                                                                                                   | Still in `PARMANA_API_KEYS`; harmless (both its capabilities are revoked); remove when not needed        |
-| Vercel projects `parmana-signal-check` and `parmana-release-check`                                                                      | Can stay: they act on nothing and accept only releases or queries signed by Parmana for their address    |
-| Step up keys: `maker-pavan` now has one too (2026-10-11), so either person can approve the other's change                               | Back up `%USERPROFILE%\parmana-maker\step-up.private.pem` and the checker's, with the approver key       |
-| Keys rotated several times on 2026-10-11 (checker twice after one was exposed in chat, maker once after the saved copy was found wrong) | The saved copies of `maker-pavan` and `checker-pavan` were each checked against production               |
-| Deploying an endpoint to Vercel from the repository folder applies the repository's `vercel.json` and fails                             | The live check READMEs deploy from inside the endpoint's folder; recorded there                          |
-| AgenTrust Verified tier for `integrations/parmana-server` (requested 2026-10-13)                                                        | Waiting on a maintainer to approve the workflows and run it; update CLAIMS.md 3.23 when the tier changes |
+| Item                                                                                                                                    | State                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `livecheck-agent` key                                                                                                                   | Still in `PARMANA_API_KEYS`; harmless (both its capabilities are revoked); remove when not needed                        |
+| Vercel projects `parmana-signal-check` and `parmana-release-check`                                                                      | Can stay: they act on nothing and accept only releases or queries signed by Parmana for their address                    |
+| Step up keys: `maker-pavan` now has one too (2026-10-11), so either person can approve the other's change                               | Back up `%USERPROFILE%\parmana-maker\step-up.private.pem` and the checker's, with the approver key                       |
+| Keys rotated several times on 2026-10-11 (checker twice after one was exposed in chat, maker once after the saved copy was found wrong) | The saved copies of `maker-pavan` and `checker-pavan` were each checked against production                               |
+| Deploying an endpoint to Vercel from the repository folder applies the repository's `vercel.json` and fails                             | The live check READMEs deploy from inside the endpoint's folder; recorded there                                          |
+| AgenTrust Verified tier for `integrations/parmana-server` (requested 2026-10-13, #313)                                                  | Reproduced by a maintainer on 2026-10-14; waiting on the maintainer PR that changes the tier; then update CLAIMS.md 3.23 |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
