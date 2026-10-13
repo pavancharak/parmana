@@ -274,6 +274,8 @@ Parmana is listed in the AgenTrust integrations repository as a TRACE external e
 `integrations/parmana-server` (tier `community`, no conformance level). It maps Parmana's signed records to TRACE
 references; its fixtures come from `docs/evaluation/agentrust-refund` (mock connector results). Not a certification.
 `docs/CLAIMS.md` 3.23.
+Verified tier requested on 2026-10-13 (follow-up PR from branch `parmana-verified`, pinning `parmana` 1.6.0);
+pending a maintainer's end-to-end run.
 
 ## On disk, but not reachable
 

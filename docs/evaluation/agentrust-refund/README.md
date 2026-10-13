@@ -17,6 +17,9 @@ and the fixtures there carry public keys only. The maintainer ran the integratio
 committed `references.json`; they did not run `slsa-verifier` against an image. The listing does not certify
 Parmana, and the limits below still apply.
 
+A follow-up requesting the Verified tier was opened on 2026-10-13: it pins the released `parmana` SDK 1.6.0 and adds
+exact reproduction steps. The tier stays `community` until a maintainer runs it and changes it.
+
 ## What it shows, and what it does not
 
 - **Connector invocations are counted per case.** A refused request must reach the connector zero times.
