@@ -18,7 +18,9 @@ committed `references.json`; they did not run `slsa-verifier` against an image. 
 Parmana, and the limits below still apply.
 
 A follow-up requesting the Verified tier was opened on 2026-10-13: it pins the released `parmana` SDK 1.6.0 and adds
-exact reproduction steps. The tier stays `community` until a maintainer runs it and changes it.
+exact reproduction steps. On 2026-10-14 a maintainer reproduced it with the released packages (byte-for-byte
+`references.json`, 18 tests passed); the tier change follows in a separate maintainer PR, and until then the tier is
+`community`.
 
 ## What it shows, and what it does not
 
