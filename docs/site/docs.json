@@ -111,7 +111,8 @@
               "essays/02-guardrails-are-advice",
               "essays/03-agents-will-rewrite-themselves",
               "essays/models-as-insider-risks",
-              "essays/04-how-parmana-works"
+              "essays/04-how-parmana-works",
+              "essays/94-how-parmana-thinks"
             ]
           },
           {
@@ -120,7 +121,9 @@
               "essays/05-policies-as-data",
               "essays/06-signed-human-approval",
               "essays/07-authority-grants",
-              "essays/08-per-request-limits-are-not-enough"
+              "essays/08-per-request-limits-are-not-enough",
+              "essays/41-writing-your-first-policy",
+              "essays/42-one-capability-one-policy"
             ]
           },
           {
@@ -130,7 +133,9 @@
               "essays/10-execution-authorization",
               "essays/11-binding-approval-to-content",
               "essays/12-write-it-down-first",
-              "essays/13-proving-the-gateway"
+              "essays/13-proving-the-gateway",
+              "essays/61-signing-more-than-4kb",
+              "essays/62-ready-to-sign-before-releasing"
             ]
           },
           {
@@ -141,7 +146,9 @@
               "essays/16-who-asked",
               "essays/17-replay",
               "essays/18-verify-it-yourself",
-              "essays/19-choosing-signatures"
+              "essays/19-choosing-signatures",
+              "essays/59-a-key-for-one-algorithm",
+              "essays/60-which-key-signed-this"
             ]
           },
           {
@@ -150,7 +157,10 @@
               "essays/20-maker-checker-for-one-person",
               "essays/21-governing-the-rules",
               "essays/22-rotating-every-key",
-              "essays/23-running-parmana-yourself"
+              "essays/23-running-parmana-yourself",
+              "essays/51-who-is-calling",
+              "essays/67-refusing-to-start-misconfigured",
+              "essays/68-healthy-versus-ready"
             ]
           },
           {
@@ -158,7 +168,11 @@
             "pages": [
               "essays/24-connecting-an-agent",
               "essays/25-connecting-any-system",
-              "essays/26-before-a-refund-agent-touches-razorpay"
+              "essays/26-before-a-refund-agent-touches-razorpay",
+              "essays/32-refunds-end-to-end-through-paytm",
+              "essays/33-letting-an-agent-update-a-crm-deal",
+              "essays/34-letting-an-agent-merge-a-pull-request",
+              "essays/35-an-agent-that-posts-to-slack"
             ]
           },
           {
@@ -168,7 +182,9 @@
               "essays/28-what-done-means",
               "essays/29-what-parmana-cant-stop",
               "essays/30-mapping-to-regulation",
-              "essays/31-how-parmana-compares"
+              "essays/31-how-parmana-compares",
+              "essays/86-for-a-security-lead",
+              "essays/95-mutation-testing"
             ]
           }
         ]
