@@ -135,7 +135,10 @@ export class ExecutionTrustApplication {
   }
 
   /**
-   * Replay execution deterministically.
+   * Re-verifies the stored Execution Trust Record: its signature and hash.
+   * It does not re-run the policy decision or the connector, so a true
+   * result proves the record is intact, not that the decision would be the
+   * same today.
    */
   async replay(businessTransactionId: string): Promise<{
     businessTransactionId: string;

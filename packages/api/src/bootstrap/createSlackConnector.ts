@@ -1,5 +1,6 @@
 import { SLACK_POST_MESSAGE_CAPABILITY } from "@parmana/connector-slack";
 import { connectorCapabilities, type Connector } from "@parmana/connector-sdk";
+import { readConnectorBaseUrl } from "./readConnectorBaseUrl.js";
 import { createGatewaySlackConnector } from "@parmana/execution-gateway";
 
 /**
@@ -13,13 +14,13 @@ import { createGatewaySlackConnector } from "@parmana/execution-gateway";
  * real Slack API unless an operator deliberately opts out.
  */
 export function createSlackConnector(): Connector {
+  const baseUrl = readConnectorBaseUrl("SLACK_BASE_URL");
+
   return createGatewaySlackConnector({
     connectorId: "slack",
 
     capabilities: connectorCapabilities([SLACK_POST_MESSAGE_CAPABILITY]),
 
-    ...(process.env.SLACK_BASE_URL !== undefined
-      ? { baseUrl: process.env.SLACK_BASE_URL }
-      : {}),
+    ...(baseUrl !== undefined ? { baseUrl } : {}),
   });
 }

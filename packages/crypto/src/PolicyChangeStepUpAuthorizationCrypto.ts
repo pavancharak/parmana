@@ -12,6 +12,9 @@ import { SHA256HashProvider } from "./providers/hash/SHA256HashProvider.js";
 import { Ed25519SignatureProvider } from "./providers/signature/Ed25519SignatureProvider.js";
 import type { CryptoProvider } from "./providers/CryptoProvider.js";
 
+/** Allowed clock drift when checking authorizedAt against now. */
+const STEP_UP_CLOCK_SKEW_MS = 60_000;
+
 const SUPPORTED_PAYLOAD_VERSION = 1;
 
 /**
@@ -147,6 +150,13 @@ export class PolicyChangeStepUpAuthorizationVerifier {
     const expiry = Date.parse(authorization.payload.expiresAt);
     const notExpired = Number.isFinite(expiry) && now.getTime() < expiry;
 
+    // An envelope signed for a future window must not be usable now. The
+    // skew allowance covers clock drift between the issuer and this check.
+    const issued = Date.parse(authorization.payload.authorizedAt);
+    const notFromTheFuture =
+      Number.isFinite(issued) &&
+      issued <= now.getTime() + STEP_UP_CLOCK_SKEW_MS;
+
     const pendingPolicyChangeIdMatches =
       authorization.payload.pendingPolicyChangeId ===
       expected.pendingPolicyChangeId;
@@ -157,6 +167,7 @@ export class PolicyChangeStepUpAuthorizationVerifier {
       valid:
         signatureVerified &&
         notExpired &&
+        notFromTheFuture &&
         pendingPolicyChangeIdMatches &&
         actionMatches,
 
