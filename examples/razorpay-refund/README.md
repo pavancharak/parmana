@@ -157,7 +157,7 @@ Remove-Item $approvalFile
 - Request 2: `APPROVED` in about 25 to 35 seconds, `Razorpay answered` with a `refundId` (`rfnd_...`), `amount` 100,
   `alreadyRefunded` false, then `Verifies offline : true`.
 - Request 3: `REFUSED`, `Authority : NOT_AUTHORIZED`, naming the limit 500.
-- Request 4: `REFUSED`: the approval was already used.
+- Request 4: `REFUSED`, rule `signal-state-verification-violation`: the approval is spent and no longer matches the verified state (`managerApproved=true != verified managerApproved=false`). It is not a separate "used" rule. The same refusal is checked offline in `docs/evaluation/agentrust-refund/README.md` and `docs/CLAIMS.md` 3.23.
 
 **If request 2 times out, do not send it again.** The refund may have run; read its record first:
 `GET /trust-records/<transaction id>` with the agent key. A second send would need a new approval anyway, and the
