@@ -503,3 +503,64 @@ def test_debug_logs_via_logger_not_print(capsys):
     finally:
         logger.level = original_level
         logger.handlers = original_handlers
+
+
+@responses.activate
+def test_debug_log_redacts_values_but_keeps_keys(caplog):
+    """
+    Debug logs show which fields a request and response carried, never their
+    values: an amount, an email or a key must not reach a log line.
+    """
+
+    responses.add(
+        responses.POST,
+        f"{ENDPOINT}/execute",
+        json={"customer": {"email": "buyer@example.com"}, "amount": 250000},
+        status=200,
+    )
+
+    logger = logging.getLogger("parmana")
+    original_level = logger.level
+    original_handlers = list(logger.handlers)
+
+    try:
+        with caplog.at_level(logging.DEBUG, logger="parmana"):
+            HttpTransport(endpoint=ENDPOINT, api_key="SECRET-KEY-123", debug=True).send(
+                method="POST",
+                path="/execute",
+                body={"amount": 4200, "payee": "Asha Rao"},
+            )
+    finally:
+        logger.level = original_level
+        logger.handlers = original_handlers
+
+    logged = caplog.text
+
+    assert "amount" in logged
+    assert "customer" in logged
+    assert "email" in logged
+    for secret in ("4200", "Asha Rao", "buyer@example.com", "250000", "SECRET-KEY-123"):
+        assert secret not in logged
+
+
+def test_redact_masks_leaves_and_keeps_structure():
+    from parmana.transport.http_transport import REDACTED, redact
+
+    assert redact({"a": {"b": [1, "x", None]}}) == {
+        "a": {"b": [REDACTED, REDACTED, None]}
+    }
+    assert redact(None) is None
+
+
+def test_plain_http_is_refused_for_a_remote_host():
+    with pytest.raises(ValueError, match="https"):
+        HttpTransport(endpoint="http://api.example.com", api_key="k")
+
+
+def test_plain_http_is_allowed_for_localhost():
+    HttpTransport(endpoint="http://localhost:8080")
+    HttpTransport(endpoint="http://127.0.0.1:8080")
+
+
+def test_https_is_allowed_for_a_remote_host():
+    HttpTransport(endpoint="https://api.example.com")
