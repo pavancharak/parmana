@@ -333,3 +333,58 @@ Status as of 2026-10-15. "Verified" means read against the code. "Reported" mean
 | Gateway       | `ExecutionGateway.verify()` is public and consumes the nonce. Nothing calls it today                                                                                                      |
 | Vercel        | `api/index.ts` imports from `packages/api/dist`. A clean build may not produce the modules it imports; confirm the build output before the next deployment                                |
 | Known open    | Nonce tables have no retention cleanup. `expires_at` is written and never read                                                                                                            |
+
+## O. Audit follow-up status (added 2026-10-15)
+
+Fixed on `fix/policy-scan-and-governance-url`, commits `9bc075dc` to `cfc352f7`, on top of PR #134 (see CLAIMS 3.24 to 3.26 and VERIFICATION-GAPS G-96 to G-102). Not yet merged; PR #134 is still blocked by the Vercel daily limit.
+
+### O.1 Fixed
+
+- Connector base URLs (HubSpot, GitHub, Slack, and the GitHub credential provider) require https, or loopback http, and refuse embedded credentials.
+- GitHub and HubSpot fail on a 2xx non-JSON body instead of recording success.
+- Step-up envelopes must not be valid before `authorizedAt`.
+- TypeScript SDK refuses non-https endpoints and no longer prints its API key.
+- SDKs encode business ids in paths and accept only `valid === true`.
+- Python connector SDK hides the credential value from `repr`.
+- `/ready` no longer returns database error text publicly.
+- Governance UI API calls time out after 10 seconds.
+- Policy scan honours `PARMANA_POLICY_DIR` and walks symlinked directories.
+- Scripts run their entry point unless vitest is running, so a `NODE_ENV=test` line in `.env` no longer disables the gate.
+- Caller key rotation validates the caller id.
+- Fly secrets script refuses to replace signing keys without `--force`.
+- `rate_limit_counters` has row level security enabled (migration `20261015120000`).
+- Razorpay example reports a post-POST failure as unknown.
+- `replay()` documented as integrity re-verification.
+
+### O.2 Still open, with the reason
+
+| Item                                                                                                                      | Why it is not done yet                                                                                                     | What is needed                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Trust-record signature does not cover verifications or `evidenceAnchor`                                                   | Changes the signed format, so old records would stop verifying                                                             | A versioned signed view, and a decision on how to treat existing records          |
+| Envelope `keyId` and `tenantId` are outside the signed payload                                                            | Same: a signed-format change                                                                                               | The same versioning decision                                                      |
+| Manual NOT_EXECUTED resolution during an in-flight release                                                                | Needs a decision on the state machine: reject while PREPARED, or allow a resolution that the release then cannot overwrite | Decision on the intent state rules                                                |
+| Offline verifier accepts a hybrid record with `signatures` removed                                                        | The record does not say whether hybrid was required                                                                        | A flag in the signed record or policy that declares hybrid is required            |
+| Gateway skips signal and grant checks when `signalsHash` or the grant is absent                                           | Failing closed could break authorizations issued before the field existed                                                  | Confirm no legacy authorizations remain, then fail closed                         |
+| Canonical JSON differs between Python, TypeScript and the server on float exponents, astral key order and lone surrogates | No forgery found, only rejection of valid records. Needs shared test vectors first                                         | Shared vectors, then align the serializers                                        |
+| HubSpot stage order is global, not per pipeline                                                                           | Needs pipeline configuration per account                                                                                   | Pipeline-aware stage order                                                        |
+| Rate limiter sits after the JSON parser, and a shared IP can lock out valid callers                                       | Needs a rate-limit design change                                                                                           | Limiter before parser; key the auth-failure limit by key id as well as IP         |
+| `NODE_ENV=development` or `test` disables governance and the signing checks                                               | Documented design. Production should refuse these values                                                                   | Decide whether production refuses them                                            |
+| `PARMANA_STORAGE` defaults to memory, and readiness still reports READY                                                   | Changing the default could break local runs                                                                                | Refuse the memory default in production                                           |
+| Approval artifacts are not bound to a transaction id                                                                      | Design question: may one approval cover any matching transaction?                                                          | Decision, then bind the artifact                                                  |
+| Razorpay list-then-create refund is not atomic                                                                            | Needs Razorpay's documented idempotency behaviour, which has not been checked                                              | Verify against Razorpay's docs. Do not rerun the approved demo case               |
+| Approval records readable by the anon role                                                                                | CI reads them with the anon key                                                                                            | Move the CI read to a server-side credential, then revoke                         |
+| Nonce tables have no retention cleanup                                                                                    | Not done in this pass                                                                                                      | Delete rows whose `expires_at` is past, keeping replay protection for live nonces |
+| Unbounded JSON reads in Paytm, Slack, generic HTTP and external adapters                                                  | Not done in this pass                                                                                                      | Add a size cap, as the external adapter already has                               |
+| Governance login: no CSRF token, no `trust proxy`, login limiter keyed by IP                                              | Design and config change                                                                                                   | CSRF token; `trust proxy` for the deployment's proxy                              |
+| `governance/policy-approvals.jsonl` is written from the PR tree and CI runs verify without `--require-coverage`           | Needs a CI design decision                                                                                                 | Decide the coverage requirement                                                   |
+| `refresh-approved-policy-content.ts` holds both proposer and reviewer keys                                                | Not verified whether the API rejects proposer equal to approver                                                            | Check the approve route, then enforce it if not                                   |
+| Postgres image is a mutable tag, and the compose file has a literal default password                                      | Needs the image digest                                                                                                     | Pin the digest; remove the default password                                       |
+| `ExecutionGateway.verify()` is public and consumes the nonce                                                              | No caller today                                                                                                            | Make it private or document it                                                    |
+| `CredentialHandle` brand can be set by any caller in-process                                                              | Within-process trust boundary                                                                                              | Decide whether the brand is meant to stop in-process spoofing                     |
+| Eight TypeScript SDK test files fail to load with "No test suite found"                                                   | Pre-existing, with or without these changes                                                                                | Fix the SDK test setup                                                            |
+| `api/index.ts` imports `packages/api/dist` modules                                                                        | Not verified against a clean build                                                                                         | Run the Vercel build and confirm the imports resolve                              |
+| Supabase live grants for `rate_limit_counters` and the other tables                                                       | Live project not checked from the repo                                                                                     | Check the grants on the live project, and apply the migration                     |
+
+### O.3 Still blocked
+
+- PR #134 merge: Vercel daily deployment limit. Re-run the two deployments after the reset, then merge and check production `/health` and `/ready`.
