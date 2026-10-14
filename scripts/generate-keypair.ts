@@ -2,9 +2,17 @@ import "dotenv/config";
 
 import { generateKeyPairSync } from "node:crypto";
 
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 
 import { join } from "node:path";
+
+import {
+  assertSafeKeyId,
+  ensureKeyDirectory,
+  PRIVATE_KEY_MODE,
+  PUBLIC_KEY_MODE,
+  writeKeyFile,
+} from "./lib/key-files.js";
 
 const args = process.argv.slice(2);
 
@@ -20,17 +28,13 @@ function argument(name: string): string {
 
 const algorithm = argument("--algorithm");
 
-const keyId = argument("--key-id");
+const keyId = assertSafeKeyId(argument("--key-id"));
 
 const force = args.includes("--force");
 
 const keyDirectory = process.env.PARMANA_KEY_DIR ?? "./keys";
 
-if (!existsSync(keyDirectory)) {
-  mkdirSync(keyDirectory, {
-    recursive: true,
-  });
-}
+ensureKeyDirectory(keyDirectory);
 
 //
 // "ml-dsa-65" (the NIST/FIPS 204 standard name) is accepted as an
@@ -75,9 +79,9 @@ if (!force && (existsSync(privatePath) || existsSync(publicPath))) {
   );
 }
 
-writeFileSync(privatePath, privatePem);
+writeKeyFile(privatePath, privatePem, PRIVATE_KEY_MODE, force);
 
-writeFileSync(publicPath, publicPem);
+writeKeyFile(publicPath, publicPem, PUBLIC_KEY_MODE, force);
 
 console.log();
 console.log("Key pair generated");
