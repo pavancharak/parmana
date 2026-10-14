@@ -20,7 +20,7 @@ half. It works until the first rotation, and rotation is not optional. Keys leak
 simply have a shelf life.
 
 Parmana has its own reason to care. A default signing key used before 2026-07-05 was publicly exposed. It was rotated
-that day, and every signature it ever made is treated as void for authenticity. That is written at the top of the
+that day, and it must still be treated as permanently compromised, whichever repository exposed it. That is written at the top of the
 claims register, and it is why rotation had to work without breaking everything else.
 
 ## The idea: every signature names its key
@@ -36,9 +36,8 @@ old key can be refused for anything that must be current.
 
 **Execution authorizations.** The signed authorization that lets the gateway release an action carries its own key id.
 The gateway resolves the public key by that id, through the same signer that made the signature, whether the key lives
-in a local file or in AWS KMS. That last part was learned the hard way: on 2026-09-16, after the move to KMS, signing
-used the KMS key while verification still read an old local public key, and every request failed verification in
-production until both were made to resolve through one source.
+in a local file or in AWS KMS. Signing and verification have to use the same source for a key, or a key that signs can fail to verify. The design
+resolves both through one signer, so that mismatch cannot be configured.
 
 **Expiry and revocation.** Before reading any key material, the gateway can check the key id against a small list kept
 beside the keys. An entry can say the key is revoked, or give a time after which it expires. A revoked key, an expired
@@ -67,9 +66,9 @@ maker checker, with no deploy, and the gateway re-checks that the approver's key
   the key is compromised, as with the 2026 notice, is up to the reader.
 - **A revoked key's past signatures are not undone.** Revocation stops a key being accepted from now on. It cannot tell
   you which of its earlier signatures were made by the rightful holder.
-- **Rotation is manual.** It is a script an operator runs, not a schedule. Rotation under AWS KMS has not been tested.
-- **Per tenant keys have soft edges.** A tenant with no key provisioned falls back to the shared default key rather than
-  failing. Under KMS, the mapping of tenant key ids to KMS names is unit tested only, not run against real AWS.
+- **Rotation is manual.** It is a script an operator runs, not a schedule. Rotation under AWS KMS is not covered by a live test.
+- **Per tenant keys have soft edges.** A tenant with no key provisioned falls back to the shared default key (`default`)
+  rather than failing. Under KMS, the mapping of tenant key ids to KMS names is unit tested only, not run against real AWS.
 - **It is one algorithm at a time.** Rotation means a new key under the same algorithm. Switching a live deployment from
   Ed25519 to ML-DSA-65 while old records stay verifiable is not built.
 

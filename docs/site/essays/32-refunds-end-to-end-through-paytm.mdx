@@ -67,17 +67,18 @@ and silently dropped. Both were fixed and deployed with the optional refund refe
 
 ## What was run live
 
-On 2026-09-14 the whole chain ran against real, deployed infrastructure: the agent's request, Parmana's decision, the
-gateway, the connector service, and Paytm's staging API. The order and transaction ids were synthetic, so Paytm answered
-with a non-success result. That proved the wiring, the signatures and the audit rows on both sides. It did not move
-money.
+On 2026-09-21, a live check ran against the production Docker image, a real Postgres, the real AWS KMS signing key and
+the real `parmana-paytm-agent`, with fake Paytm staging credentials. It was about the execution lifecycle, not Paytm,
+so it checked the signed records and the rebuilt record for a released action, not a refund. No money was involved.
+The check passed 37 of 37 scenarios. The end-to-end Paytm flow with a signed approval has not been run live since
+`customer-refund` 1.2.0 took effect.
 
 ## What this does not do
 
 - **No approved refund has been observed live with one Paytm call.** The fix for G-70 is covered by tests. The full flow
   with a signed approval has not been rerun against Paytm since 1.2.0 took effect. A live check with one real ₹1 refund
   is written down as next work, and needs a paid Paytm order.
-- **No real refund has moved through this path yet.** The live run used staging and synthetic ids.
+- **No real refund has moved through this path yet.** The live check used fake Paytm credentials.
 - **Eligibility and fraud are still the agent's word.** No system that owns those facts is connected. They can refuse a
   refund, never approve one.
 - **Paytm's own behaviour was not checked** for a second refund of one transaction, or for its limits on the reason text.
