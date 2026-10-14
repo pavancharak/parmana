@@ -36,6 +36,11 @@ export interface MigrationStatus {
   readonly unknown: readonly string[];
 }
 
+const MIGRATION_LOCK_SQL =
+  "SELECT pg_advisory_lock(hashtext('parmana_schema_migrations'))";
+const MIGRATION_UNLOCK_SQL =
+  "SELECT pg_advisory_unlock(hashtext('parmana_schema_migrations'))";
+
 const TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS parmana_schema_migrations (
     name       text PRIMARY KEY,
@@ -101,13 +106,36 @@ export async function applyPendingMigrations(
   directory: string,
   options: { readonly rolesSql?: string; readonly dryRun?: boolean } = {},
 ): Promise<{ readonly applied: readonly string[] }> {
-  const { pending } = await migrationStatus(client, directory, {
-    createTable: !options.dryRun,
-  });
-
   if (options.dryRun) {
+    const { pending } = await migrationStatus(client, directory, {
+      createTable: false,
+    });
+
     return { applied: pending };
   }
+
+  // Two deployments that start together must not both read the same pending
+  // list and race to run it. A session-level advisory lock serializes them:
+  // the second runner waits, then finds the migrations already recorded. The
+  // lock is taken before the pending list is read, and released in finally.
+  // The lock belongs to this connection, so the client must be one connection.
+  await client.query(MIGRATION_LOCK_SQL);
+
+  try {
+    return await applyLocked(client, directory, options);
+  } finally {
+    await client.query(MIGRATION_UNLOCK_SQL);
+  }
+}
+
+async function applyLocked(
+  client: QueryClient,
+  directory: string,
+  options: { readonly rolesSql?: string },
+): Promise<{ readonly applied: readonly string[] }> {
+  const { pending } = await migrationStatus(client, directory, {
+    createTable: true,
+  });
 
   if (options.rolesSql !== undefined) {
     await client.query(options.rolesSql);
