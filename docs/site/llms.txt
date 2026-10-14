@@ -63,6 +63,55 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [Replay](https://docs.parmanasystems.com/replay/overview): Two separate things share this name today, what each actually does.
 * [Cryptography](https://docs.parmanasystems.com/cryptography/overview): Ed25519 default, ML-DSA-65 (post-quantum) configurable. Local PEM keys or AWS KMS for the signing key; other key custody is roadmap.
 * [Storage](https://docs.parmanasystems.com/storage/overview): Append-only persistence for Business Transactions, Trust Records, and policies.
+## Essays: Start here
+
+* [Essays](https://docs.parmanasystems.com/essays/overview): Parmana explained end to end in 31 plain-language essays: why it exists, how a decision is made, how an action is released, what evidence is left, how the rules are governed, how systems connect, and what is proven and what is not.
+## Essays: Why Parmana exists
+
+* [Your agent's claim is not a business fact](https://docs.parmanasystems.com/essays/01-claim-is-not-a-fact): Why an AI agent saying 'the refund is eligible' should never be enough to move money, and how Parmana asks the system that owns the fact instead.
+* [Prompt guardrails are advice. Authorization is a gate.](https://docs.parmanasystems.com/essays/02-guardrails-are-advice): Why 'the agent was told not to' is not a control, and what a check outside the agent looks like instead.
+* [Agents will rewrite themselves. Their authority should not move when they do.](https://docs.parmanasystems.com/essays/03-agents-will-rewrite-themselves): A Google research paper shows agents improving their own harness. What that means for where the limits on agents must live.
+* [Models as insider risks: what Parmana already does, and what it does not](https://docs.parmanasystems.com/essays/models-as-insider-risks): Satya Nadella argues that frontier models should be treated as insider risks, with controls outside the model. A principle-by-principle look at where Parmana meets that bar and where it does not.
+* [How Parmana works, end to end](https://docs.parmanasystems.com/essays/04-how-parmana-works): The whole system on one page: who proposes, who decides, who releases, and what is left behind.
+## Essays: The decision
+
+* [Policies as data: same input, same decision](https://docs.parmanasystems.com/essays/05-policies-as-data): 'Why the rule that decides a refund is a JSON file, not a prompt, and exactly what "deterministic" does and does not promise.'
+* [Every action needs a signed human approval, reads included](https://docs.parmanasystems.com/essays/06-signed-human-approval): Why Parmana has no automatic path, how a person approves one action on one resource, and what that approval does not cover.
+* [Giving an agent authority: grants with limits and an end date](https://docs.parmanasystems.com/essays/07-authority-grants): An API key that may call an action is not yet authority over every request for it. A grant says exactly what one agent may do, how much, and until when.
+* [Per-request limits are not enough](https://docs.parmanasystems.com/essays/08-per-request-limits-are-not-enough): ₹9,999 twenty times is still ₹2 lakh. Why agents need limits over time, why who keeps the count matters most, and the design for cumulative grant limits (not built yet).
+## Essays: The release
+
+* [The gateway: why your agent should never hold the keys](https://docs.parmanasystems.com/essays/09-the-gateway)
+* [Signed, single-use, short-lived: the execution authorization](https://docs.parmanasystems.com/essays/10-execution-authorization)
+* [Approved what, exactly? Binding approval to content](https://docs.parmanasystems.com/essays/11-binding-approval-to-content)
+* [Write it down before you do it](https://docs.parmanasystems.com/essays/12-write-it-down-first)
+* [Proving the gateway is the gateway](https://docs.parmanasystems.com/essays/13-proving-the-gateway): 'A signed approval says "this may happen". It does not say who is making it happen.'
+## Essays: The evidence
+
+* [An approval you can verify without trusting me](https://docs.parmanasystems.com/essays/14-verify-without-trusting-me): Why 'check our logs' is not good enough for agents that act on your behalf, what signed records and signed approvals prove, and what they do not.
+* [Proving what didn't happen](https://docs.parmanasystems.com/essays/15-proving-what-didnt-happen): An approval leaves a signed record. A refusal used to leave a 403 and a log line.
+* [Who asked? The caller audit trail](https://docs.parmanasystems.com/essays/16-who-asked): Before Parmana decides whether an action is allowed, it records who is asking. Every time, including when the answer is no.
+* [Replay: what it can and can't re-check](https://docs.parmanasystems.com/essays/17-replay): 'Two different things in Parmana share the word "replay". Neither one does everything the word suggests.'
+* [Verify it yourself: offline and in the browser](https://docs.parmanasystems.com/essays/18-verify-it-yourself)
+* [Choosing signatures: Ed25519, post-quantum, and keys in KMS](https://docs.parmanasystems.com/essays/19-choosing-signatures)
+## Essays: Governance and operations
+
+* [Maker checker for one person](https://docs.parmanasystems.com/essays/20-maker-checker-for-one-person): What two-person control is worth when one person holds both roles, what Parmana enforces regardless of headcount, and where it stops.
+* [Governing the rules](https://docs.parmanasystems.com/essays/21-governing-the-rules)
+* [Rotating every key in production in one day](https://docs.parmanasystems.com/essays/22-rotating-every-key): A credential recovery told honestly, with the mistakes left in: why recovery means replacement, the order of trust, and seven things that broke.
+* [Running Parmana yourself, even with no internet](https://docs.parmanasystems.com/essays/23-running-parmana-yourself)
+## Essays: Connecting agents and systems
+
+* [Connecting an agent](https://docs.parmanasystems.com/essays/24-connecting-an-agent)
+* [Connecting any system](https://docs.parmanasystems.com/essays/25-connecting-any-system)
+* [What a refund agent needs before it touches a payment gateway](https://docs.parmanasystems.com/essays/26-before-a-refund-agent-touches-razorpay): A checklist for letting an AI agent move money back to customers through Razorpay, Paytm or any gateway, and where Parmana stands on each point.
+## Essays: Proof and honesty
+
+* [Testing agent controls in production without moving real money](https://docs.parmanasystems.com/essays/27-testing-in-production-without-moving-money): How authority grants and business signal sources were proven on the live system with endpoints that act on nothing, what passed, and what was not proven.
+* ['What "done" means: deployed, but not yet deciding anything'](https://docs.parmanasystems.com/essays/28-what-done-means): Five meanings of done, and the three public records that keep Parmana honest about which one each feature has reached: the claims register, the gap log and the remaining work list.
+* [What Parmana can't stop](https://docs.parmanasystems.com/essays/29-what-parmana-cant-stop)
+* [Mapping to regulation without overclaiming](https://docs.parmanasystems.com/essays/30-mapping-to-regulation)
+* [Where Parmana fits among agent controls](https://docs.parmanasystems.com/essays/31-how-parmana-compares)
 ## Guides: Build with Parmana
 
 * [Full Integration Overview](https://docs.parmanasystems.com/guides/full-integration-overview): A map of the four independent pieces a real business system integration needs: policy, caller, connector and signal verification, and how they fit together. Read this before the individual guides.

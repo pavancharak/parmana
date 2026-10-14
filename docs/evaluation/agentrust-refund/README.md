@@ -4,6 +4,24 @@ A test package for one scenario, `paytm:refund` under the policy `customer-refun
 to the AgenTrust integrations repository. It runs three cases through Parmana's real `POST /execute` path and
 records, for each one, the decision, the signed record and how many times the connector was invoked.
 
+## Status: listed in AgenTrust (2026-10-12)
+
+The proposal was accepted. [agentrust-io/integrations#294](https://github.com/agentrust-io/integrations/pull/294),
+"Add Parmana as a TRACE external evidence source", was approved by an AgenTrust maintainer and merged into `main`
+(merge commit `6de4cb9`) on 2026-10-12. It adds `integrations/parmana-server` (tier `community`, integrates with
+`trace`) and a Parmana row to that repository's integration index.
+
+As agreed in the review, Parmana is an external evidence source with no TRACE conformance level: it maps its own
+signed records (the `authorized-intent` and `approval-outcome` references, with refusals as their own unit) to TRACE,
+and the fixtures there carry public keys only. The maintainer ran the integration's 18 tests and reproduced its
+committed `references.json`; they did not run `slsa-verifier` against an image. The listing does not certify
+Parmana, and the limits below still apply.
+
+A follow-up requesting the Verified tier was opened on 2026-10-13: it pins the released `parmana` SDK 1.6.0 and adds
+exact reproduction steps. On 2026-10-14 a maintainer reproduced it with the released packages (byte-for-byte
+`references.json`, 18 tests passed); the tier change follows in a separate maintainer PR, and until then the tier is
+`community`.
+
 ## What it shows, and what it does not
 
 - **Connector invocations are counted per case.** A refused request must reach the connector zero times.
@@ -40,20 +58,28 @@ for the run, and the connector is the mock.
 
 ## The three cases and the expected outcomes
 
-| Case             | Request                                                                            | Expected HTTP       | Decision | Connector invocations | Signed record                                                                                                                     |
-| ---------------- | ---------------------------------------------------------------------------------- | ------------------- | -------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `valid-approval` | Refund of 500 for `order-eval-1`, with a manager approval for that order up to 500 | 200                 | APPROVED | 1 (mock result)       | Execution Trust Record, Ed25519, with the policy content hash                                                                     |
-| `refusal`        | Refund of 500 for `order-eval-2`, every caller fact `true`, no approval            | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, Ed25519, same policy content hash, verified by `POST /refusal/verify`; rule `signal-state-verification-violation` |
-| `replay`         | The approval from `valid-approval`, sent again with a new request                  | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, as above; reason: the approval was already used, so it verifies as `managerApproved=false`                        |
+| Case             | Request                                                                            | Expected HTTP       | Decision | Connector invocations | Signed record                                                                                                                                 |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------------- | -------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `valid-approval` | Refund of 500 for `order-eval-1`, with a manager approval for that order up to 500 | 200                 | APPROVED | 1 (mock result)       | Execution Trust Record, Ed25519, with the policy content hash                                                                                 |
+| `refusal`        | Refund of 500 for `order-eval-2`, every caller fact `true`, no approval            | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, Ed25519, same policy content hash, verified by `POST /refusal/verify`; rule `signal-state-verification-violation`             |
+| `replay`         | The approval from `valid-approval`, sent again with a new request                  | 403 `POLICY_DENIED` | REFUSED  | 0                     | Refusal Record, as above; rule `signal-state-verification-violation`: the approval is spent, so its verified state is `managerApproved=false` |
 
 The test fails if any of these does not hold, including if the connector is invoked more than once in total.
+
+### Where to check each case
+
+- `valid-approval`: `evaluations/agentrust-refund/fixtures/01-valid-approval.execution-trust-record.json`, `matchedRuleId` `approve-refund-with-manager-approval` (line 147).
+- `refusal`: `evaluations/agentrust-refund/fixtures/02-refusal.refusal-record.json`, `matchedRuleId` `signal-state-verification-violation` (line 20).
+- `replay`: `evaluations/agentrust-refund/fixtures/03-replay.refusal-record.json`, `matchedRuleId` `signal-state-verification-violation` (line 46). The assertions are in `packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts` at lines 314 to 316.
+- AgenTrust copy: the same fixture, merged in AgenTrust's integrations repository at `6de4cb9`: [`integrations/parmana-server/fixtures/03-replay.refusal-record.json`](https://github.com/agentrust-io/integrations/blob/6de4cb9/integrations/parmana-server/fixtures/03-replay.refusal-record.json#L46) (line 46), with the test at [`tests/test_parmana_evidence.py` line 131](https://github.com/agentrust-io/integrations/blob/6de4cb9/integrations/parmana-server/tests/test_parmana_evidence.py#L131).
+- All three are run by `npx vitest run packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts`, and regenerated with `npm run evaluate:agentrust-refund`. The claim that cites them is CLAIMS.md 3.23 (`docs/CLAIMS.md`).
 
 ## Mapping to TRACE
 
 TRACE v0.2 (`agentrust-trace` 0.11.0, `TrustRecord`) asks for evidence about one agent execution. Parmana produces
 evidence about one decision and, when approved, one connector invocation. The mapping below says, field by field,
-what Parmana can supply, and marks what it cannot. It is a proposal to agree with a maintainer, not an
-implementation.
+what Parmana can supply, and marks what it cannot. It was written as a proposal to agree with a maintainer; the
+implementation that was merged is `integrations/parmana-server` in the AgenTrust repository (see Status above).
 
 | TRACE field                  | From Parmana                                                                                                                                | Status                                                        |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
