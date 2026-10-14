@@ -51,8 +51,9 @@ with zero calls to Slack.
   the agent writes, only to a listed channel. If the operations channel itself is the wrong audience for borrower data,
   the allowlist will not save you. Approving the content would need the person to see the text before signing, which
   the current design does not require.
-- **Slack is not configured in Parmana's production.** The operator checked on 2026-09-28. This connector has been run
-  only in tests and tutorials, against a stand-in for Slack, never posting to a real workspace through Parmana.
+- **Slack posting is not yet in use in Parmana's production.** The claims register lists its production use as future
+  work. This connector has been run only in tests and tutorials, against a stand-in for Slack, never posting to a real
+  workspace through Parmana.
 - **One person per post is a real cost.** Every post needs a signed approval, single use. For a nightly summary that is
   one signature a night. For a chatty agent it is a person on call. Some teams will decide that is too slow, and they
   will be right for their case; Parmana does not offer an automatic path.
