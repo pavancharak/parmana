@@ -2191,6 +2191,13 @@ and reported reproducing it at `80c3a92` in a clean environment with the release
 byte, and 18 tests passed. The maintainer stated that the tier change follows in a separate maintainer PR. Until that
 PR is merged, the tier is `community`, and nothing here claims Verified. #313 itself was merged into AgenTrust's `main` as `1aac6c8` on 2026-10-14, still at tier `community`.
 
+**Where the replay refusal is checked.** The `replay` case (the approval from `valid-approval`, sent again with a new request) is refused with HTTP 403 `POLICY_DENIED`, zero connector invocations, and a Refusal Record whose `matchedRuleId` is `signal-state-verification-violation`, with the reason `managerApproved=true != verified managerApproved=false`: the approval is spent, so its verified state is false. Each point is checkable in the repository, without network access:
+
+- Test: `packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts`. The `replay` run is at lines 294 to 297, and the assertions at lines 314 to 316 (`not.toBe(200)`, `connectorInvocations` 0, and `reason` containing `verified managerApproved=false`). Run it with `npx vitest run packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts`.
+- Fixture: `evaluations/agentrust-refund/fixtures/03-replay.refusal-record.json`, `decision.matchedRuleId` at line 46.
+- Run record: `evaluations/agentrust-refund/report.json`, case `replay`. That report comes from the Paytm scenario at commit `ac22a7e` (2026-10-10), not from the Razorpay demo.
+- Live demo: `examples/razorpay-refund/send.ts --case replay` (README, request 4). It is not a hermetic test, and it needs the production key.
+
 ---
 
 # Maturity Assessment (TRL)
