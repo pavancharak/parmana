@@ -2399,3 +2399,35 @@ This discipline ensures that Parmana's public positioning remains aligned with i
 - In a serverless function a process exit is not available. A mismatch makes every request fail with a 500 rather than refusing the process. The failed build is retried on the next request, so each request re-runs the check until the mismatch is fixed.
 - The entry imported `runPolicyGovernanceIntegrityCheckAtStartup` from `packages/api/dist`, a module with no source in `packages/api/src`. The import now points at the module the source builds.
 - Status: fixed on branch `fix/policy-scan-and-governance-url`. See G-98 and G-99 in `docs/VERIFICATION-GAPS.md`.
+
+## 3.26 Audit Follow-up: Connector Endpoints, Client Guards, Strict Results and Smaller Leaks (Scoped, 2026-10-15)
+
+**Claim.** The following hold on the current branch. Each was reported by the 2026-10-15 read-only audit and checked against the code before it was fixed.
+
+1. Connector base-URL overrides (`HUBSPOT_BASE_URL`, `GITHUB_BASE_URL`, `SLACK_BASE_URL`) must use `https://`, or `http://` for loopback. Embedded credentials are refused. The GitHub credential provider applies the same rule.
+2. A GitHub or HubSpot response with a 2xx status and a body that is not JSON fails the action. It is no longer recorded as success with empty evidence.
+3. A step-up envelope whose `authorizedAt` is more than 60 seconds in the future is not valid. Previously only the expiry was checked.
+4. The TypeScript SDK refuses an endpoint that is not `https://` (or loopback `http://`) and refuses embedded credentials, as the Python SDK already did. Its client no longer prints the API key in `console.log` or `JSON.stringify`.
+5. The TypeScript and Python SDKs percent-encode the business transaction id in every path segment, so `../` or `?` cannot re-route a request made with the caller's key.
+6. The TypeScript and Python SDKs return the server's `valid` only when it is the boolean `true`. A string `"false"` is not accepted.
+7. The Python connector SDK `CredentialHandle` omits its value from `repr`.
+8. `GET /ready` returns "storage unavailable" to the public. The database error text goes to the server log only.
+9. The governance UI's API calls time out after 10 seconds.
+10. `scripts/verify-policy-changes-approved.ts` scans the directory `PARMANA_POLICY_DIR` names, as CI sets it, and walks symlinked directories, since the runtime follows them.
+11. Scripts with a `main()` entry point run it unless vitest is running (`VITEST` set). They no longer depend on `NODE_ENV`, so a `NODE_ENV=test` line in a committed `.env` cannot switch the policy gate off.
+12. `scripts/rotate-caller-key.mjs` validates `--caller-id` with the key-id allowlist, so `../` cannot write outside the secrets directory.
+13. `scripts/generate-fly-secrets.mjs` refuses to run when `secrets.env` exists unless `--force` is passed, since a re-run would replace the signing keys.
+14. `rate_limit_counters` has row level security enabled with no policy, so the Supabase Data API's anon and authenticated roles get no access. The application connects as the table owner and is unaffected.
+15. The Razorpay example's error path no longer says "endpoint misconfigured" for a failure that can come after Razorpay created the refund. It reports the outcome as unknown.
+16. The runtime's `replay()` is documented as an integrity re-verification, not a re-run of the decision.
+
+**Evidence.**
+
+- Connector guard: `packages/api/src/bootstrap/readConnectorBaseUrl.ts`, used by the three connector factories and the GitHub credential provider.
+- Non-JSON 2xx: `packages/execution-gateway/src/connector-execution/GatewayHubSpotAdapter.ts`, `GatewayGitHubAdapter.ts`.
+- Step-up: `packages/crypto/src/PolicyChangeStepUpAuthorizationCrypto.ts`, `STEP_UP_CLOCK_SKEW_MS`.
+- TypeScript SDK: `typescript/src/config/assertSafeEndpoint.ts`, `typescript/test/EndpointGuard.test.ts`; `typescript/src/client/ParmanaClient.ts`.
+- Path encoding and `valid`: `typescript/src/client/*.ts`, `python/parmana/api/*.py`.
+- Test results: `packages/api` 698 passed; `packages/crypto`, `packages/execution-gateway`, `packages/runtime`, `packages/shared`, `packages/storage`, `packages/policy`, `packages/approval`, connector packages and root `tests` all passed, except the two generated-file checks, which were regenerated; the Python SDK 190 passed; the Python connector SDK 34 passed; the TypeScript SDK's new endpoint test passed. Eight TypeScript SDK test files fail to load with "No test suite found" both with and without these changes; that is a pre-existing problem with the SDK's test setup, not this change.
+
+**Limits.** Items that change the signed evidence format, add a policy flag, or need an outside check are not in this claim. They are listed in `docs/REMAINING-WORK.md` section N.
