@@ -1,5 +1,15 @@
 # Remaining work
 
+> **Resume here.** Start with section M ("Open items (added 2026-10-15)") at the end of this file. It is the newest list. Work through its "Next step" column in this order:
+>
+> 1. Production redeploy from `main` once Vercel's daily limit resets. Then check `/health` and `/ready`. Roll back if startup refuses.
+> 2. Confirm the CI race test passes on `main`.
+> 3. Generate a new local `default` signing key. Do not overwrite `default.public.pem`.
+> 4. Decide the AgenTrust README correction and comment. Both need explicit go-ahead before anything is posted.
+> 5. Demo follow-ups: check the Razorpay test refund, then revoke the demo grant and connector after the event.
+>
+> Do not open PRs or merge without asking. Do not rerun the approved Razorpay case.
+
 Snapshot: 2026-09-21, with section F added and updated on 2026-09-25, section G added on 2026-09-27, and section L added and updated on 2026-10-11. This is the current list of what is left. It replaces `02-REMAINING.md` (a July 5 snapshot) for current status.
 
 Every item says how it was verified. Items marked **not re audited** are copied from `docs/VERIFICATION-GAPS.md` as written there, and were not checked again on this date. The full record of what was found and closed stays in `docs/VERIFICATION-GAPS.md` and `docs/CLAIMS.md`.
