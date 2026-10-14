@@ -1,4 +1,11 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -241,6 +248,34 @@ describe("parseCredentialHolderType", () => {
 
 describe("appendApiKeyEntry", () => {
   let dir: string;
+
+  it.skipIf(process.platform === "win32")(
+    "writes the key file owner-only, even when it already exists world-readable",
+    () => {
+      dir = mkdtempSync(join(tmpdir(), "generate-api-key-test-"));
+      const path = join(dir, ".env");
+      writeFileSync(path, "PARMANA_API_KEYS=[]\n");
+      chmodSync(path, 0o644);
+
+      const { entry } = generateApiKey({ callerId: "caller-1" });
+      appendApiKeyEntry(path, entry);
+
+      expect(statSync(path).mode & 0o777).toBe(0o600);
+    },
+  );
+
+  it.skipIf(process.platform === "win32")(
+    "writes a JSON key file owner-only",
+    () => {
+      dir = mkdtempSync(join(tmpdir(), "generate-api-key-test-"));
+      const path = join(dir, "keys.json");
+
+      const { entry } = generateApiKey({ callerId: "caller-2" });
+      appendApiKeyEntry(path, entry);
+
+      expect(statSync(path).mode & 0o777).toBe(0o600);
+    },
+  );
 
   afterEach(() => {
     if (dir) rmSync(dir, { recursive: true, force: true });
