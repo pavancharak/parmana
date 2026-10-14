@@ -161,3 +161,111 @@ describe("tracked migrations (G-61)", () => {
     ).rejects.toThrow(/No migration named 999_missing.sql/);
   });
 });
+
+describe("migration lock (concurrent runners)", () => {
+  let dir: string;
+
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), "migrations-lock-"));
+    writeFileSync(join(dir, "001_one.sql"), "CREATE TABLE one (id int);");
+  });
+
+  afterEach(() => {
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  it("takes the advisory lock before anything else, and releases it last", async () => {
+    const client = new FakeClient();
+
+    await applyPendingMigrations(client, dir);
+
+    expect(client.statements[0]).toContain("pg_advisory_lock(");
+    expect(client.statements.at(-1)).toContain("pg_advisory_unlock(");
+    expect(
+      client.statements.filter((sql) => sql.includes("pg_advisory_lock(")),
+    ).toHaveLength(1);
+  });
+
+  it("releases the lock when a migration fails", async () => {
+    writeFileSync(join(dir, "002_bad.sql"), "SELECT FAIL;");
+    const client = new FakeClient();
+
+    await expect(applyPendingMigrations(client, dir)).rejects.toThrow(
+      /002_bad.sql/,
+    );
+
+    expect(client.statements.at(-1)).toContain("pg_advisory_unlock(");
+  });
+
+  it("does not take the lock for a dry run", async () => {
+    const client = new FakeClient();
+
+    await applyPendingMigrations(client, dir, { dryRun: true });
+
+    expect(client.statements.some((sql) => sql.includes("pg_advisory"))).toBe(
+      false,
+    );
+  });
+});
+
+/**
+ * The race itself, against a real PostgreSQL. Two runners start together on
+ * the same pending migration. Without the lock, the second one fails on the
+ * tracking insert or on the table it tries to create. With it, the second
+ * waits, sees the migration recorded, and applies nothing.
+ *
+ * Runs only when PARMANA_TEST_DATABASE_URL is set, and drops and recreates
+ * the tables it uses, so point it at an empty throwaway database.
+ */
+const realUrl = process.env.PARMANA_TEST_DATABASE_URL;
+
+describe.skipIf(!realUrl)("migration lock against real PostgreSQL", () => {
+  it("applies a migration once when two runners start together", async () => {
+    const pg = await import("pg");
+    const dir = mkdtempSync(join(tmpdir(), "migrations-race-"));
+
+    writeFileSync(
+      join(dir, "001_demo.sql"),
+      [
+        "CREATE TABLE IF NOT EXISTS demo_effect (id serial primary key, note text);",
+        "SELECT pg_sleep(1);",
+        "INSERT INTO demo_effect (note) VALUES ('applied');",
+      ].join("\n"),
+    );
+
+    const admin = new pg.default.Client({ connectionString: realUrl });
+    await admin.connect();
+    await admin.query("DROP TABLE IF EXISTS demo_effect");
+    await admin.query("DROP TABLE IF EXISTS parmana_schema_migrations");
+
+    const runner = async () => {
+      const client = new pg.default.Client({ connectionString: realUrl });
+      await client.connect();
+      try {
+        return await applyPendingMigrations(client as never, dir);
+      } finally {
+        await client.end();
+      }
+    };
+
+    try {
+      const results = await Promise.allSettled([runner(), runner()]);
+      expect(results.map((r) => r.status)).toEqual(["fulfilled", "fulfilled"]);
+
+      const applied = results.map((r) =>
+        r.status === "fulfilled" ? r.value.applied.length : -1,
+      );
+      expect(applied.sort()).toEqual([0, 1]);
+
+      const { rows } = await admin.query(
+        "SELECT count(*)::int AS n FROM demo_effect",
+      );
+      expect(rows[0]?.n).toBe(1);
+    } finally {
+      await admin.query("DROP TABLE IF EXISTS demo_effect");
+      await admin.query("DROP TABLE IF EXISTS parmana_schema_migrations");
+      await admin.end();
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
