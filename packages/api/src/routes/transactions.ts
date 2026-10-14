@@ -190,6 +190,26 @@ export function createTransactionsRouter(
           }
 
           //
+          // metadata.tenantId selects the signing key (tenant.<tenantId>),
+          // so a caller may only name a tenant its own key lists. See
+          // execute.ts's identical check for the rationale.
+          //
+          const tenantId = transaction.metadata?.tenantId;
+
+          // null and absent both mean "no tenant" (the SDKs send null).
+          if (
+            tenantId !== undefined &&
+            tenantId !== null &&
+            !(req.callerAllowedTenantIds ?? []).includes(tenantId)
+          ) {
+            res.status(403).json({
+              error: "Caller is not permitted to act for this tenantId.",
+              code: "TENANT_NOT_ALLOWED",
+            });
+            return;
+          }
+
+          //
           // Caller capability binding: see execute.ts's identical check
           // for the full rationale. Runs before application.execute()
           // is reached, mirroring the principal check immediately
