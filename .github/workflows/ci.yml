@@ -19,8 +19,25 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    # A throwaway PostgreSQL for the migration race test (scripts/tests/
+    # run-migrations.test.ts). That test drops and recreates its own tables,
+    # so the database here must not hold anything else.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     env:
       NODE_ENV: test
+      PARMANA_TEST_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/postgres
       # Required at startup by packages/shared/src/config/Config.ts —
       # points at the repo's own committed reference policies, not a
       # separate fixtures directory.
