@@ -97,7 +97,7 @@ export function createRefunder(
       signal: AbortSignal.timeout(4_000),
     });
     const text = await response.text();
-    let json: Record<string, unknown> = {};
+    let json: Record<string, unknown>;
 
     try {
       json = JSON.parse(text) as Record<string, unknown>;
