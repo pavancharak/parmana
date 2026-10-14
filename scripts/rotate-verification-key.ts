@@ -1,8 +1,16 @@
 import "dotenv/config";
 
 import { generateKeyPairSync } from "node:crypto";
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
+
+import {
+  assertSafeKeyId,
+  ensureKeyDirectory,
+  PRIVATE_KEY_MODE,
+  PUBLIC_KEY_MODE,
+  writeKeyFile,
+} from "./lib/key-files.js";
 
 /**
  * Rotates the signing key used by VerificationCrypto/RefusalCrypto/
@@ -52,13 +60,11 @@ if (!nodeAlgorithm) {
 
 const keyDirectory = process.env.PARMANA_KEY_DIR ?? "./keys";
 
-if (!existsSync(keyDirectory)) {
-  mkdirSync(keyDirectory, { recursive: true });
-}
+ensureKeyDirectory(keyDirectory);
 
 const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 const rotationSuffix = secondary ? "secondary" : "primary";
-const newKeyId = `verification-${rotationSuffix}-${timestamp}`;
+const newKeyId = assertSafeKeyId(`verification-${rotationSuffix}-${timestamp}`);
 
 const privatePath = join(keyDirectory, `${newKeyId}.private.pem`);
 const publicPath = join(keyDirectory, `${newKeyId}.public.pem`);
@@ -73,14 +79,18 @@ if (existsSync(privatePath) || existsSync(publicPath)) {
 
 const { publicKey, privateKey } = generateKeyPairSync(nodeAlgorithm);
 
-writeFileSync(
+writeKeyFile(
   privatePath,
   privateKey.export({ format: "pem", type: "pkcs8" }) as string,
+  PRIVATE_KEY_MODE,
+  false,
 );
 
-writeFileSync(
+writeKeyFile(
   publicPath,
   publicKey.export({ format: "pem", type: "spki" }) as string,
+  PUBLIC_KEY_MODE,
+  false,
 );
 
 const envVar = secondary

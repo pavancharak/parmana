@@ -31,7 +31,7 @@ on:
       - docker/**
       - package.json
       - package-lock.json
-      - packages/*/package.json
+      - packages/**
       - docs/site/parmana-handbook.pdf
       - supabase/migrations/**
       - scripts/apply-all-migrations.sql
@@ -48,7 +48,7 @@ on:
       - docker/**
       - package.json
       - package-lock.json
-      - packages/*/package.json
+      - packages/**
       - docs/site/parmana-handbook.pdf
       - supabase/migrations/**
       - scripts/apply-all-migrations.sql
