@@ -22,7 +22,7 @@ export class TrustRecordApi {
   ): Promise<ExecutionTrustRecord> {
     const response = await this.transport.send<ExecutionTrustRecord>({
       method: "GET",
-      path: `/trust-records/${businessTransactionId}`,
+      path: `/trust-records/${encodeURIComponent(businessTransactionId)}`,
     });
 
     return response.body;

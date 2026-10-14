@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from parmana.config.transport import Transport
 from parmana.models.verification import Verification
+from urllib.parse import quote
 
 
 class VerificationApi:
@@ -83,6 +84,6 @@ class VerificationApi:
 
         return self._transport.send(
             method="GET",
-            path=f"/verification/{business_transaction_id}",
+            path=f"/verification/{quote(business_transaction_id, safe='')}",
             response_model=Verification,
         )

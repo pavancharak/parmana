@@ -38,7 +38,7 @@ export class VerificationApi {
    */
   public async getLatest(businessTransactionId: string): Promise<Verification> {
     const response = await this.transport.send<Verification>({
-      path: `/verification/${businessTransactionId}`,
+      path: `/verification/${encodeURIComponent(businessTransactionId)}`,
       method: "GET",
     });
 

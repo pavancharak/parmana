@@ -36,9 +36,13 @@ describe("apiClient", () => {
       );
 
       expect(identity.callerId).toBe("human-checker-1");
-      expect(fetchSpy).toHaveBeenCalledWith("http://api.example/callers/me", {
-        headers: { Authorization: "Bearer raw-key" },
-      });
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "http://api.example/callers/me",
+        expect.objectContaining({
+          headers: { Authorization: "Bearer raw-key" },
+          signal: expect.any(AbortSignal),
+        }),
+      );
     });
 
     it("throws ApiClientError with status 401 on an invalid key", async () => {

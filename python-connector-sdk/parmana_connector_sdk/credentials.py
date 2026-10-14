@@ -32,7 +32,7 @@ class CredentialHandle:
 
     provider_id: str
     credential_id: str
-    value: Any
+    value: Any = field(repr=False)
     _branded: bool = field(default=False, repr=False, compare=False)
 
 

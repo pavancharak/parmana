@@ -10,6 +10,7 @@ from parmana.config.transport import Transport
 from parmana.models.business_transaction import BusinessTransaction
 from parmana.models.trust_record import ExecutionTrustRecord
 from parmana.serialization import encode
+from urllib.parse import quote
 
 
 class TransactionApi:
@@ -83,7 +84,7 @@ class TransactionApi:
 
         return self._transport.send(
             method="GET",
-            path=f"/transactions/{business_transaction_id}",
+            path=f"/transactions/{quote(business_transaction_id, safe='')}",
             response_model=BusinessTransaction,
         )
 
