@@ -71,6 +71,7 @@ The test fails if any of these does not hold, including if the connector is invo
 - `valid-approval`: `evaluations/agentrust-refund/fixtures/01-valid-approval.execution-trust-record.json`, `matchedRuleId` `approve-refund-with-manager-approval` (line 147).
 - `refusal`: `evaluations/agentrust-refund/fixtures/02-refusal.refusal-record.json`, `matchedRuleId` `signal-state-verification-violation` (line 20).
 - `replay`: `evaluations/agentrust-refund/fixtures/03-replay.refusal-record.json`, `matchedRuleId` `signal-state-verification-violation` (line 46). The assertions are in `packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts` at lines 314 to 316.
+- AgenTrust copy: the same fixture, merged in AgenTrust's integrations repository at `6de4cb9`: [`integrations/parmana-server/fixtures/03-replay.refusal-record.json`](https://github.com/agentrust-io/integrations/blob/6de4cb9/integrations/parmana-server/fixtures/03-replay.refusal-record.json#L46) (line 46), with the test at [`tests/test_parmana_evidence.py` line 131](https://github.com/agentrust-io/integrations/blob/6de4cb9/integrations/parmana-server/tests/test_parmana_evidence.py#L131).
 - All three are run by `npx vitest run packages/api/tests/integration/agentrust-refund-evaluation.integration.test.ts`, and regenerated with `npm run evaluate:agentrust-refund`. The claim that cites them is CLAIMS.md 3.23 (`docs/CLAIMS.md`).
 
 ## Mapping to TRACE
