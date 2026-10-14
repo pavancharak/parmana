@@ -21,6 +21,14 @@ function argument(name, fallback) {
 }
 
 const callerId = argument("--caller-id");
+
+// The caller id becomes part of a file name, so it gets the same allowlist as
+// key ids (scripts/lib/key-files.ts). "../" must not reach writeFileSync.
+if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(callerId)) {
+  throw new Error(
+    `Unsafe caller id "${callerId}": use 1 to 64 letters, digits, ".", "_" or "-", starting with a letter or digit.`,
+  );
+}
 const secretsDir = argument("--secrets-dir");
 const secretsFile = join(secretsDir, "secrets.env");
 const keyFile = join(secretsDir, `${callerId}-api-key.txt`);

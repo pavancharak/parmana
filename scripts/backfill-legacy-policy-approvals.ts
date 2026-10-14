@@ -263,7 +263,7 @@ async function main(argv = process.argv.slice(2)): Promise<void> {
   );
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.VITEST === undefined) {
   main().catch((error: unknown) => {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

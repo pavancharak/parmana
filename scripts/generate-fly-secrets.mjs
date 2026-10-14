@@ -32,6 +32,15 @@ const OUT_DIR = ".flysecrets";
 const SECRETS_FILE = join(OUT_DIR, "secrets.env");
 const SMOKE_KEY_FILE = join(OUT_DIR, "smoke-test-api-key.txt");
 
+if (existsSync(SECRETS_FILE) && !process.argv.includes("--force")) {
+  // A re-run would replace the default and gateway signing keys, and every
+  // signature made with the old keys would stop verifying.
+  console.error(
+    `${SECRETS_FILE} already exists. Refusing to regenerate signing keys. Pass --force to replace them.`,
+  );
+  process.exit(1);
+}
+
 if (!existsSync(OUT_DIR)) {
   mkdirSync(OUT_DIR, { recursive: true });
 }

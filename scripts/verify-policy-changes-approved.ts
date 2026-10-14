@@ -152,13 +152,16 @@ export async function findAllPolicyFiles(
   const names = await readdir(policiesDir, { withFileTypes: true });
 
   for (const nameEntry of names) {
-    if (!nameEntry.isDirectory()) continue;
+    // Symlinks are walked too: the runtime follows them, so the gate must.
+    if (!nameEntry.isDirectory() && !nameEntry.isSymbolicLink()) continue;
 
     const versionDir = path.join(policiesDir, nameEntry.name);
     const versions = await readdir(versionDir, { withFileTypes: true });
 
     for (const versionEntry of versions) {
-      if (!versionEntry.isDirectory()) continue;
+      if (!versionEntry.isDirectory() && !versionEntry.isSymbolicLink()) {
+        continue;
+      }
 
       const candidate = path.join(versionDir, versionEntry.name, "policy.json");
 
@@ -286,7 +289,9 @@ function parseArgs(args: string[]): {
   const policiesDir =
     policiesDirIndex !== -1 && policiesDirIndex + 1 < args.length
       ? args[policiesDirIndex + 1]
-      : path.resolve(process.cwd(), "policies");
+      : process.env.PARMANA_POLICY_DIR !== undefined
+        ? path.resolve(process.cwd(), process.env.PARMANA_POLICY_DIR)
+        : path.resolve(process.cwd(), "policies");
 
   const fullScan = args.includes("--full-scan");
 
@@ -364,7 +369,7 @@ async function main(argv = process.argv.slice(2)): Promise<void> {
   process.exitCode = 1;
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.VITEST === undefined) {
   main().catch((error: unknown) => {
     console.error(
       `::error::${error instanceof Error ? error.message : String(error)}`,
