@@ -1,9 +1,11 @@
 import "dotenv/config";
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { createHash, generateKeyPairSync, randomBytes } from "node:crypto";
 
 import { AuthorityType, parseApiKeys } from "@parmana/shared";
+
+import { PRIVATE_KEY_MODE, writeKeyFile } from "./lib/key-files.js";
 
 export interface ApiKeyEntry {
   callerId: string;
@@ -274,9 +276,10 @@ export function appendApiKeyEntry(
       content += `${envLine}\n`;
     }
 
-    writeFileSync(path, content);
+    // The file holds the agents' API keys: owner-only, whatever the umask.
+    writeKeyFile(path, content, PRIVATE_KEY_MODE, true);
   } else {
-    writeFileSync(path, `${serialized}\n`);
+    writeKeyFile(path, `${serialized}\n`, PRIVATE_KEY_MODE, true);
   }
 
   return {
