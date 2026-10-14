@@ -10,6 +10,12 @@ export interface PolicyGovernanceIntegrityOptions {
   readonly policyRepository: PolicyRepository;
   readonly policyChangeCrypto: PolicyChangeCrypto;
   readonly policyChangeApprovalRecordRepository: PolicyChangeApprovalRecordRepository;
+  /**
+   * When true, a check that cannot run throws instead of logging. Used
+   * only by assertPolicyGovernanceIntegrityAtStartup, where a check that
+   * cannot run must stop the server from starting.
+   */
+  readonly failClosed?: boolean;
 }
 
 export type PolicyGovernanceIntegrityMismatchReason =
@@ -95,13 +101,21 @@ export async function verifyPolicyGovernanceIntegrityAtStartup(
   try {
     records = await options.policyChangeApprovalRecordRepository.list();
   } catch (error) {
+    const message =
+      "Policy Governance deploy/startup integrity check could not run " +
+      "(could not list approval records).";
+
     console.error({
       event: "policy_governance_integrity_check_unavailable",
-      message:
-        "Policy Governance deploy/startup integrity check could not run " +
-        "(could not list approval records). This does NOT block startup.",
+      message: options.failClosed
+        ? `${message} The server will not start.`
+        : `${message} This does NOT block startup.`,
       error: error instanceof Error ? error.message : String(error),
     });
+
+    if (options.failClosed) {
+      throw new Error(message, { cause: error });
+    }
 
     return { checked: 0, mismatches: [] };
   }
@@ -277,4 +291,31 @@ export async function verifyPolicyGovernanceIntegrityAtStartup(
   }
 
   return { checked: distinctVersions.size, mismatches };
+}
+
+/**
+ * The startup form of the check, used by server.ts before the port opens.
+ * It resolves only if the check ran and found no mismatch. It rejects if
+ * the check could not run, or if any approved policy's live file does not
+ * match its approval record. The periodic re-run keeps the fail-open
+ * behaviour above, so a mismatch found after startup is logged, not fatal.
+ */
+export async function assertPolicyGovernanceIntegrityAtStartup(
+  options: PolicyGovernanceIntegrityOptions,
+): Promise<void> {
+  const result = await verifyPolicyGovernanceIntegrityAtStartup({
+    ...options,
+    failClosed: true,
+  });
+
+  if (result.mismatches.length > 0) {
+    const found = result.mismatches
+      .map((m) => `${m.policyName}@${m.policyVersion} (${m.reason})`)
+      .join(", ");
+
+    throw new Error(
+      `Policy Governance integrity check found ${result.mismatches.length} ` +
+        `mismatch(es); the server will not start: ${found}`,
+    );
+  }
 }

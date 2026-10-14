@@ -192,6 +192,10 @@ incident chain, including a second bug this same fix introduced and then closed.
 
 ### Deploy-time and periodic integrity checking
 
+At startup the check is a gate. `assertPolicyGovernanceIntegrityAtStartup()` runs before the
+port binds, and the server does not start on a mismatch or if the check cannot run. The
+periodic re-run described below stays fail-open and logs.
+
 Two further mechanisms exist to catch a governance bypass after the fact: a direct edit
 to `policies/{name}/{version}/policy.json` that skips the pending-change API entirely:
 
