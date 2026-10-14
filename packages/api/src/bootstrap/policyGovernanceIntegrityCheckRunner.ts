@@ -15,10 +15,10 @@ function logUnexpectedFailure(error: unknown): void {
  * Fires one run of the Policy Governance integrity check (see
  * verifyPolicyGovernanceIntegrityAtStartup.ts) without awaiting it.
  * Shared by the one-time startup call
- * (runPolicyGovernanceIntegrityCheckAtStartup.ts) and the periodic
+ * (verifyPolicyGovernanceIntegrityAtStartup.ts) and the periodic
  * scheduler (schedulePolicyGovernanceIntegrityCheck.ts) so both go
  * through the exact same construction and fail-open error handling --
- * see runPolicyGovernanceIntegrityCheckAtStartup.ts's own doc comment
+ * see verifyPolicyGovernanceIntegrityAtStartup.ts's own doc comment
  * for why the try/catch here has to wrap construction, not just the
  * returned promise.
  */

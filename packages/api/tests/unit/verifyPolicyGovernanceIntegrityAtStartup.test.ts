@@ -8,7 +8,10 @@ import { PolicyChangeCrypto } from "@parmana/crypto";
 import type { PolicyChangeApprovalRecord } from "@parmana/shared";
 import { MemoryPolicyChangeApprovalRecordRepository } from "@parmana/storage";
 
-import { verifyPolicyGovernanceIntegrityAtStartup } from "../../src/governance/verifyPolicyGovernanceIntegrityAtStartup.js";
+import {
+  assertPolicyGovernanceIntegrityAtStartup,
+  verifyPolicyGovernanceIntegrityAtStartup,
+} from "../../src/governance/verifyPolicyGovernanceIntegrityAtStartup.js";
 
 /**
  * Builds a real, correctly-signed PolicyChangeApprovalRecord fixture --
@@ -406,5 +409,60 @@ describe("verifyPolicyGovernanceIntegrityAtStartup", () => {
     expect(result.mismatches).toEqual([
       { policyName: "policy-b", policyVersion: "1.0.0", reason: "missing" },
     ]);
+  });
+
+  describe("assertPolicyGovernanceIntegrityAtStartup (blocks startup)", () => {
+    it("resolves when there is nothing to check", async () => {
+      await expect(
+        assertPolicyGovernanceIntegrityAtStartup({
+          policyRepository: new FilePolicyRepository(scratchDir),
+          policyChangeCrypto: new PolicyChangeCrypto(),
+          policyChangeApprovalRecordRepository:
+            new MemoryPolicyChangeApprovalRecordRepository(),
+        }),
+      ).resolves.toBeUndefined();
+    });
+
+    it("rejects when an approved policy has no live file", async () => {
+      const crypto = new PolicyChangeCrypto();
+      const approvalRepository =
+        new MemoryPolicyChangeApprovalRecordRepository();
+
+      await approvalRepository.create(
+        await fixtureRecord(crypto, {
+          policyName: "never-written",
+          policyVersion: "1.0.0",
+        }),
+      );
+
+      await expect(
+        assertPolicyGovernanceIntegrityAtStartup({
+          policyRepository: new FilePolicyRepository(scratchDir),
+          policyChangeCrypto: crypto,
+          policyChangeApprovalRecordRepository: approvalRepository,
+        }),
+      ).rejects.toThrow(/will not start: never-written@1\.0\.0 \(missing\)/);
+    });
+
+    it("rejects, rather than passing, when the approval records cannot be listed", async () => {
+      const brokenRepository = {
+        create: async () => {
+          throw new Error("not used");
+        },
+        findById: async () => null,
+        list: async () => {
+          throw new Error("storage unavailable");
+        },
+        findMostRecentFor: async () => null,
+      };
+
+      await expect(
+        assertPolicyGovernanceIntegrityAtStartup({
+          policyRepository: new FilePolicyRepository(scratchDir),
+          policyChangeCrypto: new PolicyChangeCrypto(),
+          policyChangeApprovalRecordRepository: brokenRepository,
+        }),
+      ).rejects.toThrow(/could not run/);
+    });
   });
 });

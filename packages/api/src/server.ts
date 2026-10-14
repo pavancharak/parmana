@@ -1,5 +1,6 @@
 import "dotenv/config";
 
+import { PolicyChangeCrypto } from "@parmana/crypto";
 import { loadConfig } from "@parmana/shared";
 
 import { assertStorageConfigured } from "./bootstrap/assertStorageConfigured.js";
@@ -10,11 +11,12 @@ import {
 import { assertPaytmConnectorConfigured } from "./bootstrap/assertPaytmConnectorConfigured.js";
 import { createGracefulShutdown } from "./bootstrap/createGracefulShutdown.js";
 import { createExecutionSystem } from "./bootstrap/createExecutionSystem.js";
-import { createApplication } from "./application.js";
+import { createApplication, policyRepository } from "./application.js";
 import { createCallerAuthenticator } from "./bootstrap/createCallerAuthenticator.js";
 import { createPolicyChangeStepUpVerifier } from "./bootstrap/createPolicyChangeStepUpVerifier.js";
 import { createPolicyChangeApprovalService } from "./bootstrap/createPolicyChangeApprovalService.js";
-import { runPolicyGovernanceIntegrityCheckAtStartup } from "./bootstrap/runPolicyGovernanceIntegrityCheckAtStartup.js";
+import { assertPolicyGovernanceIntegrityAtStartup } from "./governance/verifyPolicyGovernanceIntegrityAtStartup.js";
+import { policyChangeApprovalRecordRepository } from "./repositories.js";
 import { schedulePolicyGovernanceIntegrityCheck } from "./bootstrap/schedulePolicyGovernanceIntegrityCheck.js";
 import { createRateLimitStore } from "./bootstrap/createRateLimitStore.js";
 import { createSandboxOptions } from "./bootstrap/createSandboxOptions.js";
@@ -102,26 +104,35 @@ const app = createApp(application, {
 const PORT = loadConfig().api.port;
 const HOST = process.env.HOST ?? "0.0.0.0";
 
+/**
+ * Policy Governance integrity check, before the port opens. A mismatch
+ * between an approved policy and its live file, or a check that cannot
+ * run at all, stops the server from starting. Refusing to start is the
+ * only safe answer: the server would otherwise decide under a policy
+ * nobody can show was approved. The periodic re-run below stays
+ * fail-open, so drift found during uptime is logged.
+ */
+try {
+  await assertPolicyGovernanceIntegrityAtStartup({
+    policyRepository,
+    policyChangeCrypto: new PolicyChangeCrypto(),
+    policyChangeApprovalRecordRepository,
+  });
+} catch (error) {
+  console.error({
+    event: "policy_governance_integrity_startup_refused",
+    error: error instanceof Error ? error.message : String(error),
+  });
+  process.exit(1);
+}
+
 const server = app.listen(PORT, HOST, () => {
   console.log(`API running on http://${HOST}:${PORT}`);
 });
 
 /**
- * Policy Governance deploy/startup integrity check (G-24) -- fired
- * here, not awaited above the port bind, and not gated on
- * callerAuth: unlike assertStorageConfigured/
- * assertSigningKeyMaterialConfigured above, this check is fail-open
- * by design (see its own doc comment) and must never delay the
- * server from accepting traffic. It runs regardless of whether
- * caller-auth is enabled -- it verifies live-file-vs-approval-record
- * consistency in durable storage, a concern orthogonal to whether
- * this process happens to have caller identity wiring turned on.
- */
-runPolicyGovernanceIntegrityCheckAtStartup();
-
-/**
- * ...and again on a fixed interval for the rest of this process's
- * uptime -- see schedulePolicyGovernanceIntegrityCheck.ts for why the
+ * Policy Governance integrity check, again on a fixed interval for the
+ * rest of this process's uptime -- see schedulePolicyGovernanceIntegrityCheck.ts for why the
  * startup-only run above leaves a gap between deploys.
  */
 schedulePolicyGovernanceIntegrityCheck();

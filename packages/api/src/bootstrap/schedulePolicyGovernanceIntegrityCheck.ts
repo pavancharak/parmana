@@ -6,7 +6,7 @@ const DEFAULT_INTERVAL_MS = 5 * 60_000;
  * Repeats the Policy Governance integrity check (see
  * verifyPolicyGovernanceIntegrityAtStartup.ts) on a fixed interval, on
  * top of (never instead of) the one-time startup run
- * (runPolicyGovernanceIntegrityCheckAtStartup.ts). The startup-only
+ * (verifyPolicyGovernanceIntegrityAtStartup.ts). The startup-only
  * check leaves an out-of-band edit to a live policy.json -- made
  * while the process keeps running, between deploys -- undetected
  * until the next restart; this closes that window down to the
