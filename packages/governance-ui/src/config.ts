@@ -25,8 +25,51 @@ function required(name: string): string {
   return value;
 }
 
+const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+/**
+ * The API key is sent as a bearer token to this URL, so a plain-HTTP or
+ * credentialed URL is refused. Plain HTTP is allowed only for loopback.
+ */
+export function assertSafeApiBaseUrl(
+  raw: string,
+  isProduction: boolean,
+): string {
+  let url: URL;
+
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error("PARMANA_API_BASE_URL is not a valid absolute URL.");
+  }
+
+  if (url.username !== "" || url.password !== "") {
+    throw new Error(
+      "PARMANA_API_BASE_URL must not contain credentials in the URL.",
+    );
+  }
+
+  const loopback = LOOPBACK_HOSTS.has(url.hostname);
+
+  if (url.protocol !== "https:" && !(url.protocol === "http:" && loopback)) {
+    throw new Error(
+      "PARMANA_API_BASE_URL must use https:// (http:// is allowed only for localhost).",
+    );
+  }
+
+  if (isProduction && url.protocol !== "https:") {
+    throw new Error("PARMANA_API_BASE_URL must use https:// in production.");
+  }
+
+  return raw.replace(/\/+$/, "");
+}
+
 export function loadGovernanceUiConfig(): GovernanceUiConfig {
-  const apiBaseUrl = required("PARMANA_API_BASE_URL").replace(/\/+$/, "");
+  const isProduction = process.env.NODE_ENV === "production";
+  const apiBaseUrl = assertSafeApiBaseUrl(
+    required("PARMANA_API_BASE_URL"),
+    isProduction,
+  );
   const sessionSecret = required("SESSION_SECRET");
 
   const port = Number(process.env.PORT ?? "4100");
@@ -41,6 +84,6 @@ export function loadGovernanceUiConfig(): GovernanceUiConfig {
     apiBaseUrl,
     sessionSecret,
     port,
-    isProduction: process.env.NODE_ENV === "production",
+    isProduction,
   };
 }

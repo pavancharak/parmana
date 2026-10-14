@@ -142,22 +142,20 @@ function parsePolicyFilePath(
 /**
  * Walks policiesDir for every policy.json path -- --full-scan mode.
  */
-async function findAllPolicyFiles(
+export async function findAllPolicyFiles(
   policiesDir: string,
 ): Promise<readonly string[]> {
   const files: string[] = [];
 
-  const names = await readdir(policiesDir, { withFileTypes: true }).catch(
-    () => [],
-  );
+  // A read failure must surface as an error. Treating it as an empty
+  // directory would let a full scan report success having checked nothing.
+  const names = await readdir(policiesDir, { withFileTypes: true });
 
   for (const nameEntry of names) {
     if (!nameEntry.isDirectory()) continue;
 
     const versionDir = path.join(policiesDir, nameEntry.name);
-    const versions = await readdir(versionDir, { withFileTypes: true }).catch(
-      () => [],
-    );
+    const versions = await readdir(versionDir, { withFileTypes: true });
 
     for (const versionEntry of versions) {
       if (!versionEntry.isDirectory()) continue;
@@ -314,6 +312,15 @@ async function main(argv = process.argv.slice(2)): Promise<void> {
   const filePaths = fullScan
     ? await findAllPolicyFiles(policiesDir)
     : changedFiles.map((file) => path.resolve(process.cwd(), file));
+
+  if (fullScan && filePaths.length === 0) {
+    console.error(
+      `::error::No policy files found under ${policiesDir}. A full scan that ` +
+        "checks nothing is treated as a failure, not a pass.",
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   const result = await verifyPolicyChangesApproved(filePaths, {
     policiesDir,
