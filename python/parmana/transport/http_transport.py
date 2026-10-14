@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any, TypeVar, overload
+from urllib.parse import urlsplit
 
 import requests
 from requests import Response
@@ -24,6 +25,53 @@ from parmana.serialization import decode
 logger = logging.getLogger("parmana")
 
 T = TypeVar("T")
+
+REDACTED = "<redacted>"
+
+_LOCAL_HOSTS = frozenset({"localhost", "127.0.0.1", "::1"})
+
+
+def _check_endpoint_scheme(endpoint: str) -> None:
+    """
+    Refuse plain HTTP for any host other than this machine.
+
+    The API key travels in the Authorization header, so over plain HTTP it
+    would cross the network in clear text. Local development on localhost
+    is allowed.
+    """
+
+    parts = urlsplit(endpoint)
+
+    if parts.scheme == "https":
+        return
+
+    if parts.scheme == "http" and parts.hostname in _LOCAL_HOSTS:
+        return
+
+    raise ValueError(
+        "Parmana endpoint must use https:// (plain http:// is allowed only "
+        f"for localhost): {parts.scheme or 'no scheme'}://{parts.hostname or ''}"
+    )
+
+
+def redact(value: Any) -> Any:
+    """
+    The structure of a request or response body, with every leaf value
+    replaced by REDACTED. Keys and nesting stay, so a debug log shows which
+    fields were sent without showing business data (amounts, names, emails,
+    account numbers) or anything secret.
+    """
+
+    if isinstance(value, dict):
+        return {key: redact(item) for key, item in value.items()}
+
+    if isinstance(value, list):
+        return [redact(item) for item in value]
+
+    if value is None:
+        return None
+
+    return REDACTED
 
 
 class HttpTransport(Transport):
@@ -53,6 +101,8 @@ class HttpTransport(Transport):
         backoff_factor: float = DEFAULT_BACKOFF_FACTOR,
         debug: bool = False,
     ) -> None:
+        _check_endpoint_scheme(endpoint)
+
         self._endpoint = endpoint.rstrip("/")
         self._timeout = timeout
 
@@ -153,7 +203,9 @@ class HttpTransport(Transport):
 
         url = f"{self._endpoint}{path}"
 
-        logger.debug("request method=%s url=%s body=%r", method, url, body)
+        # Debug logs show the shape of the body, never its values. The
+        # Authorization header is never logged at all.
+        logger.debug("request method=%s url=%s body=%r", method, url, redact(body))
 
         try:
             response = self._session.request(
@@ -174,7 +226,9 @@ class HttpTransport(Transport):
             non_throwing_statuses=non_throwing_statuses,
         )
 
-        logger.debug("response status=%s payload=%r", response.status_code, payload)
+        logger.debug(
+            "response status=%s payload=%r", response.status_code, redact(payload)
+        )
 
         if response_model is None:
             return payload
