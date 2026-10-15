@@ -6,9 +6,10 @@ Verify Execution Trust Records.
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from parmana.config.transport import Transport
 from parmana.models.verification import Verification
-from urllib.parse import quote
 
 
 class VerificationApi:

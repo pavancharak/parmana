@@ -5,11 +5,11 @@ Parmana Refusal Record API (RFC-0021).
 from __future__ import annotations
 
 from typing import cast
+from urllib.parse import quote
 
 from parmana.config.transport import Transport
 from parmana.models.refusal_record import RefusalRecord
 from parmana.serialization import encode
-from urllib.parse import quote
 
 
 class RefusalApi:

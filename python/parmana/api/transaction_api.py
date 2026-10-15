@@ -6,11 +6,12 @@ Retrieve Business Transactions.
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from parmana.config.transport import Transport
 from parmana.models.business_transaction import BusinessTransaction
 from parmana.models.trust_record import ExecutionTrustRecord
 from parmana.serialization import encode
-from urllib.parse import quote
 
 
 class TransactionApi:
