@@ -277,6 +277,22 @@ describe("Caller capability scoping (HTTP boundary)", () => {
       expect(response.status).toBe(403);
       expect(response.body.code).toBe("CAPABILITY_NOT_ALLOWED");
     });
+
+    it("refuses a tenantId the caller's key does not list, so it cannot pick another tenant's signing key", async () => {
+      const { app } = buildApp();
+      const transaction = await createBusinessTransaction();
+
+      const response = await request(app)
+        .post("/transactions")
+        .set("Authorization", `Bearer ${SCOPED_KEY}`)
+        .send({
+          ...transaction,
+          metadata: { ...transaction.metadata, tenantId: "acme" },
+        });
+
+      expect(response.status).toBe(403);
+      expect(response.body.code).toBe("TENANT_NOT_ALLOWED");
+    });
   });
 });
 

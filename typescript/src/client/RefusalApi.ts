@@ -23,7 +23,8 @@ export class RefusalApi {
       body: record,
     });
 
-    return response.body.valid;
+    // Only a boolean true counts. A string "false" is truthy.
+    return response.body.valid === true;
   }
 
   /**
@@ -35,7 +36,7 @@ export class RefusalApi {
   public async get(businessTransactionId: string): Promise<RefusalRecord> {
     const response = await this.transport.send<RefusalRecord>({
       method: "GET",
-      path: `/refusal/${businessTransactionId}`,
+      path: `/refusal/${encodeURIComponent(businessTransactionId)}`,
     });
 
     return response.body;

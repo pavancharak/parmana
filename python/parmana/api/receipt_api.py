@@ -6,6 +6,8 @@ Generate cryptographic execution receipts.
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from parmana.config.transport import Transport
 from parmana.models.receipt import Receipt
 
@@ -88,6 +90,6 @@ class ReceiptApi:
 
         return self._transport.send(
             method="GET",
-            path=f"/receipt/latest/{business_transaction_id}",
+            path=f"/receipt/latest/{quote(business_transaction_id, safe='')}",
             response_model=Receipt,
         )

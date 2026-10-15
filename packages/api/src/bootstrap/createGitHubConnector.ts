@@ -3,6 +3,7 @@ import {
   GITHUB_PR_MERGE_CAPABILITY,
 } from "@parmana/connector-github";
 import { connectorCapabilities, type Connector } from "@parmana/connector-sdk";
+import { readConnectorBaseUrl } from "./readConnectorBaseUrl.js";
 import { createGatewayGitHubConnector } from "@parmana/execution-gateway";
 
 /**
@@ -17,6 +18,8 @@ import { createGatewayGitHubConnector } from "@parmana/execution-gateway";
  * createHubSpotConnector.ts's HUBSPOT_BASE_URL seam exactly.
  */
 export function createGitHubConnector(): Connector {
+  const baseUrl = readConnectorBaseUrl("GITHUB_BASE_URL");
+
   return createGatewayGitHubConnector({
     connectorId: "github",
 
@@ -25,8 +28,6 @@ export function createGitHubConnector(): Connector {
       GITHUB_PR_MERGE_CAPABILITY,
     ]),
 
-    ...(process.env.GITHUB_BASE_URL !== undefined
-      ? { baseUrl: process.env.GITHUB_BASE_URL }
-      : {}),
+    ...(baseUrl !== undefined ? { baseUrl } : {}),
   });
 }

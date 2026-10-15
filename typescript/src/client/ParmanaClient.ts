@@ -69,6 +69,7 @@ import type {
 } from "../models/policy-change.js";
 
 import type { Configuration } from "../config/Configuration.js";
+import { assertSafeEndpoint } from "../config/assertSafeEndpoint.js";
 
 import type { Transport } from "../config/Transport.js";
 
@@ -184,10 +185,24 @@ export class ParmanaClient {
   /**
    * Creates a Parmana SDK client.
    */
+  /**
+   * Keeps the API key out of console.log and JSON.stringify output. The
+   * configuration object still holds it, since the transport needs it.
+   */
+  [Symbol.for("nodejs.util.inspect.custom")](): string {
+    return `ParmanaClient { endpoint: ${JSON.stringify(this.configuration.endpoint)} }`;
+  }
+
+  toJSON(): { endpoint: string } {
+    return { endpoint: this.configuration.endpoint };
+  }
+
   constructor(configuration: Configuration) {
     if (!configuration.endpoint) {
       throw new ConfigurationError("Runtime endpoint is required.");
     }
+
+    assertSafeEndpoint(configuration.endpoint);
 
     this.configuration = configuration;
     this.transport =

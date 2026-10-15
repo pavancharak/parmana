@@ -45,6 +45,8 @@ async function authenticatedGet(
   try {
     response = await fetch(`${apiBaseUrl}${path}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
+      // A stalled API must not hold a request, or a login, open indefinitely.
+      signal: AbortSignal.timeout(10_000),
     });
   } catch (error) {
     throw new ApiUnreachableError(error);

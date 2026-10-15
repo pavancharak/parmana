@@ -137,15 +137,21 @@ export default async function vercelHandler(
   try {
     answer = await handler()(body);
   } catch (error) {
-    // Configuration errors (a live key, a missing secret): nothing was
-    // refunded, and Parmana records the outcome as unknown.
+    // Any failure here can come before or after Razorpay created the refund:
+    // a live key or a missing secret stops before any call, but a timeout
+    // after the POST may not. Parmana records the outcome as unknown, and a
+    // resend of the same release returns the existing refund (the receipt
+    // check), so the operator should resend rather than refund by hand.
     console.log(
       JSON.stringify({
         event: "endpoint_error",
         message: error instanceof Error ? error.message : String(error),
       }),
     );
-    answer = { status: 500, body: { errors: ["endpoint misconfigured"] } };
+    answer = {
+      status: 500,
+      body: { errors: ["refund outcome unknown; resend the same release"] },
+    };
   }
 
   response

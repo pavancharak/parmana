@@ -33,7 +33,8 @@ export class ExecutionIntentApi {
       body: intent,
     });
 
-    return response.body.valid;
+    // Only a boolean true counts. A string "false" is truthy.
+    return response.body.valid === true;
   }
 
   /**

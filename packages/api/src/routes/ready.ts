@@ -97,10 +97,15 @@ export function createReadyRouter(options: CreateReadyRouterOptions): Router {
 
       res.json({ status: "READY", ...authWarning });
     } catch (error) {
+      // The detail goes to the server log only. This route is public, and a
+      // database error message can name hosts, roles and schema.
+      console.error({
+        event: "ready_check_failed",
+        error: error instanceof Error ? error.message : String(error),
+      });
       res.status(503).json({
         status: "NOT_READY",
-        reason:
-          error instanceof Error ? error.message : "unknown storage error",
+        reason: "storage unavailable",
         ...authWarning,
       });
     }

@@ -5,6 +5,7 @@ Parmana Refusal Record API (RFC-0021).
 from __future__ import annotations
 
 from typing import cast
+from urllib.parse import quote
 
 from parmana.config.transport import Transport
 from parmana.models.refusal_record import RefusalRecord
@@ -63,7 +64,8 @@ class RefusalApi:
             ),
         )
 
-        return payload["valid"]
+        # Only a boolean True counts. A string "false" is truthy.
+        return payload["valid"] is True
 
     def get(
         self,
@@ -88,6 +90,6 @@ class RefusalApi:
 
         return self._transport.send(
             method="GET",
-            path=f"/refusal/{business_transaction_id}",
+            path=f"/refusal/{quote(business_transaction_id, safe='')}",
             response_model=RefusalRecord,
         )

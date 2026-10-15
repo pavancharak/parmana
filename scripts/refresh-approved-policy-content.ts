@@ -148,7 +148,7 @@ async function main(args = process.argv.slice(2)): Promise<void> {
   if (!approveResponse.ok) process.exitCode = 1;
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.VITEST === undefined) {
   main().catch((error) => {
     console.error(error instanceof Error ? error.message : String(error));
     process.exitCode = 1;

@@ -6,6 +6,8 @@ Retrieve Business Transactions.
 
 from __future__ import annotations
 
+from urllib.parse import quote
+
 from parmana.config.transport import Transport
 from parmana.models.business_transaction import BusinessTransaction
 from parmana.models.trust_record import ExecutionTrustRecord
@@ -83,7 +85,7 @@ class TransactionApi:
 
         return self._transport.send(
             method="GET",
-            path=f"/transactions/{business_transaction_id}",
+            path=f"/transactions/{quote(business_transaction_id, safe='')}",
             response_model=BusinessTransaction,
         )
 

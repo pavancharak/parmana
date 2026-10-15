@@ -260,7 +260,17 @@ export class GatewayHubSpotAdapter implements Connector {
         `HubSpotConnector "${this.connectorId}" request failed with HTTP ${response.status}.`,
       );
     }
-    return response.json().catch(() => ({}));
+    const text = await response.text();
+
+    try {
+      return JSON.parse(text) as unknown;
+    } catch {
+      // A 2xx body that is not JSON is not evidence of the action. Recording
+      // it as success would sign an outcome nothing confirmed.
+      throw new Error(
+        `${this.connectorId} returned a 2xx response that is not JSON; the outcome is not confirmed.`,
+      );
+    }
   }
 }
 

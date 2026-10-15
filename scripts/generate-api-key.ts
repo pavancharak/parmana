@@ -374,6 +374,6 @@ function main(args = process.argv.slice(2)): void {
   console.log();
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.VITEST === undefined) {
   main();
 }

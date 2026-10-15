@@ -2,6 +2,7 @@ import "dotenv/config";
 
 import type { IncomingMessage, ServerResponse } from "node:http";
 
+import { PolicyChangeCrypto } from "@parmana/crypto";
 import { loadConfig } from "@parmana/shared";
 
 import { assertStorageConfigured } from "../packages/api/dist/bootstrap/assertStorageConfigured.js";
@@ -10,11 +11,16 @@ import {
   assertSigningKeyMaterialConfigured,
 } from "../packages/api/dist/bootstrap/assertSigningKeyMaterialConfigured.js";
 import { createExecutionSystem } from "../packages/api/dist/bootstrap/createExecutionSystem.js";
-import { createApplication } from "../packages/api/dist/application.js";
+import {
+  createApplication,
+  policyRepository,
+} from "../packages/api/dist/application.js";
+import { policyChangeApprovalRecordRepository } from "../packages/api/dist/repositories.js";
+import { assertPaytmConnectorConfigured } from "../packages/api/dist/bootstrap/assertPaytmConnectorConfigured.js";
 import { createCallerAuthenticator } from "../packages/api/dist/bootstrap/createCallerAuthenticator.js";
 import { createPolicyChangeStepUpVerifier } from "../packages/api/dist/bootstrap/createPolicyChangeStepUpVerifier.js";
 import { createPolicyChangeApprovalService } from "../packages/api/dist/bootstrap/createPolicyChangeApprovalService.js";
-import { runPolicyGovernanceIntegrityCheckAtStartup } from "../packages/api/dist/bootstrap/runPolicyGovernanceIntegrityCheckAtStartup.js";
+import { assertPolicyGovernanceIntegrityAtStartup } from "../packages/api/dist/governance/verifyPolicyGovernanceIntegrityAtStartup.js";
 import { createRateLimitStore } from "../packages/api/dist/bootstrap/createRateLimitStore.js";
 import { createSandboxOptions } from "../packages/api/dist/bootstrap/createSandboxOptions.js";
 import { createApp } from "../packages/api/dist/app.js";
@@ -27,8 +33,9 @@ import { createApp } from "../packages/api/dist/app.js";
  * lifecycle, not this module) and minus
  * schedulePolicyGovernanceIntegrityCheck() (a five-minute setInterval
  * has no place in a serverless function that may cold-start per
- * invocation; runPolicyGovernanceIntegrityCheckAtStartup() below still
- * runs once per cold start, same fail-open behavior as production).
+ * invocation). assertPolicyGovernanceIntegrityAtStartup() runs once per
+ * cold start and refuses to build the app on a mismatch, as server.ts
+ * refuses to start; the periodic check stays fail-open.
  *
  * KEY_PROVIDER=aws-kms deferred-init note (found 2026-09-15): when the
  * gateway signing key is AWS KMS via Vercel's OIDC federation
@@ -50,6 +57,7 @@ import { createApp } from "../packages/api/dist/app.js";
  */
 assertStorageConfigured();
 assertSigningKeyMaterialConfigured();
+assertPaytmConnectorConfigured();
 
 // ADR-0014: PARMANA_CORS_ORIGINS and sandbox mode, refused at startup
 // when unsafe (see createSandboxOptions).
@@ -60,6 +68,16 @@ type App = Awaited<ReturnType<typeof buildApp>>;
 let appPromise: Promise<App> | undefined;
 
 async function buildApp() {
+  // Same refusal as packages/api/src/server.ts. In a serverless function a
+  // process exit is not available, so a mismatch rejects this build: every
+  // request then fails with a 500 rather than being served under a policy
+  // that no approval record covers.
+  await assertPolicyGovernanceIntegrityAtStartup({
+    policyRepository,
+    policyChangeCrypto: new PolicyChangeCrypto(),
+    policyChangeApprovalRecordRepository,
+  });
+
   await assertKmsSigningKeyReachable();
 
   const executionSystem = await createExecutionSystem();
@@ -97,8 +115,6 @@ async function buildApp() {
       : {}),
     corsOrigins: sandbox.corsOrigins,
   });
-
-  runPolicyGovernanceIntegrityCheckAtStartup();
 
   return app;
 }

@@ -74,4 +74,5 @@ class AuditApi:
             ),
         )
 
-        return payload["valid"]
+        # Only a boolean True counts. A string "false" is truthy.
+        return payload["valid"] is True

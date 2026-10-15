@@ -6,6 +6,7 @@ import {
   type CredentialProvider,
 } from "@parmana/connector-sdk";
 import { createGatewayGitHubCredentialProvider } from "@parmana/execution-gateway";
+import { readConnectorBaseUrl } from "./readConnectorBaseUrl.js";
 
 const GITHUB_CONNECTOR_ID = "github";
 
@@ -98,7 +99,7 @@ class VercelConnectGitHubCredentialProvider implements CredentialProvider {
  */
 export function createGitHubCredentialProvider():
   CredentialProvider | undefined {
-  const baseUrl = process.env.GITHUB_BASE_URL;
+  const baseUrl = readConnectorBaseUrl("GITHUB_BASE_URL");
 
   if (process.env.NODE_ENV === "test") {
     const testAppId = process.env.TEST_GITHUB_APP_ID;

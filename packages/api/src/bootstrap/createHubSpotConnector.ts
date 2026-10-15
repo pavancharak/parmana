@@ -3,6 +3,7 @@ import {
   HUBSPOT_DEAL_UPDATE_CAPABILITY,
 } from "@parmana/connector-hubspot";
 import { connectorCapabilities, type Connector } from "@parmana/connector-sdk";
+import { readConnectorBaseUrl } from "./readConnectorBaseUrl.js";
 import { createGatewayHubSpotConnector } from "@parmana/execution-gateway";
 
 /**
@@ -16,6 +17,8 @@ import { createGatewayHubSpotConnector } from "@parmana/execution-gateway";
  * unless an operator deliberately opts out.
  */
 export function createHubSpotConnector(): Connector {
+  const baseUrl = readConnectorBaseUrl("HUBSPOT_BASE_URL");
+
   return createGatewayHubSpotConnector({
     connectorId: "hubspot",
 
@@ -24,8 +27,6 @@ export function createHubSpotConnector(): Connector {
       HUBSPOT_DEAL_UPDATE_CAPABILITY,
     ]),
 
-    ...(process.env.HUBSPOT_BASE_URL !== undefined
-      ? { baseUrl: process.env.HUBSPOT_BASE_URL }
-      : {}),
+    ...(baseUrl !== undefined ? { baseUrl } : {}),
   });
 }

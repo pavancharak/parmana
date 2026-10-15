@@ -166,7 +166,7 @@ async function main(args = process.argv.slice(2)): Promise<void> {
   }
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.VITEST === undefined) {
   void main();
 }
 

@@ -6,7 +6,7 @@ Retrieve Execution Trust Records.
 
 from __future__ import annotations
 
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 
 from parmana.config.transport import Transport
 from parmana.models.trust_record import ExecutionTrustRecord
@@ -53,7 +53,7 @@ class TrustRecordApi:
 
         return self._transport.send(
             method="GET",
-            path=f"/trust-records/{business_transaction_id}",
+            path=f"/trust-records/{quote(business_transaction_id, safe='')}",
             response_model=ExecutionTrustRecord,
         )
 

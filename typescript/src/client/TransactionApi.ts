@@ -56,7 +56,7 @@ export class TransactionApi {
   ): Promise<BusinessTransaction> {
     const response = await this.transport.send<BusinessTransaction>({
       method: "GET",
-      path: `/transactions/${businessTransactionId}`,
+      path: `/transactions/${encodeURIComponent(businessTransactionId)}`,
     });
 
     return response.body;

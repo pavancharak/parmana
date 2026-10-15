@@ -78,7 +78,7 @@ function main(args = process.argv.slice(2)): void {
     });
 }
 
-if (process.env.NODE_ENV !== "test") {
+if (process.env.VITEST === undefined) {
   main();
 }
 
