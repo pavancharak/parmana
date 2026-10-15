@@ -1,0 +1,59 @@
+{
+  "exportedFiles": [
+    "proof.json",
+    "public-keys.json",
+    "policy-version.json"
+  ],
+  "keyIdsExported": [
+    "default"
+  ],
+  "releasedToPaytm": 1,
+  "controlReachability": "reachable",
+  "positive": {
+    "command": "env -i PATH=$PATH NODE_OPTIONS=--import=file:///home/user/parmana/proof-audit/verify/deny-network.mjs unshare -rn node verify-offline.mjs <proof> <keys> <policy>",
+    "status": 0,
+    "stdout": "{\"valid\":true,\"errors\":[],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}",
+    "stderr": "◇ injected env (0) from .env\nPROOF_AUDIT_BLOCKED:[]",
+    "blocked": []
+  },
+  "reachability": {
+    "hookOnly": "blocked:proof-audit: blocked fetch",
+    "netns": "blocked:fetch failed"
+  },
+  "tamper:decision": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 90e914308422884770b6381b696ce03af1e3cecb115331ec98582d501717c823, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:amount": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 82d6246780d4e29f247e1ccf47fda34f106819d4d33b62acd5522e251b38302d, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:action-id (businessTransactionId)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected a2aeda541095c63ca5c3c903055ae27dabb8b4d646ceb8ad7c2ae00d164c7605, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:action-id (authorizationId in signed payload)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected c2a400d79ab577fa41f9772905fae182ad3f601f6a2127a4c5eee08829c0f212, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:timestamp (authorizedAt)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected cfe654e118c745a206198971225580167bc1f7301e8110ca5d86eb1991d08e88, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:policy-version (transaction.policy.version)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 7c5ccf5b0fb9bfce8be48b4abda71d185ec672994c5649ca37fe778bb3149f3a, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:policy-version (authorization policyVersion)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected bb02ff354bc3902045fc76b733d77ebbe959a2f9914621fdbfd57622d93b28c8, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:signature (trust record)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  },
+  "tamper:signature (authorization)": {
+    "status": 1,
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 25fe187e47057fa667f9c8485a7aa7603ab48ffa2ed35e3a0db5183a78f96b08, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+  }
+}

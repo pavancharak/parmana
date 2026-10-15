@@ -1,0 +1,269 @@
+{
+  "trustRecordId": "1cb70dee-28ef-4e76-aa30-41fc460cc121",
+  "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+  "transaction": {
+    "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+    "metadata": {
+      "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+      "correlationId": "94da8c79-ce3d-4535-ab78-d35944992f65",
+      "createdBy": "proof-audit",
+      "createdAt": "2026-10-15T23:44:03.203Z"
+    },
+    "authority": {
+      "authorityId": "788d1ce3-f873-4828-a833-8a80bcde6c23",
+      "authorityType": "USER",
+      "principalId": "integration-test",
+      "displayName": "Proof Audit",
+      "issuedAt": "2026-10-15T23:44:03.203Z"
+    },
+    "authorization": {
+      "authorizationId": "d1bc495c-5535-4ed8-964b-8d6b08d8e8e4",
+      "authorityId": "788d1ce3-f873-4828-a833-8a80bcde6c23",
+      "purpose": "Proof audit",
+      "authorizedAt": "2026-10-15T23:44:03.203Z"
+    },
+    "intent": {
+      "intentId": "16ba54d8-2859-4026-8763-c9647d9d8a6d",
+      "authorizationId": "d1bc495c-5535-4ed8-964b-8d6b08d8e8e4",
+      "action": "paytm:refund",
+      "target": "paytm://orders/ORD-T1",
+      "parameters": {
+        "orderId": "ORD-T1",
+        "transactionId": "TXN-ORD-T1",
+        "amount": 10000
+      },
+      "createdAt": "2026-10-15T23:44:03.203Z"
+    },
+    "policy": {
+      "name": "customer-refund",
+      "version": "1.2.1",
+      "schemaVersion": "1.0.0",
+      "contentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
+      "governanceAnchor": {
+        "status": "NO_APPROVAL_RECORD"
+      }
+    },
+    "signals": {
+      "refundEligible": true,
+      "managerApproved": true,
+      "fraudCheckPassed": true,
+      "refundAmount": 10000,
+      "approvalArtifact": {
+        "payload": {
+          "version": 1,
+          "approvalId": "d01a0097-e2c4-41e2-a5b0-f9cf0a0a89e9",
+          "issuer": {
+            "approverId": "manager-priya",
+            "keyId": "manager-priya-key-1"
+          },
+          "issuedAt": "2026-10-15T23:44:03.203Z",
+          "expiresAt": "2026-10-15T23:59:03.203Z",
+          "capability": "paytm:refund",
+          "resourceId": "ORD-T1",
+          "scope": {
+            "field": "value",
+            "comparator": "lte",
+            "value": 10000
+          },
+          "nonce": "7249010b-4f9b-4ee8-abc8-b48211012acd"
+        },
+        "signature": {
+          "algorithm": "ed25519",
+          "keyId": "manager-priya-key-1",
+          "value": "eEV7Uj1ZWAz0KWd53do3fENAzSVz8zsG1frKOwtfGldYHa/+Ps1q1h4/QOM5E0dm/JUmHhx0LXqEoW3Cg2qsBQ==",
+          "signedAt": "2026-10-15T23:44:03.203Z"
+        }
+      }
+    },
+    "status": "RECEIVED",
+    "createdAt": "2026-10-15T23:44:03.228Z"
+  },
+  "authorization": {
+    "payload": {
+      "version": 1,
+      "authorizationId": "49df7012-3894-4be0-8e91-5206c033866f",
+      "nonce": "b7b9960a-5ac6-4df6-b59e-0d1d8ae9040a",
+      "decisionId": "c19860f4-6e7c-4da6-a2c7-0c5c8f02f84b",
+      "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+      "policyName": "customer-refund",
+      "policyVersion": "1.2.0",
+      "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
+      "signalsHash": "438c2446d7bd8d6bd7f94c172c3c4c575a411280470a0bc8a04f49bca53b7336",
+      "authorizedAt": "2026-10-15T23:44:03.246Z",
+      "expiresAt": "2026-10-15T23:46:03.246Z",
+      "businessTransactionHash": "447454a8e5d8a50c8c3325a78f70ed3546008407fc18fd011ea8ee6618a8d9cf"
+    },
+    "signature": "kDZxHAvEgn4rQUuQmabseO7meDWuapAs/bJ49bljUdbLjqg9FYbF3S7XmsTNOPegG0FI6zoVWZ2lD+6JUcOJBg==",
+    "keyId": "default",
+    "algorithm": "ed25519"
+  },
+  "overrides": [],
+  "executions": [
+    {
+      "executionId": "10039fad-ccff-47ef-be67-fe29a5fabb3c",
+      "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+      "decision": {
+        "decisionId": "c19860f4-6e7c-4da6-a2c7-0c5c8f02f84b",
+        "intentId": "16ba54d8-2859-4026-8763-c9647d9d8a6d",
+        "policy": {
+          "name": "customer-refund",
+          "version": "1.2.0",
+          "schemaVersion": "1.0.0"
+        },
+        "signals": {
+          "refundEligible": true,
+          "managerApproved": true,
+          "fraudCheckPassed": true,
+          "refundAmount": 10000,
+          "approvalArtifact": {
+            "payload": {
+              "version": 1,
+              "approvalId": "d01a0097-e2c4-41e2-a5b0-f9cf0a0a89e9",
+              "issuer": {
+                "approverId": "manager-priya",
+                "keyId": "manager-priya-key-1"
+              },
+              "issuedAt": "2026-10-15T23:44:03.203Z",
+              "expiresAt": "2026-10-15T23:59:03.203Z",
+              "capability": "paytm:refund",
+              "resourceId": "ORD-T1",
+              "scope": {
+                "field": "value",
+                "comparator": "lte",
+                "value": 10000
+              },
+              "nonce": "7249010b-4f9b-4ee8-abc8-b48211012acd"
+            },
+            "signature": {
+              "algorithm": "ed25519",
+              "keyId": "manager-priya-key-1",
+              "value": "eEV7Uj1ZWAz0KWd53do3fENAzSVz8zsG1frKOwtfGldYHa/+Ps1q1h4/QOM5E0dm/JUmHhx0LXqEoW3Cg2qsBQ==",
+              "signedAt": "2026-10-15T23:44:03.203Z"
+            }
+          }
+        },
+        "outcome": "APPROVED",
+        "reason": "Refund authorized with a verified manager approval for this order and amount.",
+        "matchedRuleId": "approve-refund-with-manager-approval",
+        "evaluatedRules": 5,
+        "matchedPath": [
+          "reject-fraud-check",
+          "reject-not-eligible",
+          "reject-invalid-amount",
+          "reject-above-maximum",
+          "approve-refund-with-manager-approval"
+        ],
+        "evaluatedAt": "2026-10-15T23:44:03.246Z",
+        "assessment": {
+          "authority": {
+            "status": "AUTHORIZED",
+            "reason": "Capability \"paytm:refund\" is decided under its approved, current policy customer-refund 1.2.0. This says the action may be decided, not that this action is valid or was executed."
+          },
+          "businessValidation": {
+            "status": "NOT_EVALUATED",
+            "reason": "The policy declares no business facts to establish."
+          }
+        }
+      },
+      "status": "COMPLETED",
+      "mode": "SYNC",
+      "startedAt": "2026-10-15T23:44:03.247Z",
+      "metadata": {
+        "authorizationId": "49df7012-3894-4be0-8e91-5206c033866f"
+      },
+      "previousChainHash": null,
+      "chainHash": "4db9f58afb936303cb31cfb2e2f3c813a312f7a1e32593b904811896de975800",
+      "chainSignature": {
+        "algorithm": "ed25519",
+        "keyId": "default",
+        "value": "JcP+27+gz55sjDsmiCAux1OPKXD+CFfWEth1k6OBAwarUpPPFiqv5OapA6DKlTG0mRRp+kA30Ax0WXuem1biAA==",
+        "signedAt": "2026-10-15T23:44:03.288Z"
+      },
+      "evidence": {
+        "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+        "action": "paytm:refund",
+        "target": "paytm://orders/ORD-T1",
+        "parameters": {
+          "orderId": "ORD-T1",
+          "transactionId": "TXN-ORD-T1",
+          "amount": 10000
+        },
+        "success": true,
+        "executedAt": "2026-10-15T23:44:03.285Z",
+        "attributes": {
+          "connector": {
+            "connectorId": "paytm",
+            "connectorVersion": "1.0.0",
+            "capability": "paytm:refund",
+            "sanitizedEndpoint": "paytm://orders/ORD-T1",
+            "credentialProviderId": "static",
+            "requestSummary": {
+              "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+              "action": "paytm:refund",
+              "target": "paytm://orders/ORD-T1",
+              "parameters": {
+                "orderId": "ORD-T1",
+                "transactionId": "TXN-ORD-T1",
+                "amount": 10000
+              }
+            },
+            "responseSummary": {
+              "success": true,
+              "metadata": {
+                "refId": "refid_f888f4d163de1ecd6bea81bb",
+                "orderId": "ORD-T1",
+                "txnId": "TXN-ORD-T1",
+                "executedAt": "2026-10-15T23:44:03.277Z",
+                "provider": "paytm",
+                "resultStatus": "S",
+                "resultCode": "00",
+                "sharedSecretRedacted": "[REDACTED]"
+              }
+            },
+            "startedAt": "2026-10-15T23:44:03.258Z",
+            "completedAt": "2026-10-15T23:44:03.285Z",
+            "vendorConfirmationVerified": false,
+            "connectorEvidenceHash": "b04d108532697882c44c91274a50b78341508e9840aca0bb5ab6dd6340e0b6a2"
+          }
+        }
+      },
+      "completedAt": "2026-10-15T23:44:03.287Z"
+    }
+  ],
+  "verifications": [
+    {
+      "verificationId": "e44fc287-e651-4f1d-acc8-4765c1f7f77c",
+      "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+      "status": "VERIFIED",
+      "message": "Execution Trust Record verified successfully.",
+      "verifiedAt": "2026-10-15T23:44:03.292Z",
+      "trustRecordHash": "85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568"
+    }
+  ],
+  "receipts": [
+    {
+      "receiptId": "8fe04022-a15c-49b1-bd84-5b66b052fa73",
+      "businessTransactionId": "1d27b7e1-993d-42f9-8c97-b193ee6cd3b3",
+      "trustRecordHash": "85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568",
+      "receiptHash": "e1170940b22f888934b938515d40353d30acc1c0ac00fd349ce4c85a8394cfce",
+      "issuedAt": "2026-10-15T23:44:03.293Z",
+      "algorithm": "ed25519",
+      "signature": "QztmBQ/vrE4kiheF/Pz+v4Yh4CG0TWxyBAT55bXXg2DlGsKHiTpMydGTwyvlP0d7r4QM6kBhkcmqyaBblVhQAQ=="
+    }
+  ],
+  "evidenceAnchor": {
+    "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
+    "governanceAnchorStatus": "NO_APPROVAL_RECORD",
+    "connectorEvidenceHash": "b04d108532697882c44c91274a50b78341508e9840aca0bb5ab6dd6340e0b6a2",
+    "anchorHash": "ac7a5d6d54aa25d1425b1b6fbf97b2d10fde7722e5f13192d8e2bf14107fa607"
+  },
+  "createdAt": "2026-10-15T23:44:03.288Z",
+  "updatedAt": "2026-10-15T23:44:03.288Z",
+  "trustRecordHash": "85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568",
+  "signature": {
+    "algorithm": "ed25519",
+    "keyId": "default",
+    "value": "6/Wo+OIYxOGsX+Nrdcf8Bjiqgq0NIt7XzlHAGWyyc2XNE7IVzXCM30jJ7opAce8y+Xf4LUm2YkD2Ls6+mxuEBg==",
+    "signedAt": "2026-10-15T23:44:03.289Z"
+  }
+}

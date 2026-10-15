@@ -1,0 +1,1 @@
+const r = await fetch("http://127.0.0.1:44743/").then(()=>"reachable",e=>"blocked:"+e.message); console.log(r);

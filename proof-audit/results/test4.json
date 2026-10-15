@@ -1,0 +1,52 @@
+[
+  {
+    "step": "issue",
+    "cites": {
+      "name": "customer-refund",
+      "version": "1.2.0",
+      "hash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495"
+    },
+    "verdict": "PASS"
+  },
+  {
+    "step": "old proof vs 1.2.0 after 1.3.0 added",
+    "released": 1,
+    "rejected": false,
+    "message": "",
+    "citesAfter": "1.2.0",
+    "verdict": "PASS"
+  },
+  {
+    "step": "offline trust record after 1.3.0 added",
+    "citedVersion": "1.2.0",
+    "valid": true,
+    "verdict": "PASS"
+  },
+  {
+    "step": "overwrite 1.2.0 in place",
+    "overwriteRejected": false,
+    "overwriteAllowed": true,
+    "error": "",
+    "verdict": "FAIL",
+    "note": "no write-time immutability guard exists on FilePolicyRepository.save"
+  },
+  {
+    "step": "pre-overwrite proof released after overwrite",
+    "rejected": true,
+    "released": 0,
+    "message": "Execution Gateway rejected request: failed checks [policyStillCurrent, nonceUnseen]. policyContentHash mismatch: expected 2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495, got d44561b0",
+    "verdict": "PASS"
+  },
+  {
+    "step": "third-party check after overwrite",
+    "offlineValid": true,
+    "citedHashMatchesStore": false,
+    "verdict": "PASS",
+    "note": "offline verification does not look at policy content; detection requires comparing the cited contentHash to the stored policy"
+  },
+  {
+    "step": "startup verifyPolicyGovernanceIntegrityAtStartup",
+    "verdict": "UNABLE TO TEST",
+    "reason": "requires signed PolicyChangeApprovalRecord rows produced by the maker-checker flow; not reproduced here"
+  }
+]
