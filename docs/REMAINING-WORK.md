@@ -272,6 +272,24 @@ still open: G-108 (operator step), G-111, G-115, G-117. Open, structural: G-118.
 | Live external connector endpoint in the proof audit (the control-level integration test exists)                                              | G-115 |
 | Move the attestation key out of the process that can call the release control                                                                | G-118 |
 
+### M.3 What was done, why, and how it was checked (2026-10-16)
+
+- **Why.** CLAIMS 2.57 asked whether five authorization properties hold, and the audit tested them by
+  running code. It found bypasses that were fixed on the branch and merged to `main` as PR #136
+  (`2dd8ddc`). The fixes are listed in M.0.
+- **How.** Fixes are per gap in `docs/VERIFICATION-GAPS.md` (G-103 to G-118). The audit tests are
+  `proof-audit/tests/test1` to `test10`, and their results are in `proof-audit/results/`.
+- **Pre-existing failures.** A full `npm test` on `main` first showed 7 failures in 8 unrelated test
+  files. Cause: the workspace was not fully built locally (`tsc -b` alone leaves the SDK `dist/` and
+  generated OpenAPI artifacts missing). No code changed. After `npm run build`, `npm test` passes
+  (3817 passed, 0 failed). Run `npm run build` before any test run; the public page and CLAIMS 2.57
+  say the same.
+- **What is left.** M.1 (operator) and M.2 (engineering) above. The open gaps are G-108 (chain head
+  anchoring), G-111 (HubSpot helper self-approval), G-115 (live connector endpoint), G-117 (KMS
+  signing), and G-118 (attestation key location). None of these is closed by the merged code.
+- **Not tested here.** KMS, a live external connector endpoint, the Postgres advisory lock (the PGlite
+  test serializes connections), and head anchoring. See the limits in `proof-audit/REPORT.md` §5.
+
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
 None of these is scheduled. They are recorded so the ideas are not lost when the old roadmap is removed.
