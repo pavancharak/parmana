@@ -58,6 +58,8 @@ class ExecutionAuthorizationPayload:
 
     business_transaction_hash: str
 
+    decision_outcome: Literal["APPROVED"] | None = None
+
     policy_content_hash: str | None = None
 
     signals_hash: str | None = None
