@@ -220,6 +220,32 @@ recommended), and nonce reuse is the source's to refuse (G-92; the example endpo
 | Deploying an endpoint to Vercel from the repository folder applies the repository's `vercel.json` and fails                             | The live check READMEs deploy from inside the endpoint's folder; recorded there                                          |
 | AgenTrust Verified tier for `integrations/parmana-server` (requested 2026-10-13, #313)                                                  | Reproduced by a maintainer on 2026-10-14; waiting on the maintainer PR that changes the tier; then update CLAIMS.md 3.23 |
 
+## M. Proof audit follow-ups (added 2026-10-16)
+
+The proof audit (CLAIMS 2.57) found gaps that are now fixed (G-103 to G-109, committed to branch
+`ccr-6f1b8d3b-o5pqwj`, not yet merged to main). These are the items still open.
+
+### M.1 Needs the operator
+
+| Item                                                                                                                                       | Why it matters                                                                | Gap   |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ----- |
+| Publish the caller audit chain head to a store the database cannot rewrite, on a schedule and on each deploy, and pass it to `verifyChain` | Without it, deleting the newest audit row is undetectable                     | G-108 |
+| Confirm `NODE_ENV=production` on every deployment, so the production refusals (G-109) apply                                                | Otherwise `PARMANA_AUTH_DISABLED` and `PARMANA_SANDBOX` are only warned about | G-109 |
+| Run the startup governance integrity check against the live policy directory, and record that it passed                                    | The audit did not exercise it                                                 | G-116 |
+
+### M.2 Engineering
+
+| Item                                                                                                        | Gap            |
+| ----------------------------------------------------------------------------------------------------------- | -------------- |
+| Per-authorization revocation: a denylist keyed by `authorizationId`, checked at release                     | G-110          |
+| Move the HubSpot fetch's signing into the runtime, so the gate sets the decision outcome                    | G-111          |
+| Verification package that does not import the configuration module, so the offline verifier reads no `.env` | G-112          |
+| Refuse to serve execution until the signal-state verifier is bound                                          | G-113          |
+| Remove `legacyInsecure`, or restrict it to test builds                                                      | G-114          |
+| Add proof-audit cases for HubSpot, GitHub, Slack, the generic HTTP adapter and external connectors          | G-115          |
+| Run the proof-audit cases against Postgres in CI, and against KMS in a staging account                      | G-117          |
+| Make the execution-control release check consume the nonce on paths that bypass the gateway                 | G-104 residual |
+
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
 None of these is scheduled. They are recorded so the ideas are not lost when the old roadmap is removed.
