@@ -132,6 +132,12 @@ registration (ADR-0013), so they are real when a deployment uses them. Their fac
 - Cumulative grant limits (G-93) apply to every capability, not only refunds. The grant is keyed by capability.
 - The order of work is a choice for the operator. Within a row, the cost is the connection, not the policy.
 
+## Example policies
+
+For the GitHub merge facts and the Paytm refund facts, `examples/business-validation/` has a policy that asks the
+owning system for each one, with a README and a test. They are not bound to a capability and are not shipped in
+`policies/`. The index is `examples/business-validation/README.md`.
+
 ## Keeping this current
 
 Regenerate the lists above when a policy version, a capability binding or a verifier changes. The source files are

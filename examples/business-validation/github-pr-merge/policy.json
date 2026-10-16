@@ -1,0 +1,128 @@
+{
+  "policyId": "github-pr-merge-sourced",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "description": "Example (not bound to github:pr-merge). Authorizes a pull request merge only with a signed approval from a trusted person for that exact pull request, and only when the GitHub source answers that the pull request is ready: checks passed, required reviews complete and the base branch protected. Those three facts are asked of GitHub, never declared by the caller. Repository authorization stays caller declared, because it is an operator allowlist, not something GitHub owns.",
+  "signalsSchema": {
+    "mergeApproved": "boolean",
+    "repositoryAuthorized": "boolean",
+    "statusChecksPassed": "boolean",
+    "requiredReviewsCompleted": "boolean",
+    "branchProtected": "boolean"
+  },
+  "signalSources": {
+    "statusChecksPassed": {
+      "source": "github",
+      "claim": "pr.status-checks-passed",
+      "subject": "target",
+      "maxAgeSeconds": 60
+    },
+    "requiredReviewsCompleted": {
+      "source": "github",
+      "claim": "pr.required-reviews-complete",
+      "subject": "target",
+      "maxAgeSeconds": 60
+    },
+    "branchProtected": {
+      "source": "github",
+      "claim": "pr.base-branch-protected",
+      "subject": "target",
+      "maxAgeSeconds": 300
+    }
+  },
+  "unboundSignalReasons": {
+    "repositoryAuthorized": "Declared by the caller. The Intent's target (owner/repo#pullNumber) names the pull request, not whether the repository is one this deployment may merge into. It can refuse a merge, never authorize one on its own."
+  },
+  "approvalSignals": {
+    "mergeApproved": {
+      "resourceId": "target"
+    }
+  },
+  "rules": [
+    {
+      "id": "reject-repository-not-authorized",
+      "condition": {
+        "fact": "repositoryAuthorized",
+        "operator": "is_false"
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Merge rejected because the caller did not declare the repository authorized."
+      }
+    },
+    {
+      "id": "reject-checks-not-passed",
+      "condition": {
+        "fact": "statusChecksPassed",
+        "operator": "is_false"
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Merge rejected because GitHub reports the required status checks have not passed."
+      }
+    },
+    {
+      "id": "reject-reviews-incomplete",
+      "condition": {
+        "fact": "requiredReviewsCompleted",
+        "operator": "is_false"
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Merge rejected because GitHub reports the required reviews are not complete."
+      }
+    },
+    {
+      "id": "reject-branch-not-protected",
+      "condition": {
+        "fact": "branchProtected",
+        "operator": "is_false"
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Merge rejected because GitHub reports the base branch is not protected."
+      }
+    },
+    {
+      "id": "approve-merge-with-signed-approval",
+      "condition": {
+        "all": [
+          {
+            "fact": "mergeApproved",
+            "operator": "is_true"
+          },
+          {
+            "fact": "repositoryAuthorized",
+            "operator": "is_true"
+          },
+          {
+            "fact": "statusChecksPassed",
+            "operator": "is_true"
+          },
+          {
+            "fact": "requiredReviewsCompleted",
+            "operator": "is_true"
+          },
+          {
+            "fact": "branchProtected",
+            "operator": "is_true"
+          }
+        ]
+      },
+      "outcome": {
+        "action": "approve",
+        "reason": "Merge authorized: a signed approval for this pull request, and GitHub reports it ready."
+      }
+    },
+    {
+      "id": "reject-merge-approval-required",
+      "condition": {
+        "always": true
+      },
+      "outcome": {
+        "action": "reject",
+        "reason": "Merge rejected. Needs a signed approval for this pull request, and GitHub reporting it ready."
+      }
+    }
+  ]
+}
