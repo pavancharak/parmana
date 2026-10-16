@@ -222,8 +222,10 @@ recommended), and nonce reuse is the source's to refuse (G-92; the example endpo
 
 ## M. Proof audit follow-ups (added 2026-10-16)
 
-The proof audit (CLAIMS 2.57) found gaps that are now fixed (G-103 to G-109, committed to branch
-`ccr-6f1b8d3b-o5pqwj`, not yet merged to main). These are the items still open.
+The proof audit (CLAIMS 2.57) found gaps. Each entry's status is in `docs/VERIFICATION-GAPS.md`, G-103 to G-118.
+Fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main: G-103, G-104 (the release nonce point; its residual is
+G-118), G-105, G-106, G-107, G-109, G-110, G-112, G-113, G-114. Fixed in the audit: G-116. Partly fixed or narrowed,
+still open: G-108 (operator step), G-111, G-115, G-117. Open, structural: G-118.
 
 ### M.1 Needs the operator
 
