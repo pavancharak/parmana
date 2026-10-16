@@ -108,3 +108,6 @@ PARMANA-CREDENTIAL-RECOVERY.md
 examples/live-checks/**/evidence/*-record.json
 examples/live-checks/**/record-*.json
 examples/razorpay-refund/record-*.json
+
+# Internal proof audit report: keep private, do not commit
+proof-audit/REPORT.md
