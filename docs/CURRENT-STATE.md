@@ -255,7 +255,8 @@ answer approved a paid invoice; unpaid, contradicted and unknown invoices refuse
 **Not in effect for real actions yet:** no shipped policy declares a source or requires a grant, so production
 decisions for refunds and the other built in capabilities are unchanged. No real business system is connected
 (G-92); cumulative grant limits are not built (G-93, design in RFC-0023); built in connectors get only the gateway
-re-check at release (G-94). What is left: `docs/REMAINING-WORK.md` section L.
+re-check at release (G-94). What is left: `docs/REMAINING-WORK.md` section L. Which facts each production
+capability relies on, and which of them are checked, is in `docs/BUSINESS-VALIDATION-COVERAGE.md`.
 
 ## Public sandbox (ADR-0014, live 2026-10-02)
 

@@ -401,3 +401,10 @@ updates.
    before `customer-refund` can declare a source.
 2. Whether a sourced fact can replace the signed human approval for some actions, or always adds to
    it. Phase 1 keeps the approval requirement (2.47) unchanged.
+
+# Coverage beyond refunds
+
+This RFC is not specific to refunds: any capability, and any policy, can name a source for a fact. Which facts
+each production capability relies on, which of them are checked, and which system owns each one is listed in
+[BUSINESS-VALIDATION-COVERAGE.md](BUSINESS-VALIDATION-COVERAGE.md) (2026-10-16). The HubSpot deal-state and Slack
+channel checks are in-process verifiers, not sources; the rest are caller declared.

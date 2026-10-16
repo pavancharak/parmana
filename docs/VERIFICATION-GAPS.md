@@ -2479,6 +2479,12 @@ before that the defect was live in production (the Paytm connector is configured
 **Update (2026-09-28, AI attack review):** narrowed again in the repository: merges (G-73) and LLM tool
 calls (G-74) need a signed approval in new policy versions, pending approval in production. The rest of
 this gap is tracked there and in G-75 and G-76.
+**Update (2026-10-16, coverage map):** the Slack `channelAuthorized` fact is now verified by
+`createSlackChannelSignalVerifier` against `SLACK_ALLOWED_CHANNEL_IDS` (G-76), so the Slack signal above is
+partly checked. The fact-by-fact status of every production capability, and the system that owns each fact, is in
+[BUSINESS-VALIDATION-COVERAGE.md](BUSINESS-VALIDATION-COVERAGE.md). Facts still caller declared: `refundEligible`,
+`fraudCheckPassed`, `contentApproved`, and every GitHub merge fact (`repositoryAuthorized`, reviews, checks, branch
+protection, risk score).
 
 **G-52. The connector can be called before the Execution Trust Record can be signed, so a signing
 failure leaves an executed action with no signed trust record.** Found 2026-09-20 in the same live

@@ -209,6 +209,18 @@ recommended), and nonce reuse is the source's to refuse (G-92; the example endpo
 3. For cumulative limits: calendar or rolling periods, limits across capabilities, whether an approval may exceed a
    limit, and storage without a database.
 
+### L.6 Coverage beyond refunds (2026-10-16)
+
+[BUSINESS-VALIDATION-COVERAGE.md](BUSINESS-VALIDATION-COVERAGE.md) lists each production capability's facts, whether
+each is checked, and its owning system. Caller-declared facts with no checking system today, across the six
+capabilities: GitHub merge facts (`repositoryAuthorized`, reviews, checks, branch protection, risk score), Paytm
+`refundEligible` and `fraudCheckPassed`, and Slack `contentApproved`. The owning systems are GitHub, the merchant's
+order system, a fraud system and a content-review system (or a person). Checked: HubSpot deal state (in-process
+verifier) and Slack `channelAuthorized` (server list, not Slack itself).
+
+Ten policies in `policies/` are not bound to a built-in capability. They are templates for external connectors, and
+their facts are listed in the same document.
+
 ### L.5 Housekeeping
 
 | Item                                                                                                                                    | State                                                                                                                    |
