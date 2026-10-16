@@ -843,7 +843,7 @@ paths, not by reading them. The tests are in `proof-audit/tests/` and run with
    (Test 4); running it against the live policy directory remains an operator step.** Adding a version leaves old proofs valid. A different-content rewrite is refused
    with `409` and the stored content is unchanged. An identical re-save is allowed (G-106).
 5. **Altering or deleting a stored audit record is detectable: Detected** for content edits, middle and
-   first deletions, and both reorder forms, in the per-caller chain. **Deleting the newest record is
+   first deletions, and both reorder forms, in the per-caller chain and the per-authorization execution chain. the newest record is
    detected only when the chain head is anchored outside the database** (G-108).
 
 **What the audit found first.** The first run falsified claim 2 (the gateway released a validly signed
@@ -854,12 +854,12 @@ The first-run measurements are kept in `proof-audit/REPORT.md`, which has a stat
 **Coverage after the follow-up fixes.** The same gate conditions now run for Paytm refund, Slack post-message,
 GitHub PR merge and HubSpot deal-update (Tests 2, 7, 8, 9). The Postgres nonce store runs on PostgreSQL semantics
 (Test 6). The startup governance integrity check runs against a signed approval record (Test 4). Not yet
-covered: the Postgres execution audit sink, KMS signing, a live external connector endpoint, and the caller
+covered: KMS signing, a live external connector endpoint, and the caller
 authorization scoping (the API harness disables caller authentication, as the existing integration tests do).
 These are listed as open in `docs/REMAINING-WORK.md` section M.
 
 **Evidence.** `proof-audit/tests/test1-independent-verification.test.ts` through
-`test9-hubspot.test.ts`; `packages/api/src/bootstrap/createReleaseVerifier.ts`;
+`test10-execution-audit.test.ts`; `packages/api/src/bootstrap/createReleaseVerifier.ts`;
 `packages/execution-control/src/ExecutionControlService.ts`; `packages/execution-gateway/src/ExecutionGateway.ts`
 (`decisionApproved`); `packages/policy/src/FilePolicyRepository.ts` (`save`, `PolicyVersionImmutableError`);
 `packages/crypto/src/CallerAuditChainVerifier.ts` (`verifyChain`, the `anchor` argument).

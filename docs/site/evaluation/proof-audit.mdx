@@ -56,7 +56,7 @@ These items are known and not yet fixed.
   authorizations who runs code in the API process can call the control directly and skip the gateway.
   The control still verifies the signature, the outcome, the content hash and the nonce, so an
   unsigned or replayed authorization is refused. Closing it needs the control in a separate process.
-- **Coverage.** The execution audit sink on Postgres and KMS signing are not yet run by the audit.
+- **Coverage.** KMS signing is not yet run by the audit, and neither is a live external connector endpoint.
   A live external connector endpoint is not yet in the audit.
 
 ## Run the audit
