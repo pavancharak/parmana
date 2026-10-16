@@ -66,6 +66,15 @@ export interface ExecutionControlOptions {
   readonly route: (content: Readonly<ExecutableContent>) => string;
 }
 
+/**
+ * Answers whether one authorization has been revoked. Checked at release,
+ * so an authorization can be stopped before its TTL ends without revoking
+ * the signing key. Implementations must fail closed: a read error throws.
+ */
+export interface AuthorizationRevocationList {
+  isRevoked(authorizationId: string): Promise<boolean>;
+}
+
 export interface ExecutionGatewayOptions {
   /**
    * Parmana's public key. Supplied by the caller,
@@ -172,6 +181,12 @@ export interface ExecutionGatewayOptions {
    * authorization that rests on a grant is refused: fail closed.
    */
   readonly authorityGrants?: Pick<AuthorityGrantRepository, "findActive">;
+
+  /**
+   * Revoked authorizations, checked at release. Omitted, no authorization
+   * is treated as revoked (tests and legacy fixtures only); production wires it.
+   */
+  readonly authorizationRevocations?: AuthorizationRevocationList;
 }
 
 /**
@@ -235,6 +250,7 @@ export class ExecutionGateway implements ExecutionSystem {
   private readonly executionControl: ExecutionControlOptions | undefined;
   private readonly authorityGrants:
     Pick<AuthorityGrantRepository, "findActive"> | undefined;
+  private readonly authorizationRevocations: AuthorizationRevocationList | undefined;
 
   constructor(options: ExecutionGatewayOptions) {
     this.envelopeVerifier = new EnvelopeVerifier({
@@ -261,6 +277,7 @@ export class ExecutionGateway implements ExecutionSystem {
     this.policyApprovalVerifier = options.policyApprovalVerifier;
     this.signalStateVerifier = options.signalStateVerifier;
     this.authorityGrants = options.authorityGrants;
+    this.authorizationRevocations = options.authorizationRevocations;
     this.requirePolicyBinding = options.allowUnverifiedPolicy !== true;
 
     if (
@@ -539,9 +556,21 @@ export class ExecutionGateway implements ExecutionSystem {
     const decisionApproved =
       request.authorization.payload.decisionOutcome === "APPROVED";
 
+    //
+    // Revocation of this one authorization. A read error throws, so it
+    // refuses the release rather than releasing unchecked.
+    //
+    const authorizationRevoked =
+      this.authorizationRevocations === undefined
+        ? false
+        : await this.authorizationRevocations.isRevoked(
+            request.authorization.payload.authorizationId,
+          );
+
     const priorChecksPassed =
       passed &&
       decisionApproved &&
+      !authorizationRevoked &&
       businessTransactionHashMatches &&
       policyBindingOk &&
       signalsStillCurrent !== false &&
@@ -565,6 +594,7 @@ export class ExecutionGateway implements ExecutionSystem {
         ...checks,
         businessTransactionHashMatches,
         decisionApproved,
+        authorizationNotRevoked: !authorizationRevoked,
         ...(policyStillCurrent === undefined ? {} : { policyStillCurrent }),
         ...(policyGovernanceVerified === undefined
           ? {}

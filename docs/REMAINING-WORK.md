@@ -235,16 +235,12 @@ The proof audit (CLAIMS 2.57) found gaps that are now fixed (G-103 to G-109, com
 
 ### M.2 Engineering
 
-| Item                                                                                                        | Gap            |
-| ----------------------------------------------------------------------------------------------------------- | -------------- |
-| Per-authorization revocation: a denylist keyed by `authorizationId`, checked at release                     | G-110          |
-| Move the HubSpot fetch's signing into the runtime, so the gate sets the decision outcome                    | G-111          |
-| Verification package that does not import the configuration module, so the offline verifier reads no `.env` | G-112          |
-| Refuse to serve execution until the signal-state verifier is bound                                          | G-113          |
-| Remove `legacyInsecure`, or restrict it to test builds                                                      | G-114          |
-| Add proof-audit cases for HubSpot, GitHub, Slack, the generic HTTP adapter and external connectors          | G-115          |
-| Run the proof-audit cases against Postgres in CI, and against KMS in a staging account                      | G-117          |
-| Make the execution-control release check consume the nonce on paths that bypass the gateway                 | G-104 residual |
+| Item                                                                                               | Gap            |
+| -------------------------------------------------------------------------------------------------- | -------------- |
+| Move the HubSpot fetch's signing into the runtime, so the gate sets the decision outcome           | G-111          |
+| Add proof-audit cases for HubSpot, GitHub, Slack, the generic HTTP adapter and external connectors | G-115          |
+| Run the proof-audit cases against Postgres in CI, and against KMS in a staging account             | G-117          |
+| Make the execution-control release check consume the nonce on paths that bypass the gateway        | G-104 residual |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 

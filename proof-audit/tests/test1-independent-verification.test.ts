@@ -145,6 +145,8 @@ describe("TEST 1: independent verification", () => {
     expect(JSON.parse(run.stdout).valid).toBe(true);
     expect(JSON.parse(run.stdout).citedPolicy).toBe("customer-refund@1.2.0");
     expect(JSON.parse(run.stdout).envKeys).toBeLessThanOrEqual(2);
+    // The verifier no longer loads a .env file from the working tree on import.
+    expect(run.stderr).not.toMatch(/injected env/);
   });
 
   it("a verifier process cannot reach the original service (in-process hook and empty netns)", () => {

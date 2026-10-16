@@ -67,14 +67,30 @@ function findEnvFile(): string | undefined {
   }
 }
 
-const envFile = findEnvFile();
+//
+// The .env file is read on first use of loadConfig(), not when this module
+// is imported. Importing a package (for example the offline verifier) then
+// reads no file from the working tree.
+//
+let dotEnvLoaded = false;
 
-if (envFile) {
-  dotenv.config({
-    path: envFile,
-  });
-} else {
-  dotenv.config();
+function loadDotEnvOnce(): void {
+  if (dotEnvLoaded) {
+    return;
+  }
+
+  dotEnvLoaded = true;
+
+  const envFile = findEnvFile();
+
+  if (envFile) {
+    dotenv.config({
+      path: envFile,
+      quiet: true,
+    });
+  } else {
+    dotenv.config({ quiet: true });
+  }
 }
 
 /**
@@ -316,6 +332,8 @@ export interface LoggingConfig {
  * should be accessed.
  */
 export function loadConfig(): Readonly<Config> {
+  loadDotEnvOnce();
+
   return Object.freeze({
     environment: Object.freeze({
       nodeEnv: process.env.NODE_ENV ?? "development",

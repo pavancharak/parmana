@@ -24,6 +24,9 @@ export interface GatewayVerificationResult {
     /** The signed decisionOutcome is "APPROVED". Absent or any other value fails. */
     readonly decisionApproved?: boolean;
 
+    /** The authorization is not on the revocation list. Absent when no list is wired. */
+    readonly authorizationNotRevoked?: boolean;
+
     /**
      * Always present and true for a valid result, unless the gateway
      * was built with allowUnverifiedPolicy. In that legacy mode it is

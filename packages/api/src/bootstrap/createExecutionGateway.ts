@@ -23,6 +23,7 @@ import { createGatewayIdentity } from "./createGatewayIdentity.js";
 import { createGatewayKeyPair } from "./createGatewayKeyPair.js";
 import { createGatewayPublicKey } from "./createGatewayPublicKey.js";
 import { createNonceStore } from "./createNonceStore.js";
+import { createAuthorizationRevocationList } from "./createAuthorizationRevocationList.js";
 import { createPolicyExecutionVerifier } from "./createPolicyExecutionVerifier.js";
 import { createConnectorRoute } from "./createConnectorRoute.js";
 import { executionGatewaySignalStateVerifier } from "./executionGatewaySignalStateVerifier.js";
@@ -127,6 +128,9 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
     // RFC-0023 phase 4: an authorization that rests on an authority
     // grant is released only while that grant is still the active one.
     authorityGrants: authorityGrantRepository,
+
+    // Single-authorization revocation (revoked-authorizations.json).
+    authorizationRevocations: createAuthorizationRevocationList(),
 
     executionControl: {
       service: executionControl,

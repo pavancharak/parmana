@@ -48,15 +48,14 @@ These items are known and not yet fixed.
 
 - **Audit head anchoring.** The verifier accepts an anchored head. Deployments need to publish it
   to a store the database cannot rewrite.
-- **Per-authorization revocation.** Revocation is per signing key and per authority grant. There is
-  no per-authorization revocation list. Authorizations expire within the configured TTL.
+- **A replay gap on the in-process release path.** The release check does not consume nonces, so
+  a holder of the in-process attestation key who bypasses the gateway could replay an authorization
+  the gateway already released. Closing it needs the nonce consumed at a single release point.
 - **HubSpot's verification authorization is self-approved.** The connector helper that signs its
   own fetch asserts `APPROVED` itself. This is a trust-root decision: anyone holding the signing key
-  can sign it. Moving that signing into the runtime is the proper fix.
+  can sign it. Moving that decision into the runtime is the proper fix.
 - **Other connectors.** HubSpot, GitHub, Slack and external connectors share the gateway but do not
   yet have end-to-end proof audit tests.
-- **Offline verifier reads the repository `.env`.** Importing the verification package loads the
-  configuration module, which reads a `.env` file if present. It loads no key material.
 - **Startup governance integrity.** The check that the approval records match the stored policies
   at startup has not been exercised by the audit.
 

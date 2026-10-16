@@ -831,8 +831,7 @@ paths, not by reading them. The tests are in `proof-audit/tests/` and run with
    Execution Trust Record bundle. A proof verifies in a fresh process with an empty environment, no
    key files and the network denied, both in-process and in an empty network namespace. Nine field
    changes (decision, amount, action ID, timestamps, policy version, both signatures) each fail. Scope:
-   the verifier process still loads the repository `.env` when it imports the configuration module
-   (G-112).
+   the verifier no longer reads a `.env` file on import (G-112).
 2. **Execution requires a valid, current proof: Verified for the Paytm refund path only.** A missing,
    forged, expired, revoked, mismatched or denied-decision proof each reaches the external endpoint zero
    times. A control with an approved decision reaches it once. Other connectors are not yet covered

@@ -65,6 +65,32 @@
     "verdict": "PASS"
   },
   {
+    "path": "paytm:refund via ExecutionGateway",
+    "condition": "single authorization revoked (revoked-authorizations.json)",
+    "rejected": true,
+    "message": "Execution Gateway rejected request: failed checks [authorizationNotRevoked, nonceUnseen].",
+    "expect": "0 calls",
+    "observed": "0 call(s)",
+    "verdict": "PASS"
+  },
+  {
+    "path": "connector registry (legacyInsecure)",
+    "condition": "legacyInsecure: true with NODE_ENV=production",
+    "rejected": true,
+    "message": "Connector \"x\" was registered with legacyInsecure: true, which is refused outside NODE_ENV=test.",
+    "expect": "refused",
+    "observed": "refused",
+    "verdict": "PASS"
+  },
+  {
+    "path": "signal-state check during bootstrap",
+    "condition": "verifier not yet bound",
+    "rejected": true,
+    "expect": "refused",
+    "observed": "refused",
+    "verdict": "PASS"
+  },
+  {
     "path": "paytm:refund via production bootstrap ExecutionGateway",
     "condition": "proof without policyContentHash",
     "rejected": true,

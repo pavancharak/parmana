@@ -247,6 +247,50 @@ describe("TEST 2: execution requires proof", () => {
     expect(delta).toBe(1);
   });
 
+  it("revocation: an authorization listed in revoked-authorizations.json is refused", async () => {
+    const proof = await mintProof("ORD-REVOKED-ONE", 10000);
+    const file = join(keyDir, "revoked-authorizations.json");
+    writeFileSync(file, JSON.stringify([proof.authorization.payload.authorizationId]));
+    const before = harness.server.paytmInvocationCount;
+    let threw = false; let message = "";
+    try { await harness.gateway.execute(proof); } catch (e) { threw = true; message = (e as Error).message; }
+    const delta = harness.server.paytmInvocationCount - before;
+    rmSync(file, { force: true });
+    record({ path: "paytm:refund via ExecutionGateway", condition: "single authorization revoked (revoked-authorizations.json)", rejected: threw, message: message.slice(0, 160), expect: "0 calls", observed: `${delta} call(s)`, verdict: threw && delta === 0 ? "PASS" : "FAIL" });
+    expect(delta).toBe(0);
+  });
+
+  it("legacyInsecure connector registration is refused outside NODE_ENV=test", async () => {
+    const { createGatewayConnectorRegistry } = await import("@parmana/execution-gateway");
+    const saved = process.env.NODE_ENV;
+    process.env.NODE_ENV = "production";
+    let threw = false; let message = "";
+    try {
+      createGatewayConnectorRegistry([{
+        connector: { connectorId: "x", capabilities: { declared: ["x:y"] }, execute: async () => ({}) } as any,
+        metadata: { connectorId: "x", displayName: "x", version: { major: 1, minor: 0, patch: 0 }, health: { status: "healthy", checkedAt: new Date().toISOString() } } as any,
+        connectorIdentity: { connectorId: "x", publicIdentity: "spiffe://x", authenticationMetadata: {} } as any,
+        credentialProvider: { providerId: "x", resolve: async () => ({}) } as any,
+        policy: {} as any,
+        gatewayAuthentication: "x",
+        crypto: CryptoBootstrap.create(),
+        legacyInsecure: true,
+      } as any], { legacyInsecure: true } as any);
+    } catch (e) { threw = true; message = (e as Error).message; }
+    process.env.NODE_ENV = saved;
+    record({ path: "connector registry (legacyInsecure)", condition: "legacyInsecure: true with NODE_ENV=production", rejected: threw, message: message.slice(0, 160), expect: "refused", observed: threw ? "refused" : "accepted", verdict: threw ? "PASS" : "FAIL" });
+    expect(threw).toBe(true);
+  });
+
+  it("unbound signal-state verifier refuses to check signals", async () => {
+    const { LateBoundSignalStateVerifier } = await import("../../packages/api/src/bootstrap/executionGatewaySignalStateVerifier.js");
+    const unbound = new LateBoundSignalStateVerifier();
+    let threw = false;
+    try { await unbound.findViolations({ action: "x", businessTransactionId: "b", intentParameters: {}, intentTarget: "t", stage: "release" } as any, {} as any); } catch { threw = true; }
+    record({ path: "signal-state check during bootstrap", condition: "verifier not yet bound", rejected: threw, expect: "refused", observed: threw ? "refused" : "passed unchecked", verdict: threw ? "PASS" : "FAIL" });
+    expect(threw).toBe(true);
+  });
+
   it("policy binding bypass: production bootstrap gateway refuses a proof with no policyContentHash", async () => {
     // createExecutionGateway no longer sets allowUnverifiedPolicy. The
     // policy hash is required in every mode.
