@@ -30,7 +30,7 @@
     "connector": "github:pr-merge",
     "case": "changed merge method after approval",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected fa545c05c7ae08c12bb022cd00bb5e107",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 89bdde781d6e2b9c17981f4083f5178a9",
     "callsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -66,7 +66,7 @@
     "connector": "github:pr-merge",
     "case": "replay step 2: same proof again",
     "rejected": true,
-    "message": "Execution Gateway rejected request for Business Transaction 'a0575ab2-b2ae-40d8-b86c-7abcb0672a07': authorization nonce has already been consumed (replay of an ",
+    "message": "Execution Gateway rejected request for Business Transaction 'd2050b12-50fb-44be-9243-f23bc8213dcb': authorization nonce has already been consumed (replay of an ",
     "callsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"

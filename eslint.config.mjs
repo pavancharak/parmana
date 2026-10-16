@@ -41,6 +41,16 @@ export default [
   ...tseslint.configs.recommended,
 
   {
+    // proof-audit/ is the audit harness. It builds deliberately malformed and
+    // tampered proofs and casts fixtures to the connector and gateway types, so
+    // explicit any is the right tool there. Every other rule still applies.
+    files: ["proof-audit/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+
+  {
     // .cjs scripts are plain CommonJS by extension -- require() is the
     // only valid way to import here, not an ESM oversight to fix.
     // tseslint.configs.recommended (above) applies no-require-imports

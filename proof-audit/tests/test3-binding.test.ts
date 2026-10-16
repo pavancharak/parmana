@@ -2,14 +2,12 @@
 // TEST 3: a proof authorizes only the exact parameters it was issued for.
 // One valid proof per case; endpoint = MockPaytmConnectorServer (records every call).
 //
-import { createPrivateKey } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import { StaticApprovalIssuerRegistry } from "@parmana/approval";
-import { AuthorizationSigner, CryptoBootstrap } from "@parmana/crypto";
 import {
   APPROVER,
   approverKeys,

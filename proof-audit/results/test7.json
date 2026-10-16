@@ -30,7 +30,7 @@
     "connector": "slack:post-message",
     "case": "changed channel after approval",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected aca6d1fcd18e83c1e8d6ca17d31c0ba50",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected d0684aa9afdba58d0901cec76a45d4643",
     "callsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -66,7 +66,7 @@
     "connector": "slack:post-message",
     "case": "replay step 2: same proof again",
     "rejected": true,
-    "message": "Execution Gateway rejected request for Business Transaction '7833be76-2f37-4ea5-beb4-13e759dc566a': authorization nonce has already been consumed (replay of an ",
+    "message": "Execution Gateway rejected request for Business Transaction '7d3da2b5-fcd9-4f5a-9876-6ff29d88a76d': authorization nonce has already been consumed (replay of an ",
     "callsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"

@@ -4,7 +4,7 @@
 // External endpoint: MockSlackServer, which records every call. Expected: zero calls
 // for every failing case; one call for the control.
 //
-import { writeFileSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";

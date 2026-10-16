@@ -31,7 +31,7 @@ export function createAuthorizationRevocationList(): AuthorizationRevocationList
       try {
         parsed = JSON.parse(readFileSync(path, "utf8"));
       } catch (error) {
-        throw new Error(`${path} is not readable JSON: ${(error as Error).message}`);
+        throw new Error(`${path} is not readable JSON: ${(error as Error).message}`, { cause: error });
       }
 
       const ids = Array.isArray(parsed)

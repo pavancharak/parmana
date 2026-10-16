@@ -3,8 +3,8 @@
 // External endpoint: MockPaytmConnectorServer (records every call).
 // Pass condition for every failing case: the endpoint receives zero calls.
 //
-import { createPrivateKey, generateKeyPairSync, type KeyObject } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createPrivateKey, type KeyObject } from "node:crypto";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
@@ -14,7 +14,6 @@ import { AuthorizationSigner, CryptoBootstrap } from "@parmana/crypto";
 import { ExecutionGateway } from "@parmana/execution-gateway";
 import { MemoryNonceStore } from "@parmana/envelope-verifier";
 import {
-  ExecutionControlService,
   GatewayAttestationSigner,
   RandomIdGenerator,
   SystemClock,
@@ -32,7 +31,6 @@ import { createExecutionControl } from "../../packages/api/src/bootstrap/createE
 import { createGatewayIdentity } from "../../packages/api/src/bootstrap/createGatewayIdentity.js";
 import { createGatewayKeyPair } from "../../packages/api/src/bootstrap/createGatewayKeyPair.js";
 import { createGatewayPublicKey } from "../../packages/api/src/bootstrap/createGatewayPublicKey.js";
-import { createExecutionSystem } from "../../packages/api/src/bootstrap/createExecutionSystem.js";
 import { SignerBootstrap, SignerKeyProviderAdapter, FileKeyExpiryStore } from "@parmana/crypto";
 import { policyRepository } from "../../packages/api/src/application.js";
 import { PAYTM_CONNECTOR_TEST_MODE_PLACEHOLDER_SECRET } from "@parmana/connector-paytm";
@@ -127,9 +125,7 @@ describe("TEST 2: execution requires proof", () => {
   }, 120000);
 
   afterAll(async () => {
-    try {
-      rmSync(join(keyDir, "key-expiry.json"), { force: true });
-    } catch {}
+    rmSync(join(keyDir, "key-expiry.json"), { force: true });
     await closeHarness(harness);
     mkdirSync(resultsDir, { recursive: true });
     writeFileSync(join(resultsDir, "test2.json"), JSON.stringify(cases, null, 2));
