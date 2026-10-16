@@ -221,6 +221,9 @@ verifier) and Slack `channelAuthorized` (server list, not Slack itself).
 Ten policies in `policies/` are not bound to a built-in capability. They are templates for external connectors, and
 their facts are listed in the same document.
 
+Example policies for the GitHub and refund facts are in `examples/business-validation/`. The resume point, with the
+steps in order and the decisions that need a person, is [BUSINESS-VALIDATION-HANDOFF.md](BUSINESS-VALIDATION-HANDOFF.md).
+
 ### L.5 Housekeeping
 
 | Item                                                                                                                                    | State                                                                                                                    |
