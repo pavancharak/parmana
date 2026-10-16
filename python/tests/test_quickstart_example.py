@@ -59,6 +59,9 @@ def quickstart_server() -> str:
         env = {
             **os.environ,
             "NODE_ENV": "test",
+            # Test-only: skip the approval-record check for vendor-payment, which these
+            # tests run without maker-checker records. Never set in a deployment.
+            "PARMANA_ALLOW_UNGOVERNED_POLICY": "true",
             # Trusts the local test approver (tests/local_approver.py).
             **local_approver_env(),
             "PARMANA_STORAGE": "memory",

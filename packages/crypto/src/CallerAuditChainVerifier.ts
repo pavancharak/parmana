@@ -56,8 +56,16 @@ export class CallerAuditChainVerifier {
 
   private readonly hasher = new TrustRecordHasher(CryptoBootstrap.create());
 
+  /**
+   * `anchor`, when given, is the chain head (last chainPosition and its
+   * chainHash) recorded outside the database when the chain was last seen.
+   * The chain must end exactly there. Without an anchor, deleting the newest
+   * rows leaves a valid, shorter chain: that cannot be detected from the
+   * rows alone.
+   */
   async verifyChain(
     rows: readonly ChainedCallerAuditEventRow[],
+    anchor?: { readonly chainPosition: number; readonly chainHash: string },
   ): Promise<CallerAuditChainVerificationResult> {
     let previousHash: string | null = null;
     let position = 0;
@@ -113,6 +121,22 @@ export class CallerAuditChainVerifier {
       }
 
       previousHash = row.chainHash;
+    }
+
+    if (anchor !== undefined) {
+      const last = rows[rows.length - 1];
+
+      if (
+        last === undefined ||
+        last.chainPosition !== anchor.chainPosition ||
+        last.chainHash !== anchor.chainHash
+      ) {
+        return {
+          valid: false,
+          brokenAtPosition: position,
+          reason: "chain does not end at the anchored chain head (records missing or truncated).",
+        };
+      }
     }
 
     return { valid: true };

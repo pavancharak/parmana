@@ -102,7 +102,12 @@ export function createApplication(
   approvalVerifier: ApprovalVerifier = createApprovalVerifier(),
 ) {
   const signalStateVerifier = new CompositeSignalStateVerifier([
-    createHubSpotSignalStateVerifier(executionSystem, approvalVerifier),
+    createHubSpotSignalStateVerifier(
+      executionSystem,
+      approvalVerifier,
+      undefined,
+      policyRepository,
+    ),
     createApprovalSignalVerifier(approvalVerifier),
     // G-76: the Slack channel is checked against the server's allowlist.
     createSlackChannelSignalVerifier(),

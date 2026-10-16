@@ -1,3 +1,4 @@
+import { policyGovernanceRelaxed } from "./policyGovernanceRelaxed.js";
 import type { CurrentPolicyVersionSource } from "@parmana/policy";
 
 import { policyChangeApprovalRecordRepository } from "../repositories.js";
@@ -16,13 +17,7 @@ import { GovernedPolicyVersionSource } from "../governance/GovernedPolicyVersion
  */
 export function createCurrentPolicyVersionSource():
   CurrentPolicyVersionSource | undefined {
-  const env = process.env.NODE_ENV;
-  const relaxed = env === "test" || env === "development";
-
-  if (
-    relaxed &&
-    process.env.POLICY_EXECUTION_VERIFICATION_ENFORCED !== "true"
-  ) {
+  if (policyGovernanceRelaxed()) {
     return undefined;
   }
 

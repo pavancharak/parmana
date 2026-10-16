@@ -220,6 +220,58 @@ recommended), and nonce reuse is the source's to refuse (G-92; the example endpo
 | Deploying an endpoint to Vercel from the repository folder applies the repository's `vercel.json` and fails                             | The live check READMEs deploy from inside the endpoint's folder; recorded there                                          |
 | AgenTrust Verified tier for `integrations/parmana-server` (requested 2026-10-13, #313)                                                  | Reproduced by a maintainer on 2026-10-14; waiting on the maintainer PR that changes the tier; then update CLAIMS.md 3.23 |
 
+## M. Proof audit follow-ups (added 2026-10-16)
+
+### M.0 Status of every proof-audit gap
+
+This table is generated from the `Status:` line of each entry in `docs/VERIFICATION-GAPS.md`.
+Do not edit it by hand: run `npx tsx scripts/gap-status.ts`. `npm test` fails when it is out of date.
+
+<!-- gap-status:start -->
+
+| Gap   | Item                                                                                                | Status                                                                                         |
+| ----- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| G-103 | A signed authorization released for a denied decision.                                              | fixed on branch `ccr-6f1b8d3b-o5pqwj` (commit ddb6009), not yet merged                         |
+| G-104 | The in-process release service trusted the caller's verification flags.                             | fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                                  |
+| G-105 | Test and development environments skipped policy governance by default.                             | fixed on branch `ccr-6f1b8d3b-o5pqwj` (commit ddb6009), not yet merged                         |
+| G-106 | A published policy version could be overwritten in place.                                           | fixed on branch `ccr-6f1b8d3b-o5pqwj` (commit ddb6009), not yet merged                         |
+| G-107 | The HubSpot verification fetch carried no policy hash.                                              | fixed on branch `ccr-6f1b8d3b-o5pqwj` (commit ddb6009), not yet merged                         |
+| G-108 | The caller audit chain cannot detect deleting its newest row.                                       | narrowed, not closed, on branch `ccr-6f1b8d3b-o5pqwj` (commit ddb6009), not yet merged to main |
+| G-109 | Caller authentication could be disabled and the demo approver enabled in production.                | fixed on branch `ccr-6f1b8d3b-o5pqwj` (commit ddb6009), not yet merged                         |
+| G-110 | There is no revocation of a single authorization.                                                   | fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                                  |
+| G-111 | The HubSpot verification helper approves its own fetch.                                             | partly fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                           |
+| G-112 | The offline verifier loads the repository `.env`.                                                   | fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                                  |
+| G-113 | The execution-boundary signal check fails open during bootstrap.                                    | fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                                  |
+| G-114 | The `legacyInsecure` connector option skips the session credential and audit requirement.           | fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                                  |
+| G-115 | End-to-end proof audit covered only the Paytm refund path.                                          | partly fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                           |
+| G-116 | The startup governance integrity check was not exercised by the proof audit.                        | fixed in the proof audit on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main               |
+| G-117 | The production stores and signing backends were not exercised by the proof audit.                   | partly fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main                           |
+| G-118 | The attestation key that authorizes the in-process release path lives in the process that calls it. | open, structural                                                                               |
+
+<!-- gap-status:end -->
+
+The proof audit (CLAIMS 2.57) found gaps. Each entry's status is in `docs/VERIFICATION-GAPS.md`, G-103 to G-118.
+Fixed on branch `ccr-6f1b8d3b-o5pqwj`, not yet merged to main: G-103, G-104 (the release nonce point; its residual is
+G-118), G-105, G-106, G-107, G-109, G-110, G-112, G-113, G-114. Fixed in the audit: G-116. Partly fixed or narrowed,
+still open: G-108 (operator step), G-111, G-115, G-117. Open, structural: G-118.
+
+### M.1 Needs the operator
+
+| Item                                                                                                                                       | Why it matters                                                                | Gap   |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ----- |
+| Publish the caller audit chain head to a store the database cannot rewrite, on a schedule and on each deploy, and pass it to `verifyChain` | Without it, deleting the newest audit row is undetectable                     | G-108 |
+| Confirm `NODE_ENV=production` on every deployment, so the production refusals (G-109) apply                                                | Otherwise `PARMANA_AUTH_DISABLED` and `PARMANA_SANDBOX` are only warned about | G-109 |
+| Run the startup governance integrity check against the live policy directory, and record that it passed                                    | The audit did not exercise it                                                 | G-116 |
+
+### M.2 Engineering
+
+| Item                                                                                                                                         | Gap   |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| HubSpot's verification helper still asserts `APPROVED` for its own read. Removing it needs the verification to go through a runtime decision | G-111 |
+| KMS signing: run the proof-audit cases against a KMS key in a staging account                                                                | G-117 |
+| Live external connector endpoint in the proof audit (the control-level integration test exists)                                              | G-115 |
+| Move the attestation key out of the process that can call the release control                                                                | G-118 |
+
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
 None of these is scheduled. They are recorded so the ideas are not lost when the old roadmap is removed.

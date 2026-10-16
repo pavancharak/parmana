@@ -3,6 +3,7 @@ import { PolicyChangeCrypto } from "@parmana/crypto";
 
 import { policyChangeApprovalRecordRepository } from "../repositories.js";
 import { PolicyGovernanceExecutionVerifier } from "../governance/PolicyGovernanceExecutionVerifier.js";
+import { policyGovernanceRelaxed } from "./policyGovernanceRelaxed.js";
 
 /**
  * Policy Governance execution-time verification is ON by default and
@@ -10,9 +11,8 @@ import { PolicyGovernanceExecutionVerifier } from "../governance/PolicyGovernanc
  * PolicyChangeApprovalRecord whose signature verifies and whose
  * contentHashAfter equals the live policy content hash.
  *
- * It is relaxed only when NODE_ENV is exactly "test" or "development",
- * where it stays off unless POLICY_EXECUTION_VERIFICATION_ENFORCED is
- * the exact string "true". In every other environment, including an
+ * It is relaxed only when NODE_ENV is "test" or "development" AND
+ * PARMANA_ALLOW_UNGOVERNED_POLICY is "true" (see policyGovernanceRelaxed.ts). In every other environment, including an
  * unset or unrecognized NODE_ENV, it is enforced and no environment
  * variable can turn it off: a deployment must not be able to silently
  * regress to "unapproved policy still executes".
@@ -24,13 +24,7 @@ import { PolicyGovernanceExecutionVerifier } from "../governance/PolicyGovernanc
  */
 export function createPolicyExecutionVerifier():
   PolicyExecutionVerifier | undefined {
-  const env = process.env.NODE_ENV;
-  const relaxed = env === "test" || env === "development";
-
-  if (
-    relaxed &&
-    process.env.POLICY_EXECUTION_VERIFICATION_ENFORCED !== "true"
-  ) {
+  if (policyGovernanceRelaxed()) {
     return undefined;
   }
 

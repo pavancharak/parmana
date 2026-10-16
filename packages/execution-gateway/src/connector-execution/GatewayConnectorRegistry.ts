@@ -152,6 +152,18 @@ export function buildSecureConnector(
   );
 
   if (options.legacyInsecure === true) {
+    //
+    // legacyInsecure skips the single-use session credential and the audit
+    // requirement. It exists only for tests; a production process must not
+    // be able to run connectors that way.
+    //
+    if (process.env.NODE_ENV !== "test") {
+      throw new Error(
+        `Connector "${options.connector.connectorId}" was registered with legacyInsecure: true, ` +
+          "which is refused outside NODE_ENV=test.",
+      );
+    }
+
     return new InMemorySecureConnector({
       identity: options.connectorIdentity,
       capabilities: options.connector.capabilities.declared,

@@ -101,6 +101,7 @@ async function run(options: {
     await new AuthorizationSigner(crypto).sign(
       {
         decisionId: "decision-1",
+        decisionOutcome: "APPROVED",
         businessTransactionId: CONTENT.businessTransactionId,
         policyName: "erp-invoice",
         policyVersion: "1.0.0",

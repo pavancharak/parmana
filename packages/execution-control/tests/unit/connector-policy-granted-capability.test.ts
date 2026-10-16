@@ -37,6 +37,7 @@ async function fixture(grantedCapability?: string) {
   ).sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: content.businessTransactionId,
       policyName: "hubspot-deal-update",
       policyVersion: "1.0.0",

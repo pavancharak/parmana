@@ -75,6 +75,8 @@ const LOCAL_TEST_DEFAULTS: Record<string, string> = {
   PARMANA_STORAGE: "memory",
   KEY_PROVIDER: "local",
   PRIMARY_SIGNATURE_PROVIDER: "ed25519",
+  // Explicit opt-in: unit and integration tests run without governance records.
+  PARMANA_ALLOW_UNGOVERNED_POLICY: "true",
 };
 
 for (const [name, value] of Object.entries(LOCAL_TEST_DEFAULTS)) {
@@ -129,6 +131,19 @@ writeFileSync(
     format: "pem",
     type: "spki",
   }),
+);
+
+/**
+ * Verifier key (verifierKeyId.ts): signs the read-only signal fetches.
+ */
+const verifierKeys = generateKeyPairSync("ed25519");
+writeFileSync(
+  join(keyDir, "signal-verifier.private.pem"),
+  verifierKeys.privateKey.export({ format: "pem", type: "pkcs8" }),
+);
+writeFileSync(
+  join(keyDir, "signal-verifier.public.pem"),
+  verifierKeys.publicKey.export({ format: "pem", type: "spki" }),
 );
 
 /**

@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 
 import type { Policy, PolicyRepository } from "@parmana/policy";
-import { PolicyNotFoundError } from "@parmana/policy";
+import { PolicyNotFoundError,
+  PolicyVersionImmutableError,
+} from "@parmana/policy";
 import type { PolicyChangeCrypto } from "@parmana/crypto";
 import {
   ConflictError,
@@ -109,6 +111,18 @@ export class PolicyChangeApprovalService {
       before === null
         ? undefined
         : await this.policyChangeCrypto.hashPolicyContent(before);
+
+    //
+    // A published version is immutable. Refuse a different-content approval
+    // here, before any approval record is written: a record with no matching
+    // stored content would fail the governance integrity check later.
+    //
+    if (
+      before !== null &&
+      contentHashBefore !== (await this.policyChangeCrypto.hashPolicyContent(proposedContent))
+    ) {
+      throw new PolicyVersionImmutableError(change.policyName, writeVersion);
+    }
 
     // Chains this record to whatever approval record most recently
     // preceded it for this same (policyName, writeVersion) -- see

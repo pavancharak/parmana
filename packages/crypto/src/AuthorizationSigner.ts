@@ -15,6 +15,7 @@ import type { Signer } from "./Signer.js";
 
 type AuthorizationInput = {
   readonly decisionId: string;
+  readonly decisionOutcome?: "APPROVED";
   readonly businessTransactionId: string;
   readonly policyName: string;
   readonly policyVersion: string;
@@ -123,6 +124,10 @@ export class AuthorizationSigner {
       nonce: randomUUID(),
 
       decisionId: input.decisionId,
+
+      ...(input.decisionOutcome !== undefined && {
+        decisionOutcome: input.decisionOutcome,
+      }),
 
       businessTransactionId: input.businessTransactionId,
 

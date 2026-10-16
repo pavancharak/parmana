@@ -27,6 +27,7 @@ const authorization = {
     authorizationId: "auth-7",
     nonce: "n",
     decisionId: "d",
+    decisionOutcome: "APPROVED",
     businessTransactionId: "bt-42",
     policyName: "erp-invoice",
     policyVersion: "1.0.0",

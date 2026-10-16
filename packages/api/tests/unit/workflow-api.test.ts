@@ -27,6 +27,7 @@ describe("Execution Trust Workflow", () => {
 
       decision: {
         decisionId: "dec-001",
+        decisionOutcome: "APPROVED",
         outcome: "APPROVED",
         evaluatedAt: new Date(),
 

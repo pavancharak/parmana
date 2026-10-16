@@ -127,6 +127,7 @@ async function sign(
   return new AuthorizationSigner(crypto).sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: CONTENT.businessTransactionId,
       policyName: "policy-a",
       policyVersion: "1.0.0",

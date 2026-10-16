@@ -53,6 +53,7 @@ async function fixture() {
   ).sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: content.businessTransactionId,
       policyName: "payments",
       policyVersion: "1.0.0",

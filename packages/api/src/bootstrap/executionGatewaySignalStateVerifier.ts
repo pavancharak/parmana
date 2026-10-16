@@ -19,14 +19,9 @@ import type {
  * exists — same "mint later, wire now" indirection already used for
  * mintGatewayAuthentication in createExecutionGateway.ts.
  *
- * Before bind() is ever called, findViolations() returns an empty array —
- * the same "nothing to check" discipline every capability-scoped
- * SignalStateVerifier already follows for actions it doesn't recognize
- * (see CompositeSignalStateVerifier's own doc comment). This makes the
- * execution-boundary signal-freshness check fail-open only with respect to
- * this specific check while bootstrap is incomplete; every other Gateway
- * check (signature, expiry, TTL, content hash, policy freshness) is
- * unaffected.
+ * Before bind() is ever called, findViolations() throws. An execution
+ * that reaches the signal check during bootstrap is refused, not released
+ * unchecked. Every other Gateway check is unaffected.
  */
 export class LateBoundSignalStateVerifier implements SignalStateVerifier {
   private inner: SignalStateVerifier | undefined;
@@ -40,7 +35,13 @@ export class LateBoundSignalStateVerifier implements SignalStateVerifier {
     signals: PolicySignals,
   ): Promise<readonly SignalStateViolation[]> {
     if (this.inner === undefined) {
-      return [];
+      //
+      // Fail closed: until bind() runs, the real-world divergence check has
+      // not been wired, so nothing can be released on it.
+      //
+      throw new Error(
+        "Signal/State Verifier is not bound: refusing to check signals before bootstrap completes.",
+      );
     }
 
     return this.inner.findViolations(request, signals);

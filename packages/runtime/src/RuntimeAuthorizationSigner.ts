@@ -47,6 +47,7 @@ export class RuntimeAuthorizationSigner {
   async sign(
     input: {
       readonly decisionId: string;
+      readonly decisionOutcome?: "APPROVED";
       readonly businessTransactionId: string;
       readonly policyName: string;
       readonly policyVersion: string;

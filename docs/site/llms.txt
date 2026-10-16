@@ -28,6 +28,7 @@ This file is generated from the documentation navigation. Do not edit it by hand
 * [Evaluate Parmana](https://docs.parmanasystems.com/evaluation/overview): The shortest path from a fresh clone to a working local system, and what to read next.
 * [Audit guide](https://docs.parmanasystems.com/evaluation/audit-guide): The system under evaluation, where it blocks execution, what an attacker controls in each case, and how to record which attacks are blocked and which succeed.
 * [Claims and evidence](https://docs.parmanasystems.com/evaluation/claims-and-evidence): Each core claim, where it is stated in full, and the tests and commands that check it.
+* [Proof audit](https://docs.parmanasystems.com/evaluation/proof-audit): An independent audit of the five authorization claims: what passed, what failed, what was fixed, and what is still open.
 * [Case studies: public incidents](https://docs.parmanasystems.com/evaluation/case-studies): Three publicly reported AI agent incidents, what happened, and what Parmana would and would not have changed, under stated conditions.
 * [Technical paper](https://docs.parmanasystems.com/evaluation/paper): Parmana: policy-checked execution with signed human approval and offline-verifiable records for AI agent actions. Design, threat model, evaluation and limitations.
 * [Talk and demo videos](https://docs.parmanasystems.com/evaluation/talk-and-videos): The outline of a 20 minute talk on Parmana, and scripts for four short demo videos you can follow step by step against the public sandbox.

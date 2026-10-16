@@ -820,6 +820,50 @@ Evidence
 
 ---
 
+## 2.57 Proof Audit: Five Authorization Properties Tested by Execution (Scoped, 2026-10-16)
+
+**Claim.** Five properties of Parmana's authorization proofs were tested by running the code
+paths, not by reading them. The tests are in `proof-audit/tests/` and run with
+`npx vitest run proof-audit/tests` after `npm ci` and `npm run build`. Each case writes a
+`PASS` or `FAIL` verdict to `proof-audit/results/`.
+
+1. **Third-party verification without Parmana's services, database or private keys: Verified** for the
+   Execution Trust Record bundle. A proof verifies in a fresh process with an empty environment, no
+   key files and the network denied, both in-process and in an empty network namespace. Nine field
+   changes (decision, amount, action ID, timestamps, policy version, both signatures) each fail. Scope:
+   the verifier no longer reads a `.env` file on import (G-112).
+2. **Execution requires a valid, current proof: Verified for the Paytm refund, Slack, GitHub and HubSpot paths.** A missing,
+   forged, expired, revoked, mismatched or denied-decision proof each reaches the external endpoint zero
+   times. A control with an approved decision reaches it once. The same conditions hold for Slack, GitHub and HubSpot (Tests 7 to 9). Other connectors are not yet covered (G-115).
+3. **A proof authorizes only the parameters it was issued for: Verified for the Paytm refund path.**
+   A changed amount, target, recipient identifier, connector, operation or validity window is rejected.
+   Replay is rejected at the gateway and at the API, each with zero extra endpoint calls.
+4. **An old proof verifies against the policy version it cites, and a published version cannot be
+   overwritten in place: Verified. The startup governance integrity check is now exercised by the audit
+   (Test 4); running it against the live policy directory remains an operator step.** Adding a version leaves old proofs valid. A different-content rewrite is refused
+   with `409` and the stored content is unchanged. An identical re-save is allowed (G-106).
+5. **Altering or deleting a stored audit record is detectable: Detected** for content edits, middle and
+   first deletions, and both reorder forms, in the per-caller chain and the per-authorization execution chain. the newest record is
+   detected only when the chain head is anchored outside the database** (G-108).
+
+**What the audit found first.** The first run falsified claim 2 (the gateway released a validly signed
+denied decision, and the in-process release path accepted caller-set flags), claim 4 (a published
+version could be overwritten) and claim 5 (tail truncation). The fixes and their residuals are recorded in `docs/VERIFICATION-GAPS.md`, G-103 to G-118.
+The first-run measurements are kept in an internal working report that is not part of the repository.
+
+**Coverage after the follow-up fixes.** The same gate conditions now run for Paytm refund, Slack post-message,
+GitHub PR merge and HubSpot deal-update (Tests 2, 7, 8, 9). The Postgres nonce store runs on PostgreSQL semantics
+(Test 6). The startup governance integrity check runs against a signed approval record (Test 4). Not yet
+covered: KMS signing, a live external connector endpoint, and the caller
+authorization scoping (the API harness disables caller authentication, as the existing integration tests do).
+These are listed as open in `docs/REMAINING-WORK.md` section M.
+
+**Evidence.** `proof-audit/tests/test1-independent-verification.test.ts` through
+`test10-execution-audit.test.ts`; `packages/api/src/bootstrap/createReleaseVerifier.ts`;
+`packages/execution-control/src/ExecutionControlService.ts`; `packages/execution-gateway/src/ExecutionGateway.ts`
+(`decisionApproved`); `packages/policy/src/FilePolicyRepository.ts` (`save`, `PolicyVersionImmutableError`);
+`packages/crypto/src/CallerAuditChainVerifier.ts` (`verifyChain`, the `anchor` argument).
+
 ## 2.23 Independently Certified Authorization (Phase 3D)
 
 _"Even if AI has valid credentials, it still cannot execute anything your business hasn't authorized. No exceptions"_ — the specific claim tracked and re-verified across the Phase 2K capability policy binding record (in git history), the Phase 2L authorization exceptions record (in git history) (which found it **not fully supported**, naming two exceptions: Razorpay's caller-declared daily cumulative total, and HubSpot's caller-declared `preAuthorizedForAmountChange`) — was independently re-certified from current repository state in the Phase 3D independent authorization certification (in git history), treating every prior phase's conclusion as a claim to re-verify, not inherit.
@@ -1044,6 +1088,11 @@ Evidence
 
 **Update (2026-10-03, second follow up):** the index above would have trapped a legitimate retry. If an approval wrote its record and then failed (the file write, or marking the change approved), the change stayed `PENDING_APPROVAL` and a retry got `409` forever. Production has one such pair from before this change: pending change `662c9ade…` (`access-control` 1.0.0, 2026-09-16), two records by the same approver with the same content hash, the second chained to the first. `PolicyChangeApprovalService` now reuses the existing record when the same approver retries with the same content, finishes the file write, and returns it; another approver gets `409`. The unique index covers records approved from 2026-10-03 18:18:37 UTC, so the 2026-09-16 pair is kept as signed evidence and the migration applies. Evidence: `packages/api/tests/unit/PolicyChangeApprovalService.test.ts` (2 new: the same approver completes a retry with one record; another approver is refused and nothing is written), `packages/storage/tests/unit/policy-change-approval-record-one-per-change.test.ts` (2 new).
 
+**Update (2026-10-16, proof audit, G-106):** a published policy version is immutable. `FilePolicyRepository.save`
+refuses different content for an existing `(name, version)` with `PolicyVersionImmutableError`, and the approval
+service refuses it before writing an approval record, so the API returns `409`. Re-saving identical content (an
+approved rollback) is allowed. Before this, governance could replace the rules a proof already cited in place.
+
 ## 2.27 Policy-Freshness Enforcement at Execution Time
 
 A signed Execution Authorization is bound to the exact policy content it was decided under, not merely the policy's `(name, version)` identifier: `RuntimeEngine.execute()` computes `policyContentHash` — a hash of the policy document actually loaded for that decision, via the same `TrustRecordHasher` other artifact hashes in this codebase use — and includes it inside the signed `ExecutionAuthorizationPayload` (`packages/runtime/src/RuntimeEngine.ts`). This is distinct from 2.26's "Content hash at decision time (G-24)", which stamps a content hash onto the persisted `ExecutionTrustRecord` for audit purposes; this hash is signed into the authorization itself and independently re-checked before execution is allowed to proceed.
@@ -1209,6 +1258,11 @@ Evidence
 
 ---
 
+**Update (2026-10-16, proof audit, G-108):** the chain does not detect deleting the newest row for a caller, because
+nothing remains after it to break. `CallerAuditChainVerifier.verifyChain(rows, anchor)` now accepts a chain head
+recorded outside the database. With that anchor, a chain that no longer ends at the head fails verification. Without
+an anchor the limit stands. Publishing the head to an external store is an operator step, not yet done.
+
 ## 2.33 Authorization Envelope Bound Into the Trust Record's Own Signature
 
 **What this closes.** A full-codebase deep read (Sep 7, 2026) found that `ExecutionTrustRecord` carried no record of the `SignedExecutionAuthorization` the Execution Gateway actually accepted for that transaction. A loaded trust record could prove its own `transaction`/`overrides`/`executions` hadn't been tampered with, but could not independently prove which nonce was consumed, which expiry was checked, or which `businessTransactionHash`/`policyContentHash`/`signalsHash` the authorization itself was signed under — an auditor had to trust that a matching authorization existed somewhere else, not verify it from the trust record alone.
@@ -1294,6 +1348,11 @@ Evidence
 - `packages/runtime/tests/e2e/runtime.e2e.test.ts` (2 new cases: a configured violation rejects before `PolicyEngine` runs; no violation leaves execution unaffected), `packages/runtime/tests/unit/optional-protections-logging.test.ts` (1 new case)
 - `examples/tutorials/104-policy-governance-execution-verification/run.ts` (runnable narrative, no HTTP server: an approved policy executes normally, a policy with no approval record is refused, a policy edited outside the governed API is refused and independently caught by `verifyPolicyGovernanceIntegrityAtStartup()` too, and a tampered approval record is refused on signature failure — added in the same pass as this evidence update, registered in `scripts/run-examples.ts`)
 - Full repo `npx tsc -b` and `npx vitest run` clean: 1544 passed, 38 pre-existing skips, 0 failed. Commit `7a1aa37`
+
+**Update (2026-10-16, proof audit, G-105 and G-103):** governance relaxation (`NODE_ENV` of `test` or `development`)
+now also needs an explicit `PARMANA_ALLOW_UNGOVERNED_POLICY=true`. `NODE_ENV` alone no longer disables the
+approval-record check. The policy content hash is always required, including in the relaxed mode, since the
+production bootstrap no longer sets `allowUnverifiedPolicy`.
 
 ## 2.36 Fail-Closed Policy Binding at the Execution Boundary
 

@@ -39,6 +39,8 @@ export interface HubSpotSignalStateVerifierOptions {
   readonly signerKeyId: string;
   readonly policyName: string;
   readonly policyVersion: string;
+  /** Resolves the content hash of policyName@policyVersion, bound into each fetch. */
+  readonly resolvePolicyContentHash?: () => Promise<string>;
   readonly crypto: CryptoProvider;
   readonly authorizationTtlSeconds?: number;
   readonly amountChangeThreshold?: number;
@@ -153,6 +155,9 @@ export class HubSpotSignalStateVerifier implements SignalStateVerifier {
           signerKeyId: this.options.signerKeyId,
           policyName: this.options.policyName,
           policyVersion: this.options.policyVersion,
+          ...(this.options.resolvePolicyContentHash !== undefined
+            ? { policyContentHash: await this.options.resolvePolicyContentHash() }
+            : {}),
           crypto: this.options.crypto,
           ...(this.options.authorizationTtlSeconds !== undefined
             ? { authorizationTtlSeconds: this.options.authorizationTtlSeconds }

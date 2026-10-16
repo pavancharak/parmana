@@ -54,6 +54,14 @@ export interface ExecutionAuthorizationPayload {
   readonly decisionId: string;
 
   /**
+   * Outcome of the decision this authorization was issued for. Signed
+   * with the rest of the payload. ExecutionGateway releases only
+   * "APPROVED"; it refuses an authorization with any other value or
+   * with none, so a signature alone never releases an action.
+   */
+  readonly decisionOutcome?: "APPROVED";
+
+  /**
    * Business Transaction.
    */
   readonly businessTransactionId: string;

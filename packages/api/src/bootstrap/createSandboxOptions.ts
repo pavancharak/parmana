@@ -68,6 +68,12 @@ export function createSandboxOptions(
   const corsOrigins = parseCorsOrigins(env.PARMANA_CORS_ORIGINS);
   const switchValue = env.PARMANA_SANDBOX?.trim();
 
+  if (env.NODE_ENV === "production" && switchValue === "true") {
+    throw new Error(
+      "PARMANA_SANDBOX=true is refused when NODE_ENV=production: the demo approver must never run in production.",
+    );
+  }
+
   if (
     switchValue !== undefined &&
     switchValue !== "" &&
