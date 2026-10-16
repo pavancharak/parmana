@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - main
+  # Lets a maintainer start this check by hand on a PR head whose runs never started.
+  workflow_dispatch:
 
 permissions:
   contents: read

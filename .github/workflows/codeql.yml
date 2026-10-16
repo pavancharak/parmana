@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - main
+  # Lets a maintainer start this check by hand on a PR head whose runs never started.
+  workflow_dispatch:
   schedule:
     # Weekly, independent of any push, so drift in CodeQL's own query
     # packs still gets caught.
