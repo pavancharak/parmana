@@ -68,7 +68,7 @@ export async function executeHubSpotCapability(
   const input = {
     decisionId: randomUUID(),
     // This helper authorizes its own execution with the caller's signing key;
-    // there is no runtime decision behind it. See proof-audit/REPORT.md.
+    // there is no runtime decision behind it. See CLAIMS 2.57 and docs/VERIFICATION-GAPS.md G-111.
     decisionOutcome: "APPROVED" as const,
     businessTransactionId: content.businessTransactionId,
     policyName: options.policyName,
