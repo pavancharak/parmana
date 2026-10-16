@@ -13,6 +13,7 @@ import {
 } from "@parmana/execution-control";
 
 import type { ExecutionSystem } from "@parmana/execution-system";
+import type { PolicyExecutionVerifier } from "@parmana/policy";
 
 import { policyRepository } from "../application.js";
 import { authorityGrantRepository } from "../repositories.js";
@@ -25,6 +26,15 @@ import { createNonceStore } from "./createNonceStore.js";
 import { createPolicyExecutionVerifier } from "./createPolicyExecutionVerifier.js";
 import { createConnectorRoute } from "./createConnectorRoute.js";
 import { executionGatewaySignalStateVerifier } from "./executionGatewaySignalStateVerifier.js";
+
+/**
+ * Used only when governance is explicitly relaxed (test/development opt-in).
+ * Approves every policy's governance check; the policy content hash check
+ * still runs.
+ */
+const ungovernedPolicyVerifier: PolicyExecutionVerifier = {
+  verify: async () => undefined,
+};
 
 /**
  * Constructs the production Execution Gateway.
@@ -76,7 +86,7 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
 
   const nonceStore = createNonceStore();
 
-  const executionControl = createExecutionControl();
+  const executionControl = createExecutionControl({}, keyProvider);
 
   const route = createConnectorRoute();
 
@@ -97,7 +107,13 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
   // authorization with no policyContentHash, and requires the approval
   // record's hash to equal the authorization's and the live hash.
   //
-  const policyApprovalVerifier = createPolicyExecutionVerifier();
+  //
+  // Governance is skipped only in the explicit opt-in mode (see
+  // policyGovernanceRelaxed.ts). Even then the policy content hash stays
+  // required: allowUnverifiedPolicy is never set here.
+  //
+  const policyApprovalVerifier =
+    createPolicyExecutionVerifier() ?? ungovernedPolicyVerifier;
 
   return new ExecutionGateway({
     publicKey,
@@ -105,9 +121,7 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
     keyExpiryStore,
     nonceStore,
     policyRepository,
-    ...(policyApprovalVerifier === undefined
-      ? { allowUnverifiedPolicy: true }
-      : { policyApprovalVerifier }),
+    policyApprovalVerifier,
     signalStateVerifier: executionGatewaySignalStateVerifier,
 
     // RFC-0023 phase 4: an authorization that rests on an authority

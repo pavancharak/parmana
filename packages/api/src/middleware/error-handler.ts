@@ -9,6 +9,7 @@ import {
 import {
   PolicyNotFoundError,
   PolicyValidationError,
+  PolicyVersionImmutableError,
   SignalValidationError,
 } from "@parmana/policy";
 
@@ -174,7 +175,10 @@ export function createErrorHandler(auditSink?: CallerAuditSink) {
     //
     // Duplicate transaction
     //
-    if (error instanceof DuplicateBusinessTransactionError) {
+    if (
+      error instanceof DuplicateBusinessTransactionError ||
+      error instanceof PolicyVersionImmutableError
+    ) {
       res.status(409).json({
         error: error.message,
       });

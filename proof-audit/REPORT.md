@@ -1,5 +1,7 @@
 # Parmana proof audit
 
+> **Status update (after fixes).** The sections below describe the state the audit first measured. The Critical and High findings have since been fixed, and the audit cases now pass: decision outcome bound into the signed authorization (B17), independent release verification in the execution control (B5), governance relaxation only with an explicit opt-in (B1 to B3), immutable published policy versions (B16), an anchored audit chain head (Test 5), HubSpot verification fetch bound to the policy hash, and production refusal of `PARMANA_AUTH_DISABLED` and `PARMANA_SANDBOX` (B13, B14). Still open: head anchoring is an operator step, per-authorization revocation, the HubSpot helper's self-asserted `APPROVED` (B17 trust root), end-to-end audits for HubSpot/GitHub/Slack/external connectors, the offline verifier's `.env` load, and startup governance integrity (UNABLE TO TEST). The public summary is at `docs/site/evaluation/proof-audit.mdx`.
+
 Scope: the five claims in the audit brief, tested against this repository at commit `3e676ef` (branch `ccr-6f1b8d3b-o5pqwj`).
 No production code was changed. Everything added lives under `proof-audit/`. Build output (`dist/`) and `node_modules/` are gitignored.
 

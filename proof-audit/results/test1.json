@@ -22,31 +22,31 @@
   },
   "tamper:decision": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 90e914308422884770b6381b696ce03af1e3cecb115331ec98582d501717c823, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 44ea20d9be10e50f1f01b4f1ecd3903199fccaf0f467c549460c8f539f50722c, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:amount": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 82d6246780d4e29f247e1ccf47fda34f106819d4d33b62acd5522e251b38302d, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 0578696a2743d116967286729a2ec360058b06e126af5556a46cb022a9a255f2, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:action-id (businessTransactionId)": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected a2aeda541095c63ca5c3c903055ae27dabb8b4d646ceb8ad7c2ae00d164c7605, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 074f510f0dc053f5ea18683e6fe80e9d14ecdb39352738425aaf01ea1f19a82f, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:action-id (authorizationId in signed payload)": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected c2a400d79ab577fa41f9772905fae182ad3f601f6a2127a4c5eee08829c0f212, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 6529369a6ba05633f715713c365cd7b42561c079bb93da11f9f3b2db590f27e3, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:timestamp (authorizedAt)": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected cfe654e118c745a206198971225580167bc1f7301e8110ca5d86eb1991d08e88, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 6682b7f923ad90d4066172613d87abb532d84ba4f4d5e6812f3a554ce75fa470, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:policy-version (transaction.policy.version)": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 7c5ccf5b0fb9bfce8be48b4abda71d185ec672994c5649ca37fe778bb3149f3a, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 548fc7882092753867bd74b3736ebb5e7889f3840fe17490bb5820dff6d28657, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:policy-version (authorization policyVersion)": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected bb02ff354bc3902045fc76b733d77ebbe959a2f9914621fdbfd57622d93b28c8, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 071a6aba6d8434c075c7e0c3b0b7adfe525bf3330785ab091f4489a8687833fe, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   },
   "tamper:signature (trust record)": {
     "status": 1,
@@ -54,6 +54,6 @@
   },
   "tamper:signature (authorization)": {
     "status": 1,
-    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 25fe187e47057fa667f9c8485a7aa7603ab48ffa2ed35e3a0db5183a78f96b08, got 85133edac8eba7fac681775cccad7cd833050205b2e2a53a781a43b0225f1568.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
+    "stdout": "{\"valid\":false,\"errors\":[\"trustRecordHash mismatch: expected 28327a7a794fd4411677184c3539cb39a2d37ea97bb89812db59a444d0b078d9, got 90b4a3cf4c6eaa878ef861fec10a23cad2821cdb6250090d5dd7592336edbaaa.\",\"signature verification failed for keyId \\\"default\\\" (ed25519).\"],\"algorithmsChecked\":[\"ed25519\"],\"citedPolicy\":\"customer-refund@1.2.0\",\"envKeys\":2}"
   }
 }

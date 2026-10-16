@@ -181,6 +181,28 @@ describe("TEST 5: audit log tamper evidence", () => {
       db.query("DELETE FROM caller_audit_events WHERE chain_position = (SELECT MAX(chain_position) FROM caller_audit_events)").then(() => undefined));
   });
 
+  it("delete the LAST record WITH an anchored chain head (head recorded before truncation)", async () => {
+    const db = await freshChain();
+    const before = await readRows(db);
+    const anchor = { chainPosition: before[before.length - 1]!.chainPosition!, chainHash: before[before.length - 1]!.chainHash! };
+    await db.query("DELETE FROM caller_audit_events WHERE chain_position = (SELECT MAX(chain_position) FROM caller_audit_events)");
+    const after = await readRows(db);
+    const result = await verifier.verifyChain(after, anchor);
+    cases.push({ case: "delete last record WITH anchored head", rowsAfter: after.length, verifierValid: result.valid, reason: result.reason ?? null, detected: !result.valid, verdict: !result.valid ? "PASS" : "FAIL", note: "requires the head to be stored outside the database" });
+    await db.close();
+    expect(result.valid).toBe(false);
+  });
+
+  it("untouched chain WITH anchored head still verifies", async () => {
+    const db = await freshChain();
+    const rows = await readRows(db);
+    const last = rows[rows.length - 1]!;
+    const result = await verifier.verifyChain(rows, { chainPosition: last.chainPosition!, chainHash: last.chainHash! });
+    cases.push({ case: "untouched chain with anchored head", verifierValid: result.valid, verdict: result.valid ? "PASS" : "FAIL" });
+    await db.close();
+    expect(result.valid).toBe(true);
+  });
+
   it("delete the FIRST record", async () => {
     await verdictFor("delete first record", true, (db) =>
       db.query("DELETE FROM caller_audit_events WHERE chain_position = 1").then(() => undefined));

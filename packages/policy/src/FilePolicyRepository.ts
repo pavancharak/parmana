@@ -14,6 +14,18 @@ import type { PolicyRepository } from "./PolicyRepository.js";
 
 import { PolicyNotFoundError } from "./errors/PolicyNotFoundError.js";
 import { PolicyWriteRejectedError } from "./errors/PolicyWriteRejectedError.js";
+import { PolicyVersionImmutableError } from "./errors/PolicyVersionImmutableError.js";
+
+/** Key-sorted JSON, so equal content compares equal regardless of key order. */
+function canonicalJson(value: unknown): string {
+  return JSON.stringify(value, (_key, v: unknown) =>
+    v !== null && typeof v === "object" && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.keys(v).sort().map((k) => [k, (v as Record<string, unknown>)[k]]),
+        )
+      : v,
+  );
+}
 
 /**
  * name/version become path segments
@@ -109,6 +121,21 @@ export class FilePolicyRepository implements PolicyRepository {
     }
 
     const file = path.join(directory, "policy.json");
+
+    //
+    // A published (name, version) is immutable. Re-saving identical content
+    // is allowed (an approved rollback); different content must use a new
+    // version. Without this, a governed or direct write could replace the
+    // rules a proof already cites.
+    //
+    const existing = await readFile(file, "utf8").then(
+      (json) => JSON.parse(json) as unknown,
+      () => undefined,
+    );
+
+    if (existing !== undefined && canonicalJson(existing) !== canonicalJson(content)) {
+      throw new PolicyVersionImmutableError(name, version);
+    }
 
     await mkdir(directory, { recursive: true });
 

@@ -72,7 +72,7 @@ async function resign(
   base: any,
   change: (payload: any) => void,
   content: Record<string, unknown> = base,
-  opts: { dropPolicyHash?: boolean } = {},
+  opts: { dropPolicyHash?: boolean; decisionOutcome?: string } = {},
 ) {
   const payload = JSON.parse(JSON.stringify(base.authorization.payload));
   change(payload);
@@ -81,6 +81,8 @@ async function resign(
   const signed = await signer.sign(
     {
       decisionId: payload.decisionId,
+      // Models a key holder signing whatever outcome they choose.
+      ...(opts.decisionOutcome !== undefined ? { decisionOutcome: opts.decisionOutcome } : { decisionOutcome: "APPROVED" }),
       businessTransactionId: payload.businessTransactionId,
       policyName: payload.policyName,
       policyVersion: payload.policyVersion,
@@ -201,7 +203,7 @@ describe("TEST 2: execution requires proof", () => {
     // before AuthorizationSigner.sign). This simulates a holder of the
     // signing key signing one anyway, to test whether the gateway refuses it.
     const proof = await mintProof("ORD-DENY", 10000);
-    const denied = await resign(proof, (p) => { p.decisionId = crypto.randomUUID(); });
+    const denied = await resign(proof, (p) => { p.decisionId = crypto.randomUUID(); }, proof, { decisionOutcome: "DENIED" });
     const before = harness.server.paytmInvocationCount;
     let threw = false;
     try { await harness.gateway.execute(denied); } catch { threw = true; }
@@ -233,15 +235,29 @@ describe("TEST 2: execution requires proof", () => {
     });
   }
 
-  it("bypass flag ON (allowUnverifiedPolicy): proof with no policyContentHash is accepted", async () => {
-    const proof = await mintProof("ORD-FLAGON", 10000);
+  it("control for the denied-decision case: identical re-signed payload with APPROVED releases", async () => {
+    // Same payload shape, only decisionOutcome differs. Proves the refusal above
+    // comes from the decision check, not from the re-signing itself.
+    const proof = await mintProof("ORD-DENY-CTRL", 10000);
+    const approved = await resign(proof, (p) => { p.decisionId = crypto.randomUUID(); }, proof, { decisionOutcome: "APPROVED" });
+    const before = harness.server.paytmInvocationCount;
+    await harness.gateway.execute(approved);
+    const delta = harness.server.paytmInvocationCount - before;
+    record({ path: "paytm:refund via ExecutionGateway", condition: "control: re-signed identical payload, decisionOutcome APPROVED", expect: "1 call", observed: `${delta} call(s)`, verdict: delta === 1 ? "PASS" : "FAIL" });
+    expect(delta).toBe(1);
+  });
+
+  it("policy binding bypass: production bootstrap gateway refuses a proof with no policyContentHash", async () => {
+    // createExecutionGateway no longer sets allowUnverifiedPolicy. The
+    // policy hash is required in every mode.
+    const proof = await mintProof("ORD-BOOTSTRAP-NOHASH", 10000);
     const stripped = await resign(proof, () => {}, proof, { dropPolicyHash: true });
-    const calls: unknown[] = [];
-    const gateway = await gatewayWithoutSignalCheck(true, calls);
-    let threw = false;
-    try { await gateway.execute(stripped); } catch { threw = true; }
-    record({ path: "paytm:refund via ExecutionGateway, allowUnverifiedPolicy=true (the flag createExecutionGateway sets when no policy approval verifier exists, i.e. NODE_ENV=test/development)", condition: "proof without policyContentHash", rejected: threw, expect: "0 calls", observed: `${calls.length} call(s)`, verdict: threw && calls.length === 0 ? "PASS" : "FAIL" });
-    expect(true).toBe(true);
+    const before = harness.server.paytmInvocationCount;
+    let threw = false; let message = "";
+    try { await harness.gateway.execute(stripped); } catch (e) { threw = true; message = (e as Error).message; }
+    const delta = harness.server.paytmInvocationCount - before;
+    record({ path: "paytm:refund via production bootstrap ExecutionGateway", condition: "proof without policyContentHash", rejected: threw, message: message.slice(0, 160), expect: "0 calls", observed: `${delta} call(s)`, verdict: threw && delta === 0 ? "PASS" : "FAIL" });
+    expect(delta).toBe(0);
   });
 
   it("bypass flag OFF (production policy binding): the same proof is refused for policy binding", async () => {
@@ -255,16 +271,23 @@ describe("TEST 2: execution requires proof", () => {
     expect(calls.length).toBe(0);
   });
 
-  it("bypass flag: POLICY_EXECUTION_VERIFICATION_ENFORCED unset in NODE_ENV=test skips governance approval", async () => {
-    // Default test wiring: no PolicyChangeApprovalRecord exists for customer-refund@1.2.0,
-    // yet a refund proof is released. Recorded as observed behaviour.
-    const proof = await mintProof("ORD-NOGOV", 10000);
-    const before = harness.server.paytmInvocationCount;
-    let threw = false;
-    try { await harness.gateway.execute(proof); } catch { threw = true; }
-    const delta = harness.server.paytmInvocationCount - before;
-    record({ path: "paytm:refund via ExecutionGateway", condition: "no policy governance approval record, flag unset (NODE_ENV=test default)", rejected: threw, expect: "0 calls", observed: `${delta} call(s)`, verdict: threw || delta === 0 ? "PASS" : "FAIL" });
-    expect(true).toBe(true);
+  it("governance bypass: test wiring without the opt-in refuses a refund with no governance approval", async () => {
+    const saved = process.env.PARMANA_ALLOW_UNGOVERNED_POLICY;
+    delete process.env.PARMANA_ALLOW_UNGOVERNED_POLICY;
+    let unrelaxed: Harness | undefined;
+    try {
+      unrelaxed = await buildHarness();
+      unrelaxed.mode = "release";
+      const tx = await refundTransaction({ orderId: "ORD-NOGOV", amount: 10000 });
+      const response = await request(unrelaxed.app).post("/execute").send(tx);
+      const calls = unrelaxed.server.paytmInvocationCount;
+      record({ path: "paytm:refund via POST /execute, PARMANA_ALLOW_UNGOVERNED_POLICY unset", condition: "no PolicyChangeApprovalRecord for customer-refund@1.2.0", rejected: response.status !== 200, message: String(response.body?.error ?? "").slice(0, 160), expect: "0 calls", observed: `${calls} call(s)`, verdict: response.status !== 200 && calls === 0 ? "PASS" : "FAIL" });
+      expect(calls).toBe(0);
+    } finally {
+      if (saved === undefined) delete process.env.PARMANA_ALLOW_UNGOVERNED_POLICY;
+      else process.env.PARMANA_ALLOW_UNGOVERNED_POLICY = saved;
+      if (unrelaxed) await closeHarness(unrelaxed);
+    }
   });
 
   it("bypass flag ON: POLICY_EXECUTION_VERIFICATION_ENFORCED=true refuses a refund with no governance approval", async () => {
@@ -286,7 +309,7 @@ describe("TEST 2: execution requires proof", () => {
     }
   });
 
-  it("bypass path: ExecutionControl.execute trusts caller-supplied verification flags (in-process)", async () => {
+  it("in-process bypass: ExecutionControl.execute with a forged authorization and caller-set flags", async () => {
     // Holder of the in-process gateway attestation key calls the release
     // service directly with an UNSIGNED authorization and verified:true flags.
     // Pin the connector endpoint to the recording server: createExecutionControl()

@@ -1,11 +1,12 @@
 import {
   CryptoBootstrap,
+  TrustRecordHasher,
   DEFAULT_KEY_ID,
   SignerBootstrap,
   type Signer,
 } from "@parmana/crypto";
 import { HubSpotSignalStateVerifier } from "@parmana/connector-hubspot";
-import type { SignalStateVerifier } from "@parmana/policy";
+import type { PolicyRepository, SignalStateVerifier } from "@parmana/policy";
 import type { ExecutionSystem } from "@parmana/execution-system";
 
 import { loadConfig } from "@parmana/shared";
@@ -57,6 +58,7 @@ export function createHubSpotSignalStateVerifier(
   executionSystem: ExecutionSystem,
   approvalVerifier: ApprovalVerifier = createApprovalVerifier(),
   resolveSigner: () => Promise<Signer> = lazySignerBootstrap(),
+  policies?: PolicyRepository,
 ): SignalStateVerifier {
   const { ttlSeconds: authorizationTtlSeconds } = loadConfig().authorization;
 
@@ -68,6 +70,14 @@ export function createHubSpotSignalStateVerifier(
     signerKeyId: DEFAULT_KEY_ID,
     policyName: "hubspot-deal-update",
     policyVersion: "1.0.0",
+    // The fetch is bound to the same policy content the gateway checks it
+    // against, so it verifies under the policy's live content hash.
+    ...(policies !== undefined && {
+      resolvePolicyContentHash: async () =>
+        new TrustRecordHasher(crypto).hash(
+          await policies.load("hubspot-deal-update", "1.0.0"),
+        ),
+    }),
     crypto,
     authorizationTtlSeconds,
     approvalVerifier,

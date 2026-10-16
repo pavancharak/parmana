@@ -777,6 +777,9 @@ export class RuntimeEngine {
     const authorization = await this.authorizationSigner.sign(
       {
         decisionId: decision.decisionId,
+        // Reached only past executionGate.enforce(decision) above, so the
+        // decision is APPROVED here. Signed into the authorization.
+        decisionOutcome: "APPROVED",
         businessTransactionId: transaction.businessTransactionId,
         policyName: transaction.policy.name,
         policyVersion: transaction.policy.version,

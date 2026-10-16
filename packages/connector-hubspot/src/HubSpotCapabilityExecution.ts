@@ -25,6 +25,12 @@ export type HubSpotCapabilityExecutionOptions = HubSpotCapabilitySigning & {
   readonly signerKeyId: string;
   readonly policyName: string;
   readonly policyVersion: string;
+  /**
+   * Content hash of the policy the fetch is authorized under. The gateway
+   * requires it (policy binding), so the verification fetch cannot run
+   * without it.
+   */
+  readonly policyContentHash?: string;
   readonly crypto: CryptoProvider;
   readonly authorizationTtlSeconds?: number;
 };
@@ -61,9 +67,15 @@ export async function executeHubSpotCapability(
 
   const input = {
     decisionId: randomUUID(),
+    // This helper authorizes its own execution with the caller's signing key;
+    // there is no runtime decision behind it. See proof-audit/REPORT.md.
+    decisionOutcome: "APPROVED" as const,
     businessTransactionId: content.businessTransactionId,
     policyName: options.policyName,
     policyVersion: options.policyVersion,
+    ...(options.policyContentHash !== undefined && {
+      policyContentHash: options.policyContentHash,
+    }),
     executableContent,
   };
   const ttlSeconds = options.authorizationTtlSeconds ?? 60;

@@ -32,6 +32,7 @@ async function fixture() {
   ).sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: content.businessTransactionId,
       policyName: "payments",
       policyVersion: "1.0.0",
@@ -91,6 +92,8 @@ async function fixture() {
   const registry = new InMemoryConnectorRegistry([connector]);
   const audit = new MemoryExecutionAuditSink();
   const service = new ExecutionControlService({
+    // Unit test of control logic; release verification is tested elsewhere.
+    verifyRelease: async () => {},
     gatewayIdentity,
     authenticator,
     registry,

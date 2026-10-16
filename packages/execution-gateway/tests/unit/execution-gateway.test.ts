@@ -64,6 +64,7 @@ async function signAuthorization(
   return signer.sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: executableContent.businessTransactionId,
       policyName: "policy-a",
       policyVersion: "1.0.0",
@@ -321,6 +322,7 @@ describe("ExecutionGateway", () => {
       payload: {
         ...authorization.payload,
         decisionId: "decision-2",
+        decisionOutcome: "APPROVED",
       },
     };
 

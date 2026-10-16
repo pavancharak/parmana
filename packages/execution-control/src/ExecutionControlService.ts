@@ -13,7 +13,20 @@ import type {
   GatewayIdentity,
 } from "./types.js";
 
+/**
+ * Re-verifies a release before any connector runs. Throws on failure.
+ * Must not consume nonces: the gateway already consumes the nonce on the
+ * normal path, and a second consumption would refuse every release.
+ */
+export type ReleaseVerifier = (release: ExecutionRelease) => Promise<void>;
+
 export interface ExecutionControlServiceOptions {
+  /**
+   * Independent check of the authorization signature, expiry, decision
+   * outcome and content hash. Required. Without it, a caller holding the
+   * gateway attestation could release with caller-set verification flags.
+   */
+  readonly verifyRelease: ReleaseVerifier;
   readonly gatewayIdentity: GatewayIdentity;
   readonly authenticator: ConnectorAuthenticator;
   readonly registry: ConnectorRegistry;
@@ -38,6 +51,12 @@ export class ExecutionControlService implements ExecutionControl {
     release: ExecutionRelease,
     gatewayAuthentication: unknown,
   ): Promise<ExecutionResult> {
+    //
+    // Independent verification. verifiedTransaction below is a caller
+    // assertion; this check is what makes it true.
+    //
+    await this.options.verifyRelease(release);
+
     //
     // Authenticate Gateway
     //

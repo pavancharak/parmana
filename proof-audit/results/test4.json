@@ -23,26 +23,30 @@
     "verdict": "PASS"
   },
   {
-    "step": "overwrite 1.2.0 in place",
-    "overwriteRejected": false,
-    "overwriteAllowed": true,
-    "error": "",
-    "verdict": "FAIL",
-    "note": "no write-time immutability guard exists on FilePolicyRepository.save"
-  },
-  {
-    "step": "pre-overwrite proof released after overwrite",
-    "rejected": true,
-    "released": 0,
-    "message": "Execution Gateway rejected request: failed checks [policyStillCurrent, nonceUnseen]. policyContentHash mismatch: expected 2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495, got d44561b0",
+    "step": "overwrite 1.2.0 in place with different content",
+    "refused": true,
+    "storedUnchanged": true,
+    "error": "Policy \"customer-refund\"@\"1.2.0\" already exists with different content. Published policy versions are immutable; propose a new version.",
     "verdict": "PASS"
   },
   {
-    "step": "third-party check after overwrite",
+    "step": "re-save identical 1.2.0 (approved rollback)",
+    "allowed": true,
+    "error": "",
+    "verdict": "PASS"
+  },
+  {
+    "step": "pre-rewrite proof after refused rewrite",
+    "rejected": false,
+    "released": 1,
+    "message": "",
+    "verdict": "PASS"
+  },
+  {
+    "step": "third-party check after refused rewrite",
     "offlineValid": true,
-    "citedHashMatchesStore": false,
-    "verdict": "PASS",
-    "note": "offline verification does not look at policy content; detection requires comparing the cited contentHash to the stored policy"
+    "citedHashMatchesStore": true,
+    "verdict": "PASS"
   },
   {
     "step": "startup verifyPolicyGovernanceIntegrityAtStartup",

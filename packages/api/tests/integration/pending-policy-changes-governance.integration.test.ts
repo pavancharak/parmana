@@ -637,7 +637,7 @@ describe("Policy Governance: isHumanCaller, maker != checker, step-up (HTTP boun
       );
     });
 
-    it("computes contentHashBefore from the version being replaced when re-approving the same version", async () => {
+    it("refuses to replace an approved version in place with different content (409), and leaves the stored version unchanged", async () => {
       const { app, policyChangeApprovalRecordRepository } = buildApp();
       const name = "governance-approve-reapproves-version";
 
@@ -675,19 +675,22 @@ describe("Policy Governance: isHumanCaller, maker != checker, step-up (HTTP boun
         .set("Authorization", `Bearer ${HUMAN_CHECKER_KEY}`)
         .send({ stepUpAuthorization: secondStepUp });
 
-      expect(secondResponse.status).toBe(200);
+      expect(secondResponse.status).toBe(409);
 
+      // No approval record for the refused change.
       const records = await policyChangeApprovalRecordRepository.list();
-      const secondRecord = records.find(
-        (record) => record.pendingPolicyChangeId === secondId,
-      );
+      expect(
+        records.find((record) => record.pendingPolicyChangeId === secondId),
+      ).toBeUndefined();
 
+      // The stored version is still the original content.
       const crypto = new PolicyChangeCrypto();
-      const expectedBefore = await crypto.hashPolicyContent(policyBody(name));
-      const expectedAfter = await crypto.hashPolicyContent(patchedContent);
-
-      expect(secondRecord?.contentHashBefore).toBe(expectedBefore);
-      expect(secondRecord?.contentHashAfter).toBe(expectedAfter);
+      const stored = await new FilePolicyRepository(
+        scratchPolicyDirs[scratchPolicyDirs.length - 1]!,
+      ).load(name, "1.0.0");
+      expect(await crypto.hashPolicyContent(stored)).toBe(
+        await crypto.hashPolicyContent(policyBody(name)),
+      );
     });
 
     it("rejects a proposal whose proposedContent.policyVersion has a path-traversal shape, before it can ever reach a file write", async () => {

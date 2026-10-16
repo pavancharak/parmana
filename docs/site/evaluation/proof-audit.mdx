@@ -1,0 +1,72 @@
+---
+title: "Proof audit"
+description: "An independent audit of the five authorization claims: what passed, what failed, what was fixed, and what is still open."
+---
+
+Parmana states its authorization claims in
+[docs/CLAIMS.md](https://github.com/pavancharak/parmana/blob/main/docs/CLAIMS.md). This page
+reports an audit that tested five of them against the code, with executed tests, not code reading
+alone. The audit lives in the repository under `proof-audit/` and reruns with one command.
+
+## The five claims
+
+| # | Claim | Result after fixes | What the tests check |
+|---|-------|--------------------|----------------------|
+| 1 | A third party can verify a proof without Parmana's services, database or private keys | **Verified** for the Execution Trust Record | An exported proof verifies in a fresh process with an empty environment, no key files, and the network denied in-process and in an empty network namespace. Nine field changes each fail verification. |
+| 2 | An external action cannot occur without a valid, current proof | **Verified for the tested paths**, after fixes. Other connectors are not yet covered by this test. | No proof, forged, expired, revoked, mismatched, and denied-decision proofs each reach the external endpoint zero times. The control with an approved decision reaches it once. |
+| 3 | A proof authorizes only the exact parameters it was issued for | **Verified** for the Paytm refund path | Changes to amount, target, recipient, connector, operation, and validity window are rejected. Replay is rejected at the gateway and at the API. |
+| 4 | Old proofs verify against the policy version they cite, and a stored version cannot be overwritten in place | **Verified** after fixes, except startup integrity | Adding a new version leaves old proofs valid. A different-content rewrite of a published version is refused and the stored content is unchanged. Identical re-saves are allowed. |
+| 5 | Altering or deleting a stored audit record is detectable | **Detected** for every change except deleting the newest record, which needs an anchored chain head to detect | Edits, middle and first deletions, and two reorder forms are detected. With a chain head stored outside the database, deleting the newest record is also detected. |
+
+Claim 5 depends on where the chain head is stored. The verifier can check an anchored head, but
+Parmana does not yet publish that head to an external store. Until a deployment does, deleting the
+newest audit record is undetectable from the database alone.
+
+## What the audit found and what changed
+
+The audit found these gaps. Each is fixed in the code and covered by a test.
+
+- **The gateway did not check the decision outcome.** An authorization signed for a non-approved
+  decision would release. The outcome is now signed into the authorization, and the gateway refuses
+  anything that is not `APPROVED`.
+- **A caller holding the in-process gateway attestation could release without a valid
+  authorization.** The execution control now verifies the signature, expiry, decision outcome and
+  content hash itself before any connector runs.
+- **Test and development environments skipped governance by default.** Setting `NODE_ENV` alone
+  relaxed the approval-record check. Relaxation now needs an explicit `PARMANA_ALLOW_UNGOVERNED_POLICY=true`
+  in `test` or `development`. The policy content hash is always required.
+- **A published policy version could be rewritten in place.** A different-content write is refused
+  with `409`, and this is checked before any approval record is written.
+- **HubSpot's signal verification fetch was not bound to a policy hash.** It now binds to the hash
+  of the policy the gateway checks.
+- **Disabled caller authentication and sandbox approvals could run in production.** Both are now
+  refused when `NODE_ENV=production`.
+
+## Still open
+
+These items are known and not yet fixed.
+
+- **Audit head anchoring.** The verifier accepts an anchored head. Deployments need to publish it
+  to a store the database cannot rewrite.
+- **Per-authorization revocation.** Revocation is per signing key and per authority grant. There is
+  no per-authorization revocation list. Authorizations expire within the configured TTL.
+- **HubSpot's verification authorization is self-approved.** The connector helper that signs its
+  own fetch asserts `APPROVED` itself. This is a trust-root decision: anyone holding the signing key
+  can sign it. Moving that signing into the runtime is the proper fix.
+- **Other connectors.** HubSpot, GitHub, Slack and external connectors share the gateway but do not
+  yet have end-to-end proof audit tests.
+- **Offline verifier reads the repository `.env`.** Importing the verification package loads the
+  configuration module, which reads a `.env` file if present. It loads no key material.
+- **Startup governance integrity.** The check that the approval records match the stored policies
+  at startup has not been exercised by the audit.
+
+## Run the audit
+
+```bash
+npm ci
+node node_modules/typescript7/bin/tsc -b
+npx vitest run proof-audit/tests
+```
+
+The audit's case results are written to `proof-audit/results/`, one JSON file per claim. Each case
+has a `PASS` or `FAIL` verdict, so you can see exactly which conditions were tested.

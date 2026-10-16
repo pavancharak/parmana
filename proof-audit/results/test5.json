@@ -60,6 +60,20 @@
     "verdict": "FAIL"
   },
   {
+    "case": "delete last record WITH anchored head",
+    "rowsAfter": 5,
+    "verifierValid": false,
+    "reason": "chain does not end at the anchored chain head (records missing or truncated).",
+    "detected": true,
+    "verdict": "PASS",
+    "note": "requires the head to be stored outside the database"
+  },
+  {
+    "case": "untouched chain with anchored head",
+    "verifierValid": true,
+    "verdict": "PASS"
+  },
+  {
     "case": "delete first record",
     "rowsAfter": 5,
     "verifierValid": false,

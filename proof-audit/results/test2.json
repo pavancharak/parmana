@@ -51,19 +51,27 @@
   {
     "path": "paytm:refund via ExecutionGateway",
     "condition": "valid signature, denied decision",
-    "rejected": false,
+    "rejected": true,
     "expect": "0 calls",
-    "observed": "1 call(s)",
-    "verdict": "FAIL",
+    "observed": "0 call(s)",
+    "verdict": "PASS",
     "note": "ExecutionGateway never reads the decision outcome; only the runtime gate does."
   },
   {
-    "path": "paytm:refund via ExecutionGateway, allowUnverifiedPolicy=true (the flag createExecutionGateway sets when no policy approval verifier exists, i.e. NODE_ENV=test/development)",
-    "condition": "proof without policyContentHash",
-    "rejected": false,
-    "expect": "0 calls",
+    "path": "paytm:refund via ExecutionGateway",
+    "condition": "control: re-signed identical payload, decisionOutcome APPROVED",
+    "expect": "1 call",
     "observed": "1 call(s)",
-    "verdict": "FAIL"
+    "verdict": "PASS"
+  },
+  {
+    "path": "paytm:refund via production bootstrap ExecutionGateway",
+    "condition": "proof without policyContentHash",
+    "rejected": true,
+    "message": "Execution Gateway rejected request: failed checks [policyStillCurrent, nonceUnseen]. policyContentHash mismatch: expected (absent: authorization carries no poli",
+    "expect": "0 calls",
+    "observed": "0 call(s)",
+    "verdict": "PASS"
   },
   {
     "path": "paytm:refund via ExecutionGateway, allowUnverifiedPolicy unset",
@@ -75,12 +83,13 @@
     "verdict": "PASS"
   },
   {
-    "path": "paytm:refund via ExecutionGateway",
-    "condition": "no policy governance approval record, flag unset (NODE_ENV=test default)",
-    "rejected": false,
+    "path": "paytm:refund via POST /execute, PARMANA_ALLOW_UNGOVERNED_POLICY unset",
+    "condition": "no PolicyChangeApprovalRecord for customer-refund@1.2.0",
+    "rejected": true,
+    "message": "Execution rejected: Rejected: policy \"customer-refund\"@\"1.2.0\" has no PolicyChangeApprovalRecord -- it has never completed the Policy Governance approval flow.",
     "expect": "0 calls",
-    "observed": "1 call(s)",
-    "verdict": "FAIL"
+    "observed": "0 call(s)",
+    "verdict": "PASS"
   },
   {
     "path": "paytm:refund via POST /execute, POLICY_EXECUTION_VERIFICATION_ENFORCED=true",
@@ -94,10 +103,10 @@
   {
     "path": "paytm:refund via ExecutionControl.execute (bypasses ExecutionGateway.verify)",
     "condition": "unsigned authorization, caller-set verified flags, in-process attestation",
-    "rejected": false,
-    "message": "",
+    "rejected": true,
+    "message": "Execution Control refused release: authorization did not verify.",
     "expect": "0 calls",
-    "observed": "1 call(s)",
-    "verdict": "FAIL"
+    "observed": "0 call(s)",
+    "verdict": "PASS"
   }
 ]

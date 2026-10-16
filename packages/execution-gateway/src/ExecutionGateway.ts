@@ -531,8 +531,17 @@ export class ExecutionGateway implements ExecutionSystem {
       }
     }
 
+    //
+    // The decision the authorization was signed for must be APPROVED. The
+    // signature covers decisionOutcome, so this cannot be changed after
+    // issue. A signature over a non-approved decision never releases.
+    //
+    const decisionApproved =
+      request.authorization.payload.decisionOutcome === "APPROVED";
+
     const priorChecksPassed =
       passed &&
+      decisionApproved &&
       businessTransactionHashMatches &&
       policyBindingOk &&
       signalsStillCurrent !== false &&
@@ -555,6 +564,7 @@ export class ExecutionGateway implements ExecutionSystem {
       checks: {
         ...checks,
         businessTransactionHashMatches,
+        decisionApproved,
         ...(policyStillCurrent === undefined ? {} : { policyStillCurrent }),
         ...(policyGovernanceVerified === undefined
           ? {}

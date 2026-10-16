@@ -142,6 +142,8 @@ export function createInspectableExecutionSystem(
   const registry = new InMemoryConnectorRegistry([secureConnector]);
 
   const controlService = new ExecutionControlService({
+    // Unit test of control logic; release verification is tested elsewhere.
+    verifyRelease: async () => {},
     gatewayIdentity,
     authenticator,
     registry,

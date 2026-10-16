@@ -99,6 +99,7 @@ async function signAuthorization(
   return signer.sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: SAMPLE_EXECUTABLE_CONTENT.businessTransactionId,
       policyName: "policy-a",
       policyVersion: "1.0.0",

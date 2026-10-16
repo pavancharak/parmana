@@ -14,6 +14,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { FilePolicyRepository } from "../../src/FilePolicyRepository.js";
 import { PolicyNotFoundError } from "../../src/errors/PolicyNotFoundError.js";
 import { PolicyWriteRejectedError } from "../../src/errors/PolicyWriteRejectedError.js";
+import { PolicyVersionImmutableError } from "../../src/errors/PolicyVersionImmutableError.js";
 import type { Policy } from "../../src/types/Policy.js";
 
 /**
@@ -147,7 +148,7 @@ describe("FilePolicyRepository.save", () => {
     ).toBe(true);
   });
 
-  it("overwrites existing content at the same (name, version)", async () => {
+  it("refuses different content at an existing (name, version): published versions are immutable", async () => {
     basePath = mkdtempSync(path.join(tmpdir(), "parmana-policy-save-"));
     const repository = new FilePolicyRepository(basePath);
 
@@ -162,12 +163,25 @@ describe("FilePolicyRepository.save", () => {
       description: "updated content",
     } as unknown as Policy;
 
-    await repository.save("governance-overwrite", "1.0.0", updated);
+    await expect(
+      repository.save("governance-overwrite", "1.0.0", updated),
+    ).rejects.toBeInstanceOf(PolicyVersionImmutableError);
 
     const loaded = await repository.load("governance-overwrite", "1.0.0");
-    expect((loaded as unknown as { description?: string }).description).toBe(
-      "updated content",
-    );
+    expect((loaded as unknown as { description?: string }).description).toBeUndefined();
+  });
+
+  it("allows re-saving identical content (an approved rollback), regardless of key order", async () => {
+    basePath = mkdtempSync(path.join(tmpdir(), "parmana-policy-save-"));
+    const repository = new FilePolicyRepository(basePath);
+    const original = samplePolicy("governance-rollback", "1.0.0");
+
+    await repository.save("governance-rollback", "1.0.0", original);
+
+    const reordered = Object.fromEntries(Object.entries(original).reverse()) as unknown as Policy;
+    await expect(
+      repository.save("governance-rollback", "1.0.0", reordered),
+    ).resolves.toBeUndefined();
   });
 
   it("leaves no stray temp file behind after a successful write", async () => {

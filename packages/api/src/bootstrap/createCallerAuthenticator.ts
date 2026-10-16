@@ -29,6 +29,13 @@ export function createCallerAuthenticator(
   config: Config = loadConfig(),
 ): CallerAuthBootstrap {
   if (config.auth.disabled) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "PARMANA_AUTH_DISABLED=true is refused when NODE_ENV=production. " +
+          "Caller authentication cannot be disabled in production.",
+      );
+    }
+
     console.warn(
       "\nWARNING: PARMANA_AUTH_DISABLED=true. The API is accepting " +
         "requests with no caller authentication. This must never be set " +

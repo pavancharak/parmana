@@ -49,6 +49,7 @@ async function fixture() {
   const authorization = await new AuthorizationSigner(crypto).sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: content.businessTransactionId,
       policyName: "payments",
       policyVersion: "1.0.0",

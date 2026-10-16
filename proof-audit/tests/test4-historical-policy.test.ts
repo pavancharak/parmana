@@ -122,37 +122,44 @@ describe("TEST 4: verification against historical policy", () => {
     (globalThis as any).__tr = response.body;
   });
 
-  it("overwrite test: stored version 1.2.0 rewritten in place through the repository write path", async () => {
+  it("overwrite test: a different-content rewrite of stored 1.2.0 is refused", async () => {
     const a = JSON.parse(readFileSync(join(tmp, "customer-refund/1.2.0/policy.json"), "utf8"));
     const p2 = await mint("ORD-HIST-2");
-    let overwriteRejected = false; let err = "";
-    try { await repo.save("customer-refund", "1.2.0", { ...a, description: "edited in place" } as any); } catch (e) { overwriteRejected = true; err = (e as Error).message; }
+    let refused = false; let err = "";
+    try { await repo.save("customer-refund", "1.2.0", { ...a, description: "edited in place" } as any); } catch (e) { refused = true; err = (e as Error).message; }
     const onDisk = JSON.parse(readFileSync(join(tmp, "customer-refund/1.2.0/policy.json"), "utf8"));
-    const overwriteAllowed = !overwriteRejected && onDisk.description === "edited in place";
-    cases.push({ step: "overwrite 1.2.0 in place", overwriteRejected, overwriteAllowed, error: err.slice(0, 120), verdict: overwriteAllowed ? "FAIL" : "PASS", note: "no write-time immutability guard exists on FilePolicyRepository.save" });
+    const unchanged = onDisk.description !== "edited in place";
+    cases.push({ step: "overwrite 1.2.0 in place with different content", refused, storedUnchanged: unchanged, error: err.slice(0, 140), verdict: refused && unchanged ? "PASS" : "FAIL" });
     (globalThis as any).__p2 = p2;
-    expect(true).toBe(true);
+    expect(refused).toBe(true);
   });
 
-  it("a proof issued before the in-place overwrite is refused at release (detection)", async () => {
+  it("rollback: re-saving identical 1.2.0 content is allowed", async () => {
+    const a = JSON.parse(readFileSync(join(tmp, "customer-refund/1.2.0/policy.json"), "utf8"));
+    let ok = true; let err = "";
+    try { await repo.save("customer-refund", "1.2.0", a as any); } catch (e) { ok = false; err = (e as Error).message; }
+    cases.push({ step: "re-save identical 1.2.0 (approved rollback)", allowed: ok, error: err.slice(0, 120), verdict: ok ? "PASS" : "FAIL" });
+    expect(ok).toBe(true);
+  });
+
+  it("the proof issued before the refused rewrite still releases (stored version unchanged)", async () => {
     const p2 = (globalThis as any).__p2;
     const before = calls.length;
     let threw = false; let message = "";
     try { await gateway.execute(p2); } catch (e) { threw = true; message = (e as Error).message; }
     const released = calls.length - before;
-    cases.push({ step: "pre-overwrite proof released after overwrite", rejected: threw, released, message: message.slice(0, 200), verdict: threw && released === 0 ? "PASS" : "FAIL" });
-    expect(released).toBe(0);
+    cases.push({ step: "pre-rewrite proof after refused rewrite", rejected: threw, released, message: message.slice(0, 160), verdict: released === 1 ? "PASS" : "FAIL" });
+    expect(released).toBe(1);
   });
 
-  it("offline trust record stays signature-valid after the overwrite, but its cited contentHash no longer matches the stored version", async () => {
+  it("offline trust record stays valid and its cited contentHash still matches the stored version", async () => {
     const tr = (globalThis as any).__tr;
     const result = await verifyExecutionTrustRecordOffline(tr, { default: publicKeyPem() });
     const current = await repo.load("customer-refund", "1.2.0");
     const currentHash = await hasher.hash(current);
     const citedHash = tr.transaction.policy.contentHash;
-    const detectable = currentHash !== citedHash;
-    cases.push({ step: "third-party check after overwrite", offlineValid: result.valid, citedHashMatchesStore: currentHash === citedHash, verdict: result.valid && detectable ? "PASS" : "FAIL", note: "offline verification does not look at policy content; detection requires comparing the cited contentHash to the stored policy" });
-    expect(detectable).toBe(true);
+    cases.push({ step: "third-party check after refused rewrite", offlineValid: result.valid, citedHashMatchesStore: currentHash === citedHash, verdict: result.valid && currentHash === citedHash ? "PASS" : "FAIL" });
+    expect(currentHash).toBe(citedHash);
   });
 
   it("UNABLE TO TEST: startup governance integrity check", () => {

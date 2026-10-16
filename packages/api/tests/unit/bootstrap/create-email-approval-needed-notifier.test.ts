@@ -18,6 +18,7 @@ const event: ApprovalNeededEvent = {
   occurredAt: "2026-09-29T10:15:02.114Z",
   businessTransactionId: "btx-1",
   decisionId: "d-1",
+  decisionOutcome: "APPROVED",
   action: "paytm:refund",
   target: "paytm://orders/ORD-1042",
   policyId: "customer-refund",

@@ -1,3 +1,4 @@
+import type { KeyProvider } from "@parmana/crypto";
 import crypto, { generateKeyPairSync } from "node:crypto";
 
 import { describe, expect, it } from "vitest";
@@ -41,6 +42,7 @@ import { verifyParmanaRelease } from "../../../../typescript/src/crypto/release.
 
 const ENDPOINT = "https://erp.example.com/parmana/release";
 const keys = generateKeyPairSync("ed25519");
+const authorizationKeys = generateKeyPairSync("ed25519");
 const publicKeyPem = keys.publicKey
   .export({ type: "spki", format: "pem" })
   .toString();
@@ -155,12 +157,12 @@ async function revoke(
 async function releaseFor(
   content: ExecutableContent,
 ): Promise<{ release: ExecutionRelease; attestation: unknown }> {
-  const authorizationKeys = generateKeyPairSync("ed25519");
   const authorization = await new AuthorizationSigner(
     CryptoBootstrap.create(),
   ).sign(
     {
       decisionId: "decision-1",
+      decisionOutcome: "APPROVED",
       businessTransactionId: content.businessTransactionId,
       policyName: "erp-invoice",
       policyVersion: "1.2.0",
@@ -219,10 +221,22 @@ function control(
   repository: ExternalConnectorRepository,
   transport: ReleaseTransport,
 ) {
-  return createExecutionControl({
-    connectors: repository,
-    adapter: { lookup: publicLookup, transport, signer },
-  });
+  // The release verifier resolves keys the way the gateway does. These tests sign with
+  // their own key, so the control is given that key, the one the gateway would use.
+  const releaseKeys = {
+    getPublicKey: async (keyId: string) => {
+      if (keyId !== "key-1") throw new Error(`Public key not found: ${keyId}`);
+      return authorizationKeys.publicKey;
+    },
+  } as unknown as KeyProvider;
+
+  return createExecutionControl(
+    {
+      connectors: repository,
+      adapter: { lookup: publicLookup, transport, signer },
+    },
+    releaseKeys,
+  );
 }
 
 describe("External connector release through the production bootstrap", () => {
