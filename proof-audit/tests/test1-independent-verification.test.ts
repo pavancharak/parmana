@@ -46,8 +46,15 @@ interface VerifyRun {
   osIsolated: boolean;
 }
 
+/**
+ * Whether this host lets an unprivileged process create an empty network namespace.
+ * CI runners often refuse it. When not, the OS-level layer is recorded as unavailable
+ * and the in-process hook is the isolation that applies.
+ */
+const netnsAvailable = spawnSync("unshare", ["-rn", "true"], { encoding: "utf8" }).status === 0;
+
 /** Runs the verifier in a fresh process: empty env, network denied, OS netns when available. */
-function runFreshVerifier(proofFile: string, keysFile: string, policyFile: string, osIsolated = true): VerifyRun {
+function runFreshVerifier(proofFile: string, keysFile: string, policyFile: string, osIsolated = netnsAvailable): VerifyRun {
   const args = [process.execPath, verifier, proofFile, keysFile, policyFile];
   const command = osIsolated
     ? `env -i PATH=$PATH NODE_OPTIONS=--import=${denyHook} unshare -rn node verify-offline.mjs <proof> <keys> <policy>`
@@ -109,6 +116,7 @@ beforeAll(async () => {
     ),
   );
   results.exportedFiles = ["proof.json", "public-keys.json", "policy-version.json"];
+  results.osIsolation = netnsAvailable ? "empty network namespace + in-process hook" : "in-process hook only (unshare -rn not permitted)";
   results.keyIdsExported = [...keyIds];
   results.releasedToPaytm = harness.server.paytmInvocationCount;
 }, 120000);
@@ -157,10 +165,16 @@ describe("TEST 1: independent verification", () => {
     );
     const env = { PATH: process.env.PATH ?? "", NODE_OPTIONS: `--import=${denyHook}` };
     const hookOnly = spawnSync(process.execPath, [probe], { env, encoding: "utf8" });
-    const netns = spawnSync("unshare", ["-rn", process.execPath, probe], { env: { PATH: process.env.PATH ?? "" }, encoding: "utf8" });
-    results.reachability = { hookOnly: hookOnly.stdout.trim(), netns: (netns.stdout + netns.stderr).trim().slice(0, 300) };
+    const netns = netnsAvailable
+      ? spawnSync("unshare", ["-rn", process.execPath, probe], { env: { PATH: process.env.PATH ?? "" }, encoding: "utf8" })
+      : null;
+    results.reachability = {
+      hookOnly: hookOnly.stdout.trim(),
+      netns: netns === null ? "UNABLE TO TEST: unshare -rn not permitted on this host" : (netns.stdout + netns.stderr).trim().slice(0, 300),
+      netnsAvailable,
+    };
     expect(hookOnly.stdout.trim().startsWith("blocked")).toBe(true);
-    expect(netns.stdout.trim().startsWith("reachable")).toBe(false);
+    if (netns !== null) expect(netns.stdout.trim().startsWith("reachable")).toBe(false);
   });
 
   it("no private key material is loaded by the verifier process", () => {

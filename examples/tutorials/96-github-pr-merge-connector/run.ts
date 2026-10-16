@@ -26,6 +26,8 @@ import { MockGitHubServer } from "@parmana/connector-github";
 // shows the same merge with a signed approval: merged.
 //
 process.env.NODE_ENV = "test";
+// Test-only: this example runs with no maker-checker records for its policy.
+process.env.PARMANA_ALLOW_UNGOVERNED_POLICY = "true";
 
 const INSTALLATION_TOKEN = "test-mock-installation-token-a1b2c3d4e5f6";
 

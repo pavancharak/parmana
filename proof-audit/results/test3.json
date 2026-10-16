@@ -10,7 +10,7 @@
   {
     "case": "different amount (10000 issued, 15000 executed)",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 5f02757b90cbd61645f783229caf65ce9737cfc07a6afd1c0c67686b28d3c276, got 7c1f22bb27495cf617ea466",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected e643a77d1a19e67c434a92f6883a7c6514dd4d7fe847701744e40176a8a85471, got 531062880cc1399e2e9db26",
     "paytmCallsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -18,7 +18,7 @@
   {
     "case": "different target (recipient)",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 844113f00600cf728e906518c3d4b01abf8d8c321a3730c3ebab1798c56ab792, got a8504ebc03f9fa01bb4cb50",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 1bce0e80f37bc2c5f659443fe6ea0b5df1502323f1066faeb6ef6ac58c6876b7, got 7372906397aeea612eba57a",
     "paytmCallsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -26,7 +26,7 @@
   {
     "case": "different recipient identifiers in parameters",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 132d1897a085a10823a0c5a0b331f550ef949f010e969eaa0d10e6ce0d847902, got 87da2942cbc476b3b9cdf9a",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 515b882f7c2f126d856eb731f18dd17987c2d8f5d7918ac4f5390a16cfca55c5, got f207dcb964e32d526d99c35",
     "paytmCallsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -34,7 +34,7 @@
   {
     "case": "different connector (action paytm:refund -> test:fixture-execute)",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 55f352570f2439f2e6eee3ab6f2162ebb9f67bef127db664a0ade97900b6eb6e, got 2194b728e608166036ade34",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 7dcb96689b2c6fb3d7f1d571e7ddc00472eaad1db708083caf4c8fdc88a857e1, got 5bc6b0aec13c78822ac5183",
     "paytmCallsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -42,7 +42,7 @@
   {
     "case": "different operation type (operation added / changed)",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected e9bb5f4366a4707e4b4d5c16a36c61434de0e520b4453491ab39e9719fd8e80b, got 1e5a0054aadd60ee34fbb16",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 9356287b3124f0cb3bc2bc77304d2cd0513b6d33beab2560b090a5b3b155c769, got 88aae86f671136445b842ef",
     "paytmCallsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"
@@ -66,7 +66,7 @@
   {
     "case": "replay step 2: same proof again",
     "rejected": true,
-    "message": "Execution Gateway rejected request for Business Transaction '76c6bf1f-d10b-439b-baff-1ea572183cc7': authorization nonce has already been consumed (replay of an already-executed authorization).",
+    "message": "Execution Gateway rejected request for Business Transaction '25544dab-d58d-4e88-b1f6-ec753383b1e9': authorization nonce has already been consumed (replay of an already-executed authorization).",
     "paytmCallsDelta": 0,
     "expected": "rejected, 0 calls",
     "verdict": "PASS"

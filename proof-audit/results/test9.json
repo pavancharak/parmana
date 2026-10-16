@@ -30,7 +30,7 @@
     "connector": "hubspot:deal-update",
     "case": "changed dealstage after approval",
     "rejected": true,
-    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 695a086adf961109fe15543b577554810",
+    "message": "Execution Gateway rejected request: failed checks [businessTransactionHashMatches]. businessTransactionHash mismatch: expected 9f1eb812513efa438592e0065fd61f144",
     "dealStageAfter": "appointmentscheduled",
     "expected": "rejected, stage unchanged",
     "verdict": "PASS"
@@ -66,7 +66,7 @@
     "connector": "hubspot:deal-update",
     "case": "replay step 2: same proof again",
     "rejected": true,
-    "message": "Execution Gateway rejected request for Business Transaction 'a5838883-dadd-44aa-b9c6-feac71d625b8': authorization nonce has already been consumed (replay of an ",
+    "message": "Execution Gateway rejected request for Business Transaction '4e1c0e8f-d3a9-4645-a93c-37e12bdaecc3': authorization nonce has already been consumed (replay of an ",
     "dealStageAfter": "appointmentscheduled",
     "expected": "rejected, stage unchanged",
     "verdict": "PASS"
