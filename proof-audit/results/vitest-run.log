@@ -2,8 +2,8 @@
  RUN  v5.0.3 /home/user/parmana
 
 
- Test Files  5 passed (5)
-      Tests  56 passed (56)
-   Start at  00:58:33
-   Duration  21.63s (tests 64%, transform 19%, import 17%, setup 1%)
+ Test Files  9 passed (9)
+      Tests  83 passed (83)
+   Start at  01:15:13
+   Duration  25.05s (tests 68%, import 19%, transform 12%, setup 1%)
 

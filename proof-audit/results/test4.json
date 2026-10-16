@@ -49,8 +49,9 @@
     "verdict": "PASS"
   },
   {
-    "step": "startup verifyPolicyGovernanceIntegrityAtStartup",
-    "verdict": "UNABLE TO TEST",
-    "reason": "requires signed PolicyChangeApprovalRecord rows produced by the maker-checker flow; not reproduced here"
+    "step": "startup governance integrity",
+    "matchingMismatches": 0,
+    "tamperedMismatches": 1,
+    "verdict": "PASS"
   }
 ]

@@ -1,30 +1,30 @@
 {
-  "trustRecordId": "b230192b-c0e6-45c1-8d57-c369652c98bf",
-  "businessTransactionId": "2f7499e6-b404-4966-9d59-0620d451c1d3",
+  "trustRecordId": "52fd067c-c304-4cdc-b1d3-62f17529dd57",
+  "businessTransactionId": "e3cd2027-4e67-4c5e-9e69-a37281ca3477",
   "transaction": {
-    "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
+    "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
     "metadata": {
-      "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
-      "correlationId": "7a4dfbfd-cb25-418b-879a-a1990c21aed1",
+      "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
+      "correlationId": "f4289843-eebd-4216-afd6-375b7ebedd5f",
       "createdBy": "proof-audit",
-      "createdAt": "2026-10-16T00:58:38.640Z"
+      "createdAt": "2026-10-16T01:15:19.523Z"
     },
     "authority": {
-      "authorityId": "d98119ac-c92c-42eb-b671-06dd60a5ca7e",
+      "authorityId": "db002382-b04f-4e65-ad7e-b09c14ebb706",
       "authorityType": "USER",
       "principalId": "integration-test",
       "displayName": "Proof Audit",
-      "issuedAt": "2026-10-16T00:58:38.640Z"
+      "issuedAt": "2026-10-16T01:15:19.523Z"
     },
     "authorization": {
-      "authorizationId": "f15c1f2a-c5f3-4c9f-9559-49c3049d6086",
-      "authorityId": "d98119ac-c92c-42eb-b671-06dd60a5ca7e",
+      "authorizationId": "f5e545c4-7241-4cb6-9a68-4835c0ee13e2",
+      "authorityId": "db002382-b04f-4e65-ad7e-b09c14ebb706",
       "purpose": "Proof audit",
-      "authorizedAt": "2026-10-16T00:58:38.640Z"
+      "authorizedAt": "2026-10-16T01:15:19.523Z"
     },
     "intent": {
-      "intentId": "ee7626e1-a2da-47d5-a714-253e1822ae22",
-      "authorizationId": "f15c1f2a-c5f3-4c9f-9559-49c3049d6086",
+      "intentId": "b108a27c-0016-47a6-b201-f685883264ae",
+      "authorizationId": "f5e545c4-7241-4cb6-9a68-4835c0ee13e2",
       "action": "paytm:refund",
       "target": "paytm://orders/ORD-T1",
       "parameters": {
@@ -32,7 +32,7 @@
         "transactionId": "TXN-ORD-T1",
         "amount": 10000
       },
-      "createdAt": "2026-10-16T00:58:38.640Z"
+      "createdAt": "2026-10-16T01:15:19.523Z"
     },
     "policy": {
       "name": "customer-refund",
@@ -51,13 +51,13 @@
       "approvalArtifact": {
         "payload": {
           "version": 1,
-          "approvalId": "b3160e04-b366-459a-9646-2af28e9cb9d2",
+          "approvalId": "e143ae0b-2b9a-4a71-ab38-3ccc3e3b455b",
           "issuer": {
             "approverId": "manager-priya",
             "keyId": "manager-priya-key-1"
           },
-          "issuedAt": "2026-10-16T00:58:38.639Z",
-          "expiresAt": "2026-10-16T01:13:38.639Z",
+          "issuedAt": "2026-10-16T01:15:19.523Z",
+          "expiresAt": "2026-10-16T01:30:19.523Z",
           "capability": "paytm:refund",
           "resourceId": "ORD-T1",
           "scope": {
@@ -65,47 +65,47 @@
             "comparator": "lte",
             "value": 10000
           },
-          "nonce": "27a237ae-573e-4063-bb4c-edf6765a49c0"
+          "nonce": "40274ec2-930b-4821-85e3-4bbc8cc85f64"
         },
         "signature": {
           "algorithm": "ed25519",
           "keyId": "manager-priya-key-1",
-          "value": "dzXPsfdURtatwZG9rDqKqyNdxU6draAKOGqF87z3XH5i7q/j411Tll70Sf6h+we1ql1Wb0znAuaYItd1hhcFBw==",
-          "signedAt": "2026-10-16T00:58:38.639Z"
+          "value": "0oEUfi5+6LLLGn2bHbFrsmNOmDP+D935uU2N/PyaLwHzcjMSB6Lzn+uEiOGcMcwprHqWxWDctMCbl5wAFaWFDA==",
+          "signedAt": "2026-10-16T01:15:19.523Z"
         }
       }
     },
     "status": "RECEIVED",
-    "createdAt": "2026-10-16T00:58:38.657Z"
+    "createdAt": "2026-10-16T01:15:19.543Z"
   },
   "authorization": {
     "payload": {
       "version": 1,
-      "authorizationId": "c45d5890-2edd-4256-afb6-83e74ae4f7d0",
-      "nonce": "df7ec8ae-c5ed-4876-83e9-0996099ceff6",
-      "decisionId": "4980f077-fd13-4d32-b577-ee1327b80488",
+      "authorizationId": "60c515bd-fb4e-4728-9347-b9b948ea41e0",
+      "nonce": "20dcaa53-fd96-48a3-9fc2-c358397085e4",
+      "decisionId": "b1b8e76d-5dc2-4c9e-b1db-227d9e7230eb",
       "decisionOutcome": "APPROVED",
-      "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
+      "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
       "policyName": "customer-refund",
       "policyVersion": "1.2.0",
       "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
-      "signalsHash": "30635b64214434f72d80159cb250b6de1f728f787dc38c79147165f853172e2c",
-      "authorizedAt": "2026-10-16T00:58:38.665Z",
-      "expiresAt": "2026-10-16T01:00:38.665Z",
-      "businessTransactionHash": "80f41abee3a0591a275c740c72fbffd42a9882c99ce31a4daecb5c7425aa139b"
+      "signalsHash": "4cf1eed9d2f75712efe402851a31eb9ab1731af0ac68e98aaa6c9e27a717edb8",
+      "authorizedAt": "2026-10-16T01:15:19.551Z",
+      "expiresAt": "2026-10-16T01:17:19.551Z",
+      "businessTransactionHash": "72162c810612617d8311f692a58e0e0cf2dbd942cbc5157e29daf9a75994004e"
     },
-    "signature": "mQPLMT5M3rtLaiIpsz0O8AU5vYYBaw4MYY8PwhI8PMcqu7VFUsIR0zEYazgPIXtOvK7fqBQwqXF4VLZQH2DxDA==",
+    "signature": "Bzl6VDTpLPRw4UW2P9LcQxuNzUcPczA/3voUUGsE8XvyvtyDnx/IclnNFaKA3Pp7zhWglWYgspoA7/F9Cof0BA==",
     "keyId": "default",
     "algorithm": "ed25519"
   },
   "overrides": [],
   "executions": [
     {
-      "executionId": "6b5b8451-f07c-467a-85ce-2fba3a9093ce",
-      "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
+      "executionId": "edfaae4f-581c-4c35-a65f-279dac63601e",
+      "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
       "decision": {
-        "decisionId": "4980f077-fd13-4d32-b577-ee1327b80488",
-        "intentId": "ee7626e1-a2da-47d5-a714-253e1822ae22",
+        "decisionId": "b1b8e76d-5dc2-4c9e-b1db-227d9e7230eb",
+        "intentId": "b108a27c-0016-47a6-b201-f685883264ae",
         "policy": {
           "name": "customer-refund",
           "version": "1.2.0",
@@ -119,13 +119,13 @@
           "approvalArtifact": {
             "payload": {
               "version": 1,
-              "approvalId": "b3160e04-b366-459a-9646-2af28e9cb9d2",
+              "approvalId": "e143ae0b-2b9a-4a71-ab38-3ccc3e3b455b",
               "issuer": {
                 "approverId": "manager-priya",
                 "keyId": "manager-priya-key-1"
               },
-              "issuedAt": "2026-10-16T00:58:38.639Z",
-              "expiresAt": "2026-10-16T01:13:38.639Z",
+              "issuedAt": "2026-10-16T01:15:19.523Z",
+              "expiresAt": "2026-10-16T01:30:19.523Z",
               "capability": "paytm:refund",
               "resourceId": "ORD-T1",
               "scope": {
@@ -133,13 +133,13 @@
                 "comparator": "lte",
                 "value": 10000
               },
-              "nonce": "27a237ae-573e-4063-bb4c-edf6765a49c0"
+              "nonce": "40274ec2-930b-4821-85e3-4bbc8cc85f64"
             },
             "signature": {
               "algorithm": "ed25519",
               "keyId": "manager-priya-key-1",
-              "value": "dzXPsfdURtatwZG9rDqKqyNdxU6draAKOGqF87z3XH5i7q/j411Tll70Sf6h+we1ql1Wb0znAuaYItd1hhcFBw==",
-              "signedAt": "2026-10-16T00:58:38.639Z"
+              "value": "0oEUfi5+6LLLGn2bHbFrsmNOmDP+D935uU2N/PyaLwHzcjMSB6Lzn+uEiOGcMcwprHqWxWDctMCbl5wAFaWFDA==",
+              "signedAt": "2026-10-16T01:15:19.523Z"
             }
           }
         },
@@ -154,7 +154,7 @@
           "reject-above-maximum",
           "approve-refund-with-manager-approval"
         ],
-        "evaluatedAt": "2026-10-16T00:58:38.664Z",
+        "evaluatedAt": "2026-10-16T01:15:19.551Z",
         "assessment": {
           "authority": {
             "status": "AUTHORIZED",
@@ -168,20 +168,20 @@
       },
       "status": "COMPLETED",
       "mode": "SYNC",
-      "startedAt": "2026-10-16T00:58:38.665Z",
+      "startedAt": "2026-10-16T01:15:19.552Z",
       "metadata": {
-        "authorizationId": "c45d5890-2edd-4256-afb6-83e74ae4f7d0"
+        "authorizationId": "60c515bd-fb4e-4728-9347-b9b948ea41e0"
       },
       "previousChainHash": null,
-      "chainHash": "7775957017d349877576f576d64f1e187a43c347d51ea3b9429f90960d486713",
+      "chainHash": "cd6b78764287d7502e95d63090b77abeafc0668d4b8ebee181942b4cd94cc14b",
       "chainSignature": {
         "algorithm": "ed25519",
         "keyId": "default",
-        "value": "npi7lTeZecMwVH87lrW+cww8zX6SknlrTrxBk3+1gb7jnuUk9DgI0j/SiGj9wrSRIhKL8/4FXB7fzFAYK0m0CA==",
-        "signedAt": "2026-10-16T00:58:38.699Z"
+        "value": "SDkqhnAdVll0SpbUBvryTF1CvnDe31APlnvpogyOoAy1DBwzfMpJdT1xpbF3Q5HkdAp+AP6fTV+BjhIdKnTAAg==",
+        "signedAt": "2026-10-16T01:15:19.594Z"
       },
       "evidence": {
-        "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
+        "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
         "action": "paytm:refund",
         "target": "paytm://orders/ORD-T1",
         "parameters": {
@@ -190,7 +190,7 @@
           "amount": 10000
         },
         "success": true,
-        "executedAt": "2026-10-16T00:58:38.697Z",
+        "executedAt": "2026-10-16T01:15:19.590Z",
         "attributes": {
           "connector": {
             "connectorId": "paytm",
@@ -199,7 +199,7 @@
             "sanitizedEndpoint": "paytm://orders/ORD-T1",
             "credentialProviderId": "static",
             "requestSummary": {
-              "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
+              "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
               "action": "paytm:refund",
               "target": "paytm://orders/ORD-T1",
               "parameters": {
@@ -214,57 +214,57 @@
                 "refId": "refid_f888f4d163de1ecd6bea81bb",
                 "orderId": "ORD-T1",
                 "txnId": "TXN-ORD-T1",
-                "executedAt": "2026-10-16T00:58:38.689Z",
+                "executedAt": "2026-10-16T01:15:19.575Z",
                 "provider": "paytm",
                 "resultStatus": "S",
                 "resultCode": "00",
                 "sharedSecretRedacted": "[REDACTED]"
               }
             },
-            "startedAt": "2026-10-16T00:58:38.671Z",
-            "completedAt": "2026-10-16T00:58:38.697Z",
+            "startedAt": "2026-10-16T01:15:19.558Z",
+            "completedAt": "2026-10-16T01:15:19.590Z",
             "vendorConfirmationVerified": false,
-            "connectorEvidenceHash": "ef803fea4d3cfff1665ff364284714d2421cec13d18353f63303f6b3cc17e41e"
+            "connectorEvidenceHash": "8d3045f43fdaefde0e80cba71a5ee8f4ae0aedf7a7e8220170eb37f1c281e5fa"
           }
         }
       },
-      "completedAt": "2026-10-16T00:58:38.699Z"
+      "completedAt": "2026-10-16T01:15:19.593Z"
     }
   ],
   "verifications": [
     {
-      "verificationId": "c270dee2-17d2-4084-bc66-aeccf137e1fc",
-      "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
+      "verificationId": "466ea02b-1395-4934-9aa0-a3655e29712f",
+      "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
       "status": "VERIFIED",
       "message": "Execution Trust Record verified successfully.",
-      "verifiedAt": "2026-10-16T00:58:38.702Z",
-      "trustRecordHash": "b784508149c968ad2916aa1d2be92a7e0996f6155907a93e5e7cf4589953ec44"
+      "verifiedAt": "2026-10-16T01:15:19.600Z",
+      "trustRecordHash": "4d289e590f1c72a460a9909757efbca8612243738015224effbd00a2d5ee943f"
     }
   ],
   "receipts": [
     {
-      "receiptId": "de0c8536-8992-44ea-8905-047ca0c3fb2b",
-      "businessTransactionId": "8ef94498-51a8-4b68-a612-d831800ae386",
-      "trustRecordHash": "b784508149c968ad2916aa1d2be92a7e0996f6155907a93e5e7cf4589953ec44",
-      "receiptHash": "3d7f52603d98ea11de9412be0a5dff97ae9fdff50df7c1f70ed16d41a5752fac",
-      "issuedAt": "2026-10-16T00:58:38.703Z",
+      "receiptId": "4a1fcee7-3435-4ed9-b6ad-ebaa4b4fefa6",
+      "businessTransactionId": "815d2460-d179-497d-9e3c-fa25cffc4cef",
+      "trustRecordHash": "4d289e590f1c72a460a9909757efbca8612243738015224effbd00a2d5ee943f",
+      "receiptHash": "4b5a9e77c0d0bed6b2306a01066b3b517d3cb7d7bbf323ba28221665ca966e4e",
+      "issuedAt": "2026-10-16T01:15:19.600Z",
       "algorithm": "ed25519",
-      "signature": "KB1xCS2b5vkoFdO19DQo2vGHmHu+1hvW856gupVA2dttAP4Yacmt4chDnSixmk9RNp41l2/Q3oyFdTy0kuWeDg=="
+      "signature": "EmWFhd1pBb2et9mAc4JNlVd7Hp/RHqA9I8ViCwKTCQiHRP8FyUK4IEFome1uHOCxM24i+pKA1qnyr9t+RpfdAA=="
     }
   ],
   "evidenceAnchor": {
     "policyContentHash": "2a3a9534f0fe15d2d8e1a58b80044a09e78925c1849841af4fc2a6cc7ae78495",
     "governanceAnchorStatus": "NO_APPROVAL_RECORD",
-    "connectorEvidenceHash": "ef803fea4d3cfff1665ff364284714d2421cec13d18353f63303f6b3cc17e41e",
-    "anchorHash": "270d03af3671eab32c5c00e3e077da3fe76392f1e47e7405fa6bb9b92e5fa1d6"
+    "connectorEvidenceHash": "8d3045f43fdaefde0e80cba71a5ee8f4ae0aedf7a7e8220170eb37f1c281e5fa",
+    "anchorHash": "11797740ecf061ea5f53334074edc6e46277164754f82b794c37dd216597c60a"
   },
-  "createdAt": "2026-10-16T00:58:38.700Z",
-  "updatedAt": "2026-10-16T00:58:38.700Z",
-  "trustRecordHash": "b784508149c968ad2916aa1d2be92a7e0996f6155907a93e5e7cf4589953ec44",
+  "createdAt": "2026-10-16T01:15:19.595Z",
+  "updatedAt": "2026-10-16T01:15:19.595Z",
+  "trustRecordHash": "4d289e590f1c72a460a9909757efbca8612243738015224effbd00a2d5ee943f",
   "signature": {
     "algorithm": "ed25519",
     "keyId": "default",
-    "value": "5ArvhTSgzioRROJgIze/D7C6ZdOPPcwj4/N2Ql/sKkINHGte73GkQZYuG5XnAgg8QvAakkmaflvUoo5JZgbtBg==",
-    "signedAt": "2026-10-16T00:58:38.701Z"
+    "value": "eH+T5PrFJnb9i4Kr85sCUcKtjtk3X7dGrKBEzZRkSRBkS+4d8jkXLppQ3H/GrDi3dvXHZxeXB3aLUdqR356YCg==",
+    "signedAt": "2026-10-16T01:15:19.596Z"
   }
 }

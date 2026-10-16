@@ -37,6 +37,16 @@ import { SignerBootstrap, SignerKeyProviderAdapter, FileKeyExpiryStore } from "@
 import { policyRepository } from "../../packages/api/src/application.js";
 import { PAYTM_CONNECTOR_TEST_MODE_PLACEHOLDER_SECRET } from "@parmana/connector-paytm";
 
+// One nonce store shared by the production gateway and the in-process control,
+// so a replay through either path is seen by both.
+const sharedNonce = vi.hoisted(() => ({ store: undefined as any }));
+vi.mock("../../packages/api/src/bootstrap/createNonceStore.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../packages/api/src/bootstrap/createNonceStore.js")>();
+  const { MemoryNonceStore } = await import("@parmana/envelope-verifier");
+  sharedNonce.store ??= new MemoryNonceStore();
+  return { ...actual, createNonceStore: () => sharedNonce.store };
+});
+
 vi.mock("../../packages/api/src/bootstrap/createApprovalIssuerRegistry.js", () => ({
   createApprovalIssuerRegistry: () =>
     new StaticApprovalIssuerRegistry([
@@ -291,6 +301,27 @@ describe("TEST 2: execution requires proof", () => {
     expect(threw).toBe(true);
   });
 
+  it("verifier key scope: a write authorization signed with the verifier key is refused", async () => {
+    const proof = await mintProof("ORD-VERIFIER-WRITE", 10000);
+    const verifierPrivate = createPrivateKey(readFileSync(join(keyDir, "signal-verifier.private.pem"), "utf8"));
+    const signed = await new AuthorizationSigner(CryptoBootstrap.create()).sign({
+      decisionId: crypto.randomUUID(),
+      decisionOutcome: "APPROVED",
+      businessTransactionId: proof.businessTransactionId,
+      policyName: proof.authorization.payload.policyName,
+      policyVersion: proof.authorization.payload.policyVersion,
+      policyContentHash: proof.authorization.payload.policyContentHash,
+      signalsHash: proof.authorization.payload.signalsHash,
+      executableContent: { businessTransactionId: proof.businessTransactionId, action: proof.action, target: proof.target, parameters: proof.parameters },
+    } as any, verifierPrivate, "signal-verifier", 120);
+    const before = harness.server.paytmInvocationCount;
+    let threw = false; let message = "";
+    try { await harness.gateway.execute({ ...proof, authorization: signed }); } catch (e) { threw = true; message = (e as Error).message; }
+    const delta = harness.server.paytmInvocationCount - before;
+    record({ path: "paytm:refund via ExecutionGateway", condition: "write authorization signed with the verifier key (read-only scope)", rejected: threw, message: message.slice(0, 160), expect: "0 calls", observed: `${delta} call(s)`, verdict: threw && delta === 0 ? "PASS" : "FAIL" });
+    expect(delta).toBe(0);
+  });
+
   it("policy binding bypass: production bootstrap gateway refuses a proof with no policyContentHash", async () => {
     // createExecutionGateway no longer sets allowUnverifiedPolicy. The
     // policy hash is required in every mode.
@@ -353,6 +384,31 @@ describe("TEST 2: execution requires proof", () => {
     }
   });
 
+  it("in-process replay: an authorization already released through the gateway, presented to the control again", async () => {
+    const proof = await mintProof("ORD-INPROC-REPLAY", 10000);
+    const before0 = harness.server.paytmInvocationCount;
+    await harness.gateway.execute(proof);
+    const afterFirst = harness.server.paytmInvocationCount;
+    process.env.PAYTM_CONNECTOR_URL = harness.server.baseUrl;
+    process.env.TEST_PAYTM_CONNECTOR_SHARED_SECRET = PAYTM_CONNECTOR_TEST_MODE_PLACEHOLDER_SECRET;
+    const control = createExecutionControl({}, undefined, sharedNonce.store);
+    const attest = new GatewayAttestationSigner(new SystemClock(), new RandomIdGenerator());
+    const release: any = {
+      authorization: proof.authorization,
+      executableContent: { businessTransactionId: proof.businessTransactionId, action: proof.action, target: proof.target, parameters: proof.parameters },
+      verifiedTransaction: { authorizationVerified: true, executableContentVerified: true, replayCheckPassed: true },
+      executionTimestamp: new Date().toISOString(),
+      approvals: [],
+    };
+    let threw = false; let message = "";
+    try {
+      await control.execute(release, attest.sign(createGatewayIdentity().gatewayId, proof.authorization.payload.authorizationId, createGatewayKeyPair().privateKey));
+    } catch (e) { threw = true; message = (e as Error).message; }
+    const delta = harness.server.paytmInvocationCount - afterFirst;
+    record({ path: "paytm:refund via ExecutionControl (in-process), after gateway release", condition: "replay of an authorization already released", rejected: threw, message: message.slice(0, 160), expect: "refused, 0 extra calls", observed: `${delta} extra call(s); first release made ${afterFirst - before0}`, verdict: threw && delta === 0 && afterFirst - before0 === 1 ? "PASS" : "FAIL" });
+    expect(delta).toBe(0);
+  });
+
   it("in-process bypass: ExecutionControl.execute with a forged authorization and caller-set flags", async () => {
     // Holder of the in-process gateway attestation key calls the release
     // service directly with an UNSIGNED authorization and verified:true flags.
@@ -360,7 +416,7 @@ describe("TEST 2: execution requires proof", () => {
     // reads PAYTM_CONNECTOR_URL at construction, and other harnesses overwrite it.
     process.env.PAYTM_CONNECTOR_URL = harness.server.baseUrl;
     process.env.TEST_PAYTM_CONNECTOR_SHARED_SECRET = PAYTM_CONNECTOR_TEST_MODE_PLACEHOLDER_SECRET;
-    const control = createExecutionControl();
+    const control = createExecutionControl({}, undefined, sharedNonce.store);
     const identity = createGatewayIdentity();
     const gatewayKey = createGatewayKeyPair().privateKey;
     const attest = new GatewayAttestationSigner(new SystemClock(), new RandomIdGenerator());

@@ -1,3 +1,4 @@
+import { MemoryNonceStore } from "@parmana/envelope-verifier";
 import type { KeyProvider } from "@parmana/crypto";
 import crypto, { generateKeyPairSync } from "node:crypto";
 
@@ -236,6 +237,7 @@ function control(
       adapter: { lookup: publicLookup, transport, signer },
     },
     releaseKeys,
+    new MemoryNonceStore(),
   );
 }
 

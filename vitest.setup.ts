@@ -134,6 +134,19 @@ writeFileSync(
 );
 
 /**
+ * Verifier key (verifierKeyId.ts): signs the read-only signal fetches.
+ */
+const verifierKeys = generateKeyPairSync("ed25519");
+writeFileSync(
+  join(keyDir, "signal-verifier.private.pem"),
+  verifierKeys.privateKey.export({ format: "pem", type: "pkcs8" }),
+);
+writeFileSync(
+  join(keyDir, "signal-verifier.public.pem"),
+  verifierKeys.publicKey.export({ format: "pem", type: "spki" }),
+);
+
+/**
  * Runtime (FileKeyProvider)
  */
 process.env.PARMANA_KEY_DIR = keyDir;

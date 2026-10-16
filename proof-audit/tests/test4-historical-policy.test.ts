@@ -162,8 +162,35 @@ describe("TEST 4: verification against historical policy", () => {
     expect(currentHash).toBe(citedHash);
   });
 
-  it("UNABLE TO TEST: startup governance integrity check", () => {
-    cases.push({ step: "startup verifyPolicyGovernanceIntegrityAtStartup", verdict: "UNABLE TO TEST", reason: "requires signed PolicyChangeApprovalRecord rows produced by the maker-checker flow; not reproduced here" });
-    expect(true).toBe(true);
+  it("startup governance integrity: a matching approval record passes; a file edited outside governance is reported", async () => {
+    const { verifyPolicyGovernanceIntegrityAtStartup } = await import("../../packages/api/src/governance/verifyPolicyGovernanceIntegrityAtStartup.js");
+    const { PolicyChangeCrypto } = await import("@parmana/crypto");
+    const { MemoryPolicyChangeApprovalRecordRepository } = await import("@parmana/storage");
+    const { writeFileSync: write } = await import("node:fs");
+    const crypto = new PolicyChangeCrypto();
+    const records = new MemoryPolicyChangeApprovalRecordRepository();
+    const live = await repo.load("customer-refund", "1.2.0");
+    const draft: any = {
+      policyChangeApprovalRecordId: crypto.randomUUID ? "pcar-audit" : "pcar-audit",
+      pendingPolicyChangeId: "ppc-audit",
+      policyName: "customer-refund",
+      policyVersion: "1.2.0",
+      proposedBy: "human-maker",
+      approvedBy: "human-checker",
+      proposedAt: new Date("2026-08-01T00:00:00.000Z"),
+      approvedAt: new Date("2026-08-01T00:05:00.000Z"),
+      contentHashAfter: await crypto.hashPolicyContent(live),
+    };
+    await records.create({ ...draft, signature: await crypto.sign(draft) });
+    const deps = { policyRepository: repo, policyChangeCrypto: crypto, policyChangeApprovalRecordRepository: records };
+    const matching = await verifyPolicyGovernanceIntegrityAtStartup(deps as any);
+    const file = join(tmp, "customer-refund/1.2.0/policy.json");
+    const original = readFileSync(file, "utf8");
+    write(file, JSON.stringify({ ...JSON.parse(original), description: "edited outside governance" }, null, 2));
+    const tampered = await verifyPolicyGovernanceIntegrityAtStartup(deps as any);
+    write(file, original);
+    cases.push({ step: "startup governance integrity", matchingMismatches: matching.mismatches.length, tamperedMismatches: tampered.mismatches.length, verdict: matching.mismatches.length === 0 && tampered.mismatches.length > 0 ? "PASS" : "FAIL" });
+    expect(matching.mismatches).toEqual([]);
+    expect(tampered.mismatches.length).toBeGreaterThan(0);
   });
 });

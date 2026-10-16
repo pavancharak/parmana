@@ -834,8 +834,7 @@ paths, not by reading them. The tests are in `proof-audit/tests/` and run with
    the verifier no longer reads a `.env` file on import (G-112).
 2. **Execution requires a valid, current proof: Verified for the Paytm refund path only.** A missing,
    forged, expired, revoked, mismatched or denied-decision proof each reaches the external endpoint zero
-   times. A control with an approved decision reaches it once. Other connectors are not yet covered
-   (G-115).
+   times. A control with an approved decision reaches it once. The same conditions hold for Slack, GitHub and HubSpot (Tests 7 to 9). Other connectors are not yet covered (G-115).
 3. **A proof authorizes only the parameters it was issued for: Verified for the Paytm refund path.**
    A changed amount, target, recipient identifier, connector, operation or validity window is rejected.
    Replay is rejected at the gateway and at the API, each with zero extra endpoint calls.
@@ -852,13 +851,15 @@ denied decision, and the in-process release path accepted caller-set flags), cla
 version could be overwritten) and claim 5 (tail truncation). The fixes are recorded as G-103 to G-109.
 The first-run measurements are kept in `proof-audit/REPORT.md`, which has a status note at the top.
 
-**What the audit did not test.** The production Postgres nonce store and execution audit sink, KMS
-signing, the connectors other than Paytm, the startup governance integrity check, and the caller
-authorization scoping (the API harness disables caller authentication, as the existing integration tests
-do). These are listed as open in `docs/REMAINING-WORK.md` section M.
+**Coverage after the follow-up fixes.** The same gate conditions now run for Paytm refund, Slack post-message,
+GitHub PR merge and HubSpot deal-update (Tests 2, 7, 8, 9). The Postgres nonce store runs on PostgreSQL semantics
+(Test 6). The startup governance integrity check runs against a signed approval record (Test 4). Not yet
+covered: the Postgres execution audit sink, KMS signing, a live external connector endpoint, and the caller
+authorization scoping (the API harness disables caller authentication, as the existing integration tests do).
+These are listed as open in `docs/REMAINING-WORK.md` section M.
 
 **Evidence.** `proof-audit/tests/test1-independent-verification.test.ts` through
-`test5-audit-tamper.test.ts`; `packages/api/src/bootstrap/createReleaseVerifier.ts`;
+`test9-hubspot.test.ts`; `packages/api/src/bootstrap/createReleaseVerifier.ts`;
 `packages/execution-control/src/ExecutionControlService.ts`; `packages/execution-gateway/src/ExecutionGateway.ts`
 (`decisionApproved`); `packages/policy/src/FilePolicyRepository.ts` (`save`, `PolicyVersionImmutableError`);
 `packages/crypto/src/CallerAuditChainVerifier.ts` (`verifyChain`, the `anchor` argument).

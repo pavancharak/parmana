@@ -1,3 +1,4 @@
+import type { NonceStore } from "@parmana/envelope-verifier";
 import type { KeyProvider } from "@parmana/crypto";
 import {
   ExecutionControlService,
@@ -37,7 +38,8 @@ export function createExecutionControl(
    * The key provider the Execution Gateway verifies with, so the release
    * verifier resolves the same keys. Omitted, the production signer is used.
    */
-  releaseKeyProvider?: KeyProvider,
+  releaseKeyProvider: KeyProvider | undefined,
+  releaseNonceStore: NonceStore,
 ): ExecutionControl {
   const gatewayIdentity = createGatewayIdentity();
 
@@ -76,7 +78,7 @@ export function createExecutionControl(
   );
 
   const inner = new ExecutionControlService({
-    verifyRelease: createReleaseVerifier(releaseKeyProvider),
+    verifyRelease: createReleaseVerifier(releaseNonceStore, releaseKeyProvider),
     gatewayIdentity,
     authenticator,
     registry,

@@ -24,6 +24,8 @@ import { createGatewayKeyPair } from "./createGatewayKeyPair.js";
 import { createGatewayPublicKey } from "./createGatewayPublicKey.js";
 import { createNonceStore } from "./createNonceStore.js";
 import { createAuthorizationRevocationList } from "./createAuthorizationRevocationList.js";
+import { verifierKeyId } from "./verifierKeyId.js";
+import { HUBSPOT_DEAL_FETCH_CAPABILITY } from "@parmana/connector-hubspot";
 import { createPolicyExecutionVerifier } from "./createPolicyExecutionVerifier.js";
 import { createConnectorRoute } from "./createConnectorRoute.js";
 import { executionGatewaySignalStateVerifier } from "./executionGatewaySignalStateVerifier.js";
@@ -87,7 +89,7 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
 
   const nonceStore = createNonceStore();
 
-  const executionControl = createExecutionControl({}, keyProvider);
+  const executionControl = createExecutionControl({}, keyProvider, nonceStore);
 
   const route = createConnectorRoute();
 
@@ -131,6 +133,12 @@ export async function createExecutionGateway(): Promise<ExecutionSystem> {
 
     // Single-authorization revocation (revoked-authorizations.json).
     authorizationRevocations: createAuthorizationRevocationList(),
+
+    // The verifier key may sign only the read capability its signal checks use.
+    verificationOnlyKeys: {
+      keyIds: [verifierKeyId()],
+      capabilities: [HUBSPOT_DEAL_FETCH_CAPABILITY],
+    },
 
     executionControl: {
       service: executionControl,

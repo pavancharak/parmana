@@ -1,7 +1,6 @@
 import {
   CryptoBootstrap,
   TrustRecordHasher,
-  DEFAULT_KEY_ID,
   SignerBootstrap,
   type Signer,
 } from "@parmana/crypto";
@@ -14,6 +13,7 @@ import { loadConfig } from "@parmana/shared";
 import type { ApprovalVerifier } from "@parmana/approval";
 
 import { createApprovalVerifier } from "./createApprovalVerifier.js";
+import { verifierKeyId } from "./verifierKeyId.js";
 
 /**
  * Resolves the Signer on first use, not at construction, so this stays
@@ -67,7 +67,7 @@ export function createHubSpotSignalStateVerifier(
   return new HubSpotSignalStateVerifier({
     gateway: executionSystem,
     resolveSigner,
-    signerKeyId: DEFAULT_KEY_ID,
+    signerKeyId: verifierKeyId(),
     policyName: "hubspot-deal-update",
     policyVersion: "1.0.0",
     // The fetch is bound to the same policy content the gateway checks it

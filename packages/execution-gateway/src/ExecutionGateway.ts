@@ -187,6 +187,16 @@ export interface ExecutionGatewayOptions {
    * is treated as revoked (tests and legacy fixtures only); production wires it.
    */
   readonly authorizationRevocations?: AuthorizationRevocationList;
+
+  /**
+   * Keys whose authorizations may only name the listed capabilities. Used for
+   * the verifier key: it signs the read-only fetches that signal checks need,
+   * so a compromise of that key cannot release a write.
+   */
+  readonly verificationOnlyKeys?: {
+    readonly keyIds: readonly string[];
+    readonly capabilities: readonly string[];
+  };
 }
 
 /**
@@ -251,6 +261,7 @@ export class ExecutionGateway implements ExecutionSystem {
   private readonly authorityGrants:
     Pick<AuthorityGrantRepository, "findActive"> | undefined;
   private readonly authorizationRevocations: AuthorizationRevocationList | undefined;
+  private readonly verificationOnlyKeys: ExecutionGatewayOptions["verificationOnlyKeys"];
 
   constructor(options: ExecutionGatewayOptions) {
     this.envelopeVerifier = new EnvelopeVerifier({
@@ -278,6 +289,7 @@ export class ExecutionGateway implements ExecutionSystem {
     this.signalStateVerifier = options.signalStateVerifier;
     this.authorityGrants = options.authorityGrants;
     this.authorizationRevocations = options.authorizationRevocations;
+    this.verificationOnlyKeys = options.verificationOnlyKeys;
     this.requirePolicyBinding = options.allowUnverifiedPolicy !== true;
 
     if (
@@ -325,6 +337,12 @@ export class ExecutionGateway implements ExecutionSystem {
     result: GatewayVerificationResult;
     executableContent: ExecutableContent;
   }> {
+    if (request.authorization === undefined || request.authorization === null) {
+      throw new Error(
+        "Execution Gateway rejected request: no authorization was presented.",
+      );
+    }
+
     const executableContent: ExecutableContent = toExecutableContent(request);
 
     const { passed, checks } = await this.envelopeVerifier.verifyChecks(
@@ -567,9 +585,18 @@ export class ExecutionGateway implements ExecutionSystem {
             request.authorization.payload.authorizationId,
           );
 
+    //
+    // A verification-only key may sign only the read capabilities it is for.
+    //
+    const keyScopeOk =
+      this.verificationOnlyKeys === undefined ||
+      !this.verificationOnlyKeys.keyIds.includes(request.authorization.keyId) ||
+      this.verificationOnlyKeys.capabilities.includes(executableContent.action);
+
     const priorChecksPassed =
       passed &&
       decisionApproved &&
+      keyScopeOk &&
       !authorizationRevoked &&
       businessTransactionHashMatches &&
       policyBindingOk &&
@@ -583,18 +610,28 @@ export class ExecutionGateway implements ExecutionSystem {
     // check — including the content hash — passed. A
     // mismatched or forged request must not burn a nonce.
     //
-    const nonceUnseen = priorChecksPassed
-      ? await this.envelopeVerifier.consumeNonce(request.authorization)
-      : false;
+    //
+    // With executionControl, the release verifier consumes the nonce, at the
+    // same single point every release passes through, including a release
+    // that bypasses this gateway. Consuming it here as well would refuse the
+    // release. So here it is left undefined and the result is the prior checks.
+    //
+    const nonceUnseen =
+      this.executionControl !== undefined
+        ? undefined
+        : priorChecksPassed
+          ? await this.envelopeVerifier.consumeNonce(request.authorization)
+          : false;
 
     const result: GatewayVerificationResult = {
-      valid: priorChecksPassed && nonceUnseen,
+      valid: priorChecksPassed && nonceUnseen !== false,
 
       checks: {
         ...checks,
         businessTransactionHashMatches,
         decisionApproved,
         authorizationNotRevoked: !authorizationRevoked,
+        verificationKeyScope: keyScopeOk,
         ...(policyStillCurrent === undefined ? {} : { policyStillCurrent }),
         ...(policyGovernanceVerified === undefined
           ? {}
@@ -606,7 +643,7 @@ export class ExecutionGateway implements ExecutionSystem {
         ...(authorityGrantInForce === undefined
           ? {}
           : { authorityGrantInForce }),
-        nonceUnseen,
+        ...(nonceUnseen === undefined ? {} : { nonceUnseen }),
       },
 
       ...(hashMismatch ? { hashMismatch } : {}),
@@ -775,7 +812,7 @@ export class ExecutionGateway implements ExecutionSystem {
     const { nonceUnseen, ...otherChecks } = result.checks;
 
     return (
-      !nonceUnseen &&
+      nonceUnseen === false &&
       Object.values(otherChecks).every(
         (checkPassed) => checkPassed === true || checkPassed === undefined,
       )

@@ -6,7 +6,9 @@ import {
   SignerKeyProviderAdapter,
   type KeyProvider,
 } from "@parmana/crypto";
+import type { NonceStore } from "@parmana/envelope-verifier";
 import type { ExecutionRelease, ReleaseVerifier } from "@parmana/execution-control";
+import { NonceAlreadyConsumedError } from "@parmana/shared";
 
 /**
  * Independent release check for ExecutionControlService (defence in depth
@@ -18,7 +20,10 @@ import type { ExecutionRelease, ReleaseVerifier } from "@parmana/execution-contr
  * the signed businessTransactionHash. It does not consume the nonce; the
  * gateway does that on the normal path.
  */
-export function createReleaseVerifier(keyProvider?: KeyProvider): ReleaseVerifier {
+export function createReleaseVerifier(
+  nonceStore: NonceStore,
+  keyProvider?: KeyProvider,
+): ReleaseVerifier {
   const crypto = CryptoBootstrap.create();
   const authorizationVerifier = new AuthorizationVerifier(crypto);
   const contentHasher = new ExecutableContentHasher(crypto);
@@ -52,6 +57,19 @@ export function createReleaseVerifier(keyProvider?: KeyProvider): ReleaseVerifie
 
     if (actualHash !== authorization.payload.businessTransactionHash) {
       throw new Error("Execution Control refused release: executable content does not match the signed hash.");
+    }
+
+    //
+    // The single nonce consumption on the release path. It runs last, after
+    // every side-effect-free check, and on the same store the gateway uses.
+    //
+    const unseen = await nonceStore.checkAndRecord(
+      authorization.payload.nonce,
+      authorization.payload.expiresAt,
+    );
+
+    if (!unseen) {
+      throw new NonceAlreadyConsumedError(executableContent.businessTransactionId);
     }
   };
 }

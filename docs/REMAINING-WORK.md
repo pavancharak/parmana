@@ -235,12 +235,12 @@ The proof audit (CLAIMS 2.57) found gaps that are now fixed (G-103 to G-109, com
 
 ### M.2 Engineering
 
-| Item                                                                                               | Gap            |
-| -------------------------------------------------------------------------------------------------- | -------------- |
-| Move the HubSpot fetch's signing into the runtime, so the gate sets the decision outcome           | G-111          |
-| Add proof-audit cases for HubSpot, GitHub, Slack, the generic HTTP adapter and external connectors | G-115          |
-| Run the proof-audit cases against Postgres in CI, and against KMS in a staging account             | G-117          |
-| Make the execution-control release check consume the nonce on paths that bypass the gateway        | G-104 residual |
+| Item                                                                                                                                         | Gap   |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ----- |
+| HubSpot's verification helper still asserts `APPROVED` for its own read. Removing it needs the verification to go through a runtime decision | G-111 |
+| Execution audit sink on Postgres and KMS signing: run the proof-audit cases against both                                                     | G-117 |
+| Live external connector endpoint in the proof audit (the control-level integration test exists)                                              | G-115 |
+| Move the attestation key out of the process that can call the release control                                                                | G-118 |
 
 ## H. Considered, not built (moved here from the old root `ROADMAP.md`, 2026-09-28)
 
