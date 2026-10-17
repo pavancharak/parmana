@@ -31,6 +31,18 @@ export function assertStorageConfigured(): void {
 
   const config = loadConfig();
 
+  // Memory storage keeps trust records, transactions and approvals in process
+  // memory. A production process on it would lose all evidence on restart and
+  // still report READY, so production refuses the default.
+  if (
+    process.env.NODE_ENV === "production" &&
+    !isPostgresStorage(config.storage.provider)
+  ) {
+    throw new Error(
+      "PARMANA_STORAGE must be supabase or postgres in production. Memory storage loses every trust record on restart.",
+    );
+  }
+
   if (isPostgresStorage(config.storage.provider)) {
     assertDatabaseUrlConfigured(
       "Storage (business transactions / trust records)",

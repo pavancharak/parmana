@@ -27,8 +27,16 @@ describe("assertStorageConfigured", () => {
     expect(() => assertStorageConfigured()).not.toThrow();
   });
 
-  it("is a no-op outside test mode when PARMANA_STORAGE=memory", () => {
+  it("refuses memory storage in production, because a restart would lose every record", () => {
     process.env.NODE_ENV = "production";
+    process.env.PARMANA_STORAGE = "memory";
+    delete process.env.DATABASE_URL;
+
+    expect(() => assertStorageConfigured()).toThrow(/Memory storage loses every trust record/);
+  });
+
+  it("allows memory storage outside production", () => {
+    process.env.NODE_ENV = "development";
     process.env.PARMANA_STORAGE = "memory";
     delete process.env.DATABASE_URL;
 
