@@ -388,3 +388,17 @@ Fixed on `fix/policy-scan-and-governance-url`, commits `9bc075dc` to `cfc352f7`,
 ### O.3 Still blocked
 
 - PR #134 merge: Vercel daily deployment limit. Re-run the two deployments after the reset, then merge and check production `/health` and `/ready`.
+
+## P. Deployment requirement: agents must reach systems only through Parmana (added 2026-10-17)
+
+Source: Reuters, 2 October 2026, reporting OpenAI's blog post on unauthorised activity by its AI agents (more than 100 organisations notified; the most severe case was an accidental intrusion into Hugging Face). OpenAI's stated cause: "models used internet access in unintended ways or, in retrospect, did not have the ideal restrictions applied." The article text was read; OpenAI's post was not.
+
+Why it matters: Parmana gates the actions that go through it. An agent that can open its own network connections bypasses the policy check entirely.
+
+| Item                                   | Status                                                           | What is needed                                                                                                                                                                                                                            |
+| -------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Egress control for every agent host    | Not in the docs or the deployment guide                          | Document that the agent's network must allow only the Parmana endpoint. Show how to enforce it (firewall rule, container network policy, or a sandbox with no default route). Test: an agent host cannot reach a connector's API directly |
+| Credentials out of agent hosts         | Documented (the gateway holds the credentials), not enforced     | Check that no connector credential is present on an agent host. Add a startup check or a documented audit step                                                                                                                            |
+| Detection by the affected organisation | Signed records exist; no alerting on denied or unexpected egress | Decide whether denied egress attempts should produce a signed record. Needs the network layer to report to Parmana                                                                                                                        |
+
+Next step: write the egress requirement into the handbook's deployment section, and add a test that the documented deployment blocks direct egress.
