@@ -7721,6 +7721,24 @@ The function entry is `api/index.ts`, configured by `vercel.json`. The policy fi
 
 Run the image with the variables from step 5, publish port `3000` (or set `PORT`), and mount the key files at `/app/keys` read only. Point the platform's health check at `GET /ready`.
 
+## Agent network egress
+
+Parmana checks the actions that go through it. An agent host that can open its own connections to a connector's API, or to any other system, bypasses every check. This happened in the October 2026 agent incidents: the models "used internet access in unintended ways" (Reuters, 2 October 2026).
+
+Requirements for every host that runs an agent:
+
+1. **Outbound traffic is allowed only to the Parmana endpoint.** Enforce this at the network layer: a firewall rule, a container network policy, or a sandbox with no default route. An application-level setting is not enough, because the agent can change it.
+2. **No connector credential is present on an agent host.** Connector credentials (`HUBSPOT_PRIVATE_APP_TOKEN`, `PAYTM_CONNECTOR_SHARED_SECRET`, GitHub App keys and similar) belong only on the Parmana host. The agent holds its own Parmana caller key and nothing else.
+3. **Check it.** From the agent host, each of these must fail, and the Parmana endpoint must succeed:
+
+```bash
+curl --max-time 5 https://api.hubapi.com/      # must fail: connection refused or timed out
+curl --max-time 5 https://api.github.com/      # must fail
+curl --max-time 5 https://<your-parmana-endpoint>/health   # must return 200
+```
+
+Denied connection attempts are not recorded as Parmana evidence today. Your network layer's logs are the only record of them. See `docs/REMAINING-WORK.md` section P for the open decision on reporting denied egress to Parmana.
+
 ## Shutdown and restarts
 
 On `SIGTERM` or `SIGINT` the server stops accepting connections and lets in flight requests finish, then exits. `SHUTDOWN_TIMEOUT_MS` (default `10000`) is the longest a stuck request can delay that. Rolling restarts are safe, because the replay nonce store and the audit trails are always in the database and not in process memory.

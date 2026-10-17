@@ -113,6 +113,10 @@ signing path used in production goes through `KmsSigner`/`SignerKeyProviderAdapt
 independently of that specific `KEY_PROVIDER` flag, verify the current wiring in
 `packages/crypto/src/SignerBootstrap.ts` if you need the precise selection logic.
 
+### Agent network egress
+
+Parmana checks only the actions that go through it, so an agent host must not be able to reach connector APIs or other systems directly. Enforce this at the network layer, and keep connector credentials off agent hosts. The required checks and the commands to run are in the production guide under "Agent network egress".
+
 ## Concrete example
 
 There is no example tutorial that actually deploys to either platform (that would require real
