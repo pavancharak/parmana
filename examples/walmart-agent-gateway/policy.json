@@ -1,0 +1,57 @@
+{
+  "policyId": "walmart-purchase",
+  "policyVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "description": "Authorizes an agent to place one order through a vendor run agent gateway (Walmart's, in this example). Every order needs a signed approval for that cart, covering its maximum total. Orders with a maximum total above 500 are refused. The connector endpoint refuses to place the order if the vendor's quoted total is above the approved maximum.",
+
+  "signalsSchema": {
+    "orderApproved": "boolean",
+    "orderMaxTotal": "number"
+  },
+
+  "boundSignals": {
+    "orderMaxTotal": "parameters.maxTotal"
+  },
+
+  "approvalSignals": {
+    "orderApproved": {
+      "resourceId": "parameters.cartId",
+      "value": "parameters.maxTotal"
+    }
+  },
+
+  "rules": [
+    {
+      "id": "reject-invalid-total",
+      "condition": { "fact": "orderMaxTotal", "operator": "lte", "value": 0 },
+      "outcome": {
+        "action": "reject",
+        "reason": "Order refused because the maximum total must be greater than 0."
+      }
+    },
+    {
+      "id": "reject-above-maximum",
+      "condition": { "fact": "orderMaxTotal", "operator": "gt", "value": 500 },
+      "outcome": {
+        "action": "reject",
+        "reason": "Order refused because its maximum total is above 500."
+      }
+    },
+    {
+      "id": "approve-with-approval",
+      "condition": { "fact": "orderApproved", "operator": "is_true" },
+      "outcome": {
+        "action": "approve",
+        "reason": "Order approved by a trusted person for this cart, up to this maximum total."
+      }
+    },
+    {
+      "id": "reject-approval-required",
+      "condition": { "always": true },
+      "outcome": {
+        "action": "reject",
+        "reason": "An order needs a signed approval for this cart covering its maximum total, in signals.approvalArtifact, with orderApproved true."
+      }
+    }
+  ]
+}
