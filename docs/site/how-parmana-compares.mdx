@@ -1,6 +1,6 @@
 ---
 title: "How Parmana compares"
-description: "Parmana next to IAM, API gateways, LLM guardrails, policy engines and agent framework confirmations: what each answers, what Parmana adds, where Parmana is weaker, and how to use them together."
+description: "Parmana next to IAM, API gateways, LLM guardrails, policy engines, agent framework confirmations and vendor run agent gateways: what each answers, what Parmana adds, where Parmana is weaker, and how to use them together."
 ---
 
 Parmana is often compared with tools a team already has. This page sets out what each kind of tool answers, what
@@ -25,6 +25,33 @@ actions an agent takes.
 | Is the text harmful, off topic, leaking data, or a prompt injection?   | No                                       | No                                    | Yes, its main job                          | No                                          | No                                        | No                                                                                               |
 | Can a third party verify, offline, what ran and what was refused?      | Logs, trusted as stored                  | Logs, trusted as stored               | Logs, if any                               | Decision logs, trusted as stored            | Rarely                                    | Yes: signed records, verifiable with only the public key                                         |
 | Is a change to the rules approved by a second person?                  | Depends on your process                  | Depends on your process               | Depends on your process                    | Depends on your process (often code review) | No                                        | Yes: policy, approver and connector changes go through maker checker in the product              |
+
+## Vendor run agent gateways
+
+Some vendors now run their own gateway for AI agents. In October 2026 Walmart announced one: an MCP server through
+which approved assistants search and buy at Walmart and Sam's Club, with Agent Profiles that let a shopper set a
+spending limit or require approval for each purchase, track an agent's orders separately, and revoke its access.
+Agents never see card data. (As reported in the press; check the vendor's current terms. Background: [Walmart's Agent
+Gateway, and the layer it leaves open](https://blog.parmanasystems.com/2026/10/22/walmart-agent-gateway-and-the-layer-it-leaves-open/).)
+
+A gateway like this governs agents inside one vendor's platform. Parmana governs an organisation's own agents across
+every system they act on. They answer different questions and work together.
+
+| Question                                           | Vendor run agent gateway                    | Parmana                                                                                  |
+| -------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Whose rules apply?                                 | The vendor's, for its own platform          | Yours, the same policy for every connected system                                        |
+| Which systems are covered?                         | That vendor's only                          | Every system routed through Parmana                                                      |
+| Does the agent hold payment or system credentials? | No, for that vendor                         | No: they stay in Parmana's gateway, or in your connector endpoint for an external system |
+| Can a limit or a person's approval stop an action? | Yes, as the vendor implements it            | Yes: a versioned policy, and a signed approval bound to one action, resource and amount  |
+| Who holds the record of what the agent did?        | The vendor, in its platform                 | You: signed records of every action and every refusal                                    |
+| Can a third party verify that record offline?      | Not stated in what the vendor has published | Yes, with only the public key                                                            |
+| Is a refused attempt recorded?                     | Not stated in what the vendor has published | Yes: a signed Refusal Record, naming the policy content hash                             |
+
+To use both, route the agent's calls to the vendor through Parmana, so your policy and approval apply first and the
+vendor's limits apply second. Parmana has no connector for a vendor run agent gateway today. One way to add it is
+an [external endpoint](/guides/connect-any-external-system) you run: Parmana releases each approved request to it as
+a signed release, and the endpoint verifies the release, then calls the vendor's gateway with the account's own
+credentials. Whether that is allowed depends on the vendor's terms for third party agents.
 
 ## Where Parmana adds something
 
