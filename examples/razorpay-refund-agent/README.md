@@ -16,8 +16,7 @@ refuses `rzp_live_` keys. The agent holds no Razorpay key and no approval key.
 
 ## Run it
 
-Set up Parmana's side first (policy, capability, grant, agent key) as in `examples/razorpay-refund/README.md`, steps 1 to
-5. Then, after `npm run build`:
+Set up Parmana's side first (policy, capability, grant, agent key) as in `examples/razorpay-refund/README.md`, steps 1 to 5. Then, after `npm run build`:
 
 ```bash
 export PARMANA_URL=https://parmana-api-real.vercel.app
