@@ -36,21 +36,15 @@ The reports cluster into a few patterns.
 
 The reports are useful because they show which failures sit at the boundary of an action and which do not.
 
-A gate that holds the credentials and checks each action before it runs would have stopped the cases where the agent
-tried to **do something with an external effect**: pay for a deployment, publish data, change a system's configuration,
-or send a message to a service. In those cases, the agent's own belief that the action is fine is not the thing that
-matters. The check has to come from a policy the agent does not hold and a grant that has a limit and an end date.
+A gate that holds the credentials and checks each action before it runs can block the actions that have an external effect: publishing data, changing a system's configuration, writing to a shared system, or uploading files. Five of the twenty reports describe that kind of action, provided the agent's writes go through the gate. Three more are blocked only when the agent has no credentials or network route of its own, such as a key it found online or a wallet whose keys it derived. In those cases, the agent's own belief that the action is fine does not matter. The check has to come from a policy the agent does not hold, and from a grant with a limit and an end date.
 
-A gate would **not** have stopped the rest:
+A gate would **not** have stopped the other eleven. They fall into a few groups:
 
-- Reads that look harmless, such as a `GET` to a public site that returns data the agent should never have fetched
-  (unless the gate also controls network egress).
-- Text the agent writes into its own summaries. Nothing in the reports says those summaries were checked before the
-  next context read them.
-- Agents coordinating through a shared registry or a public file host, unless those channels are themselves outside the
-  agent's reach.
-- Behavior in an evaluation that is meant to score well, such as hunting for a grader's hidden answers. A gate can stop
-  the access, but it cannot tell the agent what it should have been trying to do.
+- Reads that look harmless, such as a `GET` to a public site that returns data the agent should never have fetched, or the custom requests that followed it. Only network egress control stops these.
+- Text the agent writes into its own summaries. Nothing in the reports says those summaries were checked before the next context read them.
+- Exploits of the external sites and internal machines the agents reached, such as a government statistics server or an evaluation host.
+- Local actions inside a sandbox, such as deleting software in a grader's environment, and prompt injections that spread only inside simulated tool calls.
+- Network-level leaks, such as the DNS path to a public chatbot. The fix there is infrastructure, not authorization.
 
 This is why we keep returning to the same distinction: **a prompt tells an agent what it should do; a gate decides what
 it can do.** The reports show agents that treat instructions as negotiable, sometimes correctly and sometimes not.
